@@ -1,0 +1,441 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --grid-rule: rgba(22, 19, 16, 0.08);
+    --selection-bg: #7b8f55;
+    --selection-fg: #f6f0e1;
+    --c-saffron: #b8c45e;
+    --c-poppy: #c47557;
+    --c-jade: #6e8e5d;
+    --c-sky: #6d8796;
+    --c-sun: #d9c57a;
+    --c-plum: #7e685e;
+  }
+
+  html {
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(109, 135, 150, 0.14),
+        transparent 38%
+      ),
+      radial-gradient(
+        circle at top right,
+        rgba(184, 196, 94, 0.18),
+        transparent 32%
+      ),
+      linear-gradient(180deg, #f7f1e3 0%, #f1e9d5 100%);
+    color: #161310;
+  }
+
+  body {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.38),
+        rgba(255, 255, 255, 0)
+      ),
+      linear-gradient(180deg, #f7f1e3 0%, #f1e9d5 100%);
+    min-height: 100svh;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display), serif;
+    font-weight: 400;
+    font-feature-settings: "ss01", "ss02";
+  }
+
+  .font-mono-label {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+@layer components {
+  .hairline {
+    position: relative;
+  }
+  .hairline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(22, 19, 16, 0.15);
+  }
+
+  .rule-v {
+    background-image: linear-gradient(
+      to right,
+      rgba(22, 19, 16, 0.15) 1px,
+      transparent 1px
+    );
+    background-size: 1px 100%;
+    background-repeat: repeat-y;
+  }
+
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .diecut {
+    --c: 14px;
+    clip-path: polygon(
+      var(--c) 0,
+      calc(100% - var(--c)) 0,
+      100% var(--c),
+      100% calc(100% - var(--c)),
+      calc(100% - var(--c)) 100%,
+      var(--c) 100%,
+      0 calc(100% - var(--c)),
+      0 var(--c)
+    );
+  }
+
+  .frame {
+    position: relative;
+    border: 1px solid #161310;
+  }
+  .frame::before,
+  .frame::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #161310;
+    background: #f7f1e3;
+  }
+  .frame::before {
+    top: -5px;
+    left: -5px;
+  }
+  .frame::after {
+    bottom: -5px;
+    right: -5px;
+  }
+
+  .ticker-track {
+    display: inline-flex;
+    will-change: transform;
+  }
+
+  /* Highlighter marker — paints a colored block behind inline text */
+  .marker {
+    position: relative;
+    display: inline-block;
+    padding: 0 0.2em;
+    isolation: isolate;
+  }
+  .marker::before {
+    content: "";
+    position: absolute;
+    inset: 0.04em -0.1em 0.08em -0.1em;
+    background: var(--c-saffron);
+    z-index: -1;
+    transform: skew(-4deg) rotate(-0.6deg);
+  }
+  .marker--saffron::before {
+    background: var(--c-saffron);
+  }
+  .marker--poppy::before {
+    background: var(--c-poppy);
+  }
+  .marker--jade::before {
+    background: var(--c-jade);
+  }
+  .marker--sky::before {
+    background: var(--c-sky);
+  }
+  .marker--sun::before {
+    background: var(--c-sun);
+  }
+  .marker--plum::before {
+    background: var(--c-plum);
+  }
+
+  /* Colored rule — editorial accent for headers */
+  .accent-rule {
+    position: relative;
+  }
+  .accent-rule::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -12px;
+    width: 64px;
+    height: 4px;
+    background: var(--c-saffron);
+  }
+  .accent-rule--poppy::before {
+    background: var(--c-poppy);
+  }
+  .accent-rule--jade::before {
+    background: var(--c-jade);
+  }
+  .accent-rule--sky::before {
+    background: var(--c-sky);
+  }
+  .accent-rule--sun::before {
+    background: var(--c-sun);
+  }
+  .accent-rule--plum::before {
+    background: var(--c-plum);
+  }
+
+  /* Confetti dots — tiny color markers */
+  .dot-grid {
+    background-image:
+      radial-gradient(circle at 20% 40%, var(--c-poppy) 3px, transparent 3.5px),
+      radial-gradient(circle at 60% 20%, var(--c-sky) 3px, transparent 3.5px),
+      radial-gradient(circle at 80% 70%, var(--c-jade) 3px, transparent 3.5px),
+      radial-gradient(circle at 35% 80%, var(--c-sun) 3px, transparent 3.5px);
+  }
+}
+
+@layer utilities {
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(22, 19, 16, 0.28) transparent;
+  }
+  .scrollbar-slim::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-slim::-webkit-scrollbar-thumb {
+    background: rgba(22, 19, 16, 0.22);
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .scrollbar-slim::-webkit-scrollbar-thumb:hover {
+    background: rgba(22, 19, 16, 0.5);
+    background-clip: padding-box;
+  }
+  .scrollbar-slim::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .mask-fade-r {
+    mask-image: linear-gradient(to right, black 80%, transparent);
+  }
+  .mask-fade-l {
+    mask-image: linear-gradient(to left, black 80%, transparent);
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+}
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Stats block illustrations --- */
+@keyframes stat-flicker {
+  0%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  25% {
+    transform: scaleY(1.08) translateY(-1px);
+  }
+  50% {
+    transform: scaleY(0.96) translateY(0);
+  }
+  75% {
+    transform: scaleY(1.04) translateY(-1px);
+  }
+}
+
+@keyframes stat-spark-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes stat-wave-shift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-32px);
+  }
+}
+
+@keyframes stat-bob {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -2px);
+  }
+}
+
+@keyframes stat-ping {
+  0% {
+    r: 1.2;
+    opacity: 0.9;
+  }
+  100% {
+    r: 6;
+    opacity: 0;
+  }
+}
+
+@keyframes stat-candle-grow {
+  0% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.35);
+  }
+}
+
+@keyframes stat-node-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes stat-live-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes stat-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.stat-glyph .flame-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: stat-flicker 1.8s ease-in-out infinite;
+}
+.stat-glyph .flame-spark {
+  transform-box: fill-box;
+  animation: stat-spark-rise 2.2s ease-out infinite;
+}
+.stat-glyph .wave-track {
+  animation: stat-wave-shift 7s linear infinite;
+}
+.stat-glyph .wave-track--slow {
+  animation-duration: 11s;
+}
+.stat-glyph .whale-body {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: stat-bob 4.4s ease-in-out infinite;
+}
+.stat-glyph .whale-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stat-ping 2.4s ease-out infinite;
+}
+.stat-glyph .candle-live {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: stat-candle-grow 2.6s ease-in-out infinite;
+}
+.stat-glyph .node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stat-node-pulse 2s ease-in-out infinite;
+}
+
+.stat-live-dot {
+  animation: stat-live-dot 1.4s ease-in-out infinite;
+}
+
+.stat-sweep {
+  animation: stat-sweep 6s ease-in-out infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
