@@ -25,15 +25,23 @@ const ACCENT_BG: Record<Accent, string> = {
   plum: "bg-plum/15",
 };
 
+type Variant = "grid" | "featured";
+
 export function ProjectCard({
   project,
   rank,
+  variant = "grid",
   className,
 }: {
   project: ProjectDTO;
   rank?: number;
+  variant?: Variant;
   className?: string;
 }) {
+  const aspect = variant === "featured" ? "aspect-[4/3]" : "aspect-[16/10]";
+  const titleSize = variant === "featured" ? "text-2xl" : "text-xl";
+  const padding = variant === "featured" ? "p-6" : "p-5";
+
   return (
     <Link
       href={`/p/${project.id}`}
@@ -43,7 +51,7 @@ export function ProjectCard({
         className,
       )}
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-paper">
+      <div className={cn("relative overflow-hidden bg-paper", aspect)}>
         <Image
           src={project.coverImage}
           alt={`${project.name} cover`}
@@ -68,7 +76,7 @@ export function ProjectCard({
         )}
       </div>
 
-      <div className="space-y-2 p-5">
+      <div className={cn("space-y-2", padding)}>
         <div className="flex items-center justify-between gap-2">
           <MonoLabel
             accent={project.accent}
@@ -81,7 +89,7 @@ export function ProjectCard({
           </span>
         </div>
 
-        <h3 className="text-xl leading-tight">{project.name}</h3>
+        <h3 className={cn("leading-tight", titleSize)}>{project.name}</h3>
         <p className="line-clamp-2 text-sm text-ink/70">{project.tagline}</p>
       </div>
 
