@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
 
 export type ProjectTab = {

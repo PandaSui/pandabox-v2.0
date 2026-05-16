@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import BigNumber from "bignumber.js";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { SuiGlyph } from "@/components/identity/sui-glyph";
 
 export type Currency = "SUI" | "USD";

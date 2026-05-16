@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Diecut } from "@/components/primitives/diecut";
 import { Marker } from "@/components/primitives/marker";
 import { MonoLabel } from "@/components/primitives/mono-label";

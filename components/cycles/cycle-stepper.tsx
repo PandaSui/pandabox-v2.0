@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
-import { Modal } from "@/components/ui/modal";
+import { Modal } from "@pandasui/ui";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
 import type { CycleDTO } from "@/lib/api/project-dto";

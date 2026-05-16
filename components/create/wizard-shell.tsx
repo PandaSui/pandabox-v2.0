@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useWizard } from "@/lib/store/wizard";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
 import { Hairline } from "@/components/primitives/hairline";
 import { MonoLabel } from "@/components/primitives/mono-label";

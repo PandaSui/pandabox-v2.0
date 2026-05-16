@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { formatAmount } from "@/lib/amount";
 import { SUI_DECIMALS } from "@/lib/sui";
 import { SuiGlyph } from "./sui-glyph";

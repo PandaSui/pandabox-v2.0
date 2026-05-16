@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/cn";
-import { truncateAddress } from "@/lib/address";
+import { cn } from "@pandasui/ui/lib";
+import { truncateAddress } from "@pandasui/ui/lib";
 import { explorerUrl, type SuiNetwork } from "@/lib/sui";
 
 export function Address({

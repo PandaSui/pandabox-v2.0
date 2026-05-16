@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Diecut } from "@/components/primitives/diecut";
 import { Frame } from "@/components/primitives/frame";
 import { Marker } from "@/components/primitives/marker";

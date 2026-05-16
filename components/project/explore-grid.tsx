@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Diecut } from "@/components/primitives/diecut";
 import { Frame } from "@/components/primitives/frame";
 import { MonoLabel } from "@/components/primitives/mono-label";

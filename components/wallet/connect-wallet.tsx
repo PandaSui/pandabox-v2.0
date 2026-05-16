@@ -11,11 +11,11 @@ import {
 } from "@mysten/dapp-kit";
 import { useCoins } from "@/hooks/use-coins";
 import type { WalletWithRequiredFeatures } from "@mysten/wallet-standard";
-import { gsap, registerGsap } from "@/lib/gsap";
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
-import { ArrowDiag } from "@/components/ui/icon";
-import { cn } from "@/lib/cn";
+import { gsap, registerGsap } from "@pandasui/ui/lib";
+import { Button } from "@pandasui/ui";
+import { Modal } from "@pandasui/ui";
+import { ArrowDiag } from "@pandasui/ui";
+import { cn } from "@pandasui/ui/lib";
 
 function shortAddr(addr: string) {
   if (!addr) return "";

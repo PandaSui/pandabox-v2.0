@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/http";
+import { apiFetch } from "@pandasui/ui/lib";
 
 export type Coin = {
   id: number;

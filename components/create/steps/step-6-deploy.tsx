@@ -17,10 +17,10 @@ import {
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { Frame } from "@/components/primitives/frame";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { Modal } from "@/components/ui/modal";
+import { Modal } from "@pandasui/ui";
 import { TransactionSuccess } from "@/components/pay";
 import { buildCreateProjectTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 export function StepDeployForm() {
   const draft = useWizard((s) => s.draft);

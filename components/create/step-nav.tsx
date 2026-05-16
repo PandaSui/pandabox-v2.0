@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
 
 const STEPS = [

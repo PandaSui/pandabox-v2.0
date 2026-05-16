@@ -4,7 +4,7 @@ import { useWizard } from "@/lib/store/wizard";
 import { Field, NumberField, TextArea, TextField } from "../field";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Diecut } from "@/components/primitives/diecut";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import type { TierV } from "@/lib/store/wizard-schema";
 
 const MIST = 1_000_000_000n;

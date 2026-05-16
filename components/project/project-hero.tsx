@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
 import { Diecut } from "@/components/primitives/diecut";
 import { Marker } from "@/components/primitives/marker";

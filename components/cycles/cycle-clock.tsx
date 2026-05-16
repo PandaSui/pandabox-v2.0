@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 function formatRemaining(ms: number): string {
   if (ms <= 0) return "ended";

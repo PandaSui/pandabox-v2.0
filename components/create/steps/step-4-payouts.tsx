@@ -5,7 +5,7 @@ import { useWizard } from "@/lib/store/wizard";
 import { Field, NumberField } from "../field";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { SplitsEditor } from "../splits-editor";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 const MIST = 1_000_000_000n;
 

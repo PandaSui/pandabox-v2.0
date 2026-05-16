@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { SuiGlyph } from "@/components/identity/sui-glyph";

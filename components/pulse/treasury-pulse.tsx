@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { SuiGlyph } from "@/components/identity/sui-glyph";
 import { Address } from "@/components/identity/address";
 import { RelativeTime } from "@/components/identity/relative-time";

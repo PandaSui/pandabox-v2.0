@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useWizard } from "@/lib/store/wizard";
 import { StepIdentity, type IdentityV } from "@/lib/store/wizard-schema";
 import { Field, TextArea, TextField } from "../field";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import type { Category } from "@/types/pandabox";
 

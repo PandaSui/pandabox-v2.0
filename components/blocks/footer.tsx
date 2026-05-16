@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { Address } from "@/components/identity/address";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { PandaMark } from "@/components/brand/panda-mark";
+import { PandaMark } from "@pandasui/ui";
 
 const PACKAGE_ID =
   "0x0000000000000000000000000000000000000000000000000000000000000000";

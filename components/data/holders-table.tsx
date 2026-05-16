@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import { Identicon } from "@/components/identity/identicon";

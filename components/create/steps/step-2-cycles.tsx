@@ -2,7 +2,7 @@
 
 import { useWizard } from "@/lib/store/wizard";
 import { Field, NumberField } from "../field";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 
 const DURATIONS = [3, 7, 14, 30];

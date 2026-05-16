@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MIST_PER_SUI } from "@/lib/sui";
 
 function fmt(suiBn: BigNumber): string {

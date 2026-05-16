@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { PandaMark } from "@/components/brand/panda-mark";
+import { PandaMark } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { TreasuryPulse } from "@/components/pulse";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 const LINKS = [
   { href: "/explore", label: "Explore" },

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 const ACCENTS = [
   "#B8C45E", // saffron

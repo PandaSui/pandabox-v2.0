@@ -3,12 +3,12 @@
 import { useMemo, useState } from "react";
 import { useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import BigNumber from "bignumber.js";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
-import { Modal } from "@/components/ui/modal";
+import { Modal } from "@pandasui/ui";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
 import { TierSelector } from "./tier-selector";
 import { TransactionSuccess } from "./transaction-success";

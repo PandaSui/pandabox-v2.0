@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, type ReactNode } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 
 export function Field({
   label,

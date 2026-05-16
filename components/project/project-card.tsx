@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "@/lib/cn";
+import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Diecut } from "@/components/primitives/diecut";
 import { SuiAmount } from "@/components/identity/sui-amount";
