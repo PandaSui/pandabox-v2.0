@@ -1,17 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import BigNumber from "bignumber.js";
 import { cn } from "@/lib/cn";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
-import { Diecut } from "@/components/primitives/diecut";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
 import { Modal } from "@/components/ui/modal";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
 import { TierSelector } from "./tier-selector";
+import { TransactionSuccess } from "./transaction-success";
+import { buildPayTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
 import type { ProjectDTO } from "@/lib/api/project-dto";
 
 const MEMO_MAX = 256;
@@ -23,6 +24,14 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
   const [tierId, setTierId] = useState<string | null>(null);
   const [memo, setMemo] = useState("");
   const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [submitState, setSubmitState] =
+    useState<
+      | { kind: "idle" }
+      | { kind: "submitting" }
+      | { kind: "success"; digest: string }
+      | { kind: "error"; message: string }
+    >({ kind: "idle" });
+  const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
 
   // Resolve everything in SUI.
   const suiAmount = useMemo(() => {
@@ -177,51 +186,98 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
 
       <Modal
         open={inspectorOpen}
-        onClose={() => setInspectorOpen(false)}
+        onClose={() => {
+          if (submitState.kind !== "submitting") {
+            setInspectorOpen(false);
+            if (submitState.kind === "success") setSubmitState({ kind: "idle" });
+          }
+        }}
         title="Transaction inspector"
       >
-        <div className="space-y-4 text-xs">
-          <p className="text-ink/55">
-            Pre-sign preview. Wires to a real Sui PTB in step 13.11 of the build
-            plan; for now this is a UI-only inspector.
-          </p>
-          <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
-            <Row k="package">{project.packageId.slice(0, 18)}…</Row>
-            <Row k="module">pandabox</Row>
-            <Row k="function">pay</Row>
-            <Row k="arg.project_id">{project.id.slice(0, 18)}…</Row>
-            <Row k="arg.amount_mist">{amountMist.toString()}</Row>
-            <Row k="arg.memo">{memo ? JSON.stringify(memo) : "\"\""}</Row>
-            <Row k="arg.tier_id">{tierId ?? "none"}</Row>
-            <Row k="gas">sponsored</Row>
+        {submitState.kind === "success" ? (
+          <TransactionSuccess
+            title="Payment confirmed"
+            projectName={project.name}
+            txDigest={submitState.digest}
+            primaryHref={`/p/${project.id}`}
+            primaryLabel="Back to project"
+          />
+        ) : (
+          <div className="space-y-4 text-xs">
+            <p className="text-ink/55">
+              {IS_DEPLOYED
+                ? "Pre-sign preview. Your wallet will request a signature for this Move call."
+                : "Move package not deployed yet — submission is simulated locally until NEXT_PUBLIC_PACKAGE_ID is set."}
+            </p>
+            <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
+              <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
+              <Row k="module">pandabox</Row>
+              <Row k="function">pay</Row>
+              <Row k="arg.project_id">{project.id.slice(0, 18)}…</Row>
+              <Row k="arg.amount_mist">{amountMist.toString()}</Row>
+              <Row k="arg.memo">{memo ? JSON.stringify(memo) : '""'}</Row>
+              <Row k="arg.tier_id">{tierId ?? "none"}</Row>
+              <Row k="gas">sponsored</Row>
+            </div>
+            {submitState.kind === "error" && (
+              <p
+                role="alert"
+                className="border border-poppy/40 bg-poppy/8 p-2 font-mono text-[11px] text-poppy"
+              >
+                {submitState.message}
+              </p>
+            )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={submitState.kind === "submitting"}
+                onClick={() => setInspectorOpen(false)}
+                className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
+              >
+                <span className="font-mono-label">Cancel</span>
+              </button>
+              <button
+                type="button"
+                disabled={submitState.kind === "submitting"}
+                onClick={async () => {
+                  setSubmitState({ kind: "submitting" });
+                  try {
+                    if (!IS_DEPLOYED) {
+                      // Local-only simulated success while Move package is unpublished.
+                      await new Promise((r) => setTimeout(r, 500));
+                      setSubmitState({
+                        kind: "success",
+                        digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
+                      });
+                      return;
+                    }
+                    const tx = buildPayTx({
+                      projectId: project.id,
+                      amountMist,
+                      memo,
+                      tierId,
+                    });
+                    const result = await signAndExecute({ transaction: tx });
+                    setSubmitState({ kind: "success", digest: result.digest });
+                  } catch (err) {
+                    setSubmitState({
+                      kind: "error",
+                      message:
+                        err instanceof Error ? err.message : "Transaction failed.",
+                    });
+                  }
+                }}
+                className="diecut bg-ink px-4 py-2 text-bone hover:bg-ink-90 disabled:opacity-50"
+              >
+                <span className="font-mono-label">
+                  {submitState.kind === "submitting"
+                    ? "Signing…"
+                    : "Sign & submit"}
+                </span>
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setInspectorOpen(false)}
-              className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
-            >
-              <span className="font-mono-label">Cancel</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                // Stub: chain wiring lands in step 13.11.
-                // eslint-disable-next-line no-console
-                console.info("[pandabox] pay tx not wired yet", {
-                  projectId: project.id,
-                  amountMist: amountMist.toString(),
-                  memo,
-                  tierId,
-                });
-                setInspectorOpen(false);
-              }}
-              className="diecut bg-ink px-4 py-2 text-bone hover:bg-ink-90"
-            >
-              <span className="font-mono-label">Sign &amp; submit</span>
-            </button>
-          </div>
-        </div>
+        )}
       </Modal>
     </aside>
   );

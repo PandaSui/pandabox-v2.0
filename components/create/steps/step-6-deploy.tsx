@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import {
+  useCurrentAccount,
+  useSignAndExecuteTransaction,
+} from "@mysten/dapp-kit";
 import { useWizard } from "@/lib/store/wizard";
 import {
   StepCycles,
@@ -12,10 +15,11 @@ import {
   StepTiers,
 } from "@/lib/store/wizard-schema";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
-import { Diecut } from "@/components/primitives/diecut";
 import { Frame } from "@/components/primitives/frame";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Modal } from "@/components/ui/modal";
+import { TransactionSuccess } from "@/components/pay";
+import { buildCreateProjectTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
 import { cn } from "@/lib/cn";
 
 export function StepDeployForm() {
@@ -25,32 +29,83 @@ export function StepDeployForm() {
   const account = useCurrentAccount();
   const router = useRouter();
   const [inspectorOpen, setInspectorOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitState, setSubmitState] =
+    useState<
+      | { kind: "idle" }
+      | { kind: "submitting" }
+      | { kind: "success"; digest: string }
+      | { kind: "error"; message: string }
+    >({ kind: "idle" });
+  const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
 
   const checks = useMemo(() => validate(draft), [draft]);
   const ready = checks.every((c) => c.ok);
 
   const onSubmit = async () => {
-    setSubmitting(true);
+    if (!ready) return;
+    setSubmitState({ kind: "submitting" });
     try {
-      // Chain wiring lands in step 13.11 of the build plan. For now: simulate
-      // a successful deploy by routing to a placeholder project id and
-      // clearing the draft so the wizard returns to a fresh state.
-      // eslint-disable-next-line no-console
-      console.info("[pandabox] create_project tx not wired yet", {
-        identity: draft.identity,
-        cycles: draft.cycles,
-        economics: draft.economics,
-        payouts: draft.payouts,
-        tiers: draft.tiers,
+      if (!IS_DEPLOYED) {
+        // Move package not yet published. Simulate locally so the UX is
+        // complete; clearing the draft and surfacing a fake digest the user
+        // can recognise as a stub (prefixed SIMULATED).
+        await new Promise((r) => setTimeout(r, 600));
+        const digest = "SIMULATED" + Date.now().toString(36).toUpperCase();
+        setSubmitState({ kind: "success", digest });
+        return;
+      }
+      const tx = buildCreateProjectTx({
+        identity: {
+          name: draft.identity.name ?? "",
+          ticker: draft.identity.ticker ?? "",
+          tagline: draft.identity.tagline ?? "",
+          description: draft.identity.description ?? "",
+          category: draft.identity.category ?? "art",
+        },
+        cycles: {
+          durationDays: draft.cycles.durationDays ?? 14,
+          ballotDelayHours: draft.cycles.ballotDelayHours ?? 72,
+          firstCycleStart: draft.cycles.firstCycleStart ?? Date.now(),
+        },
+        economics: {
+          weight: draft.economics.weight ?? "0",
+          reservedRate: draft.economics.reservedRate ?? 0,
+          cashOutTax: draft.economics.cashOutTax ?? 0,
+          issuanceReduction: draft.economics.issuanceReduction ?? 0,
+          reservedSplits: draft.economics.reservedSplits ?? [],
+        },
+        payouts: {
+          payoutLimitMist: draft.payouts.payoutLimitMist ?? "0",
+          splits: draft.payouts.splits ?? [],
+          sendSurplusToOwner: draft.payouts.sendSurplusToOwner ?? true,
+        },
+        tiers: {
+          enabled: draft.tiers.enabled,
+          list: draft.tiers.list.map((t) => ({
+            name: t.name,
+            priceMist: t.priceMist,
+            maxSupply: t.maxSupply,
+            perks: t.perks,
+          })),
+        },
       });
-      await new Promise((r) => setTimeout(r, 600));
-      reset();
-      router.push(`/create?deployed=1`);
-    } finally {
-      setSubmitting(false);
-      setInspectorOpen(false);
+      const result = await signAndExecute({ transaction: tx });
+      setSubmitState({ kind: "success", digest: result.digest });
+    } catch (err) {
+      setSubmitState({
+        kind: "error",
+        message:
+          err instanceof Error ? err.message : "Deploy transaction failed.",
+      });
     }
+  };
+
+  const onFinishSuccess = () => {
+    // Clear the saved draft once the user acknowledges success.
+    reset();
+    setInspectorOpen(false);
+    setSubmitState({ kind: "idle" });
+    router.push("/explore");
   };
 
   return (
@@ -140,65 +195,94 @@ export function StepDeployForm() {
 
       <Modal
         open={inspectorOpen}
-        onClose={() => !submitting && setInspectorOpen(false)}
+        onClose={() => {
+          if (submitState.kind === "submitting") return;
+          if (submitState.kind === "success") {
+            onFinishSuccess();
+            return;
+          }
+          setInspectorOpen(false);
+        }}
         title="Transaction inspector"
       >
-        <div className="space-y-4 text-xs">
-          <p className="text-ink/55">
-            Move call preview. Wires to a real Sui PTB in step 13.11; for now
-            this stub completes locally and clears the draft.
-          </p>
-          <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
-            <Row k="module">pandabox</Row>
-            <Row k="function">create_project</Row>
-            <Row k="arg.name">
-              {JSON.stringify(draft.identity.name ?? "")}
-            </Row>
-            <Row k="arg.ticker">
-              {JSON.stringify(draft.identity.ticker ?? "")}
-            </Row>
-            <Row k="arg.category">{draft.identity.category ?? "—"}</Row>
-            <Row k="arg.weight">{draft.economics.weight ?? "0"}</Row>
-            <Row k="arg.reserved_rate">{draft.economics.reservedRate}%</Row>
-            <Row k="arg.cash_out_tax">{draft.economics.cashOutTax}%</Row>
-            <Row k="arg.issuance_reduction">
-              {draft.economics.issuanceReduction}%
-            </Row>
-            <Row k="arg.duration_ms">
-              {(draft.cycles.durationDays ?? 0) * 86400_000}
-            </Row>
-            <Row k="arg.ballot_delay_ms">
-              {(draft.cycles.ballotDelayHours ?? 0) * 3600_000}
-            </Row>
-            <Row k="arg.payout_limit_mist">
-              {draft.payouts.payoutLimitMist ?? "0"}
-            </Row>
-            <Row k="arg.tiers">
-              {draft.tiers.enabled ? draft.tiers.list.length : 0}
-            </Row>
-            <Row k="gas">sponsored</Row>
+        {submitState.kind === "success" ? (
+          <TransactionSuccess
+            title="Project deployed"
+            projectName={draft.identity.name || "Untitled project"}
+            txDigest={submitState.digest}
+            primaryHref="/explore"
+            primaryLabel="See it on Explore"
+          />
+        ) : (
+          <div className="space-y-4 text-xs">
+            <p className="text-ink/55">
+              {IS_DEPLOYED
+                ? "Pre-sign preview. Your wallet will request a signature for this Move call."
+                : "Move package not deployed yet — submission is simulated locally until NEXT_PUBLIC_PACKAGE_ID is set."}
+            </p>
+            <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
+              <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
+              <Row k="module">pandabox</Row>
+              <Row k="function">create_project</Row>
+              <Row k="arg.name">
+                {JSON.stringify(draft.identity.name ?? "")}
+              </Row>
+              <Row k="arg.ticker">
+                {JSON.stringify(draft.identity.ticker ?? "")}
+              </Row>
+              <Row k="arg.category">{draft.identity.category ?? "—"}</Row>
+              <Row k="arg.weight">{draft.economics.weight ?? "0"}</Row>
+              <Row k="arg.reserved_rate">{draft.economics.reservedRate}%</Row>
+              <Row k="arg.cash_out_tax">{draft.economics.cashOutTax}%</Row>
+              <Row k="arg.issuance_reduction">
+                {draft.economics.issuanceReduction}%
+              </Row>
+              <Row k="arg.duration_ms">
+                {(draft.cycles.durationDays ?? 0) * 86400_000}
+              </Row>
+              <Row k="arg.ballot_delay_ms">
+                {(draft.cycles.ballotDelayHours ?? 0) * 3600_000}
+              </Row>
+              <Row k="arg.payout_limit_mist">
+                {draft.payouts.payoutLimitMist ?? "0"}
+              </Row>
+              <Row k="arg.tiers">
+                {draft.tiers.enabled ? draft.tiers.list.length : 0}
+              </Row>
+              <Row k="gas">sponsored</Row>
+            </div>
+            {submitState.kind === "error" && (
+              <p
+                role="alert"
+                className="border border-poppy/40 bg-poppy/8 p-2 font-mono text-[11px] text-poppy"
+              >
+                {submitState.message}
+              </p>
+            )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={submitState.kind === "submitting"}
+                onClick={() => setInspectorOpen(false)}
+                className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
+              >
+                <span className="font-mono-label">Cancel</span>
+              </button>
+              <button
+                type="button"
+                disabled={submitState.kind === "submitting"}
+                onClick={onSubmit}
+                className="diecut bg-ink px-4 py-2 text-bone hover:bg-ink-90 disabled:opacity-50"
+              >
+                <span className="font-mono-label">
+                  {submitState.kind === "submitting"
+                    ? "Signing…"
+                    : "Sign & deploy"}
+                </span>
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={() => setInspectorOpen(false)}
-              className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
-            >
-              <span className="font-mono-label">Cancel</span>
-            </button>
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onSubmit}
-              className="diecut bg-ink px-4 py-2 text-bone hover:bg-ink-90"
-            >
-              <span className="font-mono-label">
-                {submitting ? "Signing…" : "Sign & deploy"}
-              </span>
-            </button>
-          </div>
-        </div>
+        )}
       </Modal>
     </div>
   );
