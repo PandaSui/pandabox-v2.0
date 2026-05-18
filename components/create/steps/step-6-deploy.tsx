@@ -6,6 +6,8 @@ import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
+import { ArrowDiag, Modal } from "@pandasui/ui";
+import { cn } from "@pandasui/ui/lib";
 import { useWizard } from "@/lib/store/wizard";
 import {
   StepCycles,
@@ -17,10 +19,18 @@ import {
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { Frame } from "@/components/primitives/frame";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { Modal } from "@pandasui/ui";
 import { TransactionSuccess } from "@/components/pay";
 import { buildCreateProjectTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
-import { cn } from "@pandasui/ui/lib";
+import { StepCard, StepHeader } from "../step-header";
+
+// Same chrome as the hero / final-cta CTAs.
+const CTA_BASE =
+  "group relative inline-flex items-center justify-center gap-2 h-12 px-6 font-sans font-medium uppercase tracking-[0.12em] text-[0.78rem] " +
+  "border border-ink shadow-offset-sm transition-all duration-300 ease-atelier " +
+  "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset " +
+  "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink " +
+  "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
 export function StepDeployForm() {
   const draft = useWizard((s) => s.draft);
@@ -29,13 +39,12 @@ export function StepDeployForm() {
   const account = useCurrentAccount();
   const router = useRouter();
   const [inspectorOpen, setInspectorOpen] = useState(false);
-  const [submitState, setSubmitState] =
-    useState<
-      | { kind: "idle" }
-      | { kind: "submitting" }
-      | { kind: "success"; digest: string }
-      | { kind: "error"; message: string }
-    >({ kind: "idle" });
+  const [submitState, setSubmitState] = useState<
+    | { kind: "idle" }
+    | { kind: "submitting" }
+    | { kind: "success"; digest: string }
+    | { kind: "error"; message: string }
+  >({ kind: "idle" });
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
 
   const checks = useMemo(() => validate(draft), [draft]);
@@ -46,9 +55,7 @@ export function StepDeployForm() {
     setSubmitState({ kind: "submitting" });
     try {
       if (!IS_DEPLOYED) {
-        // Move package not yet published. Simulate locally so the UX is
-        // complete; clearing the draft and surfacing a fake digest the user
-        // can recognise as a stub (prefixed SIMULATED).
+        // Move package not yet published. Simulate so the UX is complete.
         await new Promise((r) => setTimeout(r, 600));
         const digest = "SIMULATED" + Date.now().toString(36).toUpperCase();
         setSubmitState({ kind: "success", digest });
@@ -59,6 +66,11 @@ export function StepDeployForm() {
           name: draft.identity.name ?? "",
           ticker: draft.identity.ticker ?? "",
           tagline: draft.identity.tagline ?? "",
+          // The on-chain description field is a blob ref. Until we have an
+          // async pre-deploy "pin description" step, the wrapper expects the
+          // string description directly — submit raw text for now and the
+          // backend indexer can re-pin server-side. When the contract migrates
+          // to CID-only, swap to `draft.identity.descriptionCid`.
           description: draft.identity.description ?? "",
           category: draft.identity.category ?? "art",
         },
@@ -101,23 +113,23 @@ export function StepDeployForm() {
   };
 
   const onFinishSuccess = () => {
-    // Clear the saved draft once the user acknowledges success.
     reset();
     setInspectorOpen(false);
     setSubmitState({ kind: "idle" });
     router.push("/explore");
   };
 
+  const okCount = checks.filter((c) => c.ok).length;
+
   return (
-    <div className="space-y-6">
-      <div>
-        <MonoLabel>Step 06</MonoLabel>
-        <h2 className="mt-1 text-3xl">Review &amp; deploy</h2>
-        <p className="mt-2 max-w-prose text-sm text-ink/65">
-          Pandabox builds a single Sui programmable transaction that creates
-          the project, mints your admin cap, and opens cycle Nº1.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <StepHeader
+        n={6}
+        accent="saffron"
+        title="Review & deploy"
+        body="Pandabox builds a single Sui programmable transaction that creates the project, mints your admin cap, and opens cycle Nº1."
+        meta={`${okCount}/${checks.length} checks · ${ready ? "ready" : "blocked"}`}
+      />
 
       <Frame className="border-poppy bg-poppy/8 [&::after]:bg-poppy/15 [&::before]:bg-poppy/15">
         <div className="flex items-start gap-3">
@@ -132,33 +144,38 @@ export function StepDeployForm() {
         </div>
       </Frame>
 
-      <div className="space-y-2">
-        <MonoLabel className="block">Pre-flight checks</MonoLabel>
-        <ul className="space-y-1.5 text-sm">
+      <StepCard
+        title="Pre-flight checks"
+        meta={ready ? "all green" : `${checks.length - okCount} blocking`}
+      >
+        <ul className="-mt-1 divide-y divide-ink/10">
           {checks.map((c) => (
             <li
               key={c.label}
               className={cn(
-                "flex items-baseline justify-between border-b border-ink/10 pb-1.5",
+                "flex items-baseline justify-between gap-3 py-2.5",
                 !c.ok && "text-poppy",
               )}
             >
-              <span className="flex items-baseline gap-2">
+              <span className="flex items-baseline gap-3">
                 <span
+                  aria-hidden
                   className={cn(
-                    "font-mono-label text-[10px]",
-                    c.ok ? "text-jade" : "text-poppy",
+                    "inline-flex h-5 w-5 shrink-0 translate-y-[2px] items-center justify-center font-mono text-[10px]",
+                    c.ok
+                      ? "border border-jade/40 bg-jade/10 text-jade"
+                      : "border border-poppy/40 bg-poppy/10 text-poppy",
                   )}
                 >
-                  {c.ok ? "✓" : "·"}
+                  {c.ok ? "✓" : "!"}
                 </span>
-                {c.label}
+                <span className="text-sm">{c.label}</span>
               </span>
               {!c.ok && c.step && (
                 <button
                   type="button"
                   onClick={() => setStep(c.step!)}
-                  className="font-mono-label text-poppy underline-offset-4 hover:underline"
+                  className="font-mono-label text-[10px] text-poppy underline-offset-4 hover:underline"
                 >
                   fix in step {String(c.step).padStart(2, "0")}
                 </button>
@@ -166,32 +183,32 @@ export function StepDeployForm() {
             </li>
           ))}
         </ul>
-      </div>
+      </StepCard>
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-ink/15 pt-6">
-        {account ? (
-          <button
-            type="button"
-            onClick={() => setInspectorOpen(true)}
-            disabled={!ready}
-            className={cn(
-              "diecut bg-ink px-8 py-4 text-bone transition-colors hover:bg-ink-90",
-              !ready && "cursor-not-allowed opacity-40",
-            )}
-          >
-            <span className="font-mono-label">Deploy to Sui →</span>
-          </button>
-        ) : (
-          <ConnectWallet />
-        )}
-        <span className="font-mono-label text-[10px] text-ink/45">
-          gas sponsored by pandabox · ≈0.0023 SUI
-        </span>
-      </div>
+      <StepCard title="Deploy" meta={IS_DEPLOYED ? "live · sui mainnet" : "simulated"}>
+        <div className="flex flex-wrap items-center gap-3">
+          {account ? (
+            <button
+              type="button"
+              onClick={() => setInspectorOpen(true)}
+              disabled={!ready}
+              className={cn(CTA_BASE, "bg-saffron text-ink")}
+            >
+              <span>Deploy to Sui</span>
+              <ArrowDiag size={14} />
+            </button>
+          ) : (
+            <ConnectWallet />
+          )}
+          <span className="font-mono-label text-[10px] text-ink/45">
+            gas sponsored by pandabox · ≈0.0023 SUI
+          </span>
+        </div>
 
-      <p className="font-mono text-[10px] text-ink/40">
-        Draft auto-saves to your browser as <code>pandabox:draft:v1</code>.
-      </p>
+        <p className="font-mono text-[10px] text-ink/40">
+          Draft auto-saves to your browser as <code>pandabox:draft:v1</code>.
+        </p>
+      </StepCard>
 
       <Modal
         open={inspectorOpen}
@@ -224,13 +241,16 @@ export function StepDeployForm() {
               <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
               <Row k="module">pandabox</Row>
               <Row k="function">create_project</Row>
-              <Row k="arg.name">
-                {JSON.stringify(draft.identity.name ?? "")}
-              </Row>
+              <Row k="arg.name">{JSON.stringify(draft.identity.name ?? "")}</Row>
               <Row k="arg.ticker">
                 {JSON.stringify(draft.identity.ticker ?? "")}
               </Row>
               <Row k="arg.category">{draft.identity.category ?? "—"}</Row>
+              <Row k="arg.cover_cid">
+                {draft.identity.coverImageCid
+                  ? `${draft.identity.coverImageCid.slice(0, 10)}…${draft.identity.coverImageCid.slice(-4)}`
+                  : "—"}
+              </Row>
               <Row k="arg.weight">{draft.economics.weight ?? "0"}</Row>
               <Row k="arg.reserved_rate">{draft.economics.reservedRate}%</Row>
               <Row k="arg.cash_out_tax">{draft.economics.cashOutTax}%</Row>
@@ -246,6 +266,12 @@ export function StepDeployForm() {
               <Row k="arg.payout_limit_mist">
                 {draft.payouts.payoutLimitMist ?? "0"}
               </Row>
+              <Row k="arg.reserved_splits">
+                {draft.economics.reservedSplits?.length ?? 0}
+              </Row>
+              <Row k="arg.payout_splits">
+                {draft.payouts.splits?.length ?? 0}
+              </Row>
               <Row k="arg.tiers">
                 {draft.tiers.enabled ? draft.tiers.list.length : 0}
               </Row>
@@ -254,7 +280,7 @@ export function StepDeployForm() {
             {submitState.kind === "error" && (
               <p
                 role="alert"
-                className="border border-poppy/40 bg-poppy/8 p-2 font-mono text-[11px] text-poppy"
+                className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
               >
                 {submitState.message}
               </p>
@@ -264,21 +290,22 @@ export function StepDeployForm() {
                 type="button"
                 disabled={submitState.kind === "submitting"}
                 onClick={() => setInspectorOpen(false)}
-                className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
+                className={cn(CTA_BASE, "bg-bone text-ink h-10 px-4")}
               >
-                <span className="font-mono-label">Cancel</span>
+                <span>Cancel</span>
               </button>
               <button
                 type="button"
                 disabled={submitState.kind === "submitting"}
                 onClick={onSubmit}
-                className="diecut bg-ink px-4 py-2 text-bone hover:bg-ink-90 disabled:opacity-50"
+                className={cn(CTA_BASE, "bg-saffron text-ink h-10 px-4")}
               >
-                <span className="font-mono-label">
+                <span>
                   {submitState.kind === "submitting"
                     ? "Signing…"
                     : "Sign & deploy"}
                 </span>
+                <ArrowDiag size={12} />
               </button>
             </div>
           </div>
@@ -339,15 +366,15 @@ function validate(draft: ReturnType<typeof useWizard.getState>["draft"]): Check[
   });
 
   const tiers = StepTiers.safeParse(draft.tiers);
+  const tiersOk =
+    tiers.success && (!draft.tiers.enabled || draft.tiers.list.length > 0);
   out.push({
-    label:
-      tiers.success && (!draft.tiers.enabled || draft.tiers.list.length > 0)
-        ? draft.tiers.enabled
-          ? `${draft.tiers.list.length} tier${draft.tiers.list.length === 1 ? "" : "s"} configured`
-          : "No tiers (skipped)"
-        : "Tiers enabled but no tier defined",
-    ok:
-      tiers.success && (!draft.tiers.enabled || draft.tiers.list.length > 0),
+    label: tiersOk
+      ? draft.tiers.enabled
+        ? `${draft.tiers.list.length} tier${draft.tiers.list.length === 1 ? "" : "s"} configured`
+        : "No tiers (skipped)"
+      : "Tiers enabled but no tier defined",
+    ok: tiersOk,
     step: 5,
   });
 

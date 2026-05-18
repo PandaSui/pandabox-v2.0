@@ -4,8 +4,9 @@ import { useMemo } from "react";
 import { useWizard } from "@/lib/store/wizard";
 import { StepIdentity, type IdentityV } from "@/lib/store/wizard-schema";
 import { Field, TextArea, TextField } from "../field";
+import { StepCard, StepHeader } from "../step-header";
+import { ImageUpload } from "../image-upload";
 import { cn } from "@pandasui/ui/lib";
-import { MonoLabel } from "@/components/primitives/mono-label";
 import type { Category } from "@/types/pandabox";
 
 const CATEGORIES: { value: Category; label: string }[] = [
@@ -24,114 +25,129 @@ export function StepIdentityForm() {
   const patch = useWizard((s) => s.patchIdentity);
   const errors = useMemo(() => parseErrors(identity), [identity]);
 
+  const tagLen = (identity.tagline ?? "").length;
+  const descLen = (identity.description ?? "").length;
+
   return (
-    <div className="space-y-6">
-      <Header
-        n="01"
+    <div className="space-y-8">
+      <StepHeader
+        n={1}
+        accent="saffron"
         title="Identity"
         body="Who is funding what. This is what supporters see in their wallet and on the project page."
+        meta="stored on-chain"
       />
 
-      <Field label="Project name" error={errors.name}>
-        {(id) => (
-          <TextField
-            id={id}
-            value={identity.name ?? ""}
-            onChange={(v) => patch({ name: v })}
-            placeholder="e.g. Atelier Ono"
-            maxLength={60}
-          />
-        )}
-      </Field>
+      <StepCard title="Basics" meta="immutable on deploy">
+        <Field label="Project name" error={errors.name}>
+          {(id) => (
+            <TextField
+              id={id}
+              value={identity.name ?? ""}
+              onChange={(v) => patch({ name: v })}
+              placeholder="e.g. Atelier Ono"
+              maxLength={60}
+            />
+          )}
+        </Field>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Field
+            label="Ticker"
+            hint="Uppercase letters/digits, 2–10 chars"
+            error={errors.ticker}
+          >
+            {(id) => (
+              <TextField
+                id={id}
+                value={identity.ticker ?? ""}
+                onChange={(v) =>
+                  patch({ ticker: v.toUpperCase().replace(/[^A-Z0-9]/g, "") })
+                }
+                placeholder="OONO"
+                maxLength={10}
+              />
+            )}
+          </Field>
+          <Field label="Category" error={errors.category}>
+            {(id) => (
+              <div className="flex flex-wrap gap-1.5" id={id}>
+                {CATEGORIES.map((c) => {
+                  const active = c.value === identity.category;
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => patch({ category: c.value })}
+                      aria-pressed={active}
+                      className={cn(
+                        "px-3 py-1.5 font-mono-label transition-all duration-200 ease-atelier border",
+                        active
+                          ? "border-ink bg-ink text-bone shadow-offset-sm"
+                          : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
+                      )}
+                    >
+                      {c.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </Field>
+        </div>
+      </StepCard>
+
+      <StepCard title="Story" meta="editable any time">
         <Field
-          label="Ticker"
-          hint="Uppercase letters/digits, 2–10 chars"
-          error={errors.ticker}
+          label="Tagline"
+          hint={`One line, 8–160 chars · ${tagLen}/160`}
+          error={errors.tagline}
         >
           {(id) => (
             <TextField
               id={id}
-              value={identity.ticker ?? ""}
-              onChange={(v) =>
-                patch({ ticker: v.toUpperCase().replace(/[^A-Z0-9]/g, "") })
-              }
-              placeholder="OONO"
-              maxLength={10}
+              value={identity.tagline ?? ""}
+              onChange={(v) => patch({ tagline: v })}
+              placeholder="A photo-zine collective minting weekly drops on Sui."
+              maxLength={160}
             />
           )}
         </Field>
-        <Field label="Category" error={errors.category}>
+
+        <Field
+          label="Description"
+          hint={`Markdown supported · 20–4000 chars · ${descLen}/4000`}
+          error={errors.description}
+        >
           {(id) => (
-            <div className="flex flex-wrap gap-1.5" id={id}>
-              {CATEGORIES.map((c) => {
-                const active = c.value === identity.category;
-                return (
-                  <button
-                    key={c.value}
-                    type="button"
-                    onClick={() => patch({ category: c.value })}
-                    aria-pressed={active}
-                    className={cn(
-                      "px-3 py-1.5 font-mono-label transition-colors border",
-                      active
-                        ? "border-ink bg-ink text-bone"
-                        : "border-ink/25 hover:border-ink",
-                    )}
-                  >
-                    {c.label}
-                  </button>
-                );
-              })}
-            </div>
+            <TextArea
+              id={id}
+              value={identity.description ?? ""}
+              onChange={(v) => patch({ description: v })}
+              rows={9}
+              maxLength={4000}
+              placeholder="Tell supporters what you're building and why their SUI matters."
+            />
           )}
         </Field>
-      </div>
+      </StepCard>
 
-      <Field label="Tagline" hint="One line, 8–160 chars" error={errors.tagline}>
-        {(id) => (
-          <TextField
-            id={id}
-            value={identity.tagline ?? ""}
-            onChange={(v) => patch({ tagline: v })}
-            placeholder="A photo-zine collective minting weekly drops on Sui."
-            maxLength={160}
-          />
-        )}
-      </Field>
+      <StepCard title="Cover image" meta="pinned to ipfs">
+        <ImageUpload
+          label="Cover image"
+          value={identity.coverImage}
+          onChange={(v) =>
+            patch({
+              coverImage: v?.url ?? "",
+              coverImageCid: v?.cid ?? "",
+            })
+          }
+          hint="Lands at the top of your project page. Wide 16:10 crops look best. Pinned to IPFS on upload — the CID goes on-chain."
+        />
+      </StepCard>
 
-      <Field
-        label="Description"
-        hint="Markdown supported; 20–4000 chars"
-        error={errors.description}
-      >
-        {(id) => (
-          <TextArea
-            id={id}
-            value={identity.description ?? ""}
-            onChange={(v) => patch({ description: v })}
-            rows={8}
-            maxLength={4000}
-            placeholder="Tell supporters what you're building and why their SUI matters."
-          />
-        )}
-      </Field>
-
-      <Field label="Cover image URL" hint="Paste a hosted image URL or path">
-        {(id) => (
-          <TextField
-            id={id}
-            value={identity.coverImage ?? ""}
-            onChange={(v) => patch({ coverImage: v })}
-            placeholder="/panda-logo.webp"
-          />
-        )}
-      </Field>
-
-      <div>
-        <MonoLabel className="block">Socials (optional)</MonoLabel>
-        <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <StepCard title="Socials" meta="optional">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <Field label="X / Twitter">
             {(id) => (
               <TextField
@@ -163,17 +179,7 @@ export function StepIdentityForm() {
             )}
           </Field>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Header({ n, title, body }: { n: string; title: string; body: string }) {
-  return (
-    <div>
-      <MonoLabel>Step {n}</MonoLabel>
-      <h2 className="mt-1 text-3xl">{title}</h2>
-      <p className="mt-2 max-w-prose text-sm text-ink/65">{body}</p>
+      </StepCard>
     </div>
   );
 }

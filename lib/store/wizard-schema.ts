@@ -22,7 +22,10 @@ export const StepIdentity = z.object({
   tagline: z.string().trim().min(8, "Add a short tagline").max(160),
   category: CATEGORY,
   description: z.string().trim().min(20, "Add a real description").max(4000),
-  coverImage: z.string().trim().min(1),
+  /** Display URL for the cover (gateway URL when pinned, local path otherwise). */
+  coverImage: z.string().trim().min(1, "Add a cover image"),
+  /** CID once the cover has been pinned to IPFS. Required for on-chain deploy. */
+  coverImageCid: z.string().trim().optional().or(z.literal("")),
   twitter: z.string().trim().max(40).optional().or(z.literal("")),
   website: z.string().trim().max(120).optional().or(z.literal("")),
   discord: z.string().trim().max(120).optional().or(z.literal("")),
@@ -104,7 +107,10 @@ export const Tier = z.object({
   priceMist: z.string().regex(/^\d+$/, "Use whole MIST"),
   maxSupply: z.number().int().min(0),
   perks: z.string().trim().max(280),
+  /** Display URL — gateway URL once pinned. */
   image: z.string().optional(),
+  /** CID once the tier image has been pinned to IPFS. */
+  imageCid: z.string().optional(),
 });
 
 export const StepTiers = z.object({

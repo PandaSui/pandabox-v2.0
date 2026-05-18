@@ -2,7 +2,7 @@
 
 import { useWizard } from "@/lib/store/wizard";
 import { Field, NumberField, TextField } from "../field";
-import { MonoLabel } from "@/components/primitives/mono-label";
+import { StepCard, StepHeader } from "../step-header";
 import { CycleSimulator } from "../cycle-simulator";
 import { SplitsEditor } from "../splits-editor";
 
@@ -15,47 +15,31 @@ export function StepEconomicsForm() {
   const ticker = draft.identity.ticker ?? "TOK";
 
   return (
-    <div className="space-y-6">
-      <div>
-        <MonoLabel>Step 03</MonoLabel>
-        <h2 className="mt-1 text-3xl">Token economics</h2>
-        <p className="mt-2 max-w-prose text-sm text-ink/65">
-          How tokens are issued, who gets a slice, and how cash-out works.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <StepHeader
+        n={3}
+        accent="jade"
+        title="Token economics"
+        body="How tokens are issued, who gets a slice, and how cash-out works. These rates are immutable on deploy except via queued reconfiguration."
+        meta={`ticker · ${ticker}`}
+      />
 
-      <Field
-        label="Initial weight"
-        hint="Tokens minted per 1 SUI of inflow this cycle"
-      >
-        {(id) => (
-          <TextField
-            id={id}
-            value={econ.weight ?? "1000000"}
-            onChange={(v) =>
-              patch({ weight: v.replace(/\D/g, "") || "0" })
-            }
-            placeholder="1000000"
-          />
-        )}
-      </Field>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <Field label="Reserved rate" hint="0–50%">
-          {() => (
-            <NumberField
-              value={econ.reservedRate ?? 0}
-              onChange={(v) =>
-                patch({ reservedRate: Math.max(0, Math.min(50, v)) })
-              }
-              min={0}
-              max={50}
-              step={1}
-              suffix="%"
+      <StepCard title="Issuance" meta="weight = tokens / SUI">
+        <Field
+          label="Initial weight"
+          hint="Whole tokens minted per 1 SUI of inflow during cycle Nº1"
+        >
+          {(id) => (
+            <TextField
+              id={id}
+              value={econ.weight ?? "1000000"}
+              onChange={(v) => patch({ weight: v.replace(/\D/g, "") || "0" })}
+              placeholder="1000000"
             />
           )}
         </Field>
-        <Field label="Issuance reduction" hint="0–20% each next cycle">
+
+        <Field label="Issuance reduction" hint="Drop in weight each next cycle · 0–20%">
           {() => (
             <NumberField
               value={econ.issuanceReduction ?? 0}
@@ -69,7 +53,50 @@ export function StepEconomicsForm() {
             />
           )}
         </Field>
-        <Field label="Cash-out tax" hint="0–100% on surplus claims">
+      </StepCard>
+
+      <StepCard title="Reserved rate" meta="held back from new tokens">
+        <Field
+          label="Reserved rate"
+          hint="Share of newly minted tokens held back for splits · 0–50%"
+        >
+          {() => (
+            <NumberField
+              value={econ.reservedRate ?? 0}
+              onChange={(v) =>
+                patch({ reservedRate: Math.max(0, Math.min(50, v)) })
+              }
+              min={0}
+              max={50}
+              step={1}
+              suffix="%"
+            />
+          )}
+        </Field>
+
+        {(econ.reservedRate ?? 0) > 0 && (
+          <div className="space-y-2 border-t border-ink/10 pt-4">
+            <div className="flex items-baseline justify-between">
+              <span className="font-mono-label text-[10px] text-ink/55">
+                Reserved split — who gets the {econ.reservedRate}% reserved
+              </span>
+              <span className="font-mono text-[10px] text-ink/45">
+                must sum to 100%
+              </span>
+            </div>
+            <SplitsEditor
+              splits={econ.reservedSplits ?? []}
+              onChange={setReservedSplits}
+            />
+          </div>
+        )}
+      </StepCard>
+
+      <StepCard title="Cash-out" meta="surplus claims">
+        <Field
+          label="Cash-out tax"
+          hint="% withheld when token-holders burn to claim treasury surplus · 0–100%"
+        >
           {() => (
             <NumberField
               value={econ.cashOutTax ?? 0}
@@ -83,27 +110,17 @@ export function StepEconomicsForm() {
             />
           )}
         </Field>
-      </div>
+      </StepCard>
 
-      {(econ.reservedRate ?? 0) > 0 && (
-        <div className="space-y-2">
-          <MonoLabel className="block">
-            Reserved split — who gets the {econ.reservedRate}% reserved
-          </MonoLabel>
-          <SplitsEditor
-            splits={econ.reservedSplits ?? []}
-            onChange={setReservedSplits}
-          />
-        </div>
-      )}
-
-      <CycleSimulator
-        weight={econ.weight ?? "0"}
-        reservedRate={econ.reservedRate ?? 0}
-        cashOutTax={econ.cashOutTax ?? 0}
-        payoutLimitMist={draft.payouts.payoutLimitMist ?? "0"}
-        ticker={ticker}
-      />
+      <StepCard title="Live simulator" meta="based on current params">
+        <CycleSimulator
+          weight={econ.weight ?? "0"}
+          reservedRate={econ.reservedRate ?? 0}
+          cashOutTax={econ.cashOutTax ?? 0}
+          payoutLimitMist={draft.payouts.payoutLimitMist ?? "0"}
+          ticker={ticker}
+        />
+      </StepCard>
     </div>
   );
 }

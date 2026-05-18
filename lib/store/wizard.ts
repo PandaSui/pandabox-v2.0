@@ -12,9 +12,7 @@ export function initialDraft(): DraftV1 {
   return {
     version: 1,
     step: 1,
-    identity: {
-      coverImage: "/panda-logo.webp",
-    },
+    identity: {},
     cycles: {
       durationDays: 14,
       ballotDelayHours: 72,
