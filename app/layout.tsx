@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontSans, fontMono } from "./fonts";
 import { Providers } from "./providers";
+import { PageTransition } from "@/components/motion";
 import "./globals.css";
 
 const SITE_URL = "https://pandabox.pandasui.com";
@@ -87,7 +88,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Providers>{children}</Providers>
+        <Providers>
+          <PageTransition />
+          {children}
+        </Providers>
       </body>
     </html>
   );

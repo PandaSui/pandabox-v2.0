@@ -3,6 +3,7 @@ import { Nav } from "@/components/nav";
 import { Footer, Hero, type HeroStats } from "@/components/blocks";
 import { TreasuryPulse } from "@/components/pulse";
 import { ProjectCard } from "@/components/project/project-card";
+import { RevealOnView } from "@/components/motion";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -95,8 +96,14 @@ export default async function Landing() {
               <h2 className="mt-2 text-3xl md:text-4xl">Funded right now</h2>
             </AccentRule>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredDtos.map((p) => (
-                <ProjectCard key={p.id} project={p} variant="featured" />
+              {featuredDtos.map((p, i) => (
+                <RevealOnView key={p.id} delayMs={i * 60}>
+                  <ProjectCard
+                    project={p}
+                    variant="featured"
+                    priority={i === 0}
+                  />
+                </RevealOnView>
               ))}
             </div>
             <div className="mt-10">

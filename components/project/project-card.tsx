@@ -31,11 +31,14 @@ export function ProjectCard({
   project,
   rank,
   variant = "grid",
+  priority = false,
   className,
 }: {
   project: ProjectDTO;
   rank?: number;
   variant?: Variant;
+  /** Pass on the landing's first featured card for LCP. */
+  priority?: boolean;
   className?: string;
 }) {
   const aspect = variant === "featured" ? "aspect-[4/3]" : "aspect-[16/10]";
@@ -57,6 +60,7 @@ export function ProjectCard({
           alt={`${project.name} cover`}
           fill
           sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+          priority={priority}
           className="object-cover transition-transform duration-300 ease-quartOut group-hover:scale-[1.02]"
         />
         <div

@@ -7,6 +7,7 @@ import { Frame } from "@/components/primitives/frame";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { ProjectCard } from "./project-card";
 import { FilterBar, type Filters } from "./filter-bar";
+import { RevealOnView } from "@/components/motion";
 import type { ProjectDTO, ProjectListDTO } from "@/lib/api/project-dto";
 
 type Props = {
@@ -105,11 +106,12 @@ export function ExploreGrid({ initial }: Props) {
             )}
           >
             {items.map((p, i) => (
-              <ProjectCard
-                key={p.id}
-                project={p}
-                rank={rankBy ? i + 1 : undefined}
-              />
+              <RevealOnView key={p.id} delayMs={Math.min(i, 8) * 40}>
+                <ProjectCard
+                  project={p}
+                  rank={rankBy ? i + 1 : undefined}
+                />
+              </RevealOnView>
             ))}
           </div>
         )}
