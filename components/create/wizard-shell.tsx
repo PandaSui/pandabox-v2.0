@@ -9,11 +9,11 @@ import { MonoLabel } from "@/components/primitives/mono-label";
 import { StepNav } from "./step-nav";
 import { PreviewPane } from "./preview-pane";
 import { StepIdentityForm } from "./steps/step-1-identity";
-import { StepCyclesForm } from "./steps/step-2-cycles";
-import { StepEconomicsForm } from "./steps/step-3-economics";
-import { StepPayoutsForm } from "./steps/step-4-payouts";
-import { StepTiersForm } from "./steps/step-5-tiers";
-import { StepDeployForm } from "./steps/step-6-deploy";
+import { StepCoinForm } from "./steps/step-2-coin";
+import { StepSaleForm } from "./steps/step-3-sale";
+import { StepDeployForm } from "./steps/step-4-deploy";
+
+const TOTAL_STEPS = 4;
 
 const CTA_BASE =
   "group relative inline-flex items-center justify-center gap-2 h-12 px-5 font-sans font-medium uppercase tracking-[0.12em] text-[0.78rem] " +
@@ -43,7 +43,7 @@ export function WizardShell() {
     );
   }
 
-  const pct = Math.round(((step - 1) / 5) * 100);
+  const pct = Math.round(((step - 1) / (TOTAL_STEPS - 1)) * 100);
 
   return (
     <>
@@ -65,7 +65,6 @@ export function WizardShell() {
             </button>
           </div>
         </Container>
-        {/* hairline progress bar */}
         <div className="relative h-px w-full bg-ink/10">
           <div
             className="absolute inset-y-0 left-0 bg-saffron transition-[width] duration-500 ease-atelier"
@@ -78,11 +77,9 @@ export function WizardShell() {
         <div className={cn("grid grid-cols-1 gap-10 lg:grid-cols-[2fr_3fr]")}>
           <div>
             {step === 1 && <StepIdentityForm />}
-            {step === 2 && <StepCyclesForm />}
-            {step === 3 && <StepEconomicsForm />}
-            {step === 4 && <StepPayoutsForm />}
-            {step === 5 && <StepTiersForm />}
-            {step === 6 && <StepDeployForm />}
+            {step === 2 && <StepCoinForm />}
+            {step === 3 && <StepSaleForm />}
+            {step === 4 && <StepDeployForm />}
           </div>
 
           <div className="lg:sticky lg:top-24 lg:self-start">
@@ -106,7 +103,7 @@ export function WizardShell() {
           >
             <ArrowDiag size={12} className="rotate-180" /> Back
           </button>
-          {step < 6 ? (
+          {step < TOTAL_STEPS ? (
             <button
               type="button"
               onClick={goNext}

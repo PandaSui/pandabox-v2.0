@@ -12,7 +12,11 @@ import { Modal } from "@pandasui/ui";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
 import { TierSelector } from "./tier-selector";
 import { TransactionSuccess } from "./transaction-success";
-import { buildPayTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
+import { buildContributeTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
+// NOTE: this UI still renders the legacy "pay" model (memo / tier selector /
+// cash-out preview) which doesn't exist on the deployed contract. The Move
+// call below is wired to `project::contribute<T>`. The surrounding inputs
+// will be reworked when the project pages are rebuilt against the new DTO.
 import type { ProjectDTO } from "@/lib/api/project-dto";
 
 const MEMO_MAX = 256;
@@ -211,13 +215,11 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
             </p>
             <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
               <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
-              <Row k="module">pandabox</Row>
-              <Row k="function">pay</Row>
+              <Row k="module">project</Row>
+              <Row k="function">contribute&lt;T&gt;</Row>
               <Row k="arg.project_id">{project.id.slice(0, 18)}…</Row>
               <Row k="arg.amount_mist">{amountMist.toString()}</Row>
-              <Row k="arg.memo">{memo ? JSON.stringify(memo) : '""'}</Row>
-              <Row k="arg.tier_id">{tierId ?? "none"}</Row>
-              <Row k="gas">sponsored</Row>
+              <Row k="returns">ContributionReceipt + refund coin → sender</Row>
             </div>
             {submitState.kind === "error" && (
               <p
@@ -251,11 +253,25 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
                       });
                       return;
                     }
-                    const tx = buildPayTx({
+                    if (!account) {
+                      throw new Error("Connect a wallet to contribute.");
+                    }
+                    // ProjectDTO doesn't yet carry the coin type T. Until the
+                    // DTO migration lands, we can't safely build a contribute
+                    // tx — surface a clear error instead of submitting a
+                    // malformed call against the contract.
+                    const coinType = (project as { coinType?: string }).coinType;
+                    if (!coinType) {
+                      throw new Error(
+                        "Contribute panel disabled until ProjectDTO carries the coin type. " +
+                          "See `lib/api/project-dto.ts` migration TODO.",
+                      );
+                    }
+                    const tx = buildContributeTx({
+                      coinType,
                       projectId: project.id,
                       amountMist,
-                      memo,
-                      tierId,
+                      sender: account.address,
                     });
                     const result = await signAndExecute({ transaction: tx });
                     setSubmitState({ kind: "success", digest: result.digest });

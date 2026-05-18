@@ -3,14 +3,7 @@
 import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
 
-const STEPS = [
-  "Identity",
-  "Cycles",
-  "Economics",
-  "Payouts",
-  "Tiers",
-  "Deploy",
-];
+const STEPS = ["Identity", "Coin", "Sale", "Deploy"];
 
 export function StepNav({
   current,

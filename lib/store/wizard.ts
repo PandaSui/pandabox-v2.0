@@ -2,57 +2,41 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { DraftV1, SplitV, TierV } from "./wizard-schema";
+import type { DraftV2 } from "./wizard-schema";
 
-export const STORAGE_KEY = "pandabox:draft:v1";
+// Bumped to v2 because the v1 shape is incompatible. Old localStorage drafts
+// won't migrate — they're discarded on first read of the new schema.
+export const STORAGE_KEY = "pandabox:draft:v2";
 
 const DAY = 86400_000;
+const DEFAULT_SALE_DAYS = 14;
 
-export function initialDraft(): DraftV1 {
+export function initialDraft(): DraftV2 {
   return {
-    version: 1,
+    version: 2,
     step: 1,
     identity: {},
-    cycles: {
-      durationDays: 14,
-      ballotDelayHours: 72,
-      firstCycleStart: Date.now() + DAY,
+    coin: { verified: false },
+    sale: {
+      tokensPerSui: "100",
+      allocationTokens: "1000000",
+      endTimeMs: Date.now() + DEFAULT_SALE_DAYS * DAY,
+      unsoldAction: "burn",
     },
-    economics: {
-      weight: "1000000",
-      reservedRate: 10,
-      reservedSplits: [],
-      issuanceReduction: 5,
-      cashOutTax: 15,
-    },
-    payouts: {
-      payoutLimitMist: (10_000n * 1_000_000_000n).toString(),
-      payoutCurrency: "SUI",
-      splits: [],
-      sendSurplusToOwner: true,
-    },
-    tiers: {
-      enabled: false,
-      list: [],
-    },
+    deploy: {},
   };
 }
 
 type WizardState = {
-  draft: DraftV1;
+  draft: DraftV2;
   hydrated: boolean;
   setStep: (n: number) => void;
   goNext: () => void;
   goPrev: () => void;
-  patchIdentity: (patch: Partial<DraftV1["identity"]>) => void;
-  patchCycles: (patch: Partial<DraftV1["cycles"]>) => void;
-  patchEconomics: (patch: Partial<DraftV1["economics"]>) => void;
-  patchPayouts: (patch: Partial<DraftV1["payouts"]>) => void;
-  setTiersEnabled: (v: boolean) => void;
-  upsertTier: (tier: TierV) => void;
-  removeTier: (id: string) => void;
-  setReservedSplits: (splits: SplitV[]) => void;
-  setPayoutSplits: (splits: SplitV[]) => void;
+  patchIdentity: (patch: Partial<DraftV2["identity"]>) => void;
+  patchCoin: (patch: Partial<DraftV2["coin"]>) => void;
+  patchSale: (patch: Partial<DraftV2["sale"]>) => void;
+  patchDeploy: (patch: Partial<DraftV2["deploy"]>) => void;
   reset: () => void;
   markHydrated: () => void;
 };
@@ -64,11 +48,11 @@ export const useWizard = create<WizardState>()(
       hydrated: false,
       setStep: (n) =>
         set((s) => ({
-          draft: { ...s.draft, step: Math.max(1, Math.min(6, n)) },
+          draft: { ...s.draft, step: Math.max(1, Math.min(4, n)) },
         })),
       goNext: () =>
         set((s) => ({
-          draft: { ...s.draft, step: Math.min(6, s.draft.step + 1) },
+          draft: { ...s.draft, step: Math.min(4, s.draft.step + 1) },
         })),
       goPrev: () =>
         set((s) => ({
@@ -78,62 +62,17 @@ export const useWizard = create<WizardState>()(
         set((s) => ({
           draft: { ...s.draft, identity: { ...s.draft.identity, ...patch } },
         })),
-      patchCycles: (patch) =>
+      patchCoin: (patch) =>
         set((s) => ({
-          draft: { ...s.draft, cycles: { ...s.draft.cycles, ...patch } },
+          draft: { ...s.draft, coin: { ...s.draft.coin, ...patch } },
         })),
-      patchEconomics: (patch) =>
+      patchSale: (patch) =>
         set((s) => ({
-          draft: {
-            ...s.draft,
-            economics: { ...s.draft.economics, ...patch },
-          },
+          draft: { ...s.draft, sale: { ...s.draft.sale, ...patch } },
         })),
-      patchPayouts: (patch) =>
+      patchDeploy: (patch) =>
         set((s) => ({
-          draft: { ...s.draft, payouts: { ...s.draft.payouts, ...patch } },
-        })),
-      setTiersEnabled: (v) =>
-        set((s) => ({
-          draft: {
-            ...s.draft,
-            tiers: { enabled: v, list: v ? s.draft.tiers.list : [] },
-          },
-        })),
-      upsertTier: (tier) =>
-        set((s) => {
-          const idx = s.draft.tiers.list.findIndex((t) => t.id === tier.id);
-          const list =
-            idx === -1
-              ? [...s.draft.tiers.list, tier]
-              : s.draft.tiers.list.map((t, i) => (i === idx ? tier : t));
-          return {
-            draft: { ...s.draft, tiers: { ...s.draft.tiers, list } },
-          };
-        }),
-      removeTier: (id) =>
-        set((s) => ({
-          draft: {
-            ...s.draft,
-            tiers: {
-              ...s.draft.tiers,
-              list: s.draft.tiers.list.filter((t) => t.id !== id),
-            },
-          },
-        })),
-      setReservedSplits: (splits) =>
-        set((s) => ({
-          draft: {
-            ...s.draft,
-            economics: { ...s.draft.economics, reservedSplits: splits },
-          },
-        })),
-      setPayoutSplits: (splits) =>
-        set((s) => ({
-          draft: {
-            ...s.draft,
-            payouts: { ...s.draft.payouts, splits },
-          },
+          draft: { ...s.draft, deploy: { ...s.draft.deploy, ...patch } },
         })),
       reset: () => set({ draft: initialDraft() }),
       markHydrated: () => set({ hydrated: true }),
@@ -142,6 +81,15 @@ export const useWizard = create<WizardState>()(
       name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({ draft: s.draft }),
+      // Discard drafts shaped for the old (v1) wizard.
+      migrate: (persisted) => {
+        const p = persisted as { draft?: { version?: number } } | undefined;
+        if (!p || !p.draft || p.draft.version !== 2) {
+          return { draft: initialDraft() };
+        }
+        return p as { draft: DraftV2 };
+      },
+      version: 2,
       onRehydrateStorage: () => (state) => {
         state?.markHydrated();
       },
