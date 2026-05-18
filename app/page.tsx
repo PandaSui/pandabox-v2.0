@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Footer, Hero, type HeroStats } from "@/components/blocks";
-import { TreasuryPulse } from "@/components/pulse";
 import { ProjectCard } from "@/components/project/project-card";
 import { RevealOnView } from "@/components/motion";
 import { AccentRule } from "@/components/primitives/accent-rule";
@@ -18,37 +17,31 @@ import {
 } from "@/components/icons";
 import { getGlobalStats, listProjects } from "@/lib/indexer";
 import { toProjectDTO } from "@/lib/api/project-dto";
+import { PACKAGE_ID } from "@/lib/contracts/pandabox";
+import { getPlatformStats } from "@/lib/platform";
 
 export default async function Landing() {
-  const [stats, featured] = await Promise.all([
+  const [stats, featured, platform] = await Promise.all([
     getGlobalStats(),
     listProjects({ sort: "most-funded", limit: 3 }),
+    getPlatformStats(),
   ]);
   const featuredDtos = featured.items.map(toProjectDTO);
 
   const heroStats: HeroStats = {
-    projectCount: stats.projectCount,
-    raisedSui: Number(stats.tvlMist / 1_000_000_000n),
-    supporters: stats.supporterCount,
+    projectCount: platform?.totalProjects ?? stats.projectCount,
+    platformFeeBps: platform?.feeBps,
+    treasuryAddress: platform?.treasuryAddress,
   };
+
+  const network: "mainnet" | "testnet" =
+    process.env.NEXT_PUBLIC_SUI_NETWORK === "mainnet" ? "mainnet" : "testnet";
 
   return (
     <>
       <Nav />
       <main id="main">
-        <Hero stats={heroStats} />
-
-        {/* Section 2 — The Treasury Pulse */}
-        <section className="border-y border-ink/15">
-          <Container className="py-20 lg:py-28">
-            <MonoLabel className="block text-center">
-              Live across Pandabox
-            </MonoLabel>
-            <div className="mx-auto mt-8 max-w-[720px]">
-              <TreasuryPulse variant="hero" />
-            </div>
-          </Container>
-        </section>
+        <Hero stats={heroStats} packageId={PACKAGE_ID} network={network} />
 
         {/* Section 3 — How it works */}
         <section>
