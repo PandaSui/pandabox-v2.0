@@ -450,3 +450,220 @@ export function buildRenounceProjectAdminTx(args: {
   });
   return tx;
 }
+
+/* ─────────────────── Platform-admin operations ─────────────────── *
+ *
+ * The functions below require a `PlatformAdminCap` — Pandabox's operator key.
+ * They drive the launchpad-wide controls (pause, fee_bps, treasury address,
+ * fee withdrawal, admin transfer) plus the per-project moderation actions
+ * (verify / unverify / admin_close / admin_compromise).
+ *
+ * All builders take a `platformAdminCapId` and otherwise mirror the on-chain
+ * signature. None of these are user-facing — they belong on the operator
+ * console (`/admin`), gated by ownership of the cap.
+ */
+
+/** `platform::pause(&cap, &mut platform, &clock, &ctx)` */
+export function buildPlatformPauseTx(args: {
+  platformAdminCapId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::pause`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::unpause(&cap, &mut platform, &clock, &ctx)` */
+export function buildPlatformUnpauseTx(args: {
+  platformAdminCapId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::unpause`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::update_fee_bps(&cap, &mut platform, new_bps, &clock, &ctx)` */
+export function buildUpdateFeeBpsTx(args: {
+  platformAdminCapId: string;
+  newBps: number;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::update_fee_bps`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.pure.u64(BigInt(args.newBps)),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::set_treasury_address(&cap, &mut platform, addr, &clock, &ctx)` */
+export function buildSetTreasuryAddressTx(args: {
+  platformAdminCapId: string;
+  newAddress: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::set_treasury_address`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.pure.address(args.newAddress),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `platform::withdraw_platform_fees(&cap, &mut platform, amount, &clock, &ctx)`.
+ *
+ * Note: the function has no `recipient` parameter — the contract reads it
+ * from `platform.treasury_address`. To route fees to a new wallet, the
+ * operator first calls `set_treasury_address` and then `withdraw`.
+ */
+export function buildWithdrawPlatformFeesTx(args: {
+  platformAdminCapId: string;
+  amountMist: bigint;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::withdraw_platform_fees`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.pure.u64(args.amountMist),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `platform::transfer_admin(cap, recipient, &clock, &ctx)`.
+ *
+ * Note: the cap is consumed by-value — the function transfers it to the
+ * recipient internally. The PTB just hands the cap and the recipient address.
+ */
+export function buildTransferPlatformAdminTx(args: {
+  platformAdminCapId: string;
+  recipient: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${PLATFORM_MODULE}::transfer_admin`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.pure.address(args.recipient),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `project::admin_verify_project<T>(&cap, &mut project, &clock, &ctx)` */
+export function buildAdminVerifyProjectTx(args: {
+  platformAdminCapId: string;
+  coinType: string;
+  projectId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${MODULE}::admin_verify_project`,
+    typeArguments: [args.coinType],
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(args.projectId),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `project::admin_unverify_project<T>(&cap, &mut project, &clock, &ctx)` */
+export function buildAdminUnverifyProjectTx(args: {
+  platformAdminCapId: string;
+  coinType: string;
+  projectId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${MODULE}::admin_unverify_project`,
+    typeArguments: [args.coinType],
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(args.projectId),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `project::admin_close<T>(&cap, &mut project, &platform, &clock, &ctx)`.
+ *
+ * Force-closes an active project as a platform-level action. Distinct from
+ * `permissionless_finalize` in that it can fire even when end-time hasn't
+ * elapsed and no sellout has occurred — the operator's escape hatch.
+ */
+export function buildAdminCloseProjectTx(args: {
+  platformAdminCapId: string;
+  coinType: string;
+  projectId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${MODULE}::admin_close`,
+    typeArguments: [args.coinType],
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(args.projectId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `project::admin_compromise<T>(&cap, &mut project, &mut platform, &clock, &mut ctx)`.
+ *
+ * Marks the project as `status_compromised` and drains it. Reserved for cases
+ * where the project itself is malicious — the function emits a `Compromised`
+ * event with the drained amounts so the operator's downstream tooling
+ * (refunds, accounting) has a clear audit trail.
+ */
+export function buildAdminCompromiseProjectTx(args: {
+  platformAdminCapId: string;
+  coinType: string;
+  projectId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${PACKAGE_ID}::${MODULE}::admin_compromise`,
+    typeArguments: [args.coinType],
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(args.projectId),
+      tx.object(PLATFORM_OBJECT_ID),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}

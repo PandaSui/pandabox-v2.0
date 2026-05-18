@@ -11,6 +11,7 @@ import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import {
+  buildPermissionlessFinalizeTx,
   buildProcessUnsoldTx,
   buildRenounceProjectAdminTx,
   buildTransferProjectAdminTx,
@@ -30,7 +31,13 @@ const CTA_BASE =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink " +
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
-type Action = "withdraw" | "metadata" | "unsold" | "transfer" | "renounce";
+type Action =
+  | "withdraw"
+  | "metadata"
+  | "finalize"
+  | "unsold"
+  | "transfer"
+  | "renounce";
 
 type TxState =
   | { kind: "idle" }
@@ -66,6 +73,15 @@ export function AdminPanel({
   // `project.status` from the reader is a string label, not the u8 code.
   // Closed + compromised (rawStatus 1 or 2) both unlock `process_unsold`.
   const closedOrCompromised = project.status === "closed";
+
+  // Finalize is permissionless on-chain, but it's useful to surface it inside
+  // the AdminPanel too — covers the edge case where the creator is the only
+  // wallet watching the sale (no supporters around to trigger close). We
+  // gate the UI on "status is still live AND the end-time has elapsed" so
+  // the button doesn't appear when the sale is still legitimately running.
+  const endElapsed =
+    project.endTimeMs > 0 && Date.now() > project.endTimeMs;
+  const showFinalize = project.status === "live" && endElapsed;
 
   // Available SUI to withdraw equals project.sui_balance (the platform fee is
   // taken from the gross amount when the call executes).
@@ -158,6 +174,21 @@ export function AdminPanel({
           >
             <span>Update metadata</span>
           </button>
+          {showFinalize && (
+            <button
+              type="button"
+              onClick={() => {
+                setTx({ kind: "idle" });
+                setOpen("finalize");
+              }}
+              disabled={busy}
+              className={cn(CTA_BASE, "bg-bone border-poppy text-poppy")}
+              title="Sale end-time has elapsed — close the sale on-chain to unlock claims + withdrawals"
+            >
+              <span>Finalize sale</span>
+              <ArrowDiag size={12} />
+            </button>
+          )}
           {closedOrCompromised && (
             <button
               type="button"
@@ -239,6 +270,32 @@ export function AdminPanel({
                 adminCapId: cap.capId,
                 projectId: project.id,
                 ...patch,
+              }),
+            )
+          }
+        />
+      )}
+      {open === "finalize" && (
+        <ConfirmModal
+          title="Finalize sale"
+          body={
+            <p>
+              Closes the sale on-chain. Anyone can call this once the end-time
+              elapses — calling from your admin wallet just means you're the
+              one paying the gas. After finalize, supporters can{" "}
+              <code>claim</code> their tokens and you can{" "}
+              <code>withdraw_sui</code> the raised funds.
+            </p>
+          }
+          confirm="Finalize sale"
+          state={tx}
+          busy={busy}
+          onClose={() => setOpen(null)}
+          onSubmit={() =>
+            execute("finalize", () =>
+              buildPermissionlessFinalizeTx({
+                coinType: cap.coinType,
+                projectId: project.id,
               }),
             )
           }

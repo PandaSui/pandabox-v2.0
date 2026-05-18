@@ -76,9 +76,22 @@ function client(): SuiJsonRpcClient {
   return _client;
 }
 
+/**
+ * Map the on-chain `status: u8` to a UI-friendly label.
+ *
+ *   0 — status_active     → "live"   (sale is taking contributions)
+ *   1 — status_closed     → "closed" (sale finalized; claim + withdraw unlocked)
+ *   2 — status_compromised → "closed" (platform admin emergency-closed)
+ *
+ * Constants verified via sui_devInspectTransactionBlock against the deployed
+ * package. The previous mapping had 1→live which surfaced finalize buttons on
+ * already-closed sales and led to wallet dry-runs aborting with
+ * "transaction fee can't be calculated" because the contract rejects
+ * permissionless_finalize on a non-active project.
+ */
 function statusFromRaw(raw: number): ProjectStatus {
-  if (raw === 1) return "live";
-  if (raw === 2 || raw === 3) return "closed";
+  if (raw === 0) return "live";
+  if (raw === 1 || raw === 2) return "closed";
   return "unknown";
 }
 

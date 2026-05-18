@@ -14,6 +14,8 @@ export type PlatformStats = {
   feeBps: number;
   paused: boolean;
   treasuryAddress: string;
+  /** Accumulated SUI fees ready for `withdraw_platform_fees`, as mist (string for JSON safety). */
+  feeTreasuryMist: string;
   objectId: string;
   network: SuiNetwork;
   fetchedAt: number;
@@ -47,11 +49,23 @@ async function fetchPlatformStats(): Promise<PlatformStats | null> {
   if (!content || content.dataType !== "moveObject") return null;
 
   const fields = content.fields as Record<string, unknown>;
+  // `fee_treasury` is a Move `Balance<SUI>`, which the JSON-RPC encoder
+  // surfaces as `{ value: "<mist>" }` (the inner u64). Old indexer code
+  // sometimes serializes it as a bare string — handle both.
+  const feeTreasuryRaw = fields.fee_treasury;
+  let feeTreasuryMist = "0";
+  if (typeof feeTreasuryRaw === "string") {
+    feeTreasuryMist = feeTreasuryRaw;
+  } else if (feeTreasuryRaw && typeof feeTreasuryRaw === "object") {
+    const v = (feeTreasuryRaw as { value?: unknown; fields?: { value?: unknown } });
+    feeTreasuryMist = String(v.value ?? v.fields?.value ?? "0");
+  }
   return {
     totalProjects: Number(fields.total_projects ?? 0),
     feeBps: Number(fields.fee_bps ?? 0),
     paused: Boolean(fields.paused ?? false),
     treasuryAddress: String(fields.treasury_address ?? ""),
+    feeTreasuryMist,
     objectId: PLATFORM_OBJECT_ID,
     network: getNetwork(),
     fetchedAt: Date.now(),
