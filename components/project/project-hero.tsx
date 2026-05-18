@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
 import { Diecut } from "@/components/primitives/diecut";
@@ -81,9 +82,20 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
           <div className="mt-8">
             <a
               href="#pay"
-              className="diecut inline-flex bg-ink px-6 py-3 text-bone transition-colors hover:bg-ink-90"
+              className={cn(
+                "group relative inline-flex items-center justify-center gap-2 px-7 py-3.5 font-medium uppercase tracking-[0.12em] text-[0.8rem]",
+                "bg-ink text-bone",
+                "transition-all duration-300 ease-atelier",
+                "hover:-translate-y-[1px] hover:bg-ink-90",
+                "active:translate-y-0",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              )}
             >
-              <span className="font-mono-label">Back this project</span>
+              <span>Back this project</span>
+              <ArrowDiag
+                size={14}
+                className="transition-transform duration-300 group-hover:translate-x-[2px]"
+              />
             </a>
           </div>
         </div>

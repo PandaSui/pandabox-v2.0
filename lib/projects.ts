@@ -6,6 +6,7 @@ import {
 } from "@mysten/sui/jsonRpc";
 import { getNetwork } from "./sui";
 import { PACKAGE_ID, IS_DEPLOYED } from "./contracts/pandabox";
+import { fetchBlobText, resolveBlobRef } from "./ipfs";
 
 export type ProjectStatus = "live" | "closed" | "unknown";
 
@@ -16,6 +17,7 @@ export type OnChainProject = {
   iconUrl: string;
   creator: string;
   createdAtMs: number;
+  /** Sale window end, ms since epoch. 0 means "no time cap" (Option::None on chain). */
   endTimeMs: number;
   /** Total token allocation pre-mint (raw units, u64). */
   fundingAllocation: bigint;
@@ -29,9 +31,37 @@ export type OnChainProject = {
   rawStatus: number;
   verified: boolean;
   unsoldProcessed: boolean;
+  /** 0 = burn unsold supply, 1 = transfer back to creator. */
+  unsoldAction: number;
   descriptionBlobId: string;
+  projectDetailsBlobId: string;
+  sourceCodeBlobId: string;
   /** Hex coin type carried by the Project<T> generic. */
   tokenType: string;
+};
+
+/**
+ * Off-chain extended metadata pinned alongside the project at deploy.
+ * Shape mirrors what the create wizard writes in
+ * `app/api/upload/route.ts` + `step-4-deploy.tsx`.
+ */
+export type ProjectDetails = {
+  version?: number;
+  tagline?: string;
+  category?: string;
+  ticker?: string;
+  socials?: {
+    twitter?: string;
+    website?: string;
+    discord?: string;
+  };
+};
+
+export type HydratedProject = OnChainProject & {
+  /** Markdown body from `description_blob_id`. */
+  description: string | null;
+  /** Parsed JSON from `project_details_blob_id`. */
+  details: ProjectDetails | null;
 };
 
 let _client: SuiJsonRpcClient | null = null;
@@ -58,6 +88,17 @@ function extractTokenType(typeStr: string): string {
   const gt = typeStr.lastIndexOf(">");
   if (lt === -1 || gt === -1 || gt < lt) return "";
   return typeStr.slice(lt + 1, gt);
+}
+
+/**
+ * Move `Option<u64>` parsed via JSON-RPC arrives as either `null` (Option::None)
+ * or the raw value (Option::Some(x)). We map None to 0 to signal "no time cap"
+ * — callers should special-case the zero before doing time math.
+ */
+function parseOptionalU64Ms(v: unknown): number | null {
+  if (v == null) return 0;
+  const n = Number(typeof v === "string" ? v : String(v));
+  return Number.isFinite(n) ? n : null;
 }
 
 type CreationMeta = {
@@ -94,7 +135,7 @@ async function fetchAllCreationEvents(): Promise<Map<string, CreationMeta>> {
         iconUrl: String(p.icon_url ?? ""),
         creator: String(p.creator ?? ""),
         createdAtMs: Number(p.timestamp_ms ?? 0),
-        endTimeMs: Number(p.end_time_ms ?? 0),
+        endTimeMs: parseOptionalU64Ms(p.end_time_ms) ?? 0,
         fundingAllocation: BigInt(String(p.funding_allocation ?? "0")),
         baseRate: Number(p.base_rate ?? 0),
         descriptionBlobId: String(p.description_blob_id ?? ""),
@@ -140,7 +181,7 @@ async function listProjectsOnchain(): Promise<OnChainProject[]> {
       iconUrl: String(fields.icon_url ?? m.iconUrl),
       creator: String(fields.creator ?? m.creator),
       createdAtMs: Number(fields.created_at_ms ?? m.createdAtMs),
-      endTimeMs: Number(fields.end_time_ms ?? m.endTimeMs),
+      endTimeMs: parseOptionalU64Ms(fields.end_time_ms) ?? m.endTimeMs,
       fundingAllocation: BigInt(
         String(fields.funding_allocation ?? m.fundingAllocation),
       ),
@@ -151,9 +192,12 @@ async function listProjectsOnchain(): Promise<OnChainProject[]> {
       rawStatus,
       verified: Boolean(fields.verified ?? false),
       unsoldProcessed: Boolean(fields.unsold_processed ?? false),
+      unsoldAction: Number(fields.unsold_action ?? 0),
       descriptionBlobId: String(
         fields.description_blob_id ?? m.descriptionBlobId,
       ),
+      projectDetailsBlobId: String(fields.project_details_blob_id ?? ""),
+      sourceCodeBlobId: String(fields.source_code_blob_id ?? ""),
       tokenType: extractTokenType(content.type),
     });
   }
@@ -210,4 +254,145 @@ const cachedSerializedProjects = unstable_cache(
 export async function getOnchainProjects(): Promise<OnChainProject[]> {
   const list = await cachedSerializedProjects();
   return list.map(deserializeProject);
+}
+
+/* ─────────────────────────── Single project ─────────────────────────── */
+
+async function readOneOnchain(id: string): Promise<OnChainProject | null> {
+  if (!IS_DEPLOYED) return null;
+  if (!/^0x[0-9a-fA-F]{1,64}$/.test(id)) return null;
+
+  const res = await client().getObject({
+    id,
+    options: { showContent: true, showType: true },
+  });
+  const content = res.data?.content;
+  if (!content || content.dataType !== "moveObject") return null;
+  const type = content.type ?? "";
+  // Guard: must be our Project<T>
+  if (!type.startsWith(`${PACKAGE_ID}::project::Project<`)) return null;
+
+  const fields = content.fields as Record<string, unknown>;
+  const rawStatus = Number(fields.status ?? 0);
+
+  return {
+    id,
+    number: 0, // not exposed on the struct; left at 0 here (callers can cross-ref the event if needed)
+    name: String(fields.name ?? ""),
+    iconUrl: String(fields.icon_url ?? ""),
+    creator: String(fields.creator ?? ""),
+    createdAtMs: Number(fields.created_at_ms ?? 0),
+    endTimeMs: parseOptionalU64Ms(fields.end_time_ms) ?? 0,
+    fundingAllocation: BigInt(String(fields.funding_allocation ?? "0")),
+    baseRate: Number(fields.base_rate ?? 0),
+    sold: BigInt(String(fields.sold ?? "0")),
+    suiBalance: BigInt(String(fields.sui_balance ?? "0")),
+    status: statusFromRaw(rawStatus),
+    rawStatus,
+    verified: Boolean(fields.verified ?? false),
+    unsoldProcessed: Boolean(fields.unsold_processed ?? false),
+    unsoldAction: Number(fields.unsold_action ?? 0),
+    descriptionBlobId: String(fields.description_blob_id ?? ""),
+    projectDetailsBlobId: String(fields.project_details_blob_id ?? ""),
+    sourceCodeBlobId: String(fields.source_code_blob_id ?? ""),
+    tokenType: extractTokenType(type),
+  };
+}
+
+/**
+ * Read a single project from chain + hydrate the description markdown +
+ * project_details JSON from IPFS. Returns `null` for unknown ids / non-Project
+ * objects. IPFS fetch failures are tolerated — description / details just
+ * come back null and the page renders with what's on-chain.
+ *
+ * Wrapped in `unstable_cache` keyed on the id with a short 30s revalidate so
+ * sale state (sold / status / sui_balance) stays fresh while saving repeat
+ * IPFS round-trips.
+ */
+async function readHydratedOnchain(id: string): Promise<HydratedProject | null> {
+  const p = await readOneOnchain(id);
+  if (!p) return null;
+
+  const [description, details] = await Promise.all([
+    fetchMarkdown(p.descriptionBlobId),
+    fetchDetailsJson(p.projectDetailsBlobId),
+  ]);
+
+  return { ...p, description, details };
+}
+
+async function fetchMarkdown(blobIdOrUrl: string): Promise<string | null> {
+  const ref = resolveBlobRef(blobIdOrUrl);
+  if (!ref) return null;
+  try {
+    return await fetchBlobText(ref.blobId);
+  } catch (err) {
+    console.warn(`[projects] description fetch failed for ${ref.blobId}:`, err);
+    return null;
+  }
+}
+
+async function fetchDetailsJson(
+  blobIdOrUrl: string,
+): Promise<ProjectDetails | null> {
+  const ref = resolveBlobRef(blobIdOrUrl);
+  if (!ref) return null;
+  try {
+    const text = await fetchBlobText(ref.blobId);
+    const parsed = JSON.parse(text) as ProjectDetails;
+    return parsed;
+  } catch (err) {
+    console.warn(`[projects] details fetch failed for ${ref.blobId}:`, err);
+    return null;
+  }
+}
+
+// BigInts can't survive `unstable_cache`'s JSON boundary — same trick as the
+// list reader.
+type SerializedHydrated = Omit<
+  HydratedProject,
+  "fundingAllocation" | "sold" | "suiBalance"
+> & {
+  fundingAllocation: string;
+  sold: string;
+  suiBalance: string;
+};
+
+function serializeHydrated(p: HydratedProject): SerializedHydrated {
+  return {
+    ...p,
+    fundingAllocation: p.fundingAllocation.toString(),
+    sold: p.sold.toString(),
+    suiBalance: p.suiBalance.toString(),
+  };
+}
+
+function deserializeHydrated(s: SerializedHydrated): HydratedProject {
+  return {
+    ...s,
+    fundingAllocation: BigInt(s.fundingAllocation),
+    sold: BigInt(s.sold),
+    suiBalance: BigInt(s.suiBalance),
+  };
+}
+
+const cachedHydrated = unstable_cache(
+  async (id: string): Promise<SerializedHydrated | null> => {
+    try {
+      const h = await readHydratedOnchain(id);
+      return h ? serializeHydrated(h) : null;
+    } catch (err) {
+      console.error(`[projects] readHydratedOnchain failed for ${id}:`, err);
+      return null;
+    }
+  },
+  ["pandabox:onchain-project"],
+  { revalidate: 30, tags: ["projects"] },
+);
+
+export async function getOnchainProject(
+  id: string,
+): Promise<HydratedProject | null> {
+  const s = await cachedHydrated(id);
+  return s ? deserializeHydrated(s) : null;
 }

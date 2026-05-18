@@ -1,180 +1,332 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { Diecut } from "@/components/primitives/diecut";
+import { Marker } from "@/components/primitives/marker";
 import { Address } from "@/components/identity/address";
-import { RelativeTime } from "@/components/identity/relative-time";
-import { SuiAmount } from "@/components/identity/sui-amount";
-import { TokenAmount } from "@/components/identity/token-amount";
-import { AdminCapCard } from "@/components/project/admin-cap-card";
-import { ProjectHero } from "@/components/project/project-hero";
-import { ProjectTabs, type ProjectTab } from "@/components/project/project-tabs";
-import {
-  CycleStepper,
-  ReconfigurationBanner,
-} from "@/components/cycles";
-import { ActivityTable, HoldersTable } from "@/components/data";
-import { PayPanel } from "@/components/pay";
-import {
-  getActivity,
-  getCycles,
-  getHolders,
-  getProject,
-} from "@/lib/indexer";
-import {
-  toCycleDTO,
-  toHolderDTO,
-  toPaymentDTO,
-} from "@/lib/api/project-dto";
-import type { ProjectDTO } from "@/lib/api/project-dto";
-
-const ACTIVITY_PAGE = 25;
+import { ProjectActionRail } from "@/components/project/project-action-rail";
+import { ActivityFeed } from "@/components/project/activity-feed";
+import { getOnchainProject, type HydratedProject } from "@/lib/projects";
+import { getProjectActivity } from "@/lib/activity";
+import { explorerUrl } from "@/lib/sui";
+import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 
 type Props = {
   params: Promise<{ projectId: string }>;
 };
 
+export const revalidate = 30;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { projectId } = await params;
-  const project = await getProject(projectId);
+  const project = await getOnchainProject(projectId);
   if (!project) return { title: "Project not found" };
   return {
-    title: `${project.name} — ${project.ticker}`,
-    description: project.tagline,
+    title: `${project.name} — ${ticker(project)}`,
+    description: project.details?.tagline ?? project.name,
   };
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { projectId } = await params;
-  const project = await getProject(projectId);
+  const [project, activity] = await Promise.all([
+    getOnchainProject(projectId),
+    getProjectActivity(projectId, 25),
+  ]);
   if (!project) notFound();
 
-  const [cycles, holders, activity] = await Promise.all([
-    getCycles(project.id),
-    getHolders(project.id),
-    getActivity(project.id, { limit: ACTIVITY_PAGE }),
-  ]);
+  const tkr = ticker(project);
+  const ended = project.endTimeMs > 0 && Date.now() > project.endTimeMs;
+  const live = project.status === "live" && !ended;
 
-  const projectDto: ProjectDTO = {
-    id: project.id,
-    packageId: project.packageId,
-    name: project.name,
-    ticker: project.ticker,
-    tagline: project.tagline,
-    description: project.description,
-    category: project.category,
-    accent: project.accent,
-    coverImage: project.coverImage,
-    creator: project.creator,
-    adminCapId: project.adminCapId,
-    status: project.status,
-    deployedAt: project.deployedAt,
-    raisedMist: project.raisedMist.toString(),
-    supporters: project.supporters,
-    cycleNumber: project.cycleNumber,
-    cycleStart: project.cycleStart,
-    cycleEnd: project.cycleEnd,
-    params: {
-      weight: project.params.weight.toString(),
-      reservedRate: project.params.reservedRate,
-      cashOutTax: project.params.cashOutTax,
-      issuanceReduction: project.params.issuanceReduction,
-      payoutLimitMist: project.params.payoutLimitMist.toString(),
-      ballotDelayHours: project.params.ballotDelayHours,
-    },
-    tiers: project.tiers.map((t) => ({
-      ...t,
-      priceMist: t.priceMist.toString(),
-    })),
-    queuedReconfiguration: project.queuedReconfiguration
-      ? {
-          takesEffectAt: project.queuedReconfiguration.takesEffectAt,
-          summary: project.queuedReconfiguration.summary,
-          params: {},
-        }
-      : null,
-    socials: project.socials,
-  };
-  const cycleDtos = cycles.map(toCycleDTO);
-  const holderDtos = holders.map(toHolderDTO);
-  const activityDto = {
-    items: activity.items.map(toPaymentDTO),
-    nextCursor: activity.nextCursor,
-  };
+  // Sale numbers in display units.
+  const safeBaseRate = BigInt(project.baseRate || 1);
+  const raisedMist = project.sold / safeBaseRate;
+  const targetMist = project.fundingAllocation / safeBaseRate;
+  const remaining = project.fundingAllocation - project.sold;
+  const pct =
+    project.fundingAllocation > 0n
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            Number((project.sold * 10_000n) / project.fundingAllocation) / 100,
+          ),
+        )
+      : 0;
 
-  const tabs: ProjectTab[] = [
-    {
-      id: "about",
-      label: "About",
-      content: <AboutTab project={projectDto} />,
-    },
-    {
-      id: "cycles",
-      label: "Cycles",
-      badge: String(cycleDtos.length),
-      content: (
-        <CycleStepper cycles={cycleDtos} ticker={projectDto.ticker} />
-      ),
-    },
-    {
-      id: "tiers",
-      label: "Tiers",
-      badge: projectDto.tiers.length ? String(projectDto.tiers.length) : undefined,
-      content: <TiersTab project={projectDto} />,
-    },
-    {
-      id: "activity",
-      label: "Activity",
-      content: (
-        <ActivityTable
-          projectId={projectDto.id}
-          initial={activityDto}
-          pageSize={ACTIVITY_PAGE}
-        />
-      ),
-    },
-  ];
+  const category = project.details?.category ?? "project";
+  const tagline = project.details?.tagline ?? "";
+  const socials = project.details?.socials ?? {};
 
   return (
     <>
       <Nav showPulse />
       <main id="main">
-        {projectDto.queuedReconfiguration && (
-          <ReconfigurationBanner
-            takesEffectAt={projectDto.queuedReconfiguration.takesEffectAt}
-            summary={projectDto.queuedReconfiguration.summary}
-          />
-        )}
+        {/* ─── Hero ─── */}
+        <section className="border-b border-ink/15">
+          <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[1.2fr_1fr] lg:py-16">
+            <div className="flex flex-col justify-center">
+              <MonoLabel className="uppercase tracking-[0.18em]">
+                {category}
+              </MonoLabel>
 
-        <ProjectHero project={projectDto} />
+              <h1 className="mt-3 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
+                {project.name}
+              </h1>
 
-        <section>
-          <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[3fr_6fr_3.5fr]">
-            <LeftRail project={projectDto} />
-            <div className="min-w-0">
-              <ProjectTabs tabs={tabs} />
+              {tagline && (
+                <p className="mt-4 max-w-prose text-lg text-ink/70">
+                  {tagline}
+                </p>
+              )}
+
+              <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
+                <span className="inline-flex items-center border border-ink bg-bone px-2.5 py-1 font-mono text-xs">
+                  {tkr}
+                </span>
+                <span className="text-ink/30">·</span>
+                <span className="text-xs text-ink/50">creator</span>
+                <Address value={project.creator} link />
+                {project.verified && (
+                  <>
+                    <span className="text-ink/30">·</span>
+                    <span className="inline-flex items-center gap-1 font-mono-label text-[10px] text-jade">
+                      <span className="block h-1.5 w-1.5 rounded-full bg-jade" />
+                      Verified
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Progress meter */}
+              <div className="mt-7">
+                <div className="flex items-baseline justify-between">
+                  <MonoLabel className="text-[10px]">Raised</MonoLabel>
+                  <span className="font-mono tabular-nums text-sm text-ink">
+                    {pct.toFixed(2)}
+                    <span className="text-ink/45">%</span>
+                  </span>
+                </div>
+                <div className="relative mt-2 h-[5px] overflow-hidden bg-ink/10">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-saffron transition-[width] duration-500 ease-atelier"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex items-baseline justify-between font-mono text-[12px] tabular-nums text-ink/60">
+                  <span>
+                    <Marker color="saffron">
+                      <span className="text-ink">
+                        {formatSui(raisedMist)} SUI
+                      </span>
+                    </Marker>
+                  </span>
+                  <span>
+                    of {formatSui(targetMist)} SUI{" "}
+                    <span className="text-ink/40">target</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Stats grid */}
+              <div className="mt-7 grid grid-cols-2 border border-ink/15 md:grid-cols-4">
+                <StatCell label="Rate" value={`${project.baseRate}/SUI`} />
+                <StatCell
+                  label="Allocation"
+                  value={`${formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)} ${tkr}`}
+                  border
+                />
+                <StatCell
+                  label={ended ? "Ended" : project.endTimeMs > 0 ? "Ends" : "Cap"}
+                  value={
+                    project.endTimeMs > 0 ? (
+                      <Countdown endMs={project.endTimeMs} />
+                    ) : (
+                      <span className="text-sm text-ink/60">no time cap</span>
+                    )
+                  }
+                  border
+                />
+                <StatCell
+                  label="Status"
+                  value={
+                    <span
+                      className={
+                        live ? "text-jade" : ended ? "text-poppy" : "text-ink/55"
+                      }
+                    >
+                      {live ? "Live" : ended ? "Ended" : "Closed"}
+                    </span>
+                  }
+                  border
+                />
+              </div>
+
+              {/* Spec strip */}
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                <span>
+                  unsold{" "}
+                  <span className="text-ink/70">
+                    {project.unsoldAction === UnsoldAction.TransferToCreator
+                      ? "→ creator"
+                      : "burn"}
+                  </span>
+                </span>
+                <span className="text-ink/20">·</span>
+                <span>
+                  remaining{" "}
+                  <span className="text-ink/70">
+                    {formatToken(
+                      remaining > 0n ? remaining : 0n,
+                      PROJECT_COIN_DECIMALS,
+                    )}{" "}
+                    {tkr}
+                  </span>
+                </span>
+                <span className="text-ink/20">·</span>
+                <span>
+                  treasury{" "}
+                  <span className="text-ink/70">
+                    {formatSui(project.suiBalance)} SUI
+                  </span>
+                </span>
+              </div>
             </div>
-            <PayPanel project={projectDto} />
+
+            {/* Icon panel */}
+            <div className="relative aspect-square overflow-hidden border border-ink/15 bg-paper lg:aspect-auto lg:min-h-[360px]">
+              {project.iconUrl ? (
+                <Image
+                  src={project.iconUrl}
+                  alt={`${project.name} icon`}
+                  fill
+                  sizes="(min-width:1024px) 40vw, 100vw"
+                  priority
+                  unoptimized
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <span className="font-display text-9xl text-ink/15">
+                    {(project.name?.[0] ?? "P").toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
           </Container>
         </section>
 
-        <section className="border-t border-ink/15">
-          <Container className="py-12">
-            <MonoLabel>Holders</MonoLabel>
-            <p className="mt-1 text-xs text-ink/55">
-              Top {Math.min(25, holderDtos.length)} of{" "}
-              {holderDtos.length.toLocaleString()} token holders.
-            </p>
-            <div className="mt-4">
-              <HoldersTable
-                holders={holderDtos}
-                ticker={projectDto.ticker}
-                topN={25}
-              />
+        {/* ─── Body: about + action rail ─── */}
+        <section>
+          <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[7fr_5fr]">
+            <div className="min-w-0 space-y-8">
+              <AboutTab project={project} ticker={tkr} />
+              <ActivityFeed items={activity} ticker={tkr} />
             </div>
+            <ProjectActionRail project={project} />
+          </Container>
+        </section>
+
+        {/* ─── Metadata footer ─── */}
+        <section className="border-t border-ink/15">
+          <Container className="grid grid-cols-1 gap-8 py-10 md:grid-cols-2 lg:grid-cols-4">
+            <MetaBlock
+              label="Project object"
+              value={
+                <a
+                  href={explorerUrl("object", project.id)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="break-all font-mono text-[11px] text-ink/80 hover:text-ink"
+                >
+                  {shortMid(project.id)}
+                </a>
+              }
+            />
+            <MetaBlock
+              label="Coin type"
+              value={
+                <span className="break-all font-mono text-[11px] text-ink/80">
+                  {project.tokenType || "—"}
+                </span>
+              }
+            />
+            <MetaBlock
+              label="Deployed"
+              value={
+                <span className="font-mono text-[12px] text-ink/80">
+                  {project.createdAtMs
+                    ? new Date(project.createdAtMs).toISOString().slice(0, 16) +
+                      "Z"
+                    : "—"}
+                </span>
+              }
+            />
+            <MetaBlock
+              label="Links"
+              value={
+                <ul className="space-y-1 text-[12px]">
+                  {socials.website && (
+                    <li>
+                      <a
+                        href={ensureHttp(socials.website)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-ink/70 hover:text-ink"
+                      >
+                        {socials.website}
+                      </a>
+                    </li>
+                  )}
+                  {socials.twitter && (
+                    <li>
+                      <a
+                        href={`https://x.com/${socials.twitter.replace(/^@/, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-ink/70 hover:text-ink"
+                      >
+                        @{socials.twitter.replace(/^@/, "")}
+                      </a>
+                    </li>
+                  )}
+                  {socials.discord && (
+                    <li>
+                      <a
+                        href={socials.discord}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-ink/70 hover:text-ink"
+                      >
+                        Discord
+                      </a>
+                    </li>
+                  )}
+                  {project.sourceCodeBlobId && (
+                    <li>
+                      <a
+                        href={`https://gateway.pinata.cloud/ipfs/${project.sourceCodeBlobId}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-ink/70 hover:text-ink"
+                      >
+                        Source · IPFS
+                      </a>
+                    </li>
+                  )}
+                  {!socials.website &&
+                    !socials.twitter &&
+                    !socials.discord &&
+                    !project.sourceCodeBlobId && (
+                      <li className="text-ink/40">none</li>
+                    )}
+                </ul>
+              }
+            />
           </Container>
         </section>
 
@@ -184,133 +336,141 @@ export default async function ProjectPage({ params }: Props) {
   );
 }
 
-function LeftRail({ project }: { project: ProjectDTO }) {
+function MetaBlock({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
-    <div className="space-y-6">
-      <AdminCapCard capId={project.adminCapId} holder={project.creator} />
+    <div>
+      <MonoLabel className="block text-[10px]">{label}</MonoLabel>
+      <div className="mt-2">{value}</div>
+    </div>
+  );
+}
 
-      <div className="space-y-1">
-        <MonoLabel>Contract</MonoLabel>
-        <Address value={project.packageId} link />
+function StatCell({
+  label,
+  value,
+  border = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  border?: boolean;
+}) {
+  return (
+    <div className={"p-4 md:p-5" + (border ? " border-l border-ink/15" : "")}>
+      <MonoLabel className="block text-[10px]">{label}</MonoLabel>
+      <div className="mt-2 font-mono tabular-nums text-lg md:text-xl">
+        {value}
       </div>
+    </div>
+  );
+}
 
-      <div className="space-y-1">
-        <MonoLabel>Deployed</MonoLabel>
-        <RelativeTime value={project.deployedAt} />
-      </div>
-
-      <div className="space-y-1">
-        <MonoLabel>Category</MonoLabel>
-        <Diecut className="inline-flex bg-ink/8 px-2 py-0.5">
-          <span className="font-mono-label text-[10px]">
-            {project.category}
+function AboutTab({
+  project,
+  ticker,
+}: {
+  project: HydratedProject;
+  ticker: string;
+}) {
+  const description = project.description?.trim();
+  return (
+    <article className="border border-ink/15 bg-bone shadow-offset-sm">
+      <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
+        <MonoLabel className="text-[10px]">About</MonoLabel>
+        {project.descriptionBlobId && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+            ipfs · {shortCid(project.descriptionBlobId)}
           </span>
-        </Diecut>
+        )}
+      </header>
+      <div className="px-5 py-6 md:px-6 md:py-7">
+        {description ? (
+          <div className="prose-pandabox max-w-prose space-y-4 whitespace-pre-wrap text-[14.5px] leading-relaxed text-ink/80">
+            {description}
+          </div>
+        ) : (
+          <p className="text-sm text-ink/55">
+            No description pinned yet. The creator can publish one any time via{" "}
+            <code className="font-mono text-[12px]">
+              project::update_metadata
+            </code>
+            .
+          </p>
+        )}
+        <hr className="my-6 border-ink/10" />
+        <p className="font-mono text-[11px] leading-relaxed text-ink/55">
+          Supporters receive {project.baseRate} {ticker} per 1 SUI contributed,
+          up to a total of{" "}
+          {formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)}{" "}
+          {ticker}. After the sale closes — by time, sellout, or admin action
+          — anyone can finalize and claimers burn their{" "}
+          <code className="font-mono">ContributionReceipt&lt;T&gt;</code> for
+          their share of {ticker}.
+        </p>
       </div>
-
-      {(project.socials.twitter ||
-        project.socials.website ||
-        project.socials.discord) && (
-        <div className="space-y-1">
-          <MonoLabel>Links</MonoLabel>
-          <ul className="space-y-1 text-xs">
-            {project.socials.website && (
-              <li>
-                <a
-                  href={`https://${project.socials.website}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-ink/70 hover:text-ink"
-                >
-                  {project.socials.website}
-                </a>
-              </li>
-            )}
-            {project.socials.twitter && (
-              <li>
-                <a
-                  href={`https://x.com/${project.socials.twitter}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-ink/70 hover:text-ink"
-                >
-                  @{project.socials.twitter}
-                </a>
-              </li>
-            )}
-            {project.socials.discord && (
-              <li>
-                <a
-                  href={project.socials.discord}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-ink/70 hover:text-ink"
-                >
-                  Discord
-                </a>
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-    </div>
+    </article>
   );
 }
 
-function AboutTab({ project }: { project: ProjectDTO }) {
+function Countdown({ endMs }: { endMs: number }) {
+  const ms = Math.max(0, endMs - Date.now());
+  if (ms === 0) return <span className="text-poppy">ended</span>;
+  const days = Math.floor(ms / 86_400_000);
+  const hours = Math.floor((ms % 86_400_000) / 3_600_000);
+  const mins = Math.floor((ms % 3_600_000) / 60_000);
   return (
-    <div className="prose-pandabox max-w-prose space-y-4 text-sm leading-relaxed text-ink/80">
-      <p>{project.description}</p>
-      <hr className="border-ink/15" />
-      <p className="text-xs text-ink/55">
-        Backers receive {project.params.weight} {project.ticker} per SUI
-        contributed in this cycle, with{" "}
-        {project.params.reservedRate}% reserved for the team and a{" "}
-        {project.params.cashOutTax}% cash-out tax on surplus. Reconfigurations
-        queue for {project.params.ballotDelayHours} hours before taking effect.
-      </p>
-    </div>
+    <span>
+      {days > 0 ? `${days}d ${hours}h` : `${hours}h ${mins}m`}
+    </span>
   );
 }
 
-function TiersTab({ project }: { project: ProjectDTO }) {
-  if (project.tiers.length === 0) {
-    return (
-      <p className="text-sm text-ink/55">This project has no NFT tiers.</p>
-    );
-  }
+function ticker(p: HydratedProject): string {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {project.tiers.map((t) => (
-        <div
-          key={t.id}
-          className="diecut border border-ink/15 bg-bone/40 p-4"
-        >
-          <div className="flex items-center justify-between">
-            <h4 className="text-base">{t.name}</h4>
-            <SuiAmount mist={BigInt(t.priceMist)} maxFractionDigits={2} />
-          </div>
-          <p className="mt-2 text-xs text-ink/65">{t.perks}</p>
-          <div className="mt-3 font-mono text-[10px] text-ink/45">
-            {t.maxSupply > 0
-              ? `${t.minted}/${t.maxSupply} minted`
-              : `${t.minted} minted · unlimited supply`}
-          </div>
-          <div className="mt-2 font-mono text-[10px] text-ink/45">
-            ≈{" "}
-            <TokenAmount
-              raw={
-                (BigInt(t.priceMist) * BigInt(project.params.weight)) /
-                1_000_000_000n
-              }
-              decimals={9}
-              ticker={project.ticker}
-              compact
-            />{" "}
-            included
-          </div>
-        </div>
-      ))}
-    </div>
+    p.details?.ticker?.trim() ||
+    lastSegment(p.tokenType).toUpperCase() ||
+    "TOK"
   );
+}
+
+function lastSegment(typeStr: string): string {
+  if (!typeStr) return "";
+  const parts = typeStr.split("::");
+  return parts[parts.length - 1] ?? "";
+}
+
+function shortMid(s: string): string {
+  if (!s) return "—";
+  if (s.length <= 22) return s;
+  return `${s.slice(0, 12)}…${s.slice(-6)}`;
+}
+
+function shortCid(cid: string): string {
+  if (cid.length <= 14) return cid;
+  return `${cid.slice(0, 8)}…${cid.slice(-4)}`;
+}
+
+function ensureHttp(s: string): string {
+  if (/^https?:\/\//i.test(s)) return s;
+  return `https://${s}`;
+}
+
+function formatSui(mist: bigint): string {
+  return formatToken(mist, 9);
+}
+
+function formatToken(raw: bigint, decimals: number): string {
+  const n = Number(raw) / Math.pow(10, decimals);
+  if (!isFinite(n)) return "—";
+  if (n >= 1_000_000_000) return (n / 1e9).toFixed(2) + "B";
+  if (n >= 1_000_000) return (n / 1e6).toFixed(2) + "M";
+  if (n >= 1_000) return (n / 1e3).toFixed(2) + "K";
+  if (n >= 1) return n.toFixed(2);
+  if (n === 0) return "0";
+  return n.toFixed(4);
 }

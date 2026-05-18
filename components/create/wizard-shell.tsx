@@ -82,7 +82,23 @@ export function WizardShell() {
             {step === 4 && <StepDeployForm />}
           </div>
 
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          {/*
+           * Sticky live preview. The wizard's top nav band is ~5.5rem tall,
+           * so we offset to top-24 and cap the visible region at
+           * calc(100vh - 7rem) — enough breathing room that the bottom of
+           * the preview card (the Back-this-project CTA + spec strip) always
+           * stays on-screen. `overflow-y-auto` lets unusually-tall previews
+           * scroll inside the rail instead of getting clipped, and
+           * `overscroll-contain` keeps that scroll from bleeding into the
+           * outer page.
+           */}
+          <div
+            className={cn(
+              "lg:sticky lg:top-24 lg:self-start",
+              "lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:overscroll-contain",
+              "[scrollbar-width:thin]",
+            )}
+          >
             <PreviewPane />
           </div>
         </div>
