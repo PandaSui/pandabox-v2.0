@@ -475,6 +475,258 @@
   animation: stat-sweep 6s ease-in-out infinite;
 }
 
+/* --- How It Works animated diagrams --- */
+@keyframes hiw-stitch {
+  0% {
+    stroke-dashoffset: var(--len, 120);
+  }
+  55% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes hiw-pulse-scale {
+  0%,
+  100% {
+    transform: scale(0.93);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+@keyframes hiw-coin-flow {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(132px);
+    opacity: 0;
+  }
+}
+
+@keyframes hiw-treasury-thump {
+  0%,
+  10%,
+  100% {
+    transform: scale(1);
+  }
+  5% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes hiw-cycle-sweep {
+  from {
+    transform: rotate(-90deg);
+  }
+  to {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes hiw-dot-pulse {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}
+
+@keyframes hiw-text-swap {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  56%,
+  92% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes hiw-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes hiw-ballot-tick {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.hiw-fb {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* --- Why Sui card diagrams --- */
+@keyframes wsu-bar-grow {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+  60%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wsu-handoff {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110px);
+    opacity: 0;
+  }
+}
+
+@keyframes wsu-receipt-print {
+  0%,
+  10% {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  35%,
+  85% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(2px);
+    opacity: 0;
+  }
+}
+
+@keyframes wsu-meter-fill {
+  0% {
+    width: 0%;
+  }
+  60%,
+  100% {
+    width: var(--w, 100%);
+  }
+}
+
+/* --- Featured Projects card animations --- */
+@keyframes fp-cover-zoom {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.05) translateY(-2px);
+  }
+}
+
+@keyframes fp-rank-blink {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  94%,
+  98% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fp-meter-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+/* Progress bar — scaleX from 0 to actual percent (passed via --fill on the
+   element). Triggered by ancestor .in-view (added by <RevealOnView>). */
+.fp-meter-fill {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
+}
+.in-view .fp-meter-fill {
+  transform: scaleX(var(--fill, 1));
+}
+
+/* Cover image — continuous Ken Burns drift inside the cover panel. */
+.fp-cover-img {
+  animation: fp-cover-zoom 11s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Slowly orbiting accent ring around the project icon disc. Speeds up
+   when the card it lives inside is hovered (group-hover). */
+@keyframes fp-icon-ring-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fp-icon-ring {
+  animation: fp-icon-ring-spin 22s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.group:hover .fp-icon-ring {
+  animation-duration: 8s;
+}
+
+/* Counter-rotation so the inner disc looks held in place while the outer
+   ring orbits — purely optical sweetener. */
+@keyframes fp-icon-counter {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
