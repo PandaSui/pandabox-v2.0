@@ -12,10 +12,10 @@ import { CoinType } from "@/components/identity/coin-type";
 import { ProjectActionRail } from "@/components/project/project-action-rail";
 import { ActivityFeed } from "@/components/project/activity-feed";
 import { CoverFrame } from "@/components/project/cover-frame";
+import { OnchainRecord } from "@/components/project/onchain-record";
 import { SharePill } from "@/components/project/share-pill";
 import { getOnchainProject, type HydratedProject } from "@/lib/projects";
 import { getProjectActivity, type ActivityItem } from "@/lib/activity";
-import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 import { hasValidParams } from "@/lib/project-health";
 import { resolveBlobRef } from "@/lib/ipfs";
@@ -365,123 +365,20 @@ export default async function ProjectPage({ params }: Props) {
           </Container>
         </section>
 
-        {/* ─── Metadata footer ─── */}
-        <section className="border-t border-ink/15">
-          <Container className="grid grid-cols-1 gap-8 py-10 md:grid-cols-2 lg:grid-cols-4">
-            <MetaBlock
-              label="Project object"
-              value={
-                <a
-                  href={explorerUrl("object", project.id)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="break-all font-mono text-[11px] text-ink/80 hover:text-ink"
-                >
-                  {shortMid(project.id)}
-                </a>
-              }
-            />
-            <MetaBlock
-              label="Coin type"
-              value={
-                <span className="break-all font-mono text-[11px] text-ink/80">
-                  {project.tokenType || "—"}
-                </span>
-              }
-            />
-            <MetaBlock
-              label="Deployed"
-              value={
-                <span className="font-mono text-[12px] text-ink/80">
-                  {project.createdAtMs
-                    ? new Date(project.createdAtMs).toISOString().slice(0, 16) +
-                      "Z"
-                    : "—"}
-                </span>
-              }
-            />
-            <MetaBlock
-              label="Links"
-              value={
-                <ul className="space-y-1 text-[12px]">
-                  {socials.website && (
-                    <li>
-                      <a
-                        href={ensureHttp(socials.website)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-ink/70 hover:text-ink"
-                      >
-                        {socials.website}
-                      </a>
-                    </li>
-                  )}
-                  {socials.twitter && (
-                    <li>
-                      <a
-                        href={`https://x.com/${socials.twitter.replace(/^@/, "")}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-ink/70 hover:text-ink"
-                      >
-                        @{socials.twitter.replace(/^@/, "")}
-                      </a>
-                    </li>
-                  )}
-                  {socials.discord && (
-                    <li>
-                      <a
-                        href={socials.discord}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-ink/70 hover:text-ink"
-                      >
-                        Discord
-                      </a>
-                    </li>
-                  )}
-                  {project.sourceCodeBlobId && (
-                    <li>
-                      <a
-                        href={`https://gateway.pinata.cloud/ipfs/${project.sourceCodeBlobId}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-ink/70 hover:text-ink"
-                      >
-                        Source · IPFS
-                      </a>
-                    </li>
-                  )}
-                  {!socials.website &&
-                    !socials.twitter &&
-                    !socials.discord &&
-                    !project.sourceCodeBlobId && (
-                      <li className="text-ink/40">none</li>
-                    )}
-                </ul>
-              }
-            />
-          </Container>
+        {/* ─── On-chain record · spec sheet ─── */}
+        <section className="border-t border-ink/15 py-10 md:py-12">
+          <OnchainRecord
+            projectId={project.id}
+            tokenType={project.tokenType}
+            createdAtMs={project.createdAtMs}
+            socials={socials}
+            sourceCodeBlobId={project.sourceCodeBlobId}
+          />
         </section>
 
         <Footer />
       </main>
     </>
-  );
-}
-
-function MetaBlock({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div>
-      <MonoLabel className="block text-[10px]">{label}</MonoLabel>
-      <div className="mt-2">{value}</div>
-    </div>
   );
 }
 
@@ -612,20 +509,9 @@ function lastSegment(typeStr: string): string {
   return parts[parts.length - 1] ?? "";
 }
 
-function shortMid(s: string): string {
-  if (!s) return "—";
-  if (s.length <= 22) return s;
-  return `${s.slice(0, 12)}…${s.slice(-6)}`;
-}
-
 function shortCid(cid: string): string {
   if (cid.length <= 14) return cid;
   return `${cid.slice(0, 8)}…${cid.slice(-4)}`;
-}
-
-function ensureHttp(s: string): string {
-  if (/^https?:\/\//i.test(s)) return s;
-  return `https://${s}`;
 }
 
 function formatSui(mist: bigint): string {
