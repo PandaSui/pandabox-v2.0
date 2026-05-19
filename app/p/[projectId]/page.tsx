@@ -8,6 +8,7 @@ import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
 import { Address } from "@/components/identity/address";
+import { CoinType } from "@/components/identity/coin-type";
 import { ProjectActionRail } from "@/components/project/project-action-rail";
 import { ActivityFeed } from "@/components/project/activity-feed";
 import { CoverStrip } from "@/components/project/cover-strip";
@@ -17,6 +18,7 @@ import { getProjectActivity, type ActivityItem } from "@/lib/activity";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 import { hasValidParams } from "@/lib/project-health";
+import { resolveBlobRef } from "@/lib/ipfs";
 
 type Props = {
   params: Promise<{ projectId: string }>;
@@ -28,9 +30,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { projectId } = await params;
   const project = await getOnchainProject(projectId);
   if (!project) return { title: "Project not found" };
+
+  const tkr = ticker(project);
+  const title = `${project.name} — ${tkr}`;
+  const description =
+    project.details?.tagline ??
+    `${project.name} (${tkr}) — on-chain funding on Sui, powered by Pandabox.`;
+  // X / OpenGraph fetches a fully-qualified image URL — IPFS / Walrus refs
+  // get rewritten to their gateway URL so social previews can resolve them.
+  const cover = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
+  const images = cover ? [{ url: cover, alt: project.name }] : undefined;
+  const url = `/p/${project.id}`;
+
   return {
-    title: `${project.name} — ${ticker(project)}`,
-    description: project.details?.tagline ?? project.name,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: images?.map((i) => i.url),
+    },
   };
 }
 
@@ -137,13 +165,20 @@ export default async function ProjectPage({ params }: Props) {
                   </p>
                 )}
 
-                <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
+                <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
                   <span className="inline-flex items-center border border-ink bg-bone px-2.5 py-1 font-mono text-xs">
                     {tkr}
                   </span>
                   <span className="text-ink/30">·</span>
                   <span className="text-xs text-ink/50">creator</span>
                   <Address value={project.creator} link />
+                  {project.tokenType && (
+                    <>
+                      <span className="text-ink/30">·</span>
+                      <span className="text-xs text-ink/50">ca</span>
+                      <CoinType value={project.tokenType} link />
+                    </>
+                  )}
                   {project.verified && (
                     <>
                       <span className="text-ink/30">·</span>

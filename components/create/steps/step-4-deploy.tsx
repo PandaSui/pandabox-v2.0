@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
+  useSuiClient,
 } from "@mysten/dapp-kit";
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import BigNumber from "bignumber.js";
@@ -56,6 +57,10 @@ type SuccessSnapshot = {
   tokensPerSui?: string;
   allocationTokens?: string;
   endTimeMs?: number | null;
+  /** Fully-qualified Move coin type — the on-chain contract address users copy. */
+  coinType?: string;
+  /** The newly-created shared Project<T> object ID, if we managed to extract it. */
+  projectId?: string;
 };
 
 type SubmitState =
@@ -72,6 +77,7 @@ export function StepDeployForm() {
   const patchDeploy = useWizard((s) => s.patchDeploy);
   const account = useCurrentAccount();
   const router = useRouter();
+  const client = useSuiClient();
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
@@ -167,7 +173,18 @@ export function StepDeployForm() {
       const result = await signAndExecute({ transaction: tx });
       const snapshot = snapshotDraft(draft);
       clearPersistedDraft();
+      // Show the success modal immediately with what we already know. The
+      // project ID needs an extra RPC round-trip — we hydrate it in the
+      // background so the user isn't waiting.
       setState({ kind: "success", digest: result.digest, snapshot });
+      void resolveProjectId(client, result.digest).then((projectId) => {
+        if (!projectId) return;
+        setState((s) =>
+          s.kind === "success" && s.digest === result.digest
+            ? { ...s, snapshot: { ...s.snapshot, projectId } }
+            : s,
+        );
+      });
     } catch (err) {
       setState({
         kind: "error",
@@ -177,10 +194,14 @@ export function StepDeployForm() {
   };
 
   const onFinishSuccess = () => {
+    const next =
+      state.kind === "success" && state.snapshot.projectId
+        ? `/p/${state.snapshot.projectId}`
+        : "/explore";
     reset();
     setInspectorOpen(false);
     setState({ kind: "idle" });
-    router.push("/explore");
+    router.push(next);
   };
 
   const busy =
@@ -327,9 +348,13 @@ export function StepDeployForm() {
             tokensPerSui={state.snapshot.tokensPerSui}
             allocationTokens={state.snapshot.allocationTokens}
             endTimeMs={state.snapshot.endTimeMs}
+            coinType={state.snapshot.coinType}
+            projectId={state.snapshot.projectId}
             txDigest={state.digest}
             onContinue={onFinishSuccess}
-            continueLabel="See it on Explore"
+            continueLabel={
+              state.snapshot.projectId ? "Open project page" : "See it on Explore"
+            }
           />
         ) : (
           <div className="space-y-4 text-xs">
@@ -613,7 +638,47 @@ function snapshotDraft(
     tokensPerSui: draft.sale.tokensPerSui,
     allocationTokens: draft.sale.allocationTokens,
     endTimeMs: draft.sale.endTimeMs ?? null,
+    coinType: draft.coin.coinType,
   };
+}
+
+/**
+ * Look up the new `project::Project<T>` shared object ID from a create_project
+ * transaction. The Move call returns the AdminCap to the sender; the Project
+ * itself is shared. We poll `getTransactionBlock` with light backoff to handle
+ * fullnodes that lag a beat on indexing object changes.
+ *
+ * Returns `undefined` on failure — the success modal still works without it,
+ * just without the "open project page" link.
+ */
+async function resolveProjectId(
+  client: ReturnType<typeof useSuiClient>,
+  digest: string,
+): Promise<string | undefined> {
+  const delays = [600, 900, 1400, 2200];
+  for (const ms of delays) {
+    try {
+      const res = await client.getTransactionBlock({
+        digest,
+        options: { showObjectChanges: true },
+      });
+      const changes = res.objectChanges ?? [];
+      for (const c of changes) {
+        if (c.type !== "created") continue;
+        const t = c.objectType ?? "";
+        if (
+          t.startsWith(`${PACKAGE_ID}::project::Project<`) ||
+          /::project::Project</.test(t)
+        ) {
+          return c.objectId;
+        }
+      }
+    } catch {
+      // transient — keep polling
+    }
+    await new Promise((r) => setTimeout(r, ms));
+  }
+  return undefined;
 }
 
 function Row({ k, children }: { k: string; children: React.ReactNode }) {

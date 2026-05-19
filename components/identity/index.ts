@@ -1,4 +1,5 @@
 export { Address } from "./address";
+export { CoinType } from "./coin-type";
 export { Identicon } from "./identicon";
 export { TokenAmount } from "./token-amount";
 export { SuiAmount } from "./sui-amount";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { cn } from "@pandasui/ui/lib";
@@ -16,10 +16,18 @@ type DeploySuccessProps = {
   tokensPerSui?: string;
   allocationTokens?: string;
   endTimeMs?: number | null;
+  /** Fully-qualified Move coin type — the on-chain CA users paste into wallets. */
+  coinType?: string;
+  /** Project<T> shared object ID. When present, the share URL deep-links to /p/[id]. */
+  projectId?: string;
   txDigest: string;
   onContinue?: () => void;
   continueLabel?: string;
 };
+
+const SITE_URL =
+  (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SITE_URL) ||
+  "https://pandabox.money";
 
 export function DeploySuccess({
   projectName,
@@ -29,11 +37,14 @@ export function DeploySuccess({
   tokensPerSui,
   allocationTokens,
   endTimeMs,
+  coinType,
+  projectId,
   txDigest,
   onContinue,
   continueLabel = "See it on Explore",
 }: DeploySuccessProps) {
   const scope = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState<"ca" | null>(null);
   const coverUrl = resolveBlobRef(coverImage)?.url ?? null;
   const symbol = coinSymbol || ticker || "TOKEN";
 
@@ -48,8 +59,25 @@ export function DeploySuccess({
           year: "numeric",
         });
 
-  const tweet = `Just launched ${projectName} on Pandabox — programmable on-chain funding on Sui.`;
+  // X will fetch og:image from the project page if we send a URL — that's
+  // where the cover-image OG card comes from. The CA lives on the project
+  // page itself, so the tweet just hands over the link.
+  const shareUrl = projectId
+    ? `${SITE_URL}/p/${projectId}`
+    : `${SITE_URL}/explore`;
+  const tweet = `Just launched ${projectName} on @0xPandaSui — programmable on-chain funding on Sui.\n\n${shareUrl}`;
   const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
+
+  const onCopyCA = async () => {
+    if (!coinType) return;
+    try {
+      await navigator.clipboard.writeText(coinType);
+      setCopied("ca");
+      window.setTimeout(() => setCopied(null), 1600);
+    } catch {
+      // clipboard blocked — fail silently rather than tripping the celebration
+    }
+  };
 
   useGSAP(
     () => {
@@ -98,11 +126,7 @@ export function DeploySuccess({
           },
           "-=0.45",
         )
-        .from(
-          "[data-eyebrow]",
-          { y: 8, opacity: 0, duration: 0.35 },
-          "-=0.25",
-        )
+        .from("[data-eyebrow]", { y: 8, opacity: 0, duration: 0.35 }, "-=0.25")
         .fromTo(
           "[data-marker]",
           { clipPath: "inset(0 100% 0 0)" },
@@ -113,11 +137,7 @@ export function DeploySuccess({
           },
           "-=0.15",
         )
-        .from(
-          "[data-meta]",
-          { y: 6, opacity: 0, duration: 0.35 },
-          "-=0.35",
-        )
+        .from("[data-meta]", { y: 6, opacity: 0, duration: 0.35 }, "-=0.35")
         .from(
           "[data-stat]",
           {
@@ -128,11 +148,7 @@ export function DeploySuccess({
           },
           "-=0.2",
         )
-        .from(
-          "[data-tx]",
-          { y: 6, opacity: 0, duration: 0.3 },
-          "-=0.15",
-        )
+        .from("[data-tx]", { y: 6, opacity: 0, duration: 0.3 }, "-=0.15")
         .from(
           "[data-cta]",
           { y: 8, opacity: 0, duration: 0.35, stagger: 0.08 },
@@ -209,11 +225,7 @@ export function DeploySuccess({
             {projectName}
           </span>
         </h2>
-        <p
-          data-meta
-          data-anim
-          className="font-mono text-[11px] text-ink/55"
-        >
+        <p data-meta data-anim className="font-mono text-[11px] text-ink/55">
           {ticker ? `${ticker} · ` : ""}admin cap returned to your wallet
         </p>
       </div>
@@ -224,10 +236,51 @@ export function DeploySuccess({
         <Stat label="Ends" value={endsText} />
       </div>
 
+      {coinType && (
+        <div
+          data-tx
+          data-anim
+          className="mt-4 flex items-center justify-between gap-2 border border-ink/15 bg-bone/60 px-3 py-2"
+        >
+          <div className="min-w-0 flex-1">
+            <div className="font-mono-label text-[9px] text-ink/45">
+              contract address
+            </div>
+            <div className="mt-0.5 truncate font-mono text-[11px] tabular-nums text-ink">
+              {shortCA(coinType)}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onCopyCA}
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center gap-1.5 border px-2.5",
+              "font-mono-label text-[10px] transition-all duration-200 ease-out",
+              copied === "ca"
+                ? "border-jade bg-jade/10 text-jade"
+                : "border-ink/25 text-ink/70 hover:-translate-y-[1px] hover:border-ink hover:text-ink hover:shadow-offset-sm",
+            )}
+            aria-label="Copy contract address"
+          >
+            {copied === "ca" ? (
+              <>
+                <CheckGlyph />
+                <span>copied</span>
+              </>
+            ) : (
+              <>
+                <CopyGlyph />
+                <span>copy</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
       <div
         data-tx
         data-anim
-        className="mt-4 flex items-center justify-center gap-2"
+        className="mt-3 flex items-center justify-center gap-2"
       >
         <span className="font-mono-label text-[10px] text-ink/55">tx</span>
         <TxHash value={txDigest} head={6} tail={4} />
@@ -287,6 +340,19 @@ function shortHash(d: string): string {
   return `${d.slice(0, 4)}…${d.slice(-3)}`;
 }
 
+/**
+ * Format a Move coin type like `0xabc…::module::WITNESS`. We keep the module
+ * and witness portions intact (those carry meaning) and truncate only the
+ * package hex in the middle so the string stays scannable in a 280-char tweet.
+ */
+function shortCA(coinType: string): string {
+  const parts = coinType.split("::");
+  if (parts.length < 2) return coinType;
+  const [pkg, ...rest] = parts;
+  if (!pkg || pkg.length < 14) return coinType;
+  return `${pkg.slice(0, 6)}…${pkg.slice(-4)}::${rest.join("::")}`;
+}
+
 function ConfettiBurst() {
   return (
     <svg
@@ -331,6 +397,43 @@ function ArrowDiag() {
       aria-hidden
     >
       <path d="M7 17 17 7M9 7h8v8" />
+    </svg>
+  );
+}
+
+function CopyGlyph() {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="9" y="9" width="13" height="13" rx="1.5" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckGlyph() {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M5 12l5 5 9-11" />
     </svg>
   );
 }
