@@ -10,6 +10,7 @@ import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
 import { Modal } from "@pandasui/ui";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
+import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
 import { TierSelector } from "./tier-selector";
 import { TransactionSuccess } from "./transaction-success";
 import { buildContributeTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
@@ -36,13 +37,15 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
       | { kind: "error"; message: string }
     >({ kind: "idle" });
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const { price: suiUsdPrice } = useSuiUsdPrice();
 
   // Resolve everything in SUI.
   const suiAmount = useMemo(() => {
     if (!amount || !Number.isFinite(Number(amount))) return new BigNumber(0);
     const bn = new BigNumber(amount);
-    return currency === "SUI" ? bn : usdSui(bn);
-  }, [amount, currency]);
+    if (currency === "SUI") return bn;
+    return usdSui(bn, suiUsdPrice) ?? new BigNumber(0);
+  }, [amount, currency, suiUsdPrice]);
 
   const amountMist = useMemo(
     () =>
@@ -102,10 +105,14 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
             const bn = new BigNumber(amount);
             const converted =
               currency === "SUI" && next === "USD"
-                ? suiUsd(bn)
+                ? suiUsd(bn, suiUsdPrice)
                 : currency === "USD" && next === "SUI"
-                  ? usdSui(bn)
+                  ? usdSui(bn, suiUsdPrice)
                   : bn;
+            if (converted === null) {
+              setCurrency(next);
+              return;
+            }
             setAmount(converted.toFormat(next === "USD" ? 2 : 4, BigNumber.ROUND_DOWN, {
               groupSeparator: "",
               groupSize: 3,

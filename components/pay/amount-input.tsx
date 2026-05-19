@@ -4,18 +4,29 @@ import { useId } from "react";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { SuiGlyph } from "@/components/identity/sui-glyph";
+import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
 
 export type Currency = "SUI" | "USD";
 
-// Placeholder oracle price — wired to a real oracle in step 13.11.
-const SUI_USD_PRICE = new BigNumber("3.20");
-
-export function suiUsd(suiAmount: BigNumber): BigNumber {
-  return suiAmount.multipliedBy(SUI_USD_PRICE);
+/**
+ * SUI → USD. Returns null when `price` is unavailable so callers can show
+ * a placeholder instead of a fake $0.00.
+ */
+export function suiUsd(
+  suiAmount: BigNumber,
+  price: BigNumber | null | undefined,
+): BigNumber | null {
+  if (!price || !price.isFinite() || price.lte(0)) return null;
+  return suiAmount.multipliedBy(price);
 }
 
-export function usdSui(usdAmount: BigNumber): BigNumber {
-  return usdAmount.dividedBy(SUI_USD_PRICE);
+/** USD → SUI. Returns null when `price` is unavailable. */
+export function usdSui(
+  usdAmount: BigNumber,
+  price: BigNumber | null | undefined,
+): BigNumber | null {
+  if (!price || !price.isFinite() || price.lte(0)) return null;
+  return usdAmount.dividedBy(price);
 }
 
 export function AmountInput({
@@ -32,12 +43,17 @@ export function AmountInput({
   className?: string;
 }) {
   const id = useId();
+  const { price, isLoading } = useSuiUsdPrice();
+
+  const hasPrice = price !== null;
+  const bn = new BigNumber(value || "0");
+  const validNumber = value && Number.isFinite(Number(value));
   const counterpart =
-    value && Number.isFinite(Number(value))
+    validNumber && hasPrice
       ? currency === "SUI"
-        ? suiUsd(new BigNumber(value || "0"))
-        : usdSui(new BigNumber(value || "0"))
-      : new BigNumber(0);
+        ? suiUsd(bn, price)
+        : usdSui(bn, price)
+      : null;
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -48,18 +64,29 @@ export function AmountInput({
         <div className="inline-flex border border-ink/25">
           {(["SUI", "USD"] as Currency[]).map((c) => {
             const active = c === currency;
+            const disabled = c === "USD" && !hasPrice;
             return (
               <button
                 key={c}
                 type="button"
-                onClick={() => onCurrencyChange(c)}
+                disabled={disabled}
+                onClick={() => !disabled && onCurrencyChange(c)}
                 className={cn(
                   "px-2.5 py-0.5 font-mono-label transition-colors",
                   active
                     ? "bg-ink text-bone"
                     : "text-ink/60 hover:text-ink",
+                  disabled && "cursor-not-allowed opacity-40 hover:text-ink/60",
                 )}
                 aria-pressed={active}
+                aria-disabled={disabled}
+                title={
+                  disabled
+                    ? isLoading
+                      ? "Loading SUI/USD price…"
+                      : "SUI/USD price unavailable"
+                    : undefined
+                }
               >
                 {c}
               </button>
@@ -85,7 +112,6 @@ export function AmountInput({
           value={value}
           onChange={(e) => {
             const v = e.target.value.replace(/[^0-9.]/g, "");
-            // Allow only one dot.
             const parts = v.split(".");
             const clean =
               parts.length > 2 ? parts[0] + "." + parts.slice(1).join("") : v;
@@ -98,10 +124,15 @@ export function AmountInput({
       </div>
 
       <div className="text-right font-mono text-xs text-ink/45 tabular-nums">
-        ≈{" "}
-        {currency === "SUI"
-          ? "$" + counterpart.toFormat(2, BigNumber.ROUND_DOWN)
-          : counterpart.toFormat(4, BigNumber.ROUND_DOWN) + " SUI"}
+        {counterpart === null ? (
+          <span title={isLoading ? "Loading price…" : "Price unavailable"}>
+            ≈ {currency === "SUI" ? "$—" : "— SUI"}
+          </span>
+        ) : currency === "SUI" ? (
+          <>≈ ${counterpart.toFormat(2, BigNumber.ROUND_DOWN)}</>
+        ) : (
+          <>≈ {counterpart.toFormat(4, BigNumber.ROUND_DOWN)} SUI</>
+        )}
       </div>
     </div>
   );

@@ -280,7 +280,10 @@ export function OnchainProjectCard({
 
         {/* Stats strip */}
         <div className="mt-5 grid grid-cols-3 border-t border-ink/15">
-          <StatCell label="Rate" value={`${project.baseRate}/SUI`} />
+          <StatCell
+            label="Rate"
+            value={`${formatToken(BigInt(project.baseRate ?? 0))}/SUI`}
+          />
           <StatCell
             label="Supply"
             value={formatToken(project.fundingAllocation)}

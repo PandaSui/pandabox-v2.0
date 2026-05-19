@@ -14,6 +14,9 @@ import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
 import { TransactionSuccess } from "./transaction-success";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
+import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
+import { resolveBlobRef } from "@/lib/ipfs";
+import { SuiGlyph } from "@/components/identity/sui-glyph";
 import {
   buildContributeTx,
   IS_DEPLOYED,
@@ -54,6 +57,7 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
   const [currency, setCurrency] = useState<Currency>("SUI");
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
+  const { price: suiUsdPrice } = useSuiUsdPrice();
 
   // ── Sale-state preview ─────────────────────────────────────────────
   const ticker = lastSegment(project.tokenType).toUpperCase() || "TOK";
@@ -69,8 +73,11 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
   const suiAmount = useMemo(() => {
     if (!amount || !Number.isFinite(Number(amount))) return new BigNumber(0);
     const bn = new BigNumber(amount);
-    return currency === "SUI" ? bn : usdSui(bn);
-  }, [amount, currency]);
+    if (currency === "SUI") return bn;
+    // USD entered but no live price yet — treat as 0 SUI; the input UI
+    // already disables the USD toggle when the price is unavailable.
+    return usdSui(bn, suiUsdPrice) ?? new BigNumber(0);
+  }, [amount, currency, suiUsdPrice]);
 
   const amountMist = useMemo(() => {
     if (suiAmount.lte(0)) return 0n;
@@ -101,7 +108,13 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
       ? (cappedTokens * MIST) / BigInt(project.baseRate)
       : 0n;
     return amountMist > usableMist ? amountMist - usableMist : 0n;
-  }, [tokensRaw, remainingAllocation, cappedTokens, project.baseRate, amountMist]);
+  }, [
+    tokensRaw,
+    remainingAllocation,
+    cappedTokens,
+    project.baseRate,
+    amountMist,
+  ]);
 
   const validation = useMemo(() => {
     if (!live) return ended ? "Sale has ended" : "Sale is closed";
@@ -198,16 +211,26 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
               const bn = new BigNumber(amount);
               const converted =
                 currency === "SUI" && next === "USD"
-                  ? suiUsd(bn)
+                  ? suiUsd(bn, suiUsdPrice)
                   : currency === "USD" && next === "SUI"
-                    ? usdSui(bn)
+                    ? usdSui(bn, suiUsdPrice)
                     : bn;
+              if (converted === null) {
+                // Price not yet available — keep the typed value as-is and
+                // just swap the currency label.
+                setCurrency(next);
+                return;
+              }
               setAmount(
-                converted.toFormat(next === "USD" ? 2 : 4, BigNumber.ROUND_DOWN, {
-                  groupSeparator: "",
-                  groupSize: 3,
-                  decimalSeparator: ".",
-                }),
+                converted.toFormat(
+                  next === "USD" ? 2 : 4,
+                  BigNumber.ROUND_DOWN,
+                  {
+                    groupSeparator: "",
+                    groupSize: 3,
+                    decimalSeparator: ".",
+                  },
+                ),
               );
               setCurrency(next);
             }}
@@ -231,9 +254,6 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
               <span className="font-mono tabular-nums text-base">
                 {ended ? "now" : project.endTimeMs > 0 ? "finalize" : "—"}
               </span>
-              <span className="mt-1 block font-mono text-[10px] text-ink/55">
-                via project::claim&lt;T&gt;
-              </span>
             </Preview>
           </div>
 
@@ -255,7 +275,7 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
                 {isValid
                   ? `Pay ${suiAmount.toFormat(2, BigNumber.ROUND_DOWN)} SUI`
                   : amountMist > 0n
-                    ? validation ?? "Unavailable"
+                    ? (validation ?? "Unavailable")
                     : "Enter an amount"}
               </span>
               {isValid && <ArrowDiag size={14} />}
@@ -267,7 +287,10 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
 
         {/* Spec strip — what the on-chain call actually does */}
         <dl className="grid grid-cols-2 border-t border-ink/15">
-          <SpecCell k="base_rate" v={`${project.baseRate} / SUI`} />
+          <SpecCell
+            k="base_rate"
+            v={`${formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)} ${ticker} / SUI`}
+          />
           <SpecCell
             k="remaining"
             v={`${formatToken(remainingAllocation, PROJECT_COIN_DECIMALS)} ${ticker}`}
@@ -290,54 +313,18 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
             primaryLabel="Back to project"
           />
         ) : (
-          <div className="space-y-4 text-xs">
-            <p className="text-ink/55">
-              {IS_DEPLOYED
-                ? "Pre-sign preview. Your wallet will request a signature for this Move call."
-                : "Move package address not configured. Submission is simulated."}
-            </p>
-            <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
-              <Row k="package">{shortMid(PACKAGE_ID)}</Row>
-              <Row k="module">project</Row>
-              <Row k="function">contribute&lt;T&gt;</Row>
-              <Row k="type.T">
-                {project.tokenType ? shortMid(project.tokenType) : "—"}
-              </Row>
-              <Row k="arg.project">{shortMid(project.id)}</Row>
-              <Row k="arg.platform">::env::PLATFORM_OBJECT_ID</Row>
-              <Row k="arg.coin">split({amountMist.toString()} mist)</Row>
-              <Row k="returns">Receipt + refund → sender</Row>
-            </div>
-            {state.kind === "error" && (
-              <p
-                role="alert"
-                className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
-              >
-                {state.message}
-              </p>
-            )}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                disabled={state.kind === "submitting"}
-                onClick={closeInspector}
-                className={cn(CTA_BASE, "h-10 bg-bone text-ink w-auto px-4")}
-              >
-                <span>Cancel</span>
-              </button>
-              <button
-                type="button"
-                disabled={state.kind === "submitting"}
-                onClick={onSubmit}
-                className={cn(CTA_BASE, "h-10 bg-saffron text-ink w-auto px-4")}
-              >
-                <span>
-                  {state.kind === "submitting" ? "Signing…" : "Sign & submit"}
-                </span>
-                <ArrowDiag size={12} />
-              </button>
-            </div>
-          </div>
+          <ContributePreview
+            project={project}
+            ticker={ticker}
+            suiAmount={suiAmount}
+            suiUsdPrice={suiUsdPrice}
+            cappedTokens={cappedTokens}
+            refundedMist={refundedMist}
+            amountMist={amountMist}
+            state={state}
+            onCancel={closeInspector}
+            onSubmit={onSubmit}
+          />
         )}
       </Modal>
     </aside>
@@ -359,6 +346,209 @@ function Preview({
   );
 }
 
+/**
+ * Friendly pre-sign preview: a SUI tile flowing into a token tile, with the
+ * token amount as the headline. The raw Move call lives behind an advanced
+ * disclosure for power users who want to verify before signing.
+ */
+function ContributePreview({
+  project,
+  ticker,
+  suiAmount,
+  suiUsdPrice,
+  cappedTokens,
+  refundedMist,
+  amountMist,
+  state,
+  onCancel,
+  onSubmit,
+}: {
+  project: HydratedProject;
+  ticker: string;
+  suiAmount: BigNumber;
+  suiUsdPrice: BigNumber | null;
+  cappedTokens: bigint;
+  refundedMist: bigint;
+  amountMist: bigint;
+  state: SubmitState;
+  onCancel: () => void;
+  onSubmit: () => void;
+}) {
+  const iconUrl = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
+  const usdValue = suiUsd(suiAmount, suiUsdPrice);
+  const submitting = state.kind === "submitting";
+  const rateText = `${formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)} ${ticker} / SUI`;
+  const suiText = suiAmount.toFormat(
+    suiAmount.isInteger() ? 0 : 4,
+    BigNumber.ROUND_DOWN,
+  );
+
+  return (
+    <div className="space-y-4">
+      {/* You pay */}
+      <div className="border border-ink/15 bg-bone p-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-1">
+            <span className="font-mono-label text-[10px] text-ink/55">
+              You pay
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-3xl tabular-nums text-ink">
+                {suiText}
+              </span>
+              <span className="font-mono-label text-[11px] text-ink/70">
+                SUI
+              </span>
+            </div>
+            <p className="font-mono text-[11px] tabular-nums text-ink/45">
+              {usdValue
+                ? `≈ $${usdValue.toFormat(2, BigNumber.ROUND_DOWN)}`
+                : "≈ $—"}
+            </p>
+          </div>
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-ink/20 bg-ink/[0.04]">
+            <SuiGlyph size={26} className="text-ink" />
+          </div>
+        </div>
+      </div>
+
+      {/* Flow illustration — hairline with a saffron dot travelling down */}
+      <div className="flex items-center justify-center" aria-hidden>
+        <FlowConnector />
+      </div>
+
+      {/* You receive */}
+      <div className="border border-ink bg-bone p-4 shadow-offset-sm">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-1">
+            <span className="font-mono-label text-[10px] text-jade">
+              You receive
+            </span>
+            <div className="flex items-baseline gap-2">
+              <Marker color="saffron">
+                <span className="font-mono text-3xl tabular-nums text-ink">
+                  {formatToken(cappedTokens, PROJECT_COIN_DECIMALS)}
+                </span>
+              </Marker>
+              <span className="font-mono-label text-[11px] text-ink/70">
+                {ticker}
+              </span>
+            </div>
+            <p className="font-mono text-[11px] tabular-nums text-ink/45">
+              at {rateText}
+            </p>
+          </div>
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-ink/20 bg-ink/[0.04]">
+            {iconUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={iconUrl}
+                alt={ticker}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="font-mono-label text-[9px] text-ink/40">
+                  {ticker}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        {refundedMist > 0n && (
+          <p className="mt-3 border-t border-ink/10 pt-3 font-mono text-[11px] text-poppy">
+            + refund {formatSui(refundedMist)} SUI · contribution exceeded
+            remaining allocation
+          </p>
+        )}
+      </div>
+
+      {state.kind === "error" && (
+        <p
+          role="alert"
+          className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
+        >
+          {state.message}
+        </p>
+      )}
+
+      <div className="flex gap-2 pt-1">
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onCancel}
+          className={cn(CTA_BASE, "h-10 w-auto bg-bone px-4 text-ink")}
+        >
+          <span>Cancel</span>
+        </button>
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onSubmit}
+          className={cn(CTA_BASE, "h-10 w-auto bg-saffron px-4 text-ink")}
+        >
+          <span>{submitting ? "Signing…" : "Confirm & sign"}</span>
+          <ArrowDiag size={12} />
+        </button>
+      </div>
+
+      <details className="group">
+        <summary className="cursor-pointer font-mono-label text-[10px] text-ink/45 hover:text-ink">
+          advanced · raw move call
+        </summary>
+        <div className="mt-2 border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
+          <Row k="package">{shortMid(PACKAGE_ID)}</Row>
+          <Row k="module">project</Row>
+          <Row k="function">contribute&lt;T&gt;</Row>
+          <Row k="type.T">
+            {project.tokenType ? shortMid(project.tokenType) : "—"}
+          </Row>
+          <Row k="arg.project">{shortMid(project.id)}</Row>
+          <Row k="arg.coin">split({amountMist.toString()} mist)</Row>
+          <Row k="returns">Receipt + refund → sender</Row>
+        </div>
+      </details>
+    </div>
+  );
+}
+
+function FlowConnector() {
+  return (
+    <svg
+      width="4"
+      height="44"
+      viewBox="0 0 4 44"
+      className="text-ink/25"
+      role="presentation"
+    >
+      <line
+        x1="2"
+        y1="0"
+        x2="2"
+        y2="44"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 2"
+      />
+      <circle r="2.5" cx="2" cy="0" fill="#B8C45E">
+        <animate
+          attributeName="cy"
+          values="0;44"
+          dur="1.6s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          values="0;1;1;0"
+          keyTimes="0;0.15;0.85;1"
+          dur="1.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+    </svg>
+  );
+}
+
 function SpecCell({
   k,
   v,
@@ -369,12 +559,7 @@ function SpecCell({
   border?: boolean;
 }) {
   return (
-    <div
-      className={cn(
-        "px-4 py-3",
-        border && "border-l border-ink/15",
-      )}
-    >
+    <div className={cn("px-4 py-3", border && "border-l border-ink/15")}>
       <span className="font-mono-label text-[10px] text-ink/50 block">{k}</span>
       <div className="mt-1 font-mono tabular-nums text-[12px] text-ink/80">
         {v}

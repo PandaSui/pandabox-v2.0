@@ -134,7 +134,10 @@ export default async function ProjectPage({ params }: Props) {
 
               {/* Stats grid */}
               <div className="mt-7 grid grid-cols-2 border border-ink/15 md:grid-cols-4">
-                <StatCell label="Rate" value={`${project.baseRate}/SUI`} />
+                <StatCell
+                  label="Rate"
+                  value={`${formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)} ${tkr}/SUI`}
+                />
                 <StatCell
                   label="Allocation"
                   value={`${formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)} ${tkr}`}
