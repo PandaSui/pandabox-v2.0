@@ -15,9 +15,16 @@ export type ImageUploadValue = {
   url: string;
 };
 
+type UploadPhase = "transfer" | "pinning";
 type UploadState =
   | { kind: "idle" }
-  | { kind: "uploading"; progress: number; name: string }
+  | {
+      kind: "uploading";
+      phase: UploadPhase;
+      progress: number;
+      name: string;
+      sizeBytes: number;
+    }
   | { kind: "error"; message: string };
 
 /**
@@ -66,10 +73,38 @@ export function ImageUpload({
       abortRef.current?.abort();
       const ac = new AbortController();
       abortRef.current = ac;
-      setState({ kind: "uploading", progress: 0, name: file.name });
+      setState({
+        kind: "uploading",
+        phase: "transfer",
+        progress: 0,
+        name: file.name,
+        sizeBytes: file.size,
+      });
 
       try {
-        const result = await uploadBlob(file, { signal: ac.signal });
+        const result = await uploadBlob(file, {
+          signal: ac.signal,
+          onProgress: (loaded, total) => {
+            const pct =
+              total > 0 ? Math.min(99, Math.round((loaded / total) * 100)) : 0;
+            setState({
+              kind: "uploading",
+              phase: "transfer",
+              progress: pct,
+              name: file.name,
+              sizeBytes: file.size,
+            });
+          },
+          onUploaded: () => {
+            setState({
+              kind: "uploading",
+              phase: "pinning",
+              progress: 100,
+              name: file.name,
+              sizeBytes: file.size,
+            });
+          },
+        });
         onChange({ cid: result.blobId, url: result.gatewayUrl });
         setState({ kind: "idle" });
       } catch (err) {
@@ -83,6 +118,11 @@ export function ImageUpload({
     },
     [onChange],
   );
+
+  const cancelUpload = useCallback(() => {
+    abortRef.current?.abort();
+    setState({ kind: "idle" });
+  }, []);
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -200,17 +240,68 @@ export function ImageUpload({
           </div>
         )}
 
-        {uploading && (
-          <div
-            role="status"
-            aria-live="polite"
-            className="absolute inset-x-0 bottom-0 border-t border-ink/15 bg-bone/90 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70"
-          >
-            <span className="inline-flex items-center gap-2">
-              <span className="block h-1.5 w-1.5 rounded-full bg-saffron stat-live-dot" />
-              pinning to ipfs · {state.name}
-            </span>
-          </div>
+        {state.kind === "uploading" && (
+          <>
+            <div className="pointer-events-none absolute inset-0 bg-bone/45" />
+            <div
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+              className="absolute inset-x-3 bottom-3 border border-ink bg-bone shadow-offset-sm"
+            >
+              <div className="flex items-center justify-between gap-3 px-3 py-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="block h-1.5 w-1.5 rounded-full bg-saffron stat-live-dot" />
+                  <span className="font-mono-label text-[10px] text-ink">
+                    {state.phase === "transfer"
+                      ? "uploading"
+                      : "pinning to ipfs"}
+                  </span>
+                  <span className="truncate font-mono text-[10px] text-ink/45">
+                    · {state.name}
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="font-mono text-[10px] tabular-nums text-ink">
+                    {state.phase === "transfer"
+                      ? `${state.progress}%`
+                      : formatBytes(state.sizeBytes)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={cancelUpload}
+                    className="border border-ink/25 px-2 py-[2px] font-mono-label text-[9px] text-ink/70 transition-colors hover:border-ink hover:text-ink"
+                    aria-label="Cancel upload"
+                  >
+                    cancel
+                  </button>
+                </div>
+              </div>
+              <div
+                className="relative h-[2px] w-full overflow-hidden bg-ink/10"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={
+                  state.phase === "transfer" ? state.progress : undefined
+                }
+              >
+                {state.phase === "transfer" ? (
+                  <div
+                    className="h-full bg-saffron transition-[width] duration-150 ease-out"
+                    style={{ width: `${state.progress}%` }}
+                  />
+                ) : (
+                  <div className="ipfs-indeterminate-bar absolute inset-y-0 left-0 w-1/3 bg-saffron" />
+                )}
+              </div>
+              <p className="px-3 pb-2 pt-1 font-mono text-[9px] leading-snug text-ink/45">
+                {state.phase === "transfer"
+                  ? "sending bytes to the pinning service"
+                  : "pinata is replicating across ipfs nodes — this can take a few seconds for large images"}
+              </p>
+            </div>
+          </>
         )}
       </div>
 
@@ -274,4 +365,10 @@ function UploadGlyph() {
 function shortCid(cid: string): string {
   if (cid.length <= 14) return cid;
   return `${cid.slice(0, 8)}…${cid.slice(-4)}`;
+}
+
+function formatBytes(n: number): string {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KiB`;
+  return `${(n / 1024 / 1024).toFixed(2)} MiB`;
 }

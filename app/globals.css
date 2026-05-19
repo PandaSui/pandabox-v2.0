@@ -475,6 +475,18 @@
   animation: stat-sweep 6s ease-in-out infinite;
 }
 
+@keyframes ipfs-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+.ipfs-indeterminate-bar {
+  animation: ipfs-indeterminate 1.4s ease-in-out infinite;
+}
+
 /* --- How It Works animated diagrams --- */
 @keyframes hiw-stitch {
   0% {

@@ -2,11 +2,13 @@ import Link from "next/link";
 import { PandaMark } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { TreasuryPulse } from "@/components/pulse";
+import { AdminNavLink } from "./admin-nav-link";
 import { cn } from "@pandasui/ui/lib";
 
 const LINKS = [
   { href: "/explore", label: "Explore" },
   { href: "/create", label: "Create" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/docs", label: "Docs" },
 ];
 
@@ -39,6 +41,7 @@ export function Nav({
               {l.label}
             </Link>
           ))}
+          <AdminNavLink />
         </nav>
 
         <div className="flex items-center gap-4">

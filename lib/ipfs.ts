@@ -42,10 +42,19 @@ export type UploadResult = {
 /**
  * Browser-side upload. POSTs the file to `/api/upload`, which forwards it to
  * Pinata with the server-side JWT. Same content uploaded twice gets the same CID.
+ *
+ * `onProgress` fires while bytes are still streaming from the browser; once it
+ * resolves to 100% (or `onUploaded` fires) the bytes are in our route handler
+ * and Pinata is pinning — that's the "pinning to ipfs" wait the UI surfaces.
  */
 export async function uploadBlob(
   data: Blob | ArrayBuffer | Uint8Array | string | File,
-  opts?: { signal?: AbortSignal; filename?: string },
+  opts?: {
+    signal?: AbortSignal;
+    filename?: string;
+    onProgress?: (loaded: number, total: number) => void;
+    onUploaded?: () => void;
+  },
 ): Promise<UploadResult> {
   const form = new FormData();
   if (data instanceof File) {
@@ -68,33 +77,68 @@ export async function uploadBlob(
     );
   }
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: form,
-    signal: opts?.signal,
+  return new Promise<UploadResult>((resolve, reject) => {
+    if (opts?.signal?.aborted) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/upload");
+
+    const onAbort = () => xhr.abort();
+    opts?.signal?.addEventListener("abort", onAbort);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) opts?.onProgress?.(e.loaded, e.total);
+    };
+    xhr.upload.onload = () => opts?.onUploaded?.();
+
+    xhr.onload = () => {
+      opts?.signal?.removeEventListener("abort", onAbort);
+      if (xhr.status < 200 || xhr.status >= 300) {
+        reject(
+          new Error(
+            `IPFS upload failed (${xhr.status}): ${xhr.responseText || xhr.statusText}`,
+          ),
+        );
+        return;
+      }
+      let json: Partial<UploadResult> & { error?: string };
+      try {
+        json = JSON.parse(xhr.responseText);
+      } catch {
+        reject(new Error("Unexpected upload response: not JSON"));
+        return;
+      }
+      if (json.error || !json.blobId || !json.gatewayUrl) {
+        reject(
+          new Error(
+            json.error ??
+              "Unexpected upload response: " +
+                JSON.stringify(json).slice(0, 200),
+          ),
+        );
+        return;
+      }
+      resolve({
+        blobId: json.blobId,
+        gatewayUrl: json.gatewayUrl,
+        alreadyCertified: !!json.alreadyCertified,
+        raw: json.raw,
+      });
+    };
+    xhr.onerror = () => {
+      opts?.signal?.removeEventListener("abort", onAbort);
+      reject(new Error("Network error during upload"));
+    };
+    xhr.onabort = () => {
+      opts?.signal?.removeEventListener("abort", onAbort);
+      reject(new DOMException("Aborted", "AbortError"));
+    };
+
+    xhr.send(form);
   });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(
-      `IPFS upload failed (${res.status}): ${text || res.statusText}`,
-    );
-  }
-
-  const json = (await res.json()) as Partial<UploadResult> & {
-    error?: string;
-  };
-  if (json.error || !json.blobId || !json.gatewayUrl) {
-    throw new Error(
-      json.error ?? "Unexpected upload response: " + JSON.stringify(json).slice(0, 200),
-    );
-  }
-  return {
-    blobId: json.blobId,
-    gatewayUrl: json.gatewayUrl,
-    alreadyCertified: !!json.alreadyCertified,
-    raw: json.raw,
-  };
 }
 
 /**

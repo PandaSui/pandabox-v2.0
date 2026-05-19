@@ -17,7 +17,7 @@ import {
 } from "@/lib/store/wizard-schema";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { Frame } from "@/components/primitives/frame";
-import { TransactionSuccess } from "@/components/pay";
+import { DeploySuccess } from "../deploy-success";
 import {
   buildCreateProjectTx,
   IS_DEPLOYED,
@@ -26,7 +26,19 @@ import {
   UnsoldAction,
 } from "@/lib/contracts/pandabox";
 import { uploadBlob, uploadJson } from "@/lib/ipfs";
+import { formatAmount } from "@/lib/amount";
 import { StepCard, StepHeader } from "../step-header";
+
+const CATEGORY_LABEL: Record<string, string> = {
+  art: "Art",
+  infra: "Infra",
+  dao: "DAO",
+  research: "Research",
+  gaming: "Gaming",
+  music: "Music",
+  social: "Social",
+  rwa: "RWA",
+};
 
 const CTA_BASE =
   "group relative inline-flex items-center justify-center gap-2 h-12 px-6 font-sans font-medium uppercase tracking-[0.12em] text-[0.78rem] " +
@@ -281,74 +293,224 @@ export function StepDeployForm() {
           setInspectorOpen(false);
         }}
         title="Transaction inspector"
+        className={state.kind === "success" ? undefined : "max-w-3xl"}
       >
         {state.kind === "success" ? (
-          <TransactionSuccess
-            title="Project deployed"
+          <DeploySuccess
             projectName={draft.identity.name || "Untitled project"}
+            ticker={draft.identity.ticker}
+            coinSymbol={draft.coin.coinSymbol}
+            coverImage={draft.identity.coverImage}
+            tokensPerSui={draft.sale.tokensPerSui}
+            allocationTokens={draft.sale.allocationTokens}
+            endTimeMs={draft.sale.endTimeMs}
             txDigest={state.digest}
-            primaryHref="/explore"
-            primaryLabel="See it on Explore"
+            onContinue={onFinishSuccess}
+            continueLabel="See it on Explore"
           />
         ) : (
           <div className="space-y-4 text-xs">
-            <p className="text-ink/55">
+            <p className="text-sm text-ink/70">
               {IS_DEPLOYED
-                ? "Pandabox will pin your description + project_details to IPFS, then your wallet signs the create_project Move call."
-                : "Move package address not configured. Submission will be simulated locally."}
+                ? "Review what you're about to publish. Pandabox will pin your description and details to IPFS, then your wallet will sign one transaction that creates the project on Sui."
+                : "Move package not configured — this submission will be simulated locally."}
             </p>
-            <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
-              <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
-              <Row k="module">project</Row>
-              <Row k="function">create_project&lt;T&gt;</Row>
-              <Row k="type.T">
-                {draft.coin.coinType
-                  ? short(draft.coin.coinType)
-                  : "—"}
-              </Row>
-              <Row k="arg.platform">::env::PLATFORM_OBJECT_ID</Row>
-              <Row k="arg.treasury_cap">
-                {short(draft.coin.treasuryCapId ?? "")}
-              </Row>
-              <Row k="arg.metadata">
-                {short(draft.coin.coinMetadataId ?? "")}
-              </Row>
-              <Row k="arg.name">{JSON.stringify(draft.identity.name ?? "")}</Row>
-              <Row k="arg.description_blob_id">
-                {state.kind === "pinning" && state.step === "description"
-                  ? "pinning…"
-                  : "set at submit"}
-              </Row>
-              <Row k="arg.icon_url">
-                {(draft.identity.coverImage ?? "").slice(0, 32) || "—"}…
-              </Row>
-              <Row k="arg.source_code_blob_id">
-                {draft.deploy.sourceCodeBlobId
-                  ? short(draft.deploy.sourceCodeBlobId)
-                  : '""'}
-              </Row>
-              <Row k="arg.project_details_blob_id">
-                {state.kind === "pinning" && state.step === "details"
-                  ? "pinning…"
-                  : "set at submit"}
-              </Row>
-              <Row k="arg.base_rate">
-                {bnScaled(draft.sale.tokensPerSui).toFixed(0)}
-              </Row>
-              <Row k="arg.funding_allocation">
-                {bnScaled(draft.sale.allocationTokens).toFixed(0)}
-              </Row>
-              <Row k="arg.end_time_ms">
-                {draft.sale.endTimeMs == null
-                  ? "none"
-                  : new Date(draft.sale.endTimeMs).toISOString()}
-              </Row>
-              <Row k="arg.unsold_action">
-                {draft.sale.unsoldAction ?? "burn"} ·{" "}
-                {draft.sale.unsoldAction === "transfer_to_creator" ? "1" : "0"}
-              </Row>
-              <Row k="returns">ProjectAdminCap → sender</Row>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+            <div className="space-y-4">
+            <section className="border border-ink/15">
+              <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
+                <span className="font-mono-label text-[10px] text-ink/55">
+                  Project
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInspectorOpen(false);
+                    setStep(1);
+                  }}
+                  className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
+                >
+                  edit
+                </button>
+              </div>
+              <dl className="divide-y divide-ink/10">
+                <SummaryRow label="Name" value={draft.identity.name || "—"} />
+                <SummaryRow
+                  label="Ticker"
+                  value={draft.identity.ticker || "—"}
+                  mono
+                />
+                <SummaryRow
+                  label="Category"
+                  value={
+                    draft.identity.category
+                      ? (CATEGORY_LABEL[draft.identity.category] ??
+                        draft.identity.category)
+                      : "—"
+                  }
+                />
+                <SummaryRow
+                  label="Tagline"
+                  value={draft.identity.tagline || "—"}
+                />
+              </dl>
+            </section>
+
+            <section className="border border-ink/15">
+              <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
+                <span className="font-mono-label text-[10px] text-ink/55">
+                  Your coin
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInspectorOpen(false);
+                    setStep(2);
+                  }}
+                  className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
+                >
+                  edit
+                </button>
+              </div>
+              <dl className="divide-y divide-ink/10">
+                <SummaryRow
+                  label="Symbol"
+                  value={draft.coin.coinSymbol || "—"}
+                  mono
+                />
+                <SummaryRow label="Name" value={draft.coin.coinName || "—"} />
+                <SummaryRow
+                  label="Decimals"
+                  value={String(draft.coin.coinDecimals ?? 9)}
+                  mono
+                />
+              </dl>
+            </section>
             </div>
+
+            <div className="space-y-4">
+            <section className="border border-ink/15">
+              <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
+                <span className="font-mono-label text-[10px] text-ink/55">
+                  Sale terms
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInspectorOpen(false);
+                    setStep(3);
+                  }}
+                  className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
+                >
+                  edit
+                </button>
+              </div>
+              <dl className="divide-y divide-ink/10">
+                <SummaryRow
+                  label="Rate"
+                  value={`1 SUI → ${formatAmount(draft.sale.tokensPerSui ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                />
+                <SummaryRow
+                  label="Total for sale"
+                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                />
+                <SummaryRow
+                  label="Max raise"
+                  value={`${formatAmount(maxRaiseSui(draft.sale.tokensPerSui, draft.sale.allocationTokens), { maxFractionDigits: 4 })} SUI`}
+                />
+                <SummaryRow
+                  label="Sale ends"
+                  value={
+                    draft.sale.endTimeMs == null
+                      ? "Open-ended"
+                      : formatEndsAt(draft.sale.endTimeMs)
+                  }
+                />
+                <SummaryRow
+                  label="Unsold tokens"
+                  value={
+                    draft.sale.unsoldAction === "transfer_to_creator"
+                      ? "Returned to your wallet"
+                      : "Burned"
+                  }
+                />
+              </dl>
+            </section>
+
+            <Frame className="border-poppy bg-poppy/8 [&::after]:bg-poppy/15 [&::before]:bg-poppy/15">
+              <div className="space-y-2 text-xs text-ink/80">
+                <p>
+                  <span className="font-mono-label text-poppy">
+                    You'll keep ·
+                  </span>{" "}
+                  a <strong>ProjectAdminCap</strong> in your wallet — your admin
+                  rights for this project. You can transfer it to a multisig
+                  later.
+                </p>
+                <p>
+                  <span className="font-mono-label text-poppy">
+                    You'll give up ·
+                  </span>{" "}
+                  your <strong>TreasuryCap</strong> and{" "}
+                  <strong>CoinMetadata</strong>. The project takes ownership and
+                  they can't be recovered.
+                </p>
+                <p>
+                  <span className="font-mono-label text-poppy">
+                    Locked on deploy ·
+                  </span>{" "}
+                  name, coin, rate, allocation, end time, unsold-action.
+                  Description, icon and links stay editable.
+                </p>
+              </div>
+            </Frame>
+            </div>
+            </div>
+
+            <details className="group">
+              <summary className="cursor-pointer font-mono-label text-[10px] text-ink/45 hover:text-ink">
+                advanced · raw move call
+              </summary>
+              <div className="mt-2 border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
+                <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
+                <Row k="module">project</Row>
+                <Row k="function">create_project&lt;T&gt;</Row>
+                <Row k="type.T">
+                  {draft.coin.coinType ? short(draft.coin.coinType) : "—"}
+                </Row>
+                <Row k="arg.treasury_cap">
+                  {short(draft.coin.treasuryCapId ?? "")}
+                </Row>
+                <Row k="arg.metadata">
+                  {short(draft.coin.coinMetadataId ?? "")}
+                </Row>
+                <Row k="arg.description_blob_id">
+                  {state.kind === "pinning" && state.step === "description"
+                    ? "pinning…"
+                    : "set at submit"}
+                </Row>
+                <Row k="arg.project_details_blob_id">
+                  {state.kind === "pinning" && state.step === "details"
+                    ? "pinning…"
+                    : "set at submit"}
+                </Row>
+                <Row k="arg.base_rate">
+                  {bnScaled(draft.sale.tokensPerSui).toFixed(0)}
+                </Row>
+                <Row k="arg.funding_allocation">
+                  {bnScaled(draft.sale.allocationTokens).toFixed(0)}
+                </Row>
+                <Row k="arg.unsold_action">
+                  {draft.sale.unsoldAction ?? "burn"} ·{" "}
+                  {draft.sale.unsoldAction === "transfer_to_creator"
+                    ? "1"
+                    : "0"}
+                </Row>
+                <Row k="returns">ProjectAdminCap → sender</Row>
+              </div>
+            </details>
+
             {state.kind === "error" && (
               <p
                 role="alert"
@@ -398,6 +560,55 @@ function Row({ k, children }: { k: string; children: React.ReactNode }) {
       <span className="break-all text-ink">{children}</span>
     </div>
   );
+}
+
+function SummaryRow({
+  label,
+  value,
+  mono = false,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 px-3 py-2">
+      <span className="font-mono-label text-[10px] text-ink/55">{label}</span>
+      <span
+        className={cn(
+          "max-w-[60%] break-words text-right text-ink",
+          mono ? "font-mono text-[12px] tabular-nums" : "text-sm",
+        )}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function maxRaiseSui(
+  tokensPerSui: string | undefined,
+  allocationTokens: string | undefined,
+): string {
+  const rate = new BigNumber(tokensPerSui ?? "0");
+  const alloc = new BigNumber(allocationTokens ?? "0");
+  if (!rate.isFinite() || rate.isZero() || !alloc.isFinite()) return "0";
+  return alloc.dividedBy(rate).toFixed();
+}
+
+function formatEndsAt(ms: number): string {
+  const d = new Date(ms);
+  if (isNaN(d.getTime())) return "—";
+  const date = d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const time = d.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${date} · ${time}`;
 }
 
 function short(s: string): string {
