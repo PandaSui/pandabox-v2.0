@@ -41,12 +41,17 @@ const CTA_BASE =
 export function DashboardShell() {
   const account = useCurrentAccount();
   const [data, setData] = useState<DashboardPayload | null>(null);
-  const [loading, setLoading] = useState(false);
+  // Start in `loading: true` so the first paint shows the skeleton instead
+  // of briefly flashing the empty state while the useEffect spins up the
+  // fetch. Reset to `false` in the no-account branch so the connect-wallet
+  // card doesn't think it's still hydrating.
+  const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!account) {
       setData(null);
+      setLoading(false);
       return;
     }
     const ac = new AbortController();

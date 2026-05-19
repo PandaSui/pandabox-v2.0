@@ -79,15 +79,17 @@ export function AdminPanel({
   // wallet watching the sale (no supporters around to trigger close). We
   // gate the UI on "status is still live AND the end-time has elapsed" so
   // the button doesn't appear when the sale is still legitimately running.
-  const endElapsed =
-    project.endTimeMs > 0 && Date.now() > project.endTimeMs;
+  const endElapsed = project.endTimeMs > 0 && Date.now() > project.endTimeMs;
   const showFinalize = project.status === "live" && endElapsed;
 
   // Available SUI to withdraw equals project.sui_balance (the platform fee is
   // taken from the gross amount when the call executes).
   const availableSui = project.suiBalance;
 
-  const execute = async (action: Action, build: () => ReturnType<typeof buildWithdrawSuiTx>) => {
+  const execute = async (
+    action: Action,
+    build: () => ReturnType<typeof buildWithdrawSuiTx>,
+  ) => {
     if (!account) return;
     setTx({ kind: "submitting", action });
     try {
@@ -143,26 +145,69 @@ export function AdminPanel({
             k="sold"
             v={`${formatToken(project.sold, PROJECT_COIN_DECIMALS)} ${shortCoin(project.tokenType)}`}
           />
-          <SummaryRow
-            k="cap"
-            v={shortMid(cap.capId)}
-            mono
-          />
+          <SummaryRow k="cap" v={shortMid(cap.capId)} mono />
         </div>
 
         <div className="grid grid-cols-1 gap-2 px-5 pb-5">
+          {/*
+           * `withdraw_sui` is gated on the project being finalized — the Move
+           * contract reverts while the sale is still live, even if the
+           * treasury already holds raised SUI. Disable the button until the
+           * sale is closed/compromised so we never build a doomed tx.
+           */}
           <button
             type="button"
             onClick={() => {
               setTx({ kind: "idle" });
               setOpen("withdraw");
             }}
-            disabled={busy || availableSui === 0n}
+            disabled={busy || availableSui === 0n || !closedOrCompromised}
             className={cn(CTA_BASE, "bg-saffron text-ink")}
+            title={
+              !closedOrCompromised
+                ? "Sale must be finalized before SUI can be withdrawn"
+                : availableSui === 0n
+                  ? "Treasury is empty"
+                  : undefined
+            }
           >
             <span>Withdraw SUI</span>
             <ArrowDiag size={12} />
           </button>
+          {!closedOrCompromised && availableSui > 0n && (
+            <div className="flex items-start gap-2 border border-poppy/40 bg-poppy/[0.08] px-3 py-2">
+              <span
+                aria-hidden
+                className="mt-[3px] block h-1.5 w-1.5 shrink-0 rounded-full bg-poppy"
+                style={{
+                  animation: "stat-live-dot 1.4s ease-in-out infinite",
+                }}
+              />
+              <p className="font-mono text-[10.5px] leading-snug text-poppy">
+                <span className="font-semibold uppercase tracking-[0.14em]">
+                  Sale must be finalized
+                </span>{" "}
+                before SUI can be withdrawn.
+                {showFinalize ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTx({ kind: "idle" });
+                      setOpen("finalize");
+                    }}
+                    className="font-mono-label underline-offset-2 hover:underline"
+                  >
+                    finalize sale →
+                  </button>
+                ) : (
+                  <span className="text-poppy/80">
+                    {" "}
+                    Kindly wait for end-time to elapse.
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => {
@@ -242,7 +287,12 @@ export function AdminPanel({
           cap={cap}
           state={tx}
           busy={busy}
+          recipient={account?.address}
           onClose={() => setOpen(null)}
+          onOpenFinalize={() => {
+            setTx({ kind: "idle" });
+            setOpen("finalize");
+          }}
           onSubmit={(amountMist) =>
             execute("withdraw", () =>
               buildWithdrawSuiTx({
@@ -281,10 +331,10 @@ export function AdminPanel({
           body={
             <p>
               Closes the sale on-chain. Anyone can call this once the end-time
-              elapses — calling from your admin wallet just means you're the
-              one paying the gas. After finalize, supporters can{" "}
-              <code>claim</code> their tokens and you can{" "}
-              <code>withdraw_sui</code> the raised funds.
+              elapses — calling from your admin wallet just means you're the one
+              paying the gas. After finalize, supporters can <code>claim</code>{" "}
+              their tokens and you can <code>withdraw_sui</code> the raised
+              funds.
             </p>
           }
           confirm="Finalize sale"
@@ -306,9 +356,10 @@ export function AdminPanel({
           title="Process unsold supply"
           body={
             <p>
-              Burns or returns unsold <code>{shortCoin(project.tokenType)}</code>{" "}
-              to {project.unsoldAction === 1 ? "you" : "the void"} based on
-              this project's <code>unsold_action</code> setting. Callable once.
+              Burns or returns unsold{" "}
+              <code>{shortCoin(project.tokenType)}</code> to{" "}
+              {project.unsoldAction === 1 ? "you" : "the void"} based on this
+              project's <code>unsold_action</code> setting. Callable once.
             </p>
           }
           confirm="Process unsold"
@@ -381,6 +432,8 @@ function WithdrawModal({
   busy,
   onClose,
   onSubmit,
+  onOpenFinalize,
+  recipient,
 }: {
   project: HydratedProject;
   cap: AdminCapHolding;
@@ -388,6 +441,9 @@ function WithdrawModal({
   busy: boolean;
   onClose: () => void;
   onSubmit: (amountMist: bigint) => void;
+  /** Switches the modal stack to the Finalize confirmation when the sale isn't ready. */
+  onOpenFinalize: () => void;
+  recipient?: string;
 }) {
   const max = project.suiBalance;
   const maxSui = Number(max) / 1e9;
@@ -396,12 +452,62 @@ function WithdrawModal({
   const amount = useMemo(() => {
     const bn = new BigNumber(input || "0");
     if (!bn.isFinite() || bn.lte(0)) return 0n;
-    const m = BigInt(bn.multipliedBy(1e9).integerValue(BigNumber.ROUND_DOWN).toFixed(0));
+    const m = BigInt(
+      bn.multipliedBy(1e9).integerValue(BigNumber.ROUND_DOWN).toFixed(0),
+    );
     return m > max ? max : m;
   }, [input, max]);
 
+  const finalized = project.status === "closed";
+  const treasuryHasBalance = max > 0n;
+  const amountValid = amount > 0n && amount <= max;
+
+  // Pre-flight is "all green" only when every prerequisite the Move call
+  // checks is satisfied. The first failure becomes the blocker we surface
+  // at the bottom of the modal.
+  const checks: Check[] = [
+    {
+      label: "You hold the ProjectAdminCap for this project",
+      ok: true,
+    },
+    {
+      label: finalized
+        ? "Sale finalized · withdrawals unlocked"
+        : "Sale must be finalized before SUI can be withdrawn",
+      ok: finalized,
+    },
+    {
+      label: treasuryHasBalance
+        ? `Treasury holds ${formatSui(max)} SUI`
+        : "Treasury is empty — nothing to withdraw",
+      ok: treasuryHasBalance,
+    },
+    {
+      label:
+        amountValid || !treasuryHasBalance
+          ? `Withdrawing ${formatSui(amount)} SUI`
+          : "Enter an amount up to the treasury balance",
+      ok: amountValid || !treasuryHasBalance,
+    },
+  ];
+
+  const blocker = checks.find((c) => !c.ok);
+  // Show a "Finalize first" affordance when finalization is the only thing
+  // standing between the admin and a successful withdraw.
+  const showFinalizeShortcut = !finalized && treasuryHasBalance;
+
+  const fillPct = (p: number) => {
+    const sui = maxSui * p;
+    setInput(sui.toFixed(4));
+  };
+
   return (
-    <Modal open onClose={busy ? () => {} : onClose} title="Withdraw SUI">
+    <Modal
+      open
+      onClose={busy ? () => {} : onClose}
+      title="Withdraw SUI"
+      className={state.kind === "success" ? undefined : "max-w-3xl"}
+    >
       {state.kind === "success" && state.action === "withdraw" ? (
         <Success
           digest={state.digest}
@@ -409,50 +515,290 @@ function WithdrawModal({
           body="The SUI coin has been transferred to your address (less platform fee)."
         />
       ) : (
-        <div className="space-y-4 text-xs">
-          <p className="text-ink/55">
+        <div className="space-y-5 text-xs">
+          <p className="text-[13px] leading-relaxed text-ink/65">
             Withdraws SUI from the project treasury. A platform fee is skimmed
-            at execution time, the rest is transferred as a `Coin&lt;SUI&gt;` to
-            your address.
+            at execution; the remainder is transferred as a{" "}
+            <code className="font-mono text-ink">Coin&lt;SUI&gt;</code> to your
+            address.
           </p>
-          <label className="block">
-            <span className="font-mono-label text-[10px] text-ink/55">
-              Amount (SUI)
-            </span>
-            <div className="mt-2 flex items-center gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) =>
-                  setInput(e.target.value.replace(/[^0-9.]/g, ""))
-                }
-                className="h-11 flex-1 border border-ink/25 bg-bone px-3 font-mono tabular-nums text-base focus:border-ink focus:outline-none focus:shadow-offset-sm"
-              />
-              <button
-                type="button"
-                onClick={() => setInput(maxSui.toFixed(4))}
-                className="h-11 border border-ink/25 px-3 font-mono-label text-[10px] hover:border-ink"
-              >
-                max
-              </button>
+
+          {/* Two-column body — left rail holds the treasury + amount controls,
+              right rail surfaces the payout breakdown + pre-flight checks. */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+            <div className="space-y-4">
+              {/* Treasury readout — the headline number, big and unambiguous */}
+              <div className="border border-ink/20 bg-bone shadow-offset-sm">
+                <div className="flex items-baseline justify-between border-b border-ink/15 px-4 py-2">
+                  <MonoLabel className="text-[10px]">Treasury</MonoLabel>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.16em]",
+                      finalized ? "text-jade" : "text-poppy",
+                    )}
+                  >
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "block h-1.5 w-1.5 rounded-full",
+                        finalized ? "bg-jade" : "bg-poppy",
+                      )}
+                      style={
+                        finalized
+                          ? undefined
+                          : {
+                              animation:
+                                "stat-live-dot 1.4s ease-in-out infinite",
+                            }
+                      }
+                    />
+                    {finalized ? "withdrawable" : "locked · sale live"}
+                  </span>
+                </div>
+                <div className="flex items-end justify-between gap-4 px-4 py-4">
+                  <span className="font-display text-3xl leading-none tabular-nums text-ink md:text-[2.5rem]">
+                    {formatSui(max)}
+                    <span className="ml-2 font-mono text-[11px] uppercase tracking-[0.16em] text-ink/45">
+                      SUI
+                    </span>
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/45">
+                    cap {shortMid(cap.capId)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Amount picker — input + slider + quick-fill chips */}
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <MonoLabel className="text-[10px]">
+                    Amount to withdraw
+                  </MonoLabel>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/45">
+                    {maxSui > 0
+                      ? `${((Number(amount) / 1e9 / maxSui) * 100).toFixed(0)}% of treasury`
+                      : "—"}
+                  </span>
+                </div>
+                <div className="flex items-stretch gap-2">
+                  <div className="relative flex flex-1 items-center border border-ink/25 bg-bone focus-within:border-ink focus-within:shadow-offset-sm">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={input}
+                      onChange={(e) =>
+                        setInput(e.target.value.replace(/[^0-9.]/g, ""))
+                      }
+                      disabled={!treasuryHasBalance}
+                      className="h-12 w-full bg-transparent px-3 font-mono tabular-nums text-base text-ink placeholder:text-ink/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="0.0000"
+                    />
+                    <span className="pr-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+                      SUI
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3">
+                    {[0.25, 0.5, 1].map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => fillPct(p)}
+                        disabled={!treasuryHasBalance}
+                        className={cn(
+                          "h-12 border border-l-0 border-ink/25 px-3 font-mono-label text-[10px] text-ink/70 transition-all duration-200 ease-atelier first:border-l",
+                          "hover:-translate-y-[1px] hover:border-ink hover:text-ink hover:shadow-offset-sm",
+                          "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none",
+                        )}
+                      >
+                        {p === 1 ? "max" : `${p * 100}%`}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Native range — minimal styling, just a thin track. */}
+                <input
+                  type="range"
+                  min={0}
+                  max={Number(max)}
+                  step={Math.max(1, Math.floor(Number(max) / 1000) || 1)}
+                  value={Number(amount)}
+                  onChange={(e) => {
+                    const m = BigInt(e.target.value || "0");
+                    const sui = Number(m) / 1e9;
+                    setInput(sui.toFixed(4));
+                  }}
+                  disabled={!treasuryHasBalance}
+                  aria-label="Withdraw amount"
+                  className="w-full accent-saffron disabled:cursor-not-allowed disabled:opacity-40"
+                />
+              </div>
             </div>
-            <span className="mt-1 block font-mono text-[10px] text-ink/45">
-              treasury · {formatSui(max)} SUI · cap {shortMid(cap.capId)}
-            </span>
-          </label>
+
+            <div className="space-y-4">
+              {/* Payout breakdown — gross, fee note, net */}
+              <div className="border border-ink/15">
+                <div className="border-b border-ink/15 px-4 py-2">
+                  <MonoLabel className="text-[10px]">Payout</MonoLabel>
+                </div>
+                <dl className="divide-y divide-ink/10 text-[12.5px]">
+                  <BreakdownRow
+                    k="Gross"
+                    v={
+                      <span className="font-mono tabular-nums text-ink">
+                        {formatSui(amount)} SUI
+                      </span>
+                    }
+                  />
+                  <BreakdownRow
+                    k="Platform fee"
+                    hint="skimmed by the protocol at execution"
+                    v={
+                      <span className="font-mono tabular-nums text-ink/55">
+                        − protocol bps
+                      </span>
+                    }
+                  />
+                  <BreakdownRow
+                    k="You receive"
+                    v={
+                      <span className="font-mono tabular-nums text-ink">
+                        ≈ {formatSui(amount)} SUI{" "}
+                        <span className="text-ink/45">net</span>
+                      </span>
+                    }
+                    strong
+                  />
+                  {recipient && (
+                    <BreakdownRow
+                      k="Recipient"
+                      v={
+                        <span className="font-mono tabular-nums text-ink/70">
+                          {shortMid(recipient)}
+                        </span>
+                      }
+                    />
+                  )}
+                </dl>
+              </div>
+
+              {/* Pre-flight — checks that mirror the Move call's assertions */}
+              <div className="border border-ink/15">
+                <div className="flex items-baseline justify-between border-b border-ink/15 px-4 py-2">
+                  <MonoLabel className="text-[10px]">Pre-flight</MonoLabel>
+                  <span
+                    className={cn(
+                      "font-mono text-[10px] uppercase tracking-[0.14em]",
+                      blocker ? "text-poppy" : "text-jade",
+                    )}
+                  >
+                    {blocker
+                      ? `${checks.filter((c) => !c.ok).length} blocking`
+                      : "all green"}
+                  </span>
+                </div>
+                <ul className="divide-y divide-ink/10">
+                  {checks.map((c) => (
+                    <li
+                      key={c.label}
+                      className="flex items-baseline gap-3 px-4 py-2.5"
+                    >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "mt-[2px] inline-flex h-4 w-4 shrink-0 items-center justify-center border font-mono text-[9px]",
+                          c.ok
+                            ? "border-jade/50 bg-jade/10 text-jade"
+                            : "border-poppy/50 bg-poppy/10 text-poppy",
+                        )}
+                      >
+                        {c.ok ? "✓" : "!"}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[12.5px]",
+                          c.ok ? "text-ink/75" : "text-poppy",
+                        )}
+                      >
+                        {c.label}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
           {state.kind === "error" && state.action === "withdraw" && (
             <ErrorBanner message={state.message} />
           )}
-          <ModalFooter
-            busy={busy}
-            primaryLabel={busy ? "Signing…" : "Sign & withdraw"}
-            onCancel={onClose}
-            onConfirm={() => onSubmit(amount)}
-            disabled={amount === 0n}
-          />
+
+          {/* Footer — when finalize is the only blocker, offer it inline so
+              the admin can resolve the prerequisite without bouncing out. */}
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-ink/10 pt-3">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={busy}
+              className="h-10 border border-ink bg-bone px-4 font-medium uppercase tracking-[0.12em] text-[0.72rem] text-ink shadow-offset-sm transition-all duration-300 ease-atelier hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+            >
+              Cancel
+            </button>
+            {showFinalizeShortcut ? (
+              <button
+                type="button"
+                onClick={onOpenFinalize}
+                disabled={busy}
+                className="h-10 border border-ink bg-poppy px-4 font-medium uppercase tracking-[0.12em] text-[0.72rem] text-bone shadow-offset-sm transition-all duration-300 ease-atelier hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Finalize sale first →
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onSubmit(amount)}
+                disabled={busy || !!blocker}
+                className="h-10 border border-ink bg-saffron px-4 font-medium uppercase tracking-[0.12em] text-[0.72rem] text-ink shadow-offset-sm transition-all duration-300 ease-atelier hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+              >
+                {busy ? "Signing…" : "Sign & withdraw"}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </Modal>
+  );
+}
+
+type Check = { label: string; ok: boolean };
+
+function BreakdownRow({
+  k,
+  v,
+  hint,
+  strong = false,
+}: {
+  k: string;
+  v: React.ReactNode;
+  hint?: string;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+      <span className="flex flex-col">
+        <span
+          className={cn(
+            "font-mono-label text-[10px]",
+            strong ? "text-ink" : "text-ink/55",
+          )}
+        >
+          {k}
+        </span>
+        {hint && (
+          <span className="font-mono text-[9.5px] text-ink/40">{hint}</span>
+        )}
+      </span>
+      <span className={cn(strong && "font-medium")}>{v}</span>
+    </div>
   );
 }
 
@@ -609,8 +955,8 @@ function TransferModal({
       ) : (
         <div className="space-y-4 text-xs">
           <p className="text-ink/55">
-            Hands the AdminCap to another address. Common targets: a multisig,
-            a DAO contract, a co-founder, or a backup wallet.
+            Hands the AdminCap to another address. Common targets: a multisig, a
+            DAO contract, a co-founder, or a backup wallet.
           </p>
           <label className="block">
             <span className="font-mono-label text-[10px] text-ink/55">
@@ -675,9 +1021,7 @@ function ConfirmModal({
       ) : (
         <div className="space-y-4 text-xs text-ink/65">
           {body}
-          {state.kind === "error" && (
-            <ErrorBanner message={state.message} />
-          )}
+          {state.kind === "error" && <ErrorBanner message={state.message} />}
           <ModalFooter
             busy={busy}
             primaryLabel={busy ? "Signing…" : confirm}
@@ -820,4 +1164,3 @@ function formatToken(raw: bigint, decimals: number): string {
   if (n === 0) return "0";
   return n.toFixed(4);
 }
-

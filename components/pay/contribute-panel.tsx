@@ -24,6 +24,7 @@ import {
   PACKAGE_ID,
   PROJECT_COIN_DECIMALS,
 } from "@/lib/contracts/pandabox";
+import { bustHoldingsCache } from "@/lib/server-actions/projects-cache";
 import type { HydratedProject } from "@/lib/projects";
 
 const CTA_BASE =
@@ -152,6 +153,11 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
       });
       const result = await signAndExecute({ transaction: tx });
       setState({ kind: "success", digest: result.digest });
+      // Bust the holdings cache so the new ContributionReceipt lands on
+      // /dashboard immediately instead of after the 20s `holdings`
+      // revalidate window. Fire-and-forget; the success modal renders on
+      // its own tick regardless of whether the action completes.
+      void bustHoldingsCache().catch(() => {});
       // Wait for the indexer/RPC to see the tx, then re-fetch the RSC tree
       // so the hero progress meter, supporter strip, and activity feed all
       // hydrate to the new on-chain state without a manual page reload.

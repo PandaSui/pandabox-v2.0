@@ -19,6 +19,7 @@ import {
   IS_DEPLOYED,
   PROJECT_COIN_DECIMALS,
 } from "@/lib/contracts/pandabox";
+import { bustHoldingsCache } from "@/lib/server-actions/projects-cache";
 import { resolveBlobRef } from "@/lib/ipfs";
 import type { ReceiptHolding } from "@/lib/holdings";
 import type { HydratedProject } from "@/lib/projects";
@@ -115,6 +116,11 @@ export function ClaimPanel({
       }
       const result = await signAndExecute({ transaction: tx });
       setState({ kind: "success", digest: result.digest });
+      // Claim burns the ContributionReceipt, finalize touches the project
+      // status — either way the dashboard's holdings cache is now stale.
+      // Bust it so /dashboard reflects the change on next visit instead of
+      // waiting out the 20s `holdings` revalidate window.
+      void bustHoldingsCache().catch(() => {});
       // Wait for RPC to see the tx, then re-fetch the RSC tree so the
       // receipt list + sale-status hero hydrate to the post-claim state.
       void client
