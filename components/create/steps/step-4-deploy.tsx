@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   useCurrentAccount,
@@ -26,7 +26,8 @@ import {
   PROJECT_COIN_DECIMALS,
   UnsoldAction,
 } from "@/lib/contracts/pandabox";
-import { uploadBlob, uploadJson } from "@/lib/ipfs";
+import { resolveBlobRef, uploadBlob, uploadJson } from "@/lib/ipfs";
+import { bustProjectsCache } from "@/lib/server-actions/projects-cache";
 import { formatAmount } from "@/lib/amount";
 import { StepCard, StepHeader } from "../step-header";
 
@@ -81,6 +82,15 @@ export function StepDeployForm() {
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  // Tracks whether the component is still mounted so the projectId resolver
+  // can bail out instead of trying to setState after navigation away.
+  const aliveRef = useRef(true);
+  useEffect(() => {
+    aliveRef.current = true;
+    return () => {
+      aliveRef.current = false;
+    };
+  }, []);
 
   const checks = useMemo(() => validate(draft), [draft]);
   const ready = checks.every((c) => c.ok);
@@ -143,6 +153,11 @@ export function StepDeployForm() {
         await new Promise((r) => setTimeout(r, 600));
         const snapshot = snapshotDraft(draft);
         clearPersistedDraft();
+        // Simulated path — still bust the cache so any mocked listing reads
+        // refresh, matching the real-deploy behaviour.
+        // Best-effort cache bust; swallow failures so a cache-server hiccup
+        // can't ever bubble up and look like the deploy itself failed.
+        void bustProjectsCache().catch(() => {});
         setState({
           kind: "success",
           digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
@@ -173,12 +188,17 @@ export function StepDeployForm() {
       const result = await signAndExecute({ transaction: tx });
       const snapshot = snapshotDraft(draft);
       clearPersistedDraft();
+      // Bust the cached project lists used by /, /explore, and /dashboard so
+      // the freshly-deployed project surfaces the moment the user navigates,
+      // instead of waiting out the 60s ISR/data-cache window.
+      void bustProjectsCache();
       // Show the success modal immediately with what we already know. The
       // project ID needs an extra RPC round-trip — we hydrate it in the
       // background so the user isn't waiting.
       setState({ kind: "success", digest: result.digest, snapshot });
       void resolveProjectId(client, result.digest).then((projectId) => {
         if (!projectId) return;
+        if (!aliveRef.current) return;
         setState((s) =>
           s.kind === "success" && s.digest === result.digest
             ? { ...s, snapshot: { ...s.snapshot, projectId } }
@@ -198,10 +218,17 @@ export function StepDeployForm() {
       state.kind === "success" && state.snapshot.projectId
         ? `/p/${state.snapshot.projectId}`
         : "/explore";
-    reset();
+    // Kick off the route transition *before* resetting the wizard. If we
+    // reset() first, the wizard's `step` flips to 1 and `WizardShell` would
+    // unmount StepDeployForm to render StepIdentityForm — the user would
+    // briefly see step 1 between the click and the new route landing.
+    // localStorage was already wiped at submit time, so deferring the
+    // in-memory reset is safe; it just keeps the deploy view visible
+    // until navigation completes.
     setInspectorOpen(false);
     setState({ kind: "idle" });
     router.push(next);
+    setTimeout(reset, 0);
   };
 
   const busy =
@@ -336,7 +363,9 @@ export function StepDeployForm() {
           }
           setInspectorOpen(false);
         }}
-        title="Transaction inspector"
+        title={
+          state.kind === "success" ? "Project deployed" : "Transaction inspector"
+        }
         className={state.kind === "success" ? undefined : "max-w-3xl"}
       >
         {state.kind === "success" ? (
@@ -382,6 +411,10 @@ export function StepDeployForm() {
                   edit
                 </button>
               </div>
+              <CoverPreview
+                src={draft.identity.coverImage}
+                label={draft.identity.ticker || draft.coin.coinSymbol}
+              />
               <dl className="divide-y divide-ink/10">
                 <SummaryRow label="Name" value={draft.identity.name || "—"} />
                 <SummaryRow
@@ -686,6 +719,49 @@ function Row({ k, children }: { k: string; children: React.ReactNode }) {
     <div className="flex items-baseline justify-between gap-3 py-0.5">
       <span className="text-ink/45">{k}</span>
       <span className="break-all text-ink">{children}</span>
+    </div>
+  );
+}
+
+/**
+ * Cover-image confirmation banner inside the inspector's Project section.
+ * Lets the deployer eyeball the artwork they're about to publish on-chain
+ * before signing. Resolves the same way as the success modal — accepts
+ * https URLs, ipfs://… refs, and bare CIDs. Falls back to a labeled
+ * placeholder if no image was uploaded.
+ */
+function CoverPreview({
+  src,
+  label,
+}: {
+  src?: string;
+  label?: string;
+}) {
+  const url = resolveBlobRef(src ?? "")?.url ?? null;
+  const tag = (label || "cover").toUpperCase();
+  return (
+    <div className="relative aspect-[5/2] w-full overflow-hidden border-b border-ink/10 bg-ink/[0.04]">
+      {url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={url}
+          alt="Project cover preview"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <span className="font-mono-label text-[10px] text-ink/40">
+            no cover · {tag}
+          </span>
+        </div>
+      )}
+      <span
+        aria-hidden
+        className="absolute left-2 top-2 inline-flex items-center gap-1.5 border border-ink/20 bg-bone/90 px-1.5 py-0.5 font-mono-label text-[9px] text-ink/70 backdrop-blur-[2px]"
+      >
+        <span className="block h-1 w-1 rounded-full bg-saffron" />
+        cover · {tag}
+      </span>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { MonoLabel } from "@/components/primitives/mono-label";
 import { PandaMark } from "@pandasui/ui";
 
 const PACKAGE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
+  "0x3013ccea6e16aff504ec7f651ec291d048fe28c8046a75e1cd829885aae81333";
 const COMMIT_HASH = process.env.NEXT_PUBLIC_COMMIT_HASH || "dev";
 
 export function Footer({ className }: { className?: string }) {
@@ -58,7 +58,7 @@ export function Footer({ className }: { className?: string }) {
               </span>
             </Row>
             <Row label="Commit">
-              <span className="font-mono text-xs">{COMMIT_HASH.slice(0, 7)}</span>
+              <span className="font-mono text-xs"></span>
             </Row>
           </div>
         </Column>
@@ -114,7 +114,13 @@ function FooterLink({
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-3">
       <span className="font-mono-label text-[10px] text-ink/50">{label}</span>

@@ -11,7 +11,7 @@ import { Address } from "@/components/identity/address";
 import { CoinType } from "@/components/identity/coin-type";
 import { ProjectActionRail } from "@/components/project/project-action-rail";
 import { ActivityFeed } from "@/components/project/activity-feed";
-import { CoverStrip } from "@/components/project/cover-strip";
+import { CoverFrame } from "@/components/project/cover-frame";
 import { SharePill } from "@/components/project/share-pill";
 import { getOnchainProject, type HydratedProject } from "@/lib/projects";
 import { getProjectActivity, type ActivityItem } from "@/lib/activity";
@@ -148,203 +148,206 @@ export default async function ProjectPage({ params }: Props) {
           <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[1.2fr_1fr] lg:py-14">
             {/* Left — identity, progress, supporters, spec line */}
             <div className="min-w-0 flex flex-col justify-center">
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <MonoLabel className="uppercase tracking-[0.18em]">
-                    {category}
-                  </MonoLabel>
-                  <SharePill projectName={project.name} ticker={tkr} />
-                </div>
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <MonoLabel className="uppercase tracking-[0.18em]">
+                  {category}
+                </MonoLabel>
+                <SharePill projectName={project.name} ticker={tkr} />
+              </div>
 
-                <h1 className="mt-3 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
-                  {project.name}
-                </h1>
+              <h1 className="mt-3 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
+                {project.name}
+              </h1>
 
-                {tagline && (
-                  <p className="mt-4 max-w-prose text-lg text-ink/70">
-                    {tagline}
-                  </p>
+              {tagline && (
+                <p className="mt-4 max-w-prose text-lg text-ink/70">
+                  {tagline}
+                </p>
+              )}
+
+              <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+                <span className="inline-flex items-center border border-ink bg-bone px-2.5 py-1 font-mono text-xs">
+                  {tkr}
+                </span>
+                <span className="text-ink/30">·</span>
+                <span className="text-xs text-ink/50">Creator</span>
+                <Address value={project.creator} link />
+                {project.tokenType && (
+                  <>
+                    <span className="text-ink/30">·</span>
+                    <span className="text-xs text-ink/50">CA</span>
+                    <CoinType value={project.tokenType} link />
+                  </>
                 )}
+                {project.verified && (
+                  <>
+                    <span className="text-ink/30">·</span>
+                    <span className="inline-flex items-center gap-1 font-mono-label text-[10px] text-jade">
+                      <span className="block h-1.5 w-1.5 rounded-full bg-jade" />
+                      Verified
+                    </span>
+                  </>
+                )}
+              </div>
 
-                <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-                  <span className="inline-flex items-center border border-ink bg-bone px-2.5 py-1 font-mono text-xs">
-                    {tkr}
+              {/* Progress meter */}
+              <div className="mt-7">
+                <div className="flex items-baseline justify-between">
+                  <MonoLabel className="text-[10px]">Raised</MonoLabel>
+                  <span className="font-mono tabular-nums text-sm text-ink">
+                    {pct.toFixed(2)}
+                    <span className="text-ink/45">%</span>
                   </span>
-                  <span className="text-ink/30">·</span>
-                  <span className="text-xs text-ink/50">creator</span>
-                  <Address value={project.creator} link />
-                  {project.tokenType && (
-                    <>
-                      <span className="text-ink/30">·</span>
-                      <span className="text-xs text-ink/50">ca</span>
-                      <CoinType value={project.tokenType} link />
-                    </>
-                  )}
-                  {project.verified && (
-                    <>
-                      <span className="text-ink/30">·</span>
-                      <span className="inline-flex items-center gap-1 font-mono-label text-[10px] text-jade">
-                        <span className="block h-1.5 w-1.5 rounded-full bg-jade" />
-                        Verified
-                      </span>
-                    </>
-                  )}
                 </div>
-
-                {/* Progress meter */}
-                <div className="mt-7">
-                  <div className="flex items-baseline justify-between">
-                    <MonoLabel className="text-[10px]">Raised</MonoLabel>
-                    <span className="font-mono tabular-nums text-sm text-ink">
-                      {pct.toFixed(2)}
-                      <span className="text-ink/45">%</span>
-                    </span>
-                  </div>
-                  <div className="relative mt-2 h-[5px] overflow-hidden bg-ink/10">
-                    <div
-                      className="absolute inset-y-0 left-0 bg-saffron transition-[width] duration-500 ease-atelier"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <div className="mt-2 flex items-baseline justify-between font-mono text-[12px] tabular-nums text-ink/60">
-                    <span>
-                      <Marker color="saffron">
-                        <span className="text-ink">
-                          {formatSui(raisedMist)} SUI
-                        </span>
-                      </Marker>
-                    </span>
-                    <span>
-                      of {formatSui(targetMist)} SUI{" "}
-                      <span className="text-ink/40">target</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Supporter strip — social proof, even when empty */}
-                <SupporterStrip activity={activity} />
-
-                {/* 3-cell stat strip — the three items that change the click decision */}
-                <div className="mt-6 grid grid-cols-3 border border-ink/15">
-                  <StatCell
-                    label="Status"
-                    value={
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5",
-                          live
-                            ? "text-jade"
-                            : ended
-                              ? "text-poppy"
-                              : "text-ink/55",
-                        )}
-                      >
-                        <span
-                          aria-hidden
-                          className={cn(
-                            "block h-1.5 w-1.5 rounded-full",
-                            live ? "bg-jade" : ended ? "bg-poppy" : "bg-ink/35",
-                          )}
-                          style={
-                            live
-                              ? {
-                                  animation:
-                                    "stat-live-dot 1.4s ease-in-out infinite",
-                                }
-                              : undefined
-                          }
-                        />
-                        {live ? "Live" : ended ? "Ended" : "Closed"}
-                      </span>
-                    }
-                  />
-                  <StatCell
-                    label={
-                      live
-                        ? project.endTimeMs > 0
-                          ? "Ends in"
-                          : "Cap"
-                        : ended
-                          ? "Ended"
-                          : "Sale"
-                    }
-                    value={
-                      live ? (
-                        project.endTimeMs > 0 ? (
-                          <Countdown endMs={project.endTimeMs} />
-                        ) : (
-                          <span className="text-sm text-ink/60">no cap</span>
-                        )
-                      ) : (
-                        <span className="text-sm text-ink/60">
-                          {ended ? "finished" : "closed"}
-                        </span>
-                      )
-                    }
-                    border
-                  />
-                  <StatCell
-                    label="Rate"
-                    value={
-                      <span className="whitespace-nowrap">
-                        {formatToken(BigInt(project.baseRate ?? 0), 0)}
-                        <span className="text-ink/45">/SUI</span>
-                      </span>
-                    }
-                    border
+                <div className="relative mt-2 h-[5px] overflow-hidden bg-ink/10">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-saffron transition-[width] duration-500 ease-atelier"
+                    style={{ width: `${pct}%` }}
                   />
                 </div>
-
-                {/* Tertiary spec line — supply + unsold action + treasury balance */}
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                <div className="mt-2 flex items-baseline justify-between font-mono text-[12px] tabular-nums text-ink/60">
                   <span>
-                    max supply{" "}
-                    <span className="text-ink/70">
-                      {formatToken(
-                        project.fundingAllocation,
-                        PROJECT_COIN_DECIMALS,
-                      )}{" "}
-                      {tkr}
-                    </span>
+                    <Marker color="saffron">
+                      <span className="text-ink">
+                        {formatSui(raisedMist)} SUI
+                      </span>
+                    </Marker>
                   </span>
-                  <span className="text-ink/20">·</span>
                   <span>
-                    unsold{" "}
-                    <span className="text-ink/70">
-                      {project.unsoldAction === UnsoldAction.TransferToCreator
-                        ? "→ creator"
-                        : "burn"}
-                    </span>
-                  </span>
-                  <span className="text-ink/20">·</span>
-                  <span>
-                    remaining{" "}
-                    <span className="text-ink/70">
-                      {formatToken(
-                        project.fundingAllocation - project.sold > 0n
-                          ? project.fundingAllocation - project.sold
-                          : 0n,
-                        PROJECT_COIN_DECIMALS,
-                      )}{" "}
-                      {tkr}
-                    </span>
-                  </span>
-                  <span className="text-ink/20">·</span>
-                  <span>
-                    treasury{" "}
-                    <span className="text-ink/70">
-                      {formatSui(project.suiBalance)} SUI
-                    </span>
+                    of {formatSui(targetMist)} SUI{" "}
+                    <span className="text-ink/40">target</span>
                   </span>
                 </div>
               </div>
 
-            {/* Right — cover image */}
-            <CoverStrip
+              {/* Supporter strip — social proof, even when empty */}
+              <SupporterStrip activity={activity} />
+
+              {/* 3-cell stat strip — the three items that change the click decision */}
+              <div className="mt-6 grid grid-cols-3 border border-ink/15">
+                <StatCell
+                  label="Status"
+                  value={
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5",
+                        live
+                          ? "text-jade"
+                          : ended
+                            ? "text-poppy"
+                            : "text-ink/55",
+                      )}
+                    >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "block h-1.5 w-1.5 rounded-full",
+                          live ? "bg-jade" : ended ? "bg-poppy" : "bg-ink/35",
+                        )}
+                        style={
+                          live
+                            ? {
+                                animation:
+                                  "stat-live-dot 1.4s ease-in-out infinite",
+                              }
+                            : undefined
+                        }
+                      />
+                      {live ? "Live" : ended ? "Ended" : "Closed"}
+                    </span>
+                  }
+                />
+                <StatCell
+                  label={
+                    live
+                      ? project.endTimeMs > 0
+                        ? "Ends in"
+                        : "Cap"
+                      : ended
+                        ? "Ended"
+                        : "Sale"
+                  }
+                  value={
+                    live ? (
+                      project.endTimeMs > 0 ? (
+                        <Countdown endMs={project.endTimeMs} />
+                      ) : (
+                        <span className="text-sm text-ink/60">no cap</span>
+                      )
+                    ) : (
+                      <span className="text-sm text-ink/60">
+                        {ended ? "finished" : "closed"}
+                      </span>
+                    )
+                  }
+                  border
+                />
+                <StatCell
+                  label="Rate"
+                  value={
+                    <span className="whitespace-nowrap">
+                      {formatToken(BigInt(project.baseRate ?? 0), 0)}
+                      <span className="text-ink/45">/SUI</span>
+                    </span>
+                  }
+                  border
+                />
+              </div>
+
+              {/* Tertiary spec line — supply + unsold action + treasury balance */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                <span>
+                  max supply{" "}
+                  <span className="text-ink/70">
+                    {formatToken(
+                      project.fundingAllocation,
+                      PROJECT_COIN_DECIMALS,
+                    )}{" "}
+                    {tkr}
+                  </span>
+                </span>
+                <span className="text-ink/20">·</span>
+                <span>
+                  unsold{" "}
+                  <span className="text-ink/70">
+                    {project.unsoldAction === UnsoldAction.TransferToCreator
+                      ? "→ creator"
+                      : "burn"}
+                  </span>
+                </span>
+                <span className="text-ink/20">·</span>
+                <span>
+                  remaining{" "}
+                  <span className="text-ink/70">
+                    {formatToken(
+                      project.fundingAllocation - project.sold > 0n
+                        ? project.fundingAllocation - project.sold
+                        : 0n,
+                      PROJECT_COIN_DECIMALS,
+                    )}{" "}
+                    {tkr}
+                  </span>
+                </span>
+                <span className="text-ink/20">·</span>
+                <span>
+                  treasury{" "}
+                  <span className="text-ink/70">
+                    {formatSui(project.suiBalance)} SUI
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            {/* Right — cover image, framed as a gallery print */}
+            <CoverFrame
               src={project.iconUrl}
               name={project.name}
-              accent="plum"
+              ticker={tkr}
+              status={live ? "live" : ended ? "ended" : "closed"}
+              projectId={project.id}
+              createdAtMs={project.createdAtMs}
               priority
-              className="aspect-[4/3] lg:aspect-auto lg:min-h-[360px]"
+              className="lg:min-h-[360px]"
             />
           </Container>
         </section>
@@ -509,7 +512,10 @@ function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
   if (count === 0) {
     return (
       <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-ink/55">
-        <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-ink/25" />
+        <span
+          aria-hidden
+          className="block h-1.5 w-1.5 rounded-full bg-ink/25"
+        />
         <span className="lowercase tracking-[0.04em]">
           be the first to back this project
         </span>
@@ -537,12 +543,16 @@ function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
       <span className="lowercase">
         {count} {count === 1 ? "supporter" : "supporters"}
       </span>
-      <span aria-hidden className="text-ink/20">·</span>
+      <span aria-hidden className="text-ink/20">
+        ·
+      </span>
       <span className="lowercase">last by</span>
       <span className="font-mono tabular-nums text-ink/70">
         {shortAddr(last.actor)}
       </span>
-      <span aria-hidden className="text-ink/20">·</span>
+      <span aria-hidden className="text-ink/20">
+        ·
+      </span>
       <span className="lowercase">{rel}</span>
     </div>
   );
@@ -587,18 +597,12 @@ function Countdown({ endMs }: { endMs: number }) {
   const days = Math.floor(ms / 86_400_000);
   const hours = Math.floor((ms % 86_400_000) / 3_600_000);
   const mins = Math.floor((ms % 3_600_000) / 60_000);
-  return (
-    <span>
-      {days > 0 ? `${days}d ${hours}h` : `${hours}h ${mins}m`}
-    </span>
-  );
+  return <span>{days > 0 ? `${days}d ${hours}h` : `${hours}h ${mins}m`}</span>;
 }
 
 function ticker(p: HydratedProject): string {
   return (
-    p.details?.ticker?.trim() ||
-    lastSegment(p.tokenType).toUpperCase() ||
-    "TOK"
+    p.details?.ticker?.trim() || lastSegment(p.tokenType).toUpperCase() || "TOK"
   );
 }
 
