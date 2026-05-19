@@ -6,10 +6,12 @@ import {
   useSignAndExecuteTransaction,
   useSuiClient,
 } from "@mysten/dapp-kit";
+import { useRouter } from "next/navigation";
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
+import { TxHash } from "@/components/identity/tx-hash";
 import {
   buildClaimMultipleTx,
   buildClaimTx,
@@ -17,8 +19,10 @@ import {
   IS_DEPLOYED,
   PROJECT_COIN_DECIMALS,
 } from "@/lib/contracts/pandabox";
+import { resolveBlobRef } from "@/lib/ipfs";
 import type { ReceiptHolding } from "@/lib/holdings";
 import type { HydratedProject } from "@/lib/projects";
+import { ClaimSuccess } from "./claim-success";
 
 const CTA_BASE =
   "group relative inline-flex w-full items-center justify-center gap-2 h-12 px-5 font-sans font-medium uppercase tracking-[0.12em] text-[0.78rem] " +
@@ -63,6 +67,7 @@ export function ClaimPanel({
   const account = useCurrentAccount();
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const router = useRouter();
 
   const [state, setState] = useState<TxState>({ kind: "idle" });
   const [open, setOpen] = useState(false);
@@ -110,7 +115,14 @@ export function ClaimPanel({
       }
       const result = await signAndExecute({ transaction: tx });
       setState({ kind: "success", digest: result.digest });
-      void client.waitForTransaction({ digest: result.digest });
+      // Wait for RPC to see the tx, then re-fetch the RSC tree so the
+      // receipt list + sale-status hero hydrate to the post-claim state.
+      void client
+        .waitForTransaction({ digest: result.digest })
+        .then(() => router.refresh())
+        .catch(() => {
+          /* swallow — success modal still renders */
+        });
     } catch (err) {
       setState({
         kind: "error",
@@ -233,61 +245,49 @@ export function ClaimPanel({
         title={mode === "claim" ? "Claim tokens" : "Finalize sale"}
       >
         {state.kind === "success" ? (
-          <div className="space-y-3 text-xs">
-            <div className="border border-jade/40 bg-jade/[0.06] px-3 py-3 text-jade">
-              <span className="font-mono-label text-[11px]">
-                {mode === "claim" ? "Tokens claimed" : "Sale finalized"}
-              </span>
-              <p className="mt-1 text-ink/75">
-                {mode === "claim"
-                  ? `${ticker} coin transferred to your address. Receipts burned.`
-                  : "Project is now closed. Token claims and admin withdrawals are unlocked."}
-              </p>
-            </div>
-            <p className="break-all font-mono text-[11px] text-ink/55">
-              digest · {state.digest}
-            </p>
-          </div>
+          mode === "claim" ? (
+            <ClaimSuccess
+              projectName={project.name}
+              ticker={ticker}
+              iconUrl={project.iconUrl}
+              tokensFormatted={`${formatToken(totalTokens, PROJECT_COIN_DECIMALS)} ${ticker}`}
+              receiptCount={receipts.length}
+              txDigest={state.digest}
+              onContinue={() => {
+                setOpen(false);
+                setState({ kind: "idle" });
+              }}
+              continueLabel="Back to project"
+            />
+          ) : (
+            <FinalizeSuccess
+              digest={state.digest}
+              onContinue={() => {
+                setOpen(false);
+                setState({ kind: "idle" });
+              }}
+            />
+          )
+        ) : mode === "claim" ? (
+          <ClaimPreview
+            ticker={ticker}
+            iconUrl={project.iconUrl}
+            receiptCount={receipts.length}
+            totalTokensFormatted={`${formatToken(totalTokens, PROJECT_COIN_DECIMALS)} ${ticker}`}
+            totalSuiFormatted={`${formatSui(totalSui)} SUI`}
+            state={state}
+            onCancel={() => setOpen(false)}
+            onSubmit={onSubmit}
+          />
         ) : (
-          <div className="space-y-4 text-xs">
-            <p className="text-ink/55">
-              {mode === "claim"
-                ? `Calls project::${receipts.length > 1 ? "claim_multiple" : "claim"}<T>. Burns ${receipts.length} receipt${receipts.length === 1 ? "" : "s"} and returns a Coin<${ticker}>.`
-                : "Calls project::permissionless_finalize<T>. No-op if conditions aren't met yet."}
-            </p>
-            {state.kind === "error" && (
-              <p
-                role="alert"
-                className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
-              >
-                {state.message}
-              </p>
-            )}
-            <div className="flex justify-end gap-2 border-t border-ink/10 pt-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                disabled={state.kind === "submitting"}
-                className={cn(CTA_BASE, "w-auto h-10 bg-bone text-ink px-4")}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={onSubmit}
-                disabled={state.kind === "submitting"}
-                className={cn(CTA_BASE, "w-auto h-10 bg-saffron text-ink px-4")}
-              >
-                <span>
-                  {state.kind === "submitting"
-                    ? "Signing…"
-                    : mode === "claim"
-                      ? "Sign & claim"
-                      : "Sign & finalize"}
-                </span>
-              </button>
-            </div>
-          </div>
+          <FinalizePreview
+            ticker={ticker}
+            soldFormatted={`${formatToken(project.sold, PROJECT_COIN_DECIMALS)} ${ticker}`}
+            treasuryFormatted={`${formatSui(project.suiBalance)} SUI`}
+            state={state}
+            onCancel={() => setOpen(false)}
+            onSubmit={onSubmit}
+          />
         )}
       </Modal>
     </aside>
@@ -306,6 +306,320 @@ function Stat({
       <MonoLabel className="block text-[10px]">{label}</MonoLabel>
       <div className="mt-1">{children}</div>
     </div>
+  );
+}
+
+/**
+ * Two-tile flow: N receipts being burned → tokens delivered. Matches the
+ * ContributePreview design language so the user reads claim as the inverse
+ * of contribute.
+ */
+function ClaimPreview({
+  ticker,
+  iconUrl,
+  receiptCount,
+  totalTokensFormatted,
+  totalSuiFormatted,
+  state,
+  onCancel,
+  onSubmit,
+}: {
+  ticker: string;
+  iconUrl?: string;
+  receiptCount: number;
+  totalTokensFormatted: string;
+  totalSuiFormatted: string;
+  state: TxState;
+  onCancel: () => void;
+  onSubmit: () => void;
+}) {
+  const resolved = resolveBlobRef(iconUrl)?.url ?? iconUrl ?? "";
+  const submitting = state.kind === "submitting";
+
+  return (
+    <div className="space-y-4">
+      {/* You burn */}
+      <div className="border border-ink/15 bg-bone p-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-1">
+            <span className="font-mono-label text-[10px] text-ink/55">
+              You burn
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-3xl tabular-nums text-ink">
+                {receiptCount}
+              </span>
+              <span className="font-mono-label text-[11px] text-ink/70">
+                {receiptCount === 1 ? "receipt" : "receipts"}
+              </span>
+            </div>
+            <p className="font-mono text-[11px] tabular-nums text-ink/45">
+              {totalSuiFormatted} originally contributed
+            </p>
+          </div>
+          <ReceiptStack count={receiptCount} />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center" aria-hidden>
+        <FlowConnector />
+      </div>
+
+      {/* You receive */}
+      <div className="border border-ink bg-bone p-4 shadow-offset-sm">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-1">
+            <span className="font-mono-label text-[10px] text-jade">
+              You receive
+            </span>
+            <div className="flex items-baseline gap-2">
+              <Marker color="saffron">
+                <span className="font-mono text-3xl tabular-nums text-ink">
+                  {totalTokensFormatted.split(" ")[0]}
+                </span>
+              </Marker>
+              <span className="font-mono-label text-[11px] text-ink/70">
+                {ticker}
+              </span>
+            </div>
+            <p className="font-mono text-[11px] tabular-nums text-ink/45">
+              Coin&lt;{ticker}&gt; sent to your wallet
+            </p>
+          </div>
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-ink/[0.04]">
+            {resolved ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={resolved}
+                alt={ticker}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="font-mono-label text-[9px] text-ink/40">
+                  {ticker}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {state.kind === "error" && (
+        <p
+          role="alert"
+          className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
+        >
+          {state.message}
+        </p>
+      )}
+
+      <div className="flex gap-2 pt-1">
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onCancel}
+          className={cn(CTA_BASE, "h-10 w-auto bg-bone px-4 text-ink")}
+        >
+          <span>Cancel</span>
+        </button>
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onSubmit}
+          className={cn(CTA_BASE, "h-10 w-auto bg-saffron px-4 text-ink")}
+        >
+          <span>{submitting ? "Signing…" : "Confirm & claim"}</span>
+          <ArrowDiag size={12} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FinalizePreview({
+  ticker,
+  soldFormatted,
+  treasuryFormatted,
+  state,
+  onCancel,
+  onSubmit,
+}: {
+  ticker: string;
+  soldFormatted: string;
+  treasuryFormatted: string;
+  state: TxState;
+  onCancel: () => void;
+  onSubmit: () => void;
+}) {
+  const submitting = state.kind === "submitting";
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-ink/70">
+        The sale window has closed. Anyone can finalize to lock in the final
+        sold amount — this unlocks token claims for supporters and SUI
+        withdrawals for the project owner.
+      </p>
+
+      <div className="grid grid-cols-2 border border-ink/15">
+        <div className="border-r border-ink/15 px-4 py-3">
+          <span className="font-mono-label text-[10px] text-ink/55">Sold</span>
+          <div className="mt-1 font-mono text-base tabular-nums text-ink">
+            {soldFormatted}
+          </div>
+        </div>
+        <div className="px-4 py-3">
+          <span className="font-mono-label text-[10px] text-ink/55">
+            Treasury
+          </span>
+          <div className="mt-1 font-mono text-base tabular-nums text-ink">
+            {treasuryFormatted}
+          </div>
+        </div>
+      </div>
+
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+        no-op if the sale isn't ready · gas only · sale becomes claimable for{" "}
+        {ticker} holders
+      </p>
+
+      {state.kind === "error" && (
+        <p
+          role="alert"
+          className="border border-poppy/40 bg-poppy/[0.06] p-2 font-mono text-[11px] text-poppy"
+        >
+          {state.message}
+        </p>
+      )}
+
+      <div className="flex gap-2 pt-1">
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onCancel}
+          className={cn(CTA_BASE, "h-10 w-auto bg-bone px-4 text-ink")}
+        >
+          <span>Cancel</span>
+        </button>
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={onSubmit}
+          className={cn(CTA_BASE, "h-10 w-auto bg-saffron px-4 text-ink")}
+        >
+          <span>{submitting ? "Signing…" : "Confirm & finalize"}</span>
+          <ArrowDiag size={12} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FinalizeSuccess({
+  digest,
+  onContinue,
+}: {
+  digest: string;
+  onContinue: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="border border-jade/40 bg-jade/[0.06] p-4">
+        <div className="flex items-center gap-2">
+          <span
+            aria-hidden
+            className="block h-1.5 w-1.5 rounded-full bg-jade"
+            style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
+          />
+          <span className="font-mono-label text-[10px] text-jade">
+            sale finalized
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-ink/75">
+          The project is now closed. Token claims and admin withdrawals are
+          unlocked.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-mono-label text-[10px] text-ink/55">tx</span>
+        <TxHash value={digest} head={6} tail={4} />
+      </div>
+
+      <div className="flex justify-end pt-1">
+        <button
+          type="button"
+          onClick={onContinue}
+          className={cn(CTA_BASE, "h-10 w-auto bg-ink px-5 text-bone")}
+        >
+          <span>Back to project</span>
+          <ArrowDiag size={12} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ReceiptStack({ count }: { count: number }) {
+  // Three stacked diecut cards with slight rotation — visual cue that
+  // receipts are being burned in batch.
+  const cards = [0, 1, 2].slice(0, Math.min(3, count));
+  return (
+    <div className="relative h-14 w-14 shrink-0" aria-hidden>
+      {cards.map((i) => (
+        <div
+          key={i}
+          className="absolute inset-0 border border-ink/30 bg-bone"
+          style={{
+            transform: `rotate(${(i - 1) * 6}deg) translate(${i * 2}px, ${i * -2}px)`,
+            zIndex: cards.length - i,
+          }}
+        />
+      ))}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="relative z-10 font-mono-label text-[10px] text-ink/60">
+          {count > 3 ? `×${count}` : ""}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function FlowConnector() {
+  return (
+    <svg
+      width="4"
+      height="44"
+      viewBox="0 0 4 44"
+      className="text-ink/25"
+      role="presentation"
+    >
+      <line
+        x1="2"
+        y1="0"
+        x2="2"
+        y2="44"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 2"
+      />
+      <circle r="2.5" cx="2" cy="0" fill="#B8C45E">
+        <animate
+          attributeName="cy"
+          values="0;44"
+          dur="1.6s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          values="0;1;1;0"
+          keyTimes="0;0.15;0.85;1"
+          dur="1.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+    </svg>
   );
 }
 

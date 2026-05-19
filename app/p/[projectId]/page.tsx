@@ -223,12 +223,26 @@ export default async function ProjectPage({ params }: Props) {
                     }
                   />
                   <StatCell
-                    label={ended ? "Ended" : project.endTimeMs > 0 ? "Ends in" : "Cap"}
+                    label={
+                      live
+                        ? project.endTimeMs > 0
+                          ? "Ends in"
+                          : "Cap"
+                        : ended
+                          ? "Ended"
+                          : "Sale"
+                    }
                     value={
-                      project.endTimeMs > 0 ? (
-                        <Countdown endMs={project.endTimeMs} />
+                      live ? (
+                        project.endTimeMs > 0 ? (
+                          <Countdown endMs={project.endTimeMs} />
+                        ) : (
+                          <span className="text-sm text-ink/60">no cap</span>
+                        )
                       ) : (
-                        <span className="text-sm text-ink/60">no cap</span>
+                        <span className="text-sm text-ink/60">
+                          {ended ? "finished" : "closed"}
+                        </span>
                       )
                     }
                     border

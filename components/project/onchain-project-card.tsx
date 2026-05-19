@@ -246,7 +246,7 @@ export function OnchainProjectCard({
 
         {/* Time-pressure cue — status badge lives on the cover now */}
         <div className="mt-2.5 font-mono text-[11px] lowercase text-ink/55">
-          {live ? "ends " : ended ? "ended " : "starts "}
+          {ended ? "ended " : "ends "}
           <RelativeTime
             value={project.endTimeMs}
             className="text-[11px] text-ink/70"

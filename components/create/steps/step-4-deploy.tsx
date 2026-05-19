@@ -48,11 +48,21 @@ const CTA_BASE =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink " +
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
+type SuccessSnapshot = {
+  projectName: string;
+  ticker?: string;
+  coinSymbol?: string;
+  coverImage?: string;
+  tokensPerSui?: string;
+  allocationTokens?: string;
+  endTimeMs?: number | null;
+};
+
 type SubmitState =
   | { kind: "idle" }
   | { kind: "pinning"; step: "description" | "details" }
   | { kind: "signing" }
-  | { kind: "success"; digest: string }
+  | { kind: "success"; digest: string; snapshot: SuccessSnapshot }
   | { kind: "error"; message: string };
 
 export function StepDeployForm() {
@@ -125,10 +135,13 @@ export function StepDeployForm() {
       if (!IS_DEPLOYED) {
         // No package — local-only simulated success.
         await new Promise((r) => setTimeout(r, 600));
+        const snapshot = snapshotDraft(draft);
         setState({
           kind: "success",
           digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
+          snapshot,
         });
+        reset();
         return;
       }
 
@@ -152,7 +165,9 @@ export function StepDeployForm() {
       patchDeploy({ sourceCodeBlobId: draft.deploy.sourceCodeBlobId ?? "" });
 
       const result = await signAndExecute({ transaction: tx });
-      setState({ kind: "success", digest: result.digest });
+      const snapshot = snapshotDraft(draft);
+      setState({ kind: "success", digest: result.digest, snapshot });
+      reset();
     } catch (err) {
       setState({
         kind: "error",
@@ -305,13 +320,13 @@ export function StepDeployForm() {
       >
         {state.kind === "success" ? (
           <DeploySuccess
-            projectName={draft.identity.name || "Untitled project"}
-            ticker={draft.identity.ticker}
-            coinSymbol={draft.coin.coinSymbol}
-            coverImage={draft.identity.coverImage}
-            tokensPerSui={draft.sale.tokensPerSui}
-            allocationTokens={draft.sale.allocationTokens}
-            endTimeMs={draft.sale.endTimeMs}
+            projectName={state.snapshot.projectName}
+            ticker={state.snapshot.ticker}
+            coinSymbol={state.snapshot.coinSymbol}
+            coverImage={state.snapshot.coverImage}
+            tokensPerSui={state.snapshot.tokensPerSui}
+            allocationTokens={state.snapshot.allocationTokens}
+            endTimeMs={state.snapshot.endTimeMs}
             txDigest={state.digest}
             onContinue={onFinishSuccess}
             continueLabel="See it on Explore"
@@ -561,6 +576,20 @@ export function StepDeployForm() {
       </Modal>
     </div>
   );
+}
+
+function snapshotDraft(
+  draft: ReturnType<typeof useWizard.getState>["draft"],
+): SuccessSnapshot {
+  return {
+    projectName: draft.identity.name || "Untitled project",
+    ticker: draft.identity.ticker,
+    coinSymbol: draft.coin.coinSymbol,
+    coverImage: draft.identity.coverImage,
+    tokensPerSui: draft.sale.tokensPerSui,
+    allocationTokens: draft.sale.allocationTokens,
+    endTimeMs: draft.sale.endTimeMs ?? null,
+  };
 }
 
 function Row({ k, children }: { k: string; children: React.ReactNode }) {

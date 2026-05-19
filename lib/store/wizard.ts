@@ -8,21 +8,13 @@ import type { DraftV2 } from "./wizard-schema";
 // won't migrate — they're discarded on first read of the new schema.
 export const STORAGE_KEY = "pandabox:draft:v2";
 
-const DAY = 86400_000;
-const DEFAULT_SALE_DAYS = 14;
-
 export function initialDraft(): DraftV2 {
   return {
     version: 2,
     step: 1,
     identity: {},
     coin: { verified: false },
-    sale: {
-      tokensPerSui: "100",
-      allocationTokens: "1000000",
-      endTimeMs: Date.now() + DEFAULT_SALE_DAYS * DAY,
-      unsoldAction: "burn",
-    },
+    sale: {},
     deploy: {},
   };
 }

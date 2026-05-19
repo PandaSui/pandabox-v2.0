@@ -28,8 +28,8 @@ export function StepSaleForm() {
   const patch = useWizard((s) => s.patchSale);
   const errors = useMemo(() => parseErrors(sale), [sale]);
 
-  const tokensPerSui = sale.tokensPerSui ?? "0";
-  const allocation = sale.allocationTokens ?? "0";
+  const tokensPerSui = sale.tokensPerSui ?? "";
+  const allocation = sale.allocationTokens ?? "";
 
   // Live derived figures.
   const baseRateScaled = useMemo(() => {
