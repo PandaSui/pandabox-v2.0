@@ -65,11 +65,10 @@ export function OnchainProjectCard({
 
   const validParams = hasValidParams(project);
   const safeBaseRate = BigInt(project.baseRate || 1);
-  // base_rate is scaled to 9 decimals — invert `tokens = mist * rate / 1e9`
-  // by multiplying mist by 1e9 first, otherwise targets read as 0.
-  const MIST_PER_SUI = 1_000_000_000n;
-  const raisedMist = (project.sold * MIST_PER_SUI) / safeBaseRate;
-  const targetMist = (project.fundingAllocation * MIST_PER_SUI) / safeBaseRate;
+  // Move contract uses `tokens_raw = mist * base_rate`, so inverting is a
+  // plain division — no extra MIST_PER_SUI factor.
+  const raisedMist = project.sold / safeBaseRate;
+  const targetMist = project.fundingAllocation / safeBaseRate;
 
   const pctBp =
     project.fundingAllocation > 0n

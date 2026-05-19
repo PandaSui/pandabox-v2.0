@@ -22,10 +22,7 @@ export async function FeaturedProjects() {
 
   const totalRaisedMist = top.reduce(
     (acc, p) =>
-      acc +
-      (p.baseRate
-        ? (p.sold * 1_000_000_000n) / BigInt(p.baseRate)
-        : 0n),
+      acc + (p.baseRate ? p.sold / BigInt(p.baseRate) : 0n),
     0n,
   );
 

@@ -1,30 +1,25 @@
 /**
- * Sanity check for project parameters stored on-chain.
+ * Project parameter sanity check.
  *
- * `base_rate` and `funding_allocation` are stored as u64s pre-scaled to
- * `PROJECT_COIN_DECIMALS` (9). Old testnet projects were deployed before
- * the wizard applied that scaling, so they hold raw human numbers like
- * `1000` instead of `1000 * 1e9`. That breaks every downstream calculation
- * (target SUI, displayed rate, holders, etc.) and there's no on-chain way
- * to repair them.
+ * The Move contract uses `tokens_raw = mist × base_rate`, so `base_rate` is
+ * "raw token units per mist of SUI" and any positive value is technically
+ * valid. There's no scaling-based heuristic we can apply to flag broken
+ * projects from the frontend — `hasValidParams` therefore returns `true`
+ * for any project with a non-zero `base_rate` and `funding_allocation`.
  *
- * `hasValidParams` lets every surface flag those projects with a
- * `LEGACY · BAD PARAMS` badge instead of silently rendering nonsense.
+ * Kept as a single entry point so we can re-introduce broader health checks
+ * later (e.g. mismatched coin metadata, blocked creators) without touching
+ * every consumer surface.
  */
-
-/**
- * Any base_rate below this threshold (= 0.001 tokens per SUI after scaling)
- * means the value was never multiplied by 1e9. Real projects always scale,
- * so anything in this range is legacy/broken data.
- */
-const MIN_SCALED_BASE_RATE = 1_000_000n;
 
 export function hasValidParams(project: {
   baseRate: bigint | string | number;
+  fundingAllocation?: bigint | string | number;
 }): boolean {
   try {
     const r = BigInt(project.baseRate ?? 0);
-    return r >= MIN_SCALED_BASE_RATE;
+    const a = BigInt(project.fundingAllocation ?? 0);
+    return r > 0n && a > 0n;
   } catch {
     return false;
   }

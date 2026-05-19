@@ -96,12 +96,20 @@ export function StepDeployForm() {
         { filename: "project_details.json" },
       );
 
-      // 3. Convert UI values → on-chain u64s scaled to 9 decimals.
+      // 3. Convert UI values → on-chain u64s.
+      //
+      // The Move contract uses `tokens_raw = mist * base_rate` (no decimal
+      // divisor), so `base_rate` is "raw token units per mist of SUI" — which
+      // numerically equals "display tokens per SUI" when both sides have the
+      // same decimals. Send the user's tokens-per-SUI number directly.
+      //
+      // `funding_allocation` is a raw token count, so it IS scaled by the
+      // coin decimals.
       const tokensPerSui = new BigNumber(draft.sale.tokensPerSui ?? "0");
       const allocation = new BigNumber(draft.sale.allocationTokens ?? "0");
       const scale = new BigNumber(10).pow(PROJECT_COIN_DECIMALS);
       const baseRate = BigInt(
-        tokensPerSui.multipliedBy(scale).integerValue(BigNumber.ROUND_DOWN).toFixed(0),
+        tokensPerSui.integerValue(BigNumber.ROUND_DOWN).toFixed(0),
       );
       const fundingAllocation = BigInt(
         allocation.multipliedBy(scale).integerValue(BigNumber.ROUND_DOWN).toFixed(0),
@@ -496,7 +504,9 @@ export function StepDeployForm() {
                     : "set at submit"}
                 </Row>
                 <Row k="arg.base_rate">
-                  {bnScaled(draft.sale.tokensPerSui).toFixed(0)}
+                  {new BigNumber(draft.sale.tokensPerSui ?? "0")
+                    .integerValue(BigNumber.ROUND_DOWN)
+                    .toFixed(0)}
                 </Row>
                 <Row k="arg.funding_allocation">
                   {bnScaled(draft.sale.allocationTokens).toFixed(0)}

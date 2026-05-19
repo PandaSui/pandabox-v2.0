@@ -12,7 +12,8 @@ import { cn } from "@pandasui/ui/lib";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
-import { TransactionSuccess } from "./transaction-success";
+import { useRouter } from "next/navigation";
+import { ContributeSuccess } from "./contribute-success";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
 import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
 import { resolveBlobRef } from "@/lib/ipfs";
@@ -33,7 +34,6 @@ const CTA_BASE =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink " +
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
-const MIST = 1_000_000_000n;
 
 type SubmitState =
   | { kind: "idle" }
@@ -58,6 +58,7 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
   const { price: suiUsdPrice } = useSuiUsdPrice();
+  const router = useRouter();
 
   // ── Sale-state preview ─────────────────────────────────────────────
   const ticker = lastSegment(project.tokenType).toUpperCase() || "TOK";
@@ -88,12 +89,13 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
 
   /**
    * Tokens issued for `amountMist` SUI, using the on-chain math:
-   *   tokens_raw = amountMist * base_rate / 10^9
-   * (base_rate is already scaled to coin decimals — both decimals = 9).
+   *   tokens_raw = amountMist * base_rate
+   * (`base_rate` is "raw token units per mist of SUI" — sent unscaled by
+   * the wizard. We do NOT divide by coin decimals here.)
    */
   const tokensRaw = useMemo(() => {
     if (amountMist === 0n) return 0n;
-    return (amountMist * BigInt(project.baseRate || 0)) / MIST;
+    return amountMist * BigInt(project.baseRate || 0);
   }, [amountMist, project.baseRate]);
 
   // Cap effective contribution by remaining allocation. Whatever the user
@@ -105,7 +107,7 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
   const refundedMist = useMemo(() => {
     if (tokensRaw <= remainingAllocation) return 0n;
     const usableMist = project.baseRate
-      ? (cappedTokens * MIST) / BigInt(project.baseRate)
+      ? cappedTokens / BigInt(project.baseRate)
       : 0n;
     return amountMist > usableMist ? amountMist - usableMist : 0n;
   }, [
@@ -150,9 +152,15 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
       });
       const result = await signAndExecute({ transaction: tx });
       setState({ kind: "success", digest: result.digest });
-      // Best-effort revalidation so the page picks up the new sold/balance
-      // shortly after submission.
-      void client.waitForTransaction({ digest: result.digest });
+      // Wait for the indexer/RPC to see the tx, then re-fetch the RSC tree
+      // so the hero progress meter, supporter strip, and activity feed all
+      // hydrate to the new on-chain state without a manual page reload.
+      void client
+        .waitForTransaction({ digest: result.digest })
+        .then(() => router.refresh())
+        .catch(() => {
+          /* swallow — UI still shows the success modal */
+        });
     } catch (err) {
       setState({
         kind: "error",
@@ -285,18 +293,53 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
           )}
         </div>
 
-        {/* Spec strip — what the on-chain call actually does */}
+        {/* Spec strip — plain English, not Move field names */}
         <dl className="grid grid-cols-2 border-t border-ink/15">
           <SpecCell
-            k="base_rate"
-            v={`${formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)} ${ticker} / SUI`}
+            k="Rate"
+            v={`${formatToken(BigInt(project.baseRate ?? 0), 0)} ${ticker} / SUI`}
           />
           <SpecCell
-            k="remaining"
+            k="Remaining"
             v={`${formatToken(remainingAllocation, PROJECT_COIN_DECIMALS)} ${ticker}`}
             border
           />
         </dl>
+
+        {/* How it works — moved from the About card, lives where users decide */}
+        <details className="group border-t border-ink/15">
+          <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-3 font-mono-label text-[10px] text-ink/55 transition-colors hover:text-ink">
+            <span>How it works</span>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="transition-transform group-open:rotate-180"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </summary>
+          <div className="px-5 pb-4 font-mono text-[11px] leading-relaxed text-ink/55">
+            Supporters receive{" "}
+            <span className="text-ink/80">
+              {formatToken(BigInt(project.baseRate ?? 0), 0)} {ticker}
+            </span>{" "}
+            per 1 SUI contributed, up to a total of{" "}
+            <span className="text-ink/80">
+              {formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)}{" "}
+              {ticker}
+            </span>
+            . After the sale closes — by time, sellout, or admin action — anyone
+            can finalize and supporters burn their on-chain receipt for their
+            share of {ticker}.
+          </div>
+        </details>
       </div>
 
       <Modal
@@ -305,12 +348,19 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
         title="Transaction inspector"
       >
         {state.kind === "success" ? (
-          <TransactionSuccess
-            title="Contribution submitted"
+          <ContributeSuccess
             projectName={project.name}
+            ticker={ticker}
+            iconUrl={project.iconUrl}
+            suiAmount={suiAmount}
+            usdAmount={suiUsd(suiAmount, suiUsdPrice)}
+            tokensFormatted={`${formatToken(cappedTokens, PROJECT_COIN_DECIMALS)} ${ticker}`}
+            refundedSui={
+              refundedMist > 0n ? `${formatSui(refundedMist)} SUI` : null
+            }
             txDigest={state.digest}
-            primaryHref={`/p/${project.id}`}
-            primaryLabel="Back to project"
+            onContinue={closeInspector}
+            continueLabel="Back to project"
           />
         ) : (
           <ContributePreview
@@ -377,7 +427,7 @@ function ContributePreview({
   const iconUrl = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
   const usdValue = suiUsd(suiAmount, suiUsdPrice);
   const submitting = state.kind === "submitting";
-  const rateText = `${formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)} ${ticker} / SUI`;
+  const rateText = `${formatToken(BigInt(project.baseRate ?? 0), 0)} ${ticker} / SUI`;
   const suiText = suiAmount.toFormat(
     suiAmount.isInteger() ? 0 : 4,
     BigNumber.ROUND_DOWN,
