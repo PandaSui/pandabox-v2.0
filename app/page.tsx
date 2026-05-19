@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { Nav } from "@/components/nav";
 import {
   FeaturedProjects,
+  FeaturedProjectsSkeleton,
   FinalCta,
   Footer,
   Hero,
@@ -30,7 +32,9 @@ export default async function Landing() {
       <main id="main">
         <Hero stats={heroStats} packageId={PACKAGE_ID} network={network} />
         <HowItWorks />
-        <FeaturedProjects />
+        <Suspense fallback={<FeaturedProjectsSkeleton />}>
+          <FeaturedProjects />
+        </Suspense>
         <TheNumbers />
         <WhySui />
         <FinalCta />

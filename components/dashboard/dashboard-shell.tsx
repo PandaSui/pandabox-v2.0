@@ -443,9 +443,80 @@ function EmptyState({
 
 function Loading() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div className="h-44 animate-pulse border border-ink/15 bg-ink/[0.03]" />
-      <div className="h-44 animate-pulse border border-ink/15 bg-ink/[0.03]" />
+    <div
+      className="grid grid-cols-1 gap-4 md:grid-cols-2"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading projects"
+    >
+      <CardSkeleton />
+      <CardSkeleton />
+      <span className="sr-only">Loading projects…</span>
+    </div>
+  );
+}
+
+/**
+ * Skeleton mirroring the real OwnedCard / SupportedCard so the page
+ * doesn't reflow when data lands. `animate-pulse` on the wrapper ties all
+ * children to the same opacity cycle, so the whole card breathes together
+ * rather than each block flickering on its own beat.
+ */
+function CardSkeleton() {
+  return (
+    <article
+      className="animate-pulse border border-ink/15 bg-bone shadow-offset-sm"
+      aria-hidden
+    >
+      {/* Header — avatar + title + ticker + status badge */}
+      <header className="flex items-center gap-3 border-b border-ink/15 px-5 py-3">
+        <div className="h-10 w-10 shrink-0 rounded-full bg-ink/10" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-4 w-3/5 bg-ink/10" />
+          <div className="flex items-center gap-2">
+            <div className="h-2.5 w-12 bg-ink/10" />
+            <span className="text-ink/15">·</span>
+            <div className="h-2.5 w-24 bg-ink/10" />
+          </div>
+        </div>
+        <div className="h-6 w-20 shrink-0 border border-ink/15 bg-ink/[0.04]" />
+      </header>
+
+      {/* Body */}
+      <div className="space-y-3 px-5 pb-5 pt-3">
+        {/* Progress meter */}
+        <div>
+          <div className="flex items-baseline justify-between">
+            <div className="h-2.5 w-14 bg-ink/10" />
+            <div className="h-2.5 w-10 bg-ink/10" />
+          </div>
+          <div className="relative mt-2 h-[3px] overflow-hidden bg-ink/10">
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-ink/20" />
+          </div>
+        </div>
+
+        {/* Stat strip */}
+        <div className="grid grid-cols-3 border-t border-ink/15 pt-3">
+          <SkeletonStat />
+          <SkeletonStat border />
+          <SkeletonStat border />
+        </div>
+
+        {/* Footer row — cap / CTA */}
+        <div className="flex items-center justify-between border-t border-ink/15 pt-3">
+          <div className="h-2.5 w-32 bg-ink/10" />
+          <div className="h-11 w-28 border border-ink/20 bg-ink/[0.04] shadow-offset-sm" />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SkeletonStat({ border = false }: { border?: boolean }) {
+  return (
+    <div className={cn("space-y-1.5 px-3 py-1.5", border && "border-l border-ink/10")}>
+      <div className="h-2 w-12 bg-ink/10" />
+      <div className="h-3 w-16 bg-ink/10" />
     </div>
   );
 }
