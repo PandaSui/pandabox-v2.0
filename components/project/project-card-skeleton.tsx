@@ -46,7 +46,7 @@ export function ProjectCardSkeleton() {
             <div className="h-2.5 w-28 bg-ink/10" />
             <div className="h-2.5 w-10 bg-ink/10" />
           </div>
-          <div className="relative mt-1.5 h-[2px] overflow-hidden bg-ink/10">
+          <div className="relative mt-1.5 h-[3px] overflow-hidden bg-ink/10">
             <div className="absolute inset-y-0 left-0 w-1/3 bg-ink/25" />
           </div>
         </div>
