@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
@@ -13,6 +14,7 @@ import { getOnchainProject, type HydratedProject } from "@/lib/projects";
 import { getProjectActivity } from "@/lib/activity";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
+import { hasValidParams } from "@/lib/project-health";
 
 type Props = {
   params: Promise<{ projectId: string }>;
@@ -41,11 +43,15 @@ export default async function ProjectPage({ params }: Props) {
   const tkr = ticker(project);
   const ended = project.endTimeMs > 0 && Date.now() > project.endTimeMs;
   const live = project.status === "live" && !ended;
+  const validParams = hasValidParams(project);
 
-  // Sale numbers in display units.
+  // Sale numbers in display units. base_rate is scaled to 9 decimals, so to
+  // invert `tokens_raw = amountMist * base_rate / 1e9` we multiply by 1e9
+  // before dividing — otherwise everything renders as 0.0000 SUI.
   const safeBaseRate = BigInt(project.baseRate || 1);
-  const raisedMist = project.sold / safeBaseRate;
-  const targetMist = project.fundingAllocation / safeBaseRate;
+  const MIST_PER_SUI = 1_000_000_000n;
+  const raisedMist = (project.sold * MIST_PER_SUI) / safeBaseRate;
+  const targetMist = (project.fundingAllocation * MIST_PER_SUI) / safeBaseRate;
   const remaining = project.fundingAllocation - project.sold;
   const pct =
     project.fundingAllocation > 0n
@@ -66,6 +72,49 @@ export default async function ProjectPage({ params }: Props) {
     <>
       <Nav showPulse />
       <main id="main">
+        <Container className="pt-6">
+          <Link
+            href="/explore"
+            className="group inline-flex items-center gap-1.5 font-mono-label text-[10px] text-ink/55 transition-colors hover:text-ink"
+          >
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="transition-transform group-hover:-translate-x-0.5"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            back to explore
+          </Link>
+        </Container>
+
+        {!validParams && (
+          <div className="border-b border-poppy/30 bg-poppy/10">
+            <Container className="flex flex-wrap items-center gap-3 py-3">
+              <span className="inline-flex items-center gap-1.5 border border-poppy/60 bg-poppy/15 px-2 py-1 font-mono-label text-[10px] text-poppy">
+                <span
+                  aria-hidden
+                  className="block h-1.5 w-1.5 rounded-full bg-poppy"
+                />
+                Legacy · bad params
+              </span>
+              <p className="text-sm text-ink/70">
+                This project was deployed before the wizard applied 9-decimal
+                scaling to <code className="font-mono">base_rate</code>. The
+                rate, target, and raised numbers below are off — don't trust
+                them or back this sale.
+              </p>
+            </Container>
+          </div>
+        )}
+
         {/* ─── Hero ─── */}
         <section className="border-b border-ink/15">
           <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[1.2fr_1fr] lg:py-16">
@@ -407,7 +456,9 @@ function AboutTab({
         )}
         <hr className="my-6 border-ink/10" />
         <p className="font-mono text-[11px] leading-relaxed text-ink/55">
-          Supporters receive {project.baseRate} {ticker} per 1 SUI contributed,
+          Supporters receive{" "}
+          {formatToken(BigInt(project.baseRate ?? 0), PROJECT_COIN_DECIMALS)}{" "}
+          {ticker} per 1 SUI contributed,
           up to a total of{" "}
           {formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)}{" "}
           {ticker}. After the sale closes — by time, sellout, or admin action

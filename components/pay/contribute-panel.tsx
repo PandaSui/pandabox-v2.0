@@ -406,8 +406,8 @@ function ContributePreview({
                 : "≈ $—"}
             </p>
           </div>
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-ink/20 bg-ink/[0.04]">
-            <SuiGlyph size={26} className="text-ink" />
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-ink/20 bg-ink/[0.04]">
+            <SuiGlyph size={32} />
           </div>
         </div>
       </div>
@@ -438,7 +438,7 @@ function ContributePreview({
               at {rateText}
             </p>
           </div>
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-ink/20 bg-ink/[0.04]">
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-ink/[0.04]">
             {iconUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

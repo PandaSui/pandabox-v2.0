@@ -1,11 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { Address } from "@/components/identity/address";
 import { RelativeTime } from "@/components/identity/relative-time";
-import { explorerUrl } from "@/lib/sui";
 import type { OnChainProject } from "@/lib/projects";
+import { hasValidParams } from "@/lib/project-health";
+import { TokenDisc } from "./token-disc";
 
 type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
 
@@ -64,16 +63,19 @@ export function OnchainProjectCard({
 }) {
   const a: Accent = accent ?? "plum";
 
+  const validParams = hasValidParams(project);
   const safeBaseRate = BigInt(project.baseRate || 1);
-  const raisedMist = project.sold / safeBaseRate;
-  const targetMist = project.fundingAllocation / safeBaseRate;
+  // base_rate is scaled to 9 decimals — invert `tokens = mist * rate / 1e9`
+  // by multiplying mist by 1e9 first, otherwise targets read as 0.
+  const MIST_PER_SUI = 1_000_000_000n;
+  const raisedMist = (project.sold * MIST_PER_SUI) / safeBaseRate;
+  const targetMist = (project.fundingAllocation * MIST_PER_SUI) / safeBaseRate;
 
   const pctBp =
     project.fundingAllocation > 0n
       ? Number((project.sold * 10_000n) / project.fundingAllocation)
       : 0;
   const pct = Math.min(100, Math.max(0, pctBp / 100));
-  const fillRatio = (pct / 100).toFixed(4);
 
   const ended = Date.now() > project.endTimeMs;
   const live = project.status === "live" && !ended;
@@ -88,78 +90,28 @@ export function OnchainProjectCard({
       )}
     >
       {/* ─── Cover panel ─── */}
-      <div className="relative aspect-[4/3] overflow-hidden border-b border-ink/15 bg-bone">
+      <div className="relative aspect-[16/9] overflow-hidden border-b border-ink/15 bg-bone">
         <div aria-hidden className={cn("absolute inset-0", ACCENT_BG_SOFT[a])} />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, #161310 1px, transparent 1.2px)",
-            backgroundSize: "12px 12px",
-          }}
-        />
 
-        {/* Minted-token treatment: rotating mono seal + ink-bordered disc */}
+        {/* Centered token disc — no seal, no watermark */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative aspect-square h-[82%]">
-            <svg
-              className="absolute inset-0 h-full w-full"
-              viewBox="-50 -50 100 100"
-              aria-hidden
-            >
-              <circle r="39" fill="none" stroke="rgba(22,19,16,0.25)" strokeWidth="0.5" />
-              <polygon points="0,-44 1.6,-42 0,-40 -1.6,-42" fill={ACCENT_HEX[a]} />
-              <polygon points="0,40 1.6,42 0,44 -1.6,42" fill={ACCENT_HEX[a]} />
-            </svg>
-            <svg
-              className="fp-icon-ring absolute inset-0 h-full w-full"
-              viewBox="-50 -50 100 100"
-              aria-hidden
-            >
-              <defs>
-                <path
-                  id={`seal-${project.id.slice(2, 10)}`}
-                  d="M -43 0 a 43 43 0 1 1 86 0 a 43 43 0 1 1 -86 0"
-                  fill="none"
-                />
-              </defs>
-              <text
-                fill={ACCENT_HEX[a]}
-                fontFamily="var(--font-mono), monospace"
-                fontSize="4.4"
-                letterSpacing="0.32em"
-                style={{ textTransform: "uppercase" }}
-              >
-                <textPath href={`#seal-${project.id.slice(2, 10)}`} startOffset="0">
-                  {`· Project · Nº ${String(project.number).padStart(2, "0")} · Pandabox · On-chain · Sui mainnet `.repeat(2)}
-                </textPath>
-              </text>
-            </svg>
-            <div className="absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-[1.5px] border-ink bg-bone">
-              {project.iconUrl ? (
-                <Image
-                  src={project.iconUrl}
-                  alt={`${project.name} icon`}
-                  fill
-                  sizes="(min-width:1024px) 18vw, (min-width:768px) 32vw, 56vw"
-                  priority={priority}
-                  className="fp-cover-img object-cover"
-                  unoptimized
-                />
-              ) : (
-                <IconFallback name={project.name} accent={a} />
-              )}
-            </div>
+          <div className="relative h-[78%] aspect-square overflow-hidden rounded-full border-[1.5px] border-ink bg-bone">
+            <TokenDisc
+              src={project.iconUrl}
+              name={project.name}
+              accent={a}
+              priority={priority}
+              sizes="(min-width:1280px) 18vw, (min-width:1024px) 22vw, (min-width:768px) 30vw, 50vw"
+            />
           </div>
         </div>
 
-        {/* Rank ribbon — top-left (only when supplied) */}
+        {/* Top-left: rank if supplied, otherwise blank */}
         {rank != null && (
-          <div className="absolute left-3 top-3 inline-flex items-center gap-2 bg-bone border border-ink px-2 py-1">
+          <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 border border-ink bg-bone px-1.5 py-0.5">
             <span
               aria-hidden
-              className={cn("block h-1.5 w-1.5 rounded-full", ACCENT_BG_SOLID[a])}
+              className={cn("block h-1 w-1 rounded-full", ACCENT_BG_SOLID[a])}
             />
             <MonoLabel className="text-[9px]">
               Nº {String(rank).padStart(2, "0")}
@@ -167,204 +119,161 @@ export function OnchainProjectCard({
           </div>
         )}
 
-        {project.verified && (
-          <div className="absolute right-3 top-3 inline-flex items-center gap-1 bg-bone border border-ink px-2 py-1">
-            <svg
-              width="9"
-              height="9"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-jade"
+        {/* Top-right: status stack — Legacy + Live/Ended + Verified can all coexist */}
+        <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1">
+          {!validParams && (
+            <span
+              className="inline-flex items-center gap-1 border border-poppy/60 bg-poppy/15 px-1.5 py-0.5 backdrop-blur-[2px]"
+              title="Deployed before 9-decimal scaling fix — numbers are unreliable."
             >
-              <path d="M2 6.5l3 3 5-6" />
-            </svg>
-            <MonoLabel className="text-[9px]">Verified</MonoLabel>
-          </div>
-        )}
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full bg-poppy"
+              />
+              <MonoLabel className="text-[9px] text-poppy">legacy</MonoLabel>
+            </span>
+          )}
 
-        <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 bg-bone/85 backdrop-blur-[2px] border border-ink/40 px-2 py-1">
           <span
-            aria-hidden
             className={cn(
-              "block h-1.5 w-1.5 rounded-full",
-              live ? "bg-jade" : "bg-ink/35",
-            )}
-            style={
+              "inline-flex items-center gap-1 border bg-bone/90 px-1.5 py-0.5 backdrop-blur-[2px]",
               live
-                ? { animation: "stat-live-dot 1.4s ease-in-out infinite" }
-                : undefined
-            }
-          />
-          <MonoLabel className="text-[9px]">
-            {live ? "Live" : project.status === "closed" ? "Closed" : "Idle"}
-          </MonoLabel>
-        </div>
-
-        {tokenSlug && (
-          <span className="absolute bottom-3 right-3 font-mono text-[9px] uppercase tracking-[0.14em] text-ink/55">
-            {tokenSlug}
+                ? "border-jade/60"
+                : ended
+                  ? "border-ink/40"
+                  : "border-ink/30",
+            )}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "block h-1 w-1 rounded-full",
+                live ? "bg-jade" : ended ? "bg-ink/40" : "bg-ink/30",
+              )}
+              style={
+                live
+                  ? { animation: "stat-live-dot 1.4s ease-in-out infinite" }
+                  : undefined
+              }
+            />
+            <MonoLabel
+              className={cn(
+                "text-[9px]",
+                live ? "text-jade" : ended ? "text-ink/60" : "text-ink/55",
+              )}
+            >
+              {live ? "live" : ended ? "ended" : "idle"}
+            </MonoLabel>
           </span>
-        )}
 
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -bottom-2 right-3 font-display text-[88px] leading-none text-ink/[0.06]"
-        >
-          {String(project.number).padStart(2, "0")}
-        </span>
+          {project.verified && (
+            <span className="inline-flex items-center gap-1 border border-ink/30 bg-bone/90 px-1.5 py-0.5 backdrop-blur-[2px]">
+              <svg
+                width="8"
+                height="8"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-jade"
+              >
+                <path d="M2 6.5l3 3 5-6" />
+              </svg>
+              <MonoLabel className="text-[9px]">verified</MonoLabel>
+            </span>
+          )}
+        </div>
       </div>
 
       {/* ─── Body ─── */}
       <Link
         href={`/p/${project.id}`}
-        className="flex flex-1 flex-col px-5 pt-5 pb-4 hover:[&_h3]:underline hover:[&_h3]:underline-offset-4"
+        className="flex flex-1 flex-col px-4 pt-3.5 pb-4"
       >
-        <div className="flex items-baseline justify-between">
-          <MonoLabel accent={a} className={cn("text-[10px]", ACCENT_TEXT[a])}>
-            Project Nº {String(project.number).padStart(2, "0")}
+        <div className="flex items-baseline justify-between gap-2">
+          <MonoLabel
+            accent={a}
+            className={cn(
+              "truncate text-[10px]",
+              ACCENT_TEXT[a],
+            )}
+          >
+            {tokenSlug || `Nº ${String(project.number).padStart(2, "0")}`}
           </MonoLabel>
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
             {relativeAgeLabel(project.createdAtMs)}
           </span>
         </div>
 
-        <h3 className="mt-2 font-display text-2xl leading-tight">
-          {project.name || "Unnamed project"}
-        </h3>
-
-        <div className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] text-ink/55">
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em]">by</span>
-          <span className="font-mono tabular-nums text-ink/70">
-            {shortAddr(project.creator)}
-          </span>
+        <div className="mt-1.5 flex items-center justify-between gap-2">
+          <h3 className="truncate text-base font-medium leading-tight tracking-tight text-ink group-hover:underline group-hover:underline-offset-4">
+            {project.name || "Unnamed project"}
+          </h3>
+          <ArrowGlyph
+            className="shrink-0 text-ink/30 transition-all group-hover:translate-x-0.5 group-hover:text-ink"
+          />
         </div>
 
-        {/* Progress meter */}
-        <div className="mt-5">
-          <div className="flex items-baseline justify-between">
-            <MonoLabel className="text-[10px]">Raised</MonoLabel>
-            <span className="font-mono text-sm tabular-nums text-ink">
-              {pct.toFixed(2)}
+        <p className="mt-0.5 font-mono text-[11px] tabular-nums text-ink/50">
+          by {shortAddr(project.creator)}
+        </p>
+
+        {/* Progress meter — the one signal that drives the click */}
+        <div className="mt-4">
+          <div className="flex items-baseline justify-between font-mono text-[11px] tabular-nums">
+            <span className="text-ink/70">
+              {formatSuiFromMist(raisedMist)} SUI
+              <span className="text-ink/40">
+                {" "}/ {formatSuiFromMist(targetMist)}
+              </span>
+            </span>
+            <span className="text-ink">
+              {pct.toFixed(pct >= 10 ? 0 : 1)}
               <span className="text-ink/45">%</span>
             </span>
           </div>
-          <div className="relative mt-2 h-[3px] overflow-hidden bg-ink/10">
+          <div className="relative mt-1.5 h-[2px] overflow-hidden bg-ink/10">
             <div
               className={cn(
-                "fp-meter-fill absolute inset-y-0 left-0 w-full",
+                "absolute inset-y-0 left-0",
                 ACCENT_BG_SOLID[a],
               )}
-              style={{ ["--fill" as string]: fillRatio }}
+              style={{ width: `${pct}%` }}
             />
-            <div
-              className="fp-meter-fill absolute inset-y-0 left-0 w-full opacity-50"
-              style={{
-                ["--fill" as string]: fillRatio,
-                background:
-                  "linear-gradient(to right, transparent 88%, rgba(255,255,255,0.55) 100%)",
-              }}
-            />
-          </div>
-          <div className="mt-2 flex items-baseline justify-between font-mono text-[11px] tabular-nums text-ink/55">
-            <span>{formatSuiFromMist(raisedMist)} SUI</span>
-            <span>
-              {formatSuiFromMist(targetMist)} SUI{" "}
-              <span className="text-ink/35">target</span>
-            </span>
           </div>
         </div>
 
-        {/* Stats strip */}
-        <div className="mt-5 grid grid-cols-3 border-t border-ink/15">
-          <StatCell
-            label="Rate"
-            value={`${formatToken(BigInt(project.baseRate ?? 0))}/SUI`}
-          />
-          <StatCell
-            label="Supply"
-            value={formatToken(project.fundingAllocation)}
-            border
-          />
-          <StatCell
-            label={ended ? "Ended" : "Ends"}
-            value={
-              <RelativeTime
-                value={project.endTimeMs}
-                className="text-[12px] text-ink"
-              />
-            }
-            border
+        {/* Time-pressure cue — status badge lives on the cover now */}
+        <div className="mt-2.5 font-mono text-[11px] lowercase text-ink/55">
+          {live ? "ends " : ended ? "ended " : "starts "}
+          <RelativeTime
+            value={project.endTimeMs}
+            className="text-[11px] text-ink/70"
           />
         </div>
       </Link>
-
-      <footer className="flex items-center justify-between gap-2 border-t border-ink/15 bg-ink/[0.02] px-5 py-3">
-        <Address
-          value={project.id}
-          head={6}
-          tail={4}
-          link
-          className="text-[11px] text-ink/55"
-        />
-        <a
-          href={explorerUrl("object", project.id)}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/50 transition-colors hover:text-ink"
-        >
-          Suiscan
-          <svg
-            width="9"
-            height="9"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M4 8l4-4M5 4h3v3" />
-          </svg>
-        </a>
-      </footer>
     </article>
   );
 }
 
-function StatCell({
-  label,
-  value,
-  border = false,
-}: {
-  label: string;
-  value: React.ReactNode;
-  border?: boolean;
-}) {
+function ArrowGlyph({ className }: { className?: string }) {
   return (
-    <div className={cn("px-3 py-3", border && "border-l border-ink/15")}>
-      <MonoLabel className="block text-[9px]">{label}</MonoLabel>
-      <div className="mt-1.5 font-mono text-[12px] tabular-nums text-ink">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function IconFallback({ name, accent }: { name: string; accent: Accent }) {
-  const initial = (name?.[0] ?? "P").toUpperCase();
-  return (
-    <div
-      className={cn(
-        "flex h-full w-full items-center justify-center bg-bone",
-        ACCENT_TEXT[accent],
-      )}
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={className}
     >
-      <span className="font-display text-6xl leading-none">{initial}</span>
-    </div>
+      <path d="M7 17 17 7M9 7h8v8" />
+    </svg>
   );
 }
 

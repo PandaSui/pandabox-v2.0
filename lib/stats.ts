@@ -114,7 +114,9 @@ async function computeAggregate(): Promise<OnChainAggregate> {
   let active = 0;
   let closed = 0;
   for (const p of projects) {
-    if (p.baseRate > 0) totalRaised += p.sold / BigInt(p.baseRate);
+    // base_rate is scaled to 9 decimals; mist = sold * 1e9 / base_rate.
+    if (p.baseRate > 0)
+      totalRaised += (p.sold * 1_000_000_000n) / BigInt(p.baseRate);
     totalSold += p.sold;
     if (p.status === "live") active++;
     if (p.status === "closed") closed++;

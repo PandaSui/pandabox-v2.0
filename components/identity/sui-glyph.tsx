@@ -1,5 +1,12 @@
+import Image from "next/image";
 import { cn } from "@pandasui/ui/lib";
 
+/**
+ * Brand SUI mark. Renders /public/sui-logo.png at the requested pixel size.
+ * Accepts the same `size` + `className` props the prior SVG glyph took so all
+ * call sites keep working — `text-*` tints become no-ops (the PNG carries its
+ * own color), but `opacity-*` and layout classes still apply.
+ */
 export function SuiGlyph({
   size = 12,
   className,
@@ -8,20 +15,15 @@ export function SuiGlyph({
   className?: string;
 }) {
   return (
-    <svg
+    <Image
+      src="/sui-logo.png"
+      alt=""
       width={size}
       height={size}
-      viewBox="0 0 24 24"
       aria-hidden
-      className={cn("inline-block align-baseline", className)}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2.5 5 11.2a8 8 0 1 0 14 0L12 2.5Z" />
-      <path d="M8 12.5c1.6 1.4 2.6 2.7 2.6 4.4 0 1.2-.7 2.1-1.7 2.5" />
-      <path d="M16 12.5c-1.6 1.4-2.6 2.7-2.6 4.4 0 1.2.7 2.1 1.7 2.5" />
-    </svg>
+      className={cn("inline-block align-baseline select-none", className)}
+      style={{ width: size, height: size }}
+      priority={false}
+    />
   );
 }
