@@ -80,7 +80,10 @@ const SEEDS: Seed[] = [
     cycleProgress: 0.31,
     cycleDurationDays: 14,
     hasTiers: false,
-    queued: { inDays: 6, summary: "Raise reserved rate to 18%, extend ballot delay to 10d." },
+    queued: {
+      inDays: 6,
+      summary: "Raise reserved rate to 18%, extend ballot delay to 10d.",
+    },
   },
   {
     name: "Council of Bamboo",
@@ -243,7 +246,10 @@ const SEEDS: Seed[] = [
     cycleProgress: 0.92,
     cycleDurationDays: 14,
     hasTiers: true,
-    queued: { inDays: 2, summary: "Lower cash-out tax to 30%, raise payout limit to 42K SUI." },
+    queued: {
+      inDays: 2,
+      summary: "Lower cash-out tax to 30%, raise payout limit to 42K SUI.",
+    },
   },
   {
     name: "Saffron Books",
@@ -268,7 +274,7 @@ const SEEDS: Seed[] = [
     },
     socials: { twitter: "saffronbooks", website: "saffronbooks.press" },
     daysSinceDeploy: 112,
-    cycleProgress: 0.40,
+    cycleProgress: 0.4,
     cycleDurationDays: 14,
     hasTiers: true,
   },
@@ -356,7 +362,10 @@ const SEEDS: Seed[] = [
 ];
 
 // Deterministic 64-hex Sui-shaped id derived from project name + kind.
-function pseudoId(seed: string, kind: "project" | "package" | "cap" | "addr"): string {
+function pseudoId(
+  seed: string,
+  kind: "project" | "package" | "cap" | "addr",
+): string {
   const k = `${kind}:${seed}`;
   let h = 2166136261;
   for (let i = 0; i < k.length; i++) {
@@ -376,30 +385,78 @@ function tiersFor(seed: Seed): Project["tiers"] {
   const base: { name: string; price: bigint; max: number; perks: string }[] =
     seed.category === "art"
       ? [
-          { name: "Print", price: 5n * MIST, max: 200, perks: "Signed print edition + tokens." },
-          { name: "Folio", price: 18n * MIST, max: 50, perks: "Folio bundle, gallery invite, tokens." },
-          { name: "Patron", price: 60n * MIST, max: 10, perks: "Credited patron, studio visit, tokens." },
+          {
+            name: "Print",
+            price: 5n * MIST,
+            max: 200,
+            perks: "Signed print edition + tokens.",
+          },
+          {
+            name: "Folio",
+            price: 18n * MIST,
+            max: 50,
+            perks: "Folio bundle, gallery invite, tokens.",
+          },
+          {
+            name: "Patron",
+            price: 60n * MIST,
+            max: 10,
+            perks: "Credited patron, studio visit, tokens.",
+          },
         ]
       : seed.category === "gaming"
         ? [
-            { name: "Early access", price: 2n * MIST, max: 500, perks: "Closed-beta key + tokens." },
-            { name: "Founder", price: 10n * MIST, max: 100, perks: "Founder badge, name in credits, tokens." },
+            {
+              name: "Early access",
+              price: 2n * MIST,
+              max: 500,
+              perks: "Closed-beta key + tokens.",
+            },
+            {
+              name: "Founder",
+              price: 10n * MIST,
+              max: 100,
+              perks: "Founder badge, name in credits, tokens.",
+            },
           ]
         : seed.category === "research"
           ? [
-              { name: "Reader", price: 1n * MIST, max: 0, perks: "All current and future reports." },
-              { name: "Sponsor", price: 12n * MIST, max: 25, perks: "Logo on report, listed sponsor, tokens." },
+              {
+                name: "Reader",
+                price: 1n * MIST,
+                max: 0,
+                perks: "All current and future reports.",
+              },
+              {
+                name: "Sponsor",
+                price: 12n * MIST,
+                max: 25,
+                perks: "Logo on report, listed sponsor, tokens.",
+              },
             ]
           : [
-              { name: "Supporter", price: 3n * MIST, max: 0, perks: "Supporter NFT + tokens." },
-              { name: "Anchor", price: 25n * MIST, max: 20, perks: "Anchor tier benefits + tokens." },
+              {
+                name: "Supporter",
+                price: 3n * MIST,
+                max: 0,
+                perks: "Supporter NFT + tokens.",
+              },
+              {
+                name: "Anchor",
+                price: 25n * MIST,
+                max: 20,
+                perks: "Anchor tier benefits + tokens.",
+              },
             ];
   return base.map((b) => ({
     id: pseudoId(seed.name + b.name, "addr"),
     name: b.name,
     priceMist: b.price,
     maxSupply: b.max,
-    minted: Math.min(b.max || 999, Math.round((b.max || 999) * (0.2 + ((seed.name.length * 7) % 50) / 100))),
+    minted: Math.min(
+      b.max || 999,
+      Math.round((b.max || 999) * (0.2 + ((seed.name.length * 7) % 50) / 100)),
+    ),
     image: seed.coverImage,
     perks: b.perks,
   }));

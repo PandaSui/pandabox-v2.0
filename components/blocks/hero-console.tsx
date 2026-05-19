@@ -351,10 +351,7 @@ function PulseStrip({
     <div className="relative px-5 pt-4">
       <div className="pointer-events-none absolute left-5 right-5 top-4 bottom-0 grid grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="border-l border-dashed border-ink/[0.06]"
-          />
+          <div key={i} className="border-l border-dashed border-ink/[0.06]" />
         ))}
       </div>
       <svg
@@ -385,8 +382,7 @@ function PulseStrip({
         />
 
         {Array.from({ length: PULSE_CAP }).map((_, i) => {
-          const x =
-            PULSE_W - PULSE_PAD - i * slotWidth - slotWidth / 2;
+          const x = PULSE_W - PULSE_PAD - i * slotWidth - slotWidth / 2;
           return (
             <line
               key={i}
@@ -402,8 +398,7 @@ function PulseStrip({
 
         <g ref={containerRef}>
           {events.map((e, i) => {
-            const x =
-              PULSE_W - PULSE_PAD - i * slotWidth - slotWidth / 2;
+            const x = PULSE_W - PULSE_PAD - i * slotWidth - slotWidth / 2;
             const h = peakHeight(BigInt(e.amountMist), maxPeak);
             const color = ACCENT_HEX[e.projectAccent];
             const opacity = Math.max(0.18, 1 - i / events.length);
@@ -470,7 +465,10 @@ function RecentStream({
       if (!ulRef.current) return;
       const topTx = events[0]?.txHash ?? null;
 
-      if (topTx === lastTopRef.current && arrivalNonce === lastNonceRef.current) {
+      if (
+        topTx === lastTopRef.current &&
+        arrivalNonce === lastNonceRef.current
+      ) {
         return;
       }
       lastTopRef.current = topTx;
@@ -478,9 +476,8 @@ function RecentStream({
 
       if (reduced) return;
 
-      const rows = ulRef.current.querySelectorAll<HTMLElement>(
-        "[data-stream-row]",
-      );
+      const rows =
+        ulRef.current.querySelectorAll<HTMLElement>("[data-stream-row]");
       if (rows.length === 0) return;
 
       if (!initializedRef.current) {
@@ -573,14 +570,12 @@ function RecentStream({
         ) : (
           events.map((e) => <StreamRow key={e.txHash} event={e} />)
         )}
-        {Array.from({ length: Math.max(0, 3 - events.length) }).map(
-          (_, i) => (
-            <li
-              key={`ph-${i}`}
-              className="h-[18px] border-t border-dashed border-ink/[0.08]"
-            />
-          ),
-        )}
+        {Array.from({ length: Math.max(0, 3 - events.length) }).map((_, i) => (
+          <li
+            key={`ph-${i}`}
+            className="h-[18px] border-t border-dashed border-ink/[0.08]"
+          />
+        ))}
       </ul>
     </div>
   );
@@ -615,17 +610,20 @@ function StreamRow({ event }: { event: PulseEventDTO }) {
           style={{ borderColor: color }}
         />
       </span>
-      <Link
-        href={`/p/${event.projectId}`}
+      <span
+        aria-label={`View project ${event.projectName}`}
         className="relative flex items-center gap-2 truncate transition-colors hover:text-ink"
       >
-        <span className="truncate">{event.projectName}</span>
+        {/* Show the project's on-chain object address rather than its name.
+            Pandabox objects are themselves Sui addresses, so this reads as a
+            raw on-chain stream — no curated branding leaking into the feed. */}
+        <Address value={event.projectId} copyable={false} head={4} tail={4} />
         <span className="text-ink/30">←</span>
         <span className="flex items-center gap-1 text-ink">
           <SuiGlyph size={10} className="text-ink/55" />
           {sui}
         </span>
-      </Link>
+      </span>
       <span className="relative flex items-center gap-2 text-ink/45">
         <Address value={event.payer} copyable={false} head={4} tail={4} />
         <RelativeTime
@@ -689,10 +687,7 @@ function StatsFooter({
   return (
     <div className="grid grid-cols-[0.85fr_0.9fr_1.25fr] border-t border-ink/15">
       <StatCell label="Projects" accent="saffron">
-        <SplitFlapCounter
-          value={projectCount}
-          className="text-lg md:text-xl"
-        />
+        <SplitFlapCounter value={projectCount} className="text-lg md:text-xl" />
       </StatCell>
 
       <StatCell label="Platform fee" accent="poppy" border>
@@ -706,12 +701,7 @@ function StatsFooter({
         )}
       </StatCell>
 
-      <StatCell
-        label="Treasury"
-        accent="jade"
-        border
-        ruleRef={treasuryRuleRef}
-      >
+      <StatCell label="Treasury" accent="jade" border ruleRef={treasuryRuleRef}>
         {treasuryAddress ? (
           <Address
             value={treasuryAddress}
@@ -748,10 +738,7 @@ function StatCell({
   };
   return (
     <div
-      className={cn(
-        "relative px-4 py-4",
-        border && "border-l border-ink/15",
-      )}
+      className={cn("relative px-4 py-4", border && "border-l border-ink/15")}
     >
       <span
         ref={ruleRef}

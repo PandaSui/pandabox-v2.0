@@ -46,9 +46,8 @@ export function Hero({ stats, packageId, network }: HeroProps) {
       ).matches;
       if (reduce) return;
 
-      const words = scope.current?.querySelectorAll<HTMLElement>(
-        "[data-hero-word]",
-      );
+      const words =
+        scope.current?.querySelectorAll<HTMLElement>("[data-hero-word]");
       if (words && words.length) {
         gsap.fromTo(
           words,
@@ -79,10 +78,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
   );
 
   return (
-    <section
-      ref={scope}
-      className="relative overflow-hidden"
-    >
+    <section ref={scope} className="relative overflow-hidden">
       <NoiseLayer />
 
       {/* Faint structural grid behind the whole hero — 12-col hairlines that
@@ -130,7 +126,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
             {renderWords("funding.")}
             <br className="hidden sm:block" />
             <span className="inline-flex items-baseline gap-3">
-              {renderWords("On Sui.")}
+              {renderWords("On Sui")}
               <SerifPunctuator />
             </span>
           </h1>
@@ -140,8 +136,8 @@ export function Hero({ stats, packageId, network }: HeroProps) {
             className="mt-7 max-w-[48ch] text-base text-ink/70 opacity-0 md:text-lg"
           >
             Pandabox is the programmable funding platform for Sui. Launch a
-            project in minutes. Receive SUI, issue tokens, define payouts —
-            all on-chain, all transparent, all yours.
+            project in minutes. Receive SUI, issue tokens, define payouts — all
+            on-chain, all transparent, all yours.
           </p>
 
           <div
@@ -229,10 +225,16 @@ function SerifPunctuator() {
 }
 
 function renderWords(text: string) {
-  return text.split(" ").map((w, i) => (
+  // Each word is its own `inline-block` so GSAP can stagger them
+  // independently. Trailing whitespace inside `inline-block` collapses on
+  // some browsers (Chrome's text run merging eats it), so use a non-
+  // breaking space — guarantees the gap between words renders regardless
+  // of box layout or font metrics.
+  const words = text.split(" ");
+  return words.map((w, i) => (
     <span key={`${i}-${w}`} data-hero-word className="inline-block opacity-0">
       {w}
-      {i < text.split(" ").length - 1 ? " " : ""}
+      {i < words.length - 1 ? " " : ""}
     </span>
   ));
 }

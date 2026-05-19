@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
@@ -154,13 +155,15 @@ export function OnchainProjectCard({
       // Reversible hover choreography — one timeline, paused at 0.
       const disc = scope.current.querySelector<HTMLElement>("[data-disc]");
       const cover = scope.current.querySelector<HTMLElement>("[data-cover-tint]");
+      const coverImg = scope.current.querySelector<HTMLElement>("[data-cover-img]");
       const arrow = scope.current.querySelector<HTMLElement>("[data-arrow]");
       const ring = scope.current.querySelector<HTMLElement>("[data-disc-ring]");
 
       const hover = gsap
-        .timeline({ paused: true, defaults: { ease: "power3.out", duration: 0.35 } })
+        .timeline({ paused: true, defaults: { ease: "power3.out", duration: 0.4 } })
         .to(disc, { scale: 1.05 }, 0)
         .to(cover, { opacity: 1 }, 0)
+        .to(coverImg, { scale: 1.35, opacity: 0.8 }, 0)
         .to(arrow, { x: 4, y: -4 }, 0)
         .to(ring, { opacity: 0.85, scale: 1.04 }, 0);
 
@@ -195,28 +198,38 @@ export function OnchainProjectCard({
     >
       {/* ─── Cover panel ─── */}
       <div className="relative aspect-[16/9] overflow-hidden border-b border-ink/15 bg-bone">
-        {/* Soft accent tint + hairline crosshatch texture */}
-        <div
-          aria-hidden
-          className={cn("absolute inset-0", ACCENT_BG_SOFT[a])}
-        />
-        {/* Hover-only deepener — sits on top of the base tint and fades in
-            via the GSAP hover timeline. Same accent class so the tint
-            roughly doubles when the user is engaging with the card. */}
+        {/* Backdrop: a softly-blurred copy of the project logo. We render it
+            zoomed slightly past the panel so the blur halo doesn't reveal
+            the bone background at the edges. When the project has no icon
+            we fall back to the soft accent tint, preserving the visual rhythm. */}
+        {project.iconUrl ? (
+          <div aria-hidden className="absolute inset-0 overflow-hidden">
+            <Image
+              src={project.iconUrl}
+              alt=""
+              fill
+              unoptimized
+              sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+              data-cover-img
+              className="scale-125 object-cover opacity-65 blur-2xl saturate-125"
+            />
+          </div>
+        ) : (
+          <div
+            aria-hidden
+            className={cn("absolute inset-0", ACCENT_BG_SOFT[a])}
+          />
+        )}
+        {/* A whisper of the bone background on top of the blur so the disc
+            doesn't fight the backdrop for contrast. */}
+        <div aria-hidden className="absolute inset-0 bg-bone/35" />
+        {/* Hover-only deepener — fades in via the GSAP hover timeline. We
+            tint with the project accent so the cover comes alive when the
+            user is engaging with it. */}
         <div
           aria-hidden
           data-cover-tint
           className={cn("absolute inset-0 opacity-0", ACCENT_BG_SOFT[a])}
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              "linear-gradient(45deg, currentColor 1px, transparent 1px), linear-gradient(-45deg, currentColor 1px, transparent 1px)",
-            backgroundSize: "14px 14px",
-            color: "rgb(28 27 26 / 1)",
-          }}
         />
 
         {/* Centered token disc with a thin GSAP-animated ring */}
@@ -246,7 +259,7 @@ export function OnchainProjectCard({
 
         {/* Top-left: rank if supplied, otherwise blank */}
         {rank != null && (
-          <div className="diecut absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 border border-ink bg-bone px-2 py-1 shadow-offset-sm">
+          <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 border border-ink bg-bone px-2 py-1 shadow-offset-sm">
             <span
               aria-hidden
               className={cn("block h-1 w-1 rounded-full", ACCENT_BG_SOLID[a])}
@@ -261,7 +274,7 @@ export function OnchainProjectCard({
         <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1">
           {!validParams && (
             <span
-              className="diecut inline-flex items-center gap-1 border border-poppy/60 bg-poppy/15 px-2 py-1 backdrop-blur-[2px]"
+              className="inline-flex items-center gap-1 border border-poppy/60 bg-poppy/15 px-2 py-1 backdrop-blur-[2px]"
               title="Deployed before 9-decimal scaling fix — numbers are unreliable."
             >
               <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
@@ -271,26 +284,26 @@ export function OnchainProjectCard({
 
           <span
             className={cn(
-              "diecut inline-flex items-center gap-1 border bg-bone/90 px-2 py-1 shadow-offset-sm backdrop-blur-[2px]",
+              "inline-flex items-center gap-1.5 border px-2 py-1 shadow-offset-sm backdrop-blur-[2px]",
               live
-                ? "border-jade/60"
+                ? "border-jade bg-jade/15"
                 : ended
-                  ? "border-ink/40"
-                  : "border-ink/30",
+                  ? "border-poppy bg-poppy/15"
+                  : "border-ink/40 bg-bone/90",
             )}
           >
             <span
               aria-hidden
               data-live-dot={live ? "" : undefined}
               className={cn(
-                "block h-1 w-1 rounded-full origin-center",
-                live ? "bg-jade" : ended ? "bg-ink/40" : "bg-ink/30",
+                "block h-1.5 w-1.5 rounded-full origin-center",
+                live ? "bg-jade" : ended ? "bg-poppy" : "bg-ink/45",
               )}
             />
             <MonoLabel
               className={cn(
                 "text-[9px]",
-                live ? "text-jade" : ended ? "text-ink/60" : "text-ink/55",
+                live ? "text-jade" : ended ? "text-poppy" : "text-ink/65",
               )}
             >
               {live ? "live" : ended ? "ended" : "idle"}
@@ -298,7 +311,7 @@ export function OnchainProjectCard({
           </span>
 
           {project.verified && (
-            <span className="diecut inline-flex items-center gap-1 border border-ink/30 bg-bone/90 px-2 py-1 backdrop-blur-[2px]">
+            <span className="inline-flex items-center gap-1 border border-ink/30 bg-bone/90 px-2 py-1 backdrop-blur-[2px]">
               <svg
                 width="8"
                 height="8"

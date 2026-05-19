@@ -152,7 +152,7 @@ export function ClaimSuccess({
         <div
           data-stamp
           data-anim
-          className="diecut absolute -right-3 -top-3 rotate-[8deg] border border-ink bg-jade px-3 py-1.5 text-bone shadow-offset-sm"
+          className="absolute -right-3 -top-3 rotate-[8deg] border border-ink bg-jade px-3 py-1.5 text-bone shadow-offset-sm"
         >
           <div className="font-mono-label text-[9px] leading-none">claimed</div>
           <div className="mt-0.5 font-mono-label text-[8px] leading-none opacity-75">

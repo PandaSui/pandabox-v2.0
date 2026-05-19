@@ -595,6 +595,64 @@
   }
 }
 
+/* Metadata-update diagram —
+ * `hiw-mu-write` is the jade "marker stroke" that sweeps from left → full
+ * width → off. Origin must be set to left on each instance so the rect
+ * grows from where it's anchored. Two-stage cycle so multiple rows can
+ * be staggered via `animation-delay` and still look like a single pen
+ * stroke moving through the card.
+ */
+@keyframes hiw-mu-write {
+  0%,
+  100% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  10% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  25% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  35%,
+  90% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+/* The pen-tip glyph that traverses the rows in lockstep with the writes.
+ * Y-jumps line up with each row's underline anchor (offsets baked into
+ * the SVG layout). */
+@keyframes hiw-mu-pen {
+  0%,
+  8% {
+    transform: translate(0, 0);
+  }
+  16%,
+  24% {
+    transform: translate(0, 28px);
+  }
+  32%,
+  56% {
+    transform: translate(0, 56px);
+  }
+  64%,
+  88% {
+    transform: translate(0, 80px);
+  }
+  96%,
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 .hiw-fb {
   transform-box: fill-box;
   transform-origin: center;

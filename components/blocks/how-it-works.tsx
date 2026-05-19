@@ -25,8 +25,8 @@ export function HowItWorks() {
           </h2>
           <p className="mt-4 max-w-prose text-base text-ink/65">
             Every parameter you configure here becomes a Move call. Every
-            interaction your supporters take becomes a transaction. Pandabox
-            is what's between.
+            interaction your supporters take becomes a transaction. Pandabox is
+            what's between.
           </p>
         </div>
 
@@ -141,10 +141,7 @@ function StepCard({
 
       {/* Meta footer */}
       <footer className="flex items-center gap-2 border-t border-ink/15 bg-ink/[0.02] px-5 py-3">
-        <span
-          aria-hidden
-          className="block h-1 w-1 rounded-full bg-ink/40"
-        />
+        <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
         <code className="font-mono text-[11px] text-ink/55">{meta}</code>
       </footer>
     </article>
@@ -224,7 +221,14 @@ function DeployDiagram() {
         {/* Inner "PROJECT" mark — small dot + bar */}
         <circle cx="140" cy="96" r="3" fill="#161310" />
         <rect x="130" y="104" width="20" height="3" fill="#161310" />
-        <rect x="134" y="111" width="12" height="2" fill="#161310" opacity="0.6" />
+        <rect
+          x="134"
+          y="111"
+          width="12"
+          height="2"
+          fill="#161310"
+          opacity="0.6"
+        />
       </g>
 
       {/* AdminCap pill to the right — generative identicon */}
@@ -246,10 +250,16 @@ function DeployDiagram() {
         />
         {/* Identicon 5x5 */}
         {[
-          [0, 0], [2, 0], [4, 0],
-          [1, 1], [3, 1],
-          [0, 2], [2, 2], [4, 2],
-          [1, 3], [3, 3],
+          [0, 0],
+          [2, 0],
+          [4, 0],
+          [1, 1],
+          [3, 1],
+          [0, 2],
+          [2, 2],
+          [4, 2],
+          [1, 3],
+          [3, 3],
           [2, 4],
         ].map(([cx, cy], i) => (
           <rect
@@ -462,193 +472,313 @@ function ReceiveDiagram() {
 }
 
 function ReconfigureDiagram() {
-  const color = ACCENT_HEX.jade;
-  const sky = "#6D8796";
-  // Cycle clock at (140, 100), r=48
+  const jade = ACCENT_HEX.jade;
+  // A stylized "project metadata" card. Four field rows (name, icon,
+  // description, links). A jade marker stroke writes under each row's value
+  // in sequence while a pen-tip glyph hops along to match, suggesting the
+  // creator editing on-chain metadata via `pandabox::update_metadata`.
+  //
+  // The animation cycles 5s — slow enough to read each field as it's
+  // touched. CYCLE timing:
+  //   0–0.4s  pen rests on row 1 (name) → marker writes
+  //   1.0s    pen jumps to row 2 (icon) → marker writes
+  //   2.0s    pen jumps to row 3 (description) → marker writes
+  //   3.0s    pen jumps to row 4 (links) → marker writes
+  //   4.5s    pen returns home, all marks fade
+  //
+  // Each row's underline rect uses `hiw-mu-write` with a staggered delay so
+  // the strokes appear in sequence, matching the pen's position.
+  const ROW_DURATION = "5s";
   return (
     <svg
       viewBox="0 0 280 200"
       className="absolute inset-0 h-full w-full"
       aria-hidden
     >
-      {/* Outer cycle ring */}
-      <circle
-        cx="140"
-        cy="100"
-        r="56"
-        fill="none"
-        stroke="rgba(22,19,16,0.12)"
+      {/* Project metadata card frame */}
+      <rect
+        x="40"
+        y="22"
+        width="200"
+        height="158"
+        fill="rgba(248,243,232,0.7)"
+        stroke="#161310"
         strokeWidth="1"
       />
 
-      {/* Tick marks every 30deg */}
-      {Array.from({ length: 12 }).map((_, i) => {
-        const a = (i * 30 * Math.PI) / 180;
-        const inner = 50;
-        const outer = 56;
-        const x1 = 140 + Math.cos(a) * inner;
-        const y1 = 100 + Math.sin(a) * inner;
-        const x2 = 140 + Math.cos(a) * outer;
-        const y2 = 100 + Math.sin(a) * outer;
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="rgba(22,19,16,0.25)"
-            strokeWidth="0.8"
-          />
-        );
-      })}
-
-      {/* Current cycle — solid jade arc that sweeps */}
-      <g
-        style={{
-          transformBox: "fill-box",
-          transformOrigin: "140px 100px",
-          animation: "hiw-cycle-sweep 6s linear infinite",
-        }}
-      >
-        <path
-          d="M 140 52 A 48 48 0 0 1 188 100"
-          fill="none"
-          stroke={color}
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        {/* Tip dot */}
-        <circle cx="188" cy="100" r="3" fill={color} />
-      </g>
-
-      {/* Queued cycle — dashed sky arc on the opposite side */}
-      <path
-        d="M 92 100 A 48 48 0 0 1 140 52"
-        fill="none"
-        stroke={sky}
-        strokeWidth="1.3"
-        strokeDasharray="3 4"
-        strokeLinecap="round"
-        opacity="0.75"
+      {/* Card header strip */}
+      <line
+        x1="40"
+        y1="40"
+        x2="240"
+        y2="40"
+        stroke="rgba(22,19,16,0.18)"
+        strokeWidth="1"
       />
-
-      {/* Center — small rotating diamond marker */}
-      <g
-        className="hiw-fb"
-        style={{
-          transformOrigin: "140px 100px",
-          animation: "hiw-orbit 8s linear infinite",
-        }}
-      >
-        <polygon
-          points="140,90 150,100 140,110 130,100"
-          fill="none"
-          stroke="#161310"
-          strokeWidth="1"
-        />
-        <circle cx="140" cy="100" r="1.8" fill={color} />
-      </g>
-
-      {/* "CYCLE 04" label inside */}
       <text
-        x="140"
-        y="138"
-        textAnchor="middle"
+        x="50"
+        y="34"
         fontFamily="var(--font-mono), monospace"
         fontSize="7"
         fill="#161310"
-        opacity="0.55"
+        opacity="0.6"
         letterSpacing="0.18em"
       >
-        CYCLE Nº 04
+        PROJECT METADATA
       </text>
-
-      {/* Left side — parameter swap demonstration */}
       <g>
+        <circle cx="226" cy="31" r="1.6" fill={jade} />
         <text
-          x="20"
-          y="46"
+          x="232"
+          y="34"
           fontFamily="var(--font-mono), monospace"
-          fontSize="7"
-          fill="#161310"
-          opacity="0.5"
+          fontSize="6.5"
+          fill={jade}
           letterSpacing="0.14em"
         >
-          WEIGHT
+          LIVE
+        </text>
+      </g>
+
+      {/* Row 1 — NAME */}
+      <g>
+        <text
+          x="50"
+          y="58"
+          fontFamily="var(--font-mono), monospace"
+          fontSize="6.5"
+          fill="#161310"
+          opacity="0.45"
+          letterSpacing="0.16em"
+        >
+          NAME
         </text>
         <text
-          x="20"
-          y="58"
+          x="50"
+          y="72"
           fontFamily="var(--font-mono), monospace"
           fontSize="10"
           fill="#161310"
-          letterSpacing="0.02em"
         >
-          1,000,000
+          Panda Sui
         </text>
-        <g
+        <rect
+          x="50"
+          y="75"
+          width="62"
+          height="1.6"
+          fill={jade}
           style={{
-            animation: "hiw-text-swap 4.5s ease-in-out infinite",
             transformBox: "fill-box",
             transformOrigin: "left center",
+            animation: `hiw-mu-write ${ROW_DURATION} ease-in-out infinite`,
+            animationDelay: "0s",
           }}
+        />
+      </g>
+
+      {/* Row 2 — ICON */}
+      <g>
+        <text
+          x="50"
+          y="92"
+          fontFamily="var(--font-mono), monospace"
+          fontSize="6.5"
+          fill="#161310"
+          opacity="0.45"
+          letterSpacing="0.16em"
         >
-          <text
-            x="20"
-            y="74"
-            fontFamily="var(--font-mono), monospace"
-            fontSize="9"
-            fill={color}
-            letterSpacing="0.02em"
-          >
-            → 950,000
-          </text>
-          <text
-            x="78"
-            y="74"
-            fontFamily="var(--font-mono), monospace"
-            fontSize="6"
-            fill="#161310"
-            opacity="0.5"
-            letterSpacing="0.14em"
-          >
-            QUEUED
-          </text>
+          ICON
+        </text>
+        <circle
+          cx="58"
+          cy="105"
+          r="5.5"
+          fill="rgba(110,142,93,0.18)"
+          stroke="#161310"
+          strokeWidth="0.8"
+        />
+        <text
+          x="72"
+          y="108"
+          fontFamily="var(--font-mono), monospace"
+          fontSize="8"
+          fill="#161310"
+          opacity="0.7"
+        >
+          ipfs://Qm…f9c2
+        </text>
+        <rect
+          x="50"
+          y="114"
+          width="98"
+          height="1.6"
+          fill={jade}
+          style={{
+            transformBox: "fill-box",
+            transformOrigin: "left center",
+            animation: `hiw-mu-write ${ROW_DURATION} ease-in-out infinite`,
+            animationDelay: "1s",
+          }}
+        />
+      </g>
+
+      {/* Row 3 — DESCRIPTION */}
+      <g>
+        <text
+          x="50"
+          y="130"
+          fontFamily="var(--font-mono), monospace"
+          fontSize="6.5"
+          fill="#161310"
+          opacity="0.45"
+          letterSpacing="0.16em"
+        >
+          DESCRIPTION
+        </text>
+        <rect
+          x="50"
+          y="135"
+          width="160"
+          height="2.5"
+          fill="#161310"
+          opacity="0.28"
+        />
+        <rect
+          x="50"
+          y="141"
+          width="120"
+          height="2.5"
+          fill="#161310"
+          opacity="0.28"
+        />
+        <rect
+          x="50"
+          y="148"
+          width="120"
+          height="1.6"
+          fill={jade}
+          style={{
+            transformBox: "fill-box",
+            transformOrigin: "left center",
+            animation: `hiw-mu-write ${ROW_DURATION} ease-in-out infinite`,
+            animationDelay: "2s",
+          }}
+        />
+      </g>
+
+      {/* Row 4 — LINKS */}
+      <g>
+        <text
+          x="50"
+          y="164"
+          fontFamily="var(--font-mono), monospace"
+          fontSize="6.5"
+          fill="#161310"
+          opacity="0.45"
+          letterSpacing="0.16em"
+        >
+          LINKS
+        </text>
+        {/* Three small link chips */}
+        <g opacity="0.7">
+          <rect
+            x="50"
+            y="168"
+            width="22"
+            height="6"
+            fill="none"
+            stroke="#161310"
+            strokeWidth="0.7"
+          />
+          <rect
+            x="76"
+            y="168"
+            width="22"
+            height="6"
+            fill="none"
+            stroke="#161310"
+            strokeWidth="0.7"
+          />
+          <rect
+            x="102"
+            y="168"
+            width="22"
+            height="6"
+            fill="none"
+            stroke="#161310"
+            strokeWidth="0.7"
+          />
+        </g>
+        <rect
+          x="50"
+          y="176"
+          width="74"
+          height="1.6"
+          fill={jade}
+          style={{
+            transformBox: "fill-box",
+            transformOrigin: "left center",
+            animation: `hiw-mu-write ${ROW_DURATION} ease-in-out infinite`,
+            animationDelay: "3s",
+          }}
+        />
+      </g>
+
+      {/* Pen-tip glyph that traverses the rows in sync with the writes.
+          Sits at the right edge of the card and steps down 28px per row. */}
+      <g
+        style={{
+          transformBox: "fill-box",
+          transformOrigin: "top left",
+          animation: `hiw-mu-pen ${ROW_DURATION} ease-in-out infinite`,
+        }}
+      >
+        {/* Nib + barrel */}
+        <g transform="translate(218 64)">
+          <polygon
+            points="0,0 10,-3 12,-1 4,7"
+            fill={jade}
+            stroke="#161310"
+            strokeWidth="0.7"
+          />
+          <polygon points="0,0 3,2 4,7" fill="#161310" />
+          <line
+            x1="10"
+            y1="-3"
+            x2="22"
+            y2="-15"
+            stroke="#161310"
+            strokeWidth="1.2"
+          />
+          {/* Ink droplet under tip — pulses softly */}
+          <circle
+            cx="4"
+            cy="11"
+            r="1.4"
+            fill={jade}
+            style={{
+              transformBox: "fill-box",
+              transformOrigin: "center",
+              animation: "hiw-dot-pulse 1.6s ease-in-out infinite",
+            }}
+          />
         </g>
       </g>
 
-      {/* Right side — ballot delay countdown */}
-      <g>
-        <text
-          x="260"
-          y="158"
-          textAnchor="end"
-          fontFamily="var(--font-mono), monospace"
-          fontSize="7"
-          fill="#161310"
-          opacity="0.5"
-          letterSpacing="0.14em"
-        >
-          BALLOT DELAY
-        </text>
-        <text
-          x="260"
-          y="172"
-          textAnchor="end"
-          fontFamily="var(--font-mono), monospace"
-          fontSize="11"
-          fill={sky}
-          letterSpacing="0.02em"
-        >
-          4d{" "}
-          <tspan
-            style={{ animation: "hiw-ballot-tick 1s ease-in-out infinite" }}
-          >
-            12h
-          </tspan>
-        </text>
-      </g>
+      {/* Bottom — module call label */}
+      <text
+        x="140"
+        y="14"
+        textAnchor="middle"
+        fontFamily="var(--font-mono), monospace"
+        fontSize="6.5"
+        fill="#161310"
+        opacity="0.5"
+        letterSpacing="0.18em"
+      >
+        pandabox::update_metadata
+      </text>
     </svg>
   );
 }
