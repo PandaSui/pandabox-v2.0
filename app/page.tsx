@@ -28,13 +28,14 @@ export default async function Landing() {
 
   return (
     <>
-      <Nav />
+      <Nav floatAfterHero />
       <main id="main">
         <Hero stats={heroStats} packageId={PACKAGE_ID} network={network} />
-        <HowItWorks />
         <Suspense fallback={<FeaturedProjectsSkeleton />}>
           <FeaturedProjects />
         </Suspense>
+        <HowItWorks />
+
         <TheNumbers />
         <WhySui />
         <FinalCta />

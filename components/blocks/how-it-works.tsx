@@ -1,8 +1,13 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDiag } from "@pandasui/ui";
+import { gsap, ScrollTrigger, registerGsap } from "@pandasui/ui/lib";
 import { cn } from "@pandasui/ui/lib";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { RevealOnView } from "@/components/motion";
 
 type Accent = "saffron" | "poppy" | "jade";
 
@@ -12,143 +17,839 @@ const ACCENT_HEX: Record<Accent, string> = {
   jade: "#6E8E5D",
 };
 
+// Paper-tinted card backgrounds — ~12% of the accent mixed into bone (#F7F1E3),
+// pre-computed so we don't depend on color-mix() support. Each card reads as
+// its own warmly-tinted sheet rather than identical bone, which is what gives
+// the section its colorful, magazine-spread feeling.
+const ACCENT_TINT: Record<Accent, string> = {
+  saffron: "#EFECD3",
+  poppy: "#F1E2D2",
+  jade: "#E7E5D3",
+};
+
+// A second, deeper tint reserved for the header band — gives each card a
+// printed-folder "tab" feel without breaking the bone palette.
+const ACCENT_TINT_DEEP: Record<Accent, string> = {
+  saffron: "#E5E2BF",
+  poppy: "#EBD0BC",
+  jade: "#D8DABE",
+};
+
+type Step = {
+  number: string;
+  accent: Accent;
+  phase: string;
+  heading: string;
+  body: string;
+  outcome: string;
+  meta: string;
+  Diagram: () => React.ReactElement;
+  GlyphIcon: (props: { color: string }) => React.ReactElement;
+};
+
+const STEPS: Step[] = [
+  {
+    number: "01",
+    accent: "saffron",
+    phase: "Configure",
+    heading: "Deploy",
+    body: "Configure cycles, payouts, tokens, and optional NFT tiers. Sign one Sui transaction. Your project goes live with an admin cap object you own.",
+    outcome: "AdminCap minted",
+    meta: "pandabox::create_project",
+    Diagram: DeployDiagram,
+    GlyphIcon: GlyphStamp,
+  },
+  {
+    number: "02",
+    accent: "poppy",
+    phase: "Inflow",
+    heading: "Receive",
+    body: "Supporters pay SUI directly to your treasury. They receive project tokens at your cycle's weight, plus tier NFTs if you defined any.",
+    outcome: "Tokens minted",
+    meta: "pandabox::pay → Paid event",
+    Diagram: ReceiveDiagram,
+    GlyphIcon: GlyphInflow,
+  },
+  {
+    number: "03",
+    accent: "jade",
+    phase: "Govern",
+    heading: "Reconfigure",
+    body: "Propose changes for the next cycle. After the ballot delay, the new parameters lock in. Holders can cash out surplus at any time.",
+    outcome: "Cycle queued",
+    meta: "queue_reconfiguration · ballot 4d 12h",
+    Diagram: ReconfigureDiagram,
+    GlyphIcon: GlyphLedger,
+  },
+];
+
 export function HowItWorks() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const leftRef = useRef<HTMLDivElement | null>(null);
+  const rightRef = useRef<HTMLDivElement | null>(null);
+  const cardsRef = useRef<(HTMLElement | null)[]>([]);
+  const activeNumRef = useRef<HTMLSpanElement | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    registerGsap();
+    const section = sectionRef.current;
+    const left = leftRef.current;
+    const right = rightRef.current;
+    if (!section || !left || !right) return;
+
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const mm = gsap.matchMedia();
+
+    // Pin the left column while the right column scrolls — desktop only.
+    mm.add("(min-width: 1024px)", () => {
+      ScrollTrigger.create({
+        trigger: right,
+        start: "top top+=110",
+        endTrigger: right,
+        end: "bottom bottom-=60",
+        pin: left,
+        pinSpacing: false,
+      });
+    });
+
+    const ctx = gsap.context(() => {
+      const cards = cardsRef.current.filter(
+        (c): c is HTMLElement => c !== null,
+      );
+
+      if (!reduce) {
+        // Staggered entrance — cards rise into place from below.
+        gsap.set(cards, { y: 48, opacity: 0 });
+        gsap.to(cards, {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: right,
+            start: "top 82%",
+            toggleActions: "play none none none",
+          },
+        });
+
+        cards.forEach((card) => {
+          const watermark =
+            card.querySelector<HTMLElement>("[data-watermark]");
+          const halo = card.querySelector<HTMLElement>("[data-halo]");
+          const diagramFrame =
+            card.querySelector<HTMLElement>("[data-diagram-frame]");
+          const accentRule =
+            card.querySelector<HTMLElement>("[data-accent-rule]");
+          const heading = card.querySelector<HTMLElement>("[data-heading]");
+          const body = card.querySelector<HTMLElement>("[data-body]");
+          const outcomeUnderline = card.querySelector<HTMLElement>(
+            "[data-outcome-underline]",
+          );
+          const glyphIcon =
+            card.querySelector<HTMLElement>("[data-glyph-icon]");
+          const glyphTick =
+            card.querySelector<HTMLElement>("[data-glyph-tick]");
+
+          if (watermark) {
+            gsap.fromTo(
+              watermark,
+              { x: 28, opacity: 0 },
+              {
+                x: 0,
+                opacity: 0.08,
+                duration: 1.1,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 85%",
+                  once: true,
+                },
+              },
+            );
+          }
+
+          // Per-card entrance timeline — accent rule paints in, heading +
+          // body fade up, outcome underline draws, diagram window opens like
+          // a shutter from its center.
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              once: true,
+            },
+          });
+          if (accentRule) {
+            tl.to(
+              accentRule,
+              { scaleX: 1, duration: 0.55, ease: "power3.out" },
+              0,
+            );
+          }
+          if (heading) {
+            tl.fromTo(
+              heading,
+              { y: 14, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
+              0.08,
+            );
+          }
+          if (body) {
+            tl.fromTo(
+              body,
+              { y: 10, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+              0.22,
+            );
+          }
+          if (outcomeUnderline) {
+            tl.to(
+              outcomeUnderline,
+              { scaleX: 1, duration: 0.55, ease: "power3.out" },
+              0.35,
+            );
+          }
+          if (diagramFrame) {
+            // "Shutter" reveal — the window opens from its horizontal axis,
+            // exposing the running diagram inside.
+            tl.fromTo(
+              diagramFrame,
+              { scaleY: 0, transformOrigin: "50% 50%" },
+              { scaleY: 1, duration: 0.7, ease: "power3.out" },
+              0.18,
+            );
+          }
+          if (glyphTick) {
+            tl.fromTo(
+              glyphTick,
+              { scale: 0, transformOrigin: "50% 50%" },
+              { scale: 1, duration: 0.4, ease: "back.out(2.2)" },
+              0.4,
+            );
+          }
+
+          const enter = () => {
+            gsap.to(card, { y: -4, duration: 0.4, ease: "power3.out" });
+            if (halo) {
+              gsap.to(halo, { opacity: 1, duration: 0.5, ease: "power2.out" });
+            }
+            if (diagramFrame) {
+              gsap.to(diagramFrame, {
+                x: -2,
+                y: -2,
+                duration: 0.4,
+                ease: "power3.out",
+              });
+            }
+            // Glyph wiggle — a slight rotate + scale punch on hover. Keeps
+            // the icon feeling responsive without ever spinning.
+            if (glyphIcon) {
+              gsap.to(glyphIcon, {
+                rotate: 6,
+                scale: 1.12,
+                duration: 0.45,
+                ease: "back.out(2)",
+                transformOrigin: "50% 50%",
+              });
+            }
+          };
+          const leave = () => {
+            gsap.to(card, { y: 0, duration: 0.5, ease: "power3.out" });
+            if (halo) {
+              gsap.to(halo, { opacity: 0, duration: 0.45, ease: "power2.out" });
+            }
+            if (diagramFrame) {
+              gsap.to(diagramFrame, {
+                x: 0,
+                y: 0,
+                duration: 0.45,
+                ease: "power3.out",
+              });
+            }
+            if (glyphIcon) {
+              gsap.to(glyphIcon, {
+                rotate: 0,
+                scale: 1,
+                duration: 0.5,
+                ease: "power3.out",
+              });
+            }
+          };
+          card.addEventListener("pointerenter", enter);
+          card.addEventListener("pointerleave", leave);
+        });
+      }
+
+      // Active-step tracking — swap the left panel as each card crosses center.
+      cards.forEach((card, i) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top center+=40",
+          end: "bottom center",
+          onEnter: () => setActiveStep(i),
+          onEnterBack: () => setActiveStep(i),
+        });
+      });
+    }, section);
+
+    return () => {
+      ctx.revert();
+      mm.revert();
+    };
+  }, []);
+
+  // Animate the big number swap when the active step changes.
+  useEffect(() => {
+    const el = activeNumRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(
+      el,
+      { y: -14, opacity: 0, filter: "blur(4px)" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.5,
+        ease: "power3.out",
+      },
+    );
+  }, [activeStep]);
+
+  // Pulse the active card — fade in its inset accent ring and tick the watermark
+  // a touch brighter so the user can locate which station the left rail is
+  // tracking even when the right column is fully on screen.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const cards = cardsRef.current;
+    cards.forEach((card, i) => {
+      if (!card) return;
+      const ring = card.querySelector<HTMLElement>("[data-active-ring]");
+      const watermark = card.querySelector<HTMLElement>("[data-watermark]");
+      const isActive = i === activeStep;
+      if (ring) {
+        gsap.to(ring, {
+          opacity: isActive ? 0.55 : 0,
+          duration: 0.45,
+          ease: "power2.out",
+        });
+      }
+      if (watermark) {
+        gsap.to(watermark, {
+          opacity: isActive ? 0.14 : 0.08,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      }
+    });
+  }, [activeStep]);
+
+  const active = STEPS[activeStep];
+
   return (
-    <section className="relative border-t border-ink/15">
+    <section
+      ref={sectionRef}
+      className="relative isolate overflow-hidden border-t border-ink/15"
+    >
       <Container className="py-20 lg:py-28">
-        <div className="mb-12 max-w-2xl">
-          <AccentRule color="saffron">
+        {/* Eyebrow band — matches the section's voice across the landing */}
+        <div className="mb-12 flex items-center gap-4 md:mb-16">
+          <AccentRule color="saffron" className="!pt-0">
             <MonoLabel>How it works</MonoLabel>
           </AccentRule>
-          <h2 className="mt-3 text-3xl md:text-4xl">
-            Three steps from idea to on-chain funding.
-          </h2>
-          <p className="mt-4 max-w-prose text-base text-ink/65">
-            Every parameter you configure here becomes a Move call. Every
-            interaction your supporters take becomes a transaction. Pandabox is
-            what's between.
-          </p>
+          <span aria-hidden className="h-px flex-1 bg-ink/10" />
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/40 md:inline">
+            03 moves · idea → on-chain
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-5 lg:gap-6">
-          <RevealOnView delayMs={0}>
-            <StepCard
-              number="01"
-              accent="saffron"
-              heading="Deploy"
-              body="Configure cycles, payouts, tokens, and optional NFT tiers. Sign one Sui transaction. Your project goes live with an admin cap object you own."
-              meta="pandabox::create_project"
-              diagram={<DeployDiagram />}
-            />
-          </RevealOnView>
-          <RevealOnView delayMs={80}>
-            <StepCard
-              number="02"
-              accent="poppy"
-              heading="Receive"
-              body="Supporters pay SUI directly to your treasury. They receive project tokens at your cycle's weight, plus tier NFTs if you defined any."
-              meta="pandabox::pay → Paid event"
-              diagram={<ReceiveDiagram />}
-            />
-          </RevealOnView>
-          <RevealOnView delayMs={160}>
-            <StepCard
-              number="03"
-              accent="jade"
-              heading="Reconfigure"
-              body="Propose changes for the next cycle. After the ballot delay, the new parameters lock in. Holders can cash out surplus at any time."
-              meta="queue_reconfiguration · ballot 4d 12h"
-              diagram={<ReconfigureDiagram />}
-            />
-          </RevealOnView>
+        <div className="grid grid-cols-12 items-start gap-y-14 lg:gap-x-14">
+          {/* ─── Left rail (pinned on desktop) ─────────────── */}
+          <div
+            ref={leftRef}
+            className="col-span-12 lg:col-span-5 will-change-transform"
+          >
+            <h2 className="text-balance font-display text-[clamp(2.25rem,4.6vw,4rem)] leading-[0.95] tracking-tight">
+              Three steps from idea to on-chain funding.
+            </h2>
+            <p className="mt-5 max-w-prose text-pretty text-base text-ink/65 md:text-[1.0625rem]">
+              Every parameter you configure here becomes a Move call. Every
+              interaction your supporters take becomes a transaction. Pandabox
+              is what's between.
+            </p>
+
+            {/* Now-viewing panel — light, hairline-bordered, ink-on-bone */}
+            <div className="relative mt-9 overflow-hidden border border-ink bg-bone shadow-offset-sm">
+              {/* Soft accent wash, swaps color with active step */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -right-12 -top-20 h-56 w-56 rounded-full opacity-[0.22] blur-[80px] transition-colors duration-700"
+                style={{ background: ACCENT_HEX[active.accent] }}
+              />
+
+              <div className="relative p-6 md:p-7">
+                <div className="mb-5 flex items-center justify-between">
+                  <span
+                    className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors duration-500"
+                    style={{ color: ACCENT_HEX[active.accent] }}
+                  >
+                    <span
+                      className="block h-1.5 w-1.5 rounded-full transition-colors duration-500"
+                      style={{ background: ACCENT_HEX[active.accent] }}
+                    />
+                    Now viewing
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/45">
+                    {String(activeStep + 1).padStart(2, "0")} / 03
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-5">
+                  <span
+                    ref={activeNumRef}
+                    key={active.number}
+                    className="font-display text-[4.5rem] leading-none tabular-nums transition-colors duration-500 md:text-[5.25rem]"
+                    style={{ color: ACCENT_HEX[active.accent] }}
+                  >
+                    {active.number}
+                  </span>
+                  <div className="pt-1.5">
+                    <div
+                      className="font-mono text-[10px] uppercase tracking-[0.16em] transition-colors duration-500"
+                      style={{ color: ACCENT_HEX[active.accent] }}
+                    >
+                      {active.phase}
+                    </div>
+                    <div className="mt-1.5 max-w-[18ch] font-display text-[1.4rem] leading-[1.05]">
+                      {active.heading}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Segmented progress — three hairline cells */}
+                <div className="mt-7 grid grid-cols-3 gap-1.5">
+                  {STEPS.map((s, i) => (
+                    <div
+                      key={s.number}
+                      className="h-1 overflow-hidden bg-ink/10"
+                    >
+                      <div
+                        className="h-full transition-all duration-700 ease-out"
+                        style={{
+                          width: i <= activeStep ? "100%" : "0%",
+                          background: ACCENT_HEX[s.accent],
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+                  <span>Deploy</span>
+                  <span>Reconfigure</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href="/create"
+                className={cn(
+                  "group relative inline-flex h-12 items-center justify-center gap-2 border border-ink bg-saffron px-6",
+                  "font-sans text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink",
+                  "shadow-offset-sm transition-all duration-300 ease-atelier",
+                  "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+                  "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
+                )}
+              >
+                <span>Launch a project</span>
+                <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
+                  <ArrowDiag size={12} />
+                </span>
+              </Link>
+              <Link
+                href="/docs"
+                className={cn(
+                  "group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-bone px-6",
+                  "font-sans text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink",
+                  "shadow-offset-sm transition-all duration-300 ease-atelier",
+                  "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+                )}
+              >
+                <span>Read the docs</span>
+                <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
+                  <ArrowDiag size={12} />
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          {/* ─── Right rail (scrolling station cards) ─────────── */}
+          <div
+            ref={rightRef}
+            className="col-span-12 flex flex-col gap-6 lg:col-span-7 lg:gap-8"
+          >
+            {STEPS.map((step, i) => (
+              <StepCard
+                key={step.number}
+                step={step}
+                ref={(el: HTMLElement | null) => {
+                  cardsRef.current[i] = el;
+                }}
+              />
+            ))}
+          </div>
         </div>
       </Container>
     </section>
   );
 }
 
-function StepCard({
-  number,
-  accent,
-  heading,
-  body,
-  meta,
-  diagram,
+/* ─────────────────────────── Card ─────────────────────────── */
+
+const StepCard = ({
+  step,
+  ref,
 }: {
-  number: string;
-  accent: Accent;
-  heading: string;
-  body: string;
-  meta: string;
-  diagram: React.ReactNode;
-}) {
-  const accentDot: Record<Accent, string> = {
-    saffron: "bg-saffron",
-    poppy: "bg-poppy",
-    jade: "bg-jade",
-  };
+  step: Step;
+  ref: (el: HTMLElement | null) => void;
+}) => {
+  const { number, accent, phase, heading, body, outcome, meta, Diagram, GlyphIcon } =
+    step;
+  const accentHex = ACCENT_HEX[accent];
+  const tint = ACCENT_TINT[accent];
+  const tintDeep = ACCENT_TINT_DEEP[accent];
+
   return (
     <article
+      ref={ref}
       className={cn(
-        "group relative h-full bg-bone border border-ink shadow-offset-sm",
-        "transition-all duration-300 ease-atelier",
-        "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+        "group relative overflow-hidden border border-ink shadow-offset-sm",
+        "transition-shadow duration-300 ease-atelier",
       )}
+      style={{ background: tint }}
     >
-      {/* Header band */}
-      <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3">
-        <div className="flex items-center gap-2">
+      {/* Top accent spine — the "folder tab" giving each card its color identity */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 z-10 h-[3px]"
+        style={{ background: accentHex }}
+      />
+
+      {/* Active-step ring — inset accent border that fades in via GSAP when
+          this card is the one currently being tracked in the left rail. */}
+      <span
+        aria-hidden
+        data-active-ring
+        className="pointer-events-none absolute inset-0 z-10 opacity-0"
+        style={{ boxShadow: `inset 0 0 0 2px ${accentHex}` }}
+      />
+
+      {/* Hover halo — fades in via GSAP */}
+      <div
+        aria-hidden
+        data-halo
+        className="pointer-events-none absolute -right-24 -top-28 h-[22rem] w-[22rem] rounded-full opacity-0 blur-[110px]"
+        style={{ background: accentHex }}
+      />
+
+      {/* Soft radial wash anchored to the top-right — gives the surface depth
+          without ever resembling a glow effect. Always on, low intensity. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-40 -top-40 h-[28rem] w-[28rem] rounded-full opacity-[0.18] blur-[120px]"
+        style={{ background: accentHex }}
+      />
+
+      {/* Watermark — outsized accent number behind the card */}
+      <span
+        aria-hidden
+        data-watermark
+        className="pointer-events-none absolute -top-4 right-2 select-none font-display text-[11rem] leading-none tracking-[-0.05em] opacity-0 md:right-4 md:text-[15rem]"
+        style={{ color: accentHex }}
+      >
+        {number}
+      </span>
+
+      {/* Decorative dotted arc, top-left */}
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute -left-6 -top-6 opacity-30"
+        width="140"
+        height="140"
+        viewBox="0 0 140 140"
+      >
+        <circle
+          cx="70"
+          cy="70"
+          r="58"
+          fill="none"
+          stroke={accentHex}
+          strokeWidth="1"
+          strokeDasharray="2 6"
+        />
+        <circle
+          cx="70"
+          cy="70"
+          r="42"
+          fill="none"
+          stroke={accentHex}
+          strokeWidth="0.8"
+          strokeDasharray="1 5"
+          opacity="0.7"
+        />
+      </svg>
+
+      {/* Header band — sits over the deeper accent tint */}
+      <header
+        className="relative flex flex-wrap items-center justify-between gap-3 border-b border-ink/15 px-6 py-4 md:px-8 md:py-5"
+        style={{ background: tintDeep }}
+      >
+        <div className="inline-flex items-center gap-4">
+          {/* Glyph rides on a soft accent halo — no border, no clip-path, just
+              a radial wash so the icon reads as floating on color rather than
+              boxed in. The bg is a radial gradient that fades into the header
+              tint, giving it edge-less integration. */}
           <span
-            className={cn("block h-2 w-2 rounded-full", accentDot[accent])}
-            aria-hidden
-          />
-          <MonoLabel accent={accent} className="text-[10px]">
-            Step {number}
-          </MonoLabel>
+            data-glyph
+            className="relative inline-flex h-12 w-12 items-center justify-center"
+            style={{
+              background: `radial-gradient(circle at center, ${accentHex}55 0%, ${accentHex}1c 55%, transparent 78%)`,
+            }}
+          >
+            {/* Tiny accent corner tick — a "registered" mark, ink-thin, the
+                only piece of geometry the glyph carries. */}
+            <span
+              aria-hidden
+              data-glyph-tick
+              className="absolute right-0 top-0 h-1.5 w-1.5"
+              style={{ background: accentHex }}
+            />
+            <span data-glyph-icon className="inline-flex">
+              <GlyphIcon color={accentHex} />
+            </span>
+          </span>
+          <div className="flex flex-col">
+            <span
+              className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em]"
+              style={{ color: accentHex }}
+            >
+              Step {number} · {phase}
+            </span>
+            <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+              on-chain · sui move
+            </span>
+          </div>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-          on-chain
+        {/* Outcome reads as a console status line — a pulsing accent dot, a
+            mono label in ink, and a hairline accent underline that bleeds
+            into the header tint. No pill, no border to "cut". */}
+        <span className="inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/85">
+          <span
+            className="block h-1.5 w-1.5 rounded-full"
+            style={{
+              background: accentHex,
+              boxShadow: `0 0 0 3px ${accentHex}33`,
+            }}
+          />
+          <span className="relative pb-1">
+            {outcome}
+            <span
+              aria-hidden
+              data-outcome-underline
+              className="absolute inset-x-0 bottom-0 origin-left"
+              style={{
+                height: "1.5px",
+                background: accentHex,
+                transform: "scaleX(0)",
+              }}
+            />
+          </span>
         </span>
       </header>
 
-      {/* Diagram zone */}
-      <div className="relative h-[200px] overflow-hidden border-b border-ink/10">
-        {/* Faint dot pattern as canvas backdrop — purely decorative depth */}
+      {/* Body — copy left, animated diagram right (stacks on small screens) */}
+      <div className="relative grid grid-cols-1 gap-6 px-6 py-7 md:grid-cols-[1.1fr_1fr] md:gap-8 md:px-8 md:py-9">
+        <div className="relative flex flex-col">
+          {/* Tiny accent rule above the heading — color punctuation */}
+          <span
+            aria-hidden
+            data-accent-rule
+            className="mb-3 block h-1 w-10 origin-left"
+            style={{ background: accentHex, transform: "scaleX(0)" }}
+          />
+          <h3
+            data-heading
+            className="font-display text-[clamp(1.7rem,2.5vw,2.4rem)] leading-[1.02] tracking-tight"
+          >
+            {heading}
+          </h3>
+          <p
+            data-body
+            className="mt-3 max-w-[44ch] text-pretty text-[14.5px] leading-relaxed text-ink/70"
+          >
+            {body}
+          </p>
+        </div>
+
+        {/* Diagram preview window — bone surface against the tinted card.
+            The "window" effect comes from a soft accent fade at the edges
+            instead of a hard border; a thin accent tape across the top ties
+            it to the card's spine. */}
         <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          data-diagram-frame
+          className="relative h-[200px] overflow-hidden bg-bone transition-transform duration-300 ease-atelier md:h-[230px]"
           style={{
-            backgroundImage:
-              "radial-gradient(circle, #161310 1px, transparent 1.2px)",
-            backgroundSize: "12px 12px",
+            boxShadow: `inset 0 0 0 1px ${accentHex}33, inset 0 18px 30px -22px ${accentHex}44`,
           }}
-        />
-        <div className="relative h-full">{diagram}</div>
-        {/* Outsized step number, half-transparent, behind everything */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute right-4 top-2 font-display text-[64px] leading-none text-ink/[0.06]"
         >
-          {number}
+          {/* Accent tape running across the top — ties this window to the
+              card's spine. Two-stop gradient so it fades into the tint. */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-[2px]"
+            style={{
+              background: `linear-gradient(90deg, ${accentHex} 0%, ${accentHex}66 65%, transparent 100%)`,
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.05]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, #161310 1px, transparent 1.2px)",
+              backgroundSize: "12px 12px",
+            }}
+          />
+          <div className="relative h-full">
+            <Diagram />
+          </div>
+          {/* Status indicator — borderless, just a pulsing dot + accent label
+              floating in the corner. Blends into the bone surface. */}
+          <span
+            className="absolute bottom-2.5 right-3 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.18em]"
+            style={{ color: accentHex }}
+          >
+            <span
+              className="block h-1 w-1 rounded-full"
+              style={{
+                background: accentHex,
+                animation: "stat-live-dot 1.4s ease-in-out infinite",
+              }}
+            />
+            Live
+          </span>
+        </div>
+      </div>
+
+      {/* Meta footer — keyed to the accent so the on-chain call reads as part
+          of the card's identity, not boilerplate. */}
+      <footer
+        className="relative flex items-center justify-between gap-3 border-t border-ink/15 px-6 py-3 md:px-8"
+        style={{ background: tintDeep }}
+      >
+        <div className="inline-flex items-center gap-2">
+          <span
+            aria-hidden
+            className="block h-1.5 w-1.5 rounded-full"
+            style={{ background: accentHex }}
+          />
+          <code
+            className="font-mono text-[11px] font-medium"
+            style={{ color: "#161310" }}
+          >
+            {meta}
+          </code>
+        </div>
+        <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40 md:inline">
+          {number} / 03
         </span>
-      </div>
-
-      {/* Copy */}
-      <div className="px-5 pt-5 pb-4">
-        <h3 className="font-display text-2xl leading-tight">{heading}</h3>
-        <p className="mt-3 text-[14.5px] leading-relaxed text-ink/65">{body}</p>
-      </div>
-
-      {/* Meta footer */}
-      <footer className="flex items-center gap-2 border-t border-ink/15 bg-ink/[0.02] px-5 py-3">
-        <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
-        <code className="font-mono text-[11px] text-ink/55">{meta}</code>
       </footer>
     </article>
   );
+};
+
+/* ─────────────────────────── Header glyphs ─────────────────────────── */
+
+function GlyphStamp({ color }: { color: string }) {
+  // A diecut octagon — visual echo of the project object being minted on-chain.
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+      <polygon
+        points="5,1 13,1 17,5 17,13 13,17 5,17 1,13 1,5"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <circle cx="9" cy="9" r="1.6" fill={color} />
+    </svg>
+  );
 }
 
-/* ───────────────────────── Diagrams ───────────────────────── */
+function GlyphInflow({ color }: { color: string }) {
+  // Arrow into a chamber — payment flowing into the treasury.
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+      <path
+        d="M2 9 L11 9"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M8.5 6 L11 9 L8.5 12"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M12 3.5 L16 3.5 L16 14.5 L12 14.5"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+function GlyphLedger({ color }: { color: string }) {
+  // Three stacked rows — a ledger / cycle log being amended.
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+      <rect
+        x="2.5"
+        y="3"
+        width="13"
+        height="12"
+        stroke={color}
+        strokeWidth="1.4"
+        fill="none"
+      />
+      <line x1="5" y1="7" x2="13" y2="7" stroke={color} strokeWidth="1.2" />
+      <line x1="5" y1="10" x2="11" y2="10" stroke={color} strokeWidth="1.2" />
+      <line
+        x1="5"
+        y1="13"
+        x2="9"
+        y2="13"
+        stroke={color}
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
+
+/* ───────────────────────── Diagrams (preserved) ───────────────────────── */
 
 function DeployDiagram() {
   const color = ACCENT_HEX.saffron;
@@ -165,14 +866,12 @@ function DeployDiagram() {
   ];
   // Diecut octagon centered at (140, 100), half-size 30, notch 10.
   const octagon = "120,70 160,70 170,80 170,120 160,130 120,130 110,120 110,80";
-  // AdminCap mini-pill — appears beside it.
   return (
     <svg
       viewBox="0 0 280 200"
       className="absolute inset-0 h-full w-full"
       aria-hidden
     >
-      {/* Stitching hairlines */}
       {lines.map((l, i) => {
         const len = Math.hypot(l.x2 - l.x1, l.y2 - l.y1);
         return (
@@ -197,7 +896,6 @@ function DeployDiagram() {
         );
       })}
 
-      {/* Center diecut object — the Project */}
       <g
         className="hiw-fb"
         style={{
@@ -218,7 +916,6 @@ function DeployDiagram() {
           stroke="#161310"
           strokeWidth="1"
         />
-        {/* Inner "PROJECT" mark — small dot + bar */}
         <circle cx="140" cy="96" r="3" fill="#161310" />
         <rect x="130" y="104" width="20" height="3" fill="#161310" />
         <rect
@@ -231,7 +928,6 @@ function DeployDiagram() {
         />
       </g>
 
-      {/* AdminCap pill to the right — generative identicon */}
       <g
         style={{
           animation: "hiw-dot-pulse 3.6s ease-in-out 1.4s infinite",
@@ -248,7 +944,6 @@ function DeployDiagram() {
           stroke="#161310"
           strokeWidth="1"
         />
-        {/* Identicon 5x5 */}
         {[
           [0, 0],
           [2, 0],
@@ -285,7 +980,6 @@ function DeployDiagram() {
         </text>
       </g>
 
-      {/* Sparks at the convergence point */}
       {[0, 0.6, 1.2, 1.8].map((d, i) => (
         <circle
           key={i}
@@ -306,14 +1000,12 @@ function DeployDiagram() {
 
 function ReceiveDiagram() {
   const color = ACCENT_HEX.poppy;
-  // Channel runs left → right at y=100 between x=60 and x=210.
   return (
     <svg
       viewBox="0 0 280 200"
       className="absolute inset-0 h-full w-full"
       aria-hidden
     >
-      {/* Supporter dot left */}
       <g
         style={{
           transformBox: "fill-box",
@@ -345,7 +1037,6 @@ function ReceiveDiagram() {
         SUPPORTER
       </text>
 
-      {/* Channel — solid baseline + dashed track */}
       <line
         x1="56"
         x2="206"
@@ -365,7 +1056,6 @@ function ReceiveDiagram() {
         opacity="0.5"
       />
 
-      {/* Flowing SUI coins */}
       {[0, 1, 2].map((i) => (
         <g
           key={i}
@@ -376,7 +1066,6 @@ function ReceiveDiagram() {
         >
           <g transform="translate(60, 100)">
             <circle r="6.5" fill="#F7F1E3" stroke="#161310" strokeWidth="1" />
-            {/* SUI mini-glyph */}
             <path
               d="M-2.6 -3 L0 -5.5 L2.6 -3 A4 4 0 1 1 -2.6 -3 Z"
               fill="none"
@@ -388,7 +1077,6 @@ function ReceiveDiagram() {
         </g>
       ))}
 
-      {/* Treasury — diecut box right */}
       <g
         style={{
           transformBox: "fill-box",
@@ -423,7 +1111,6 @@ function ReceiveDiagram() {
         </text>
       </g>
 
-      {/* Token mint counter above — fades in/out in sync with arrivals */}
       <g
         style={{
           animation: "hiw-text-swap 2.7s ease-in-out 1.45s infinite",
@@ -457,7 +1144,6 @@ function ReceiveDiagram() {
         </text>
       </g>
 
-      {/* Small arrow indicating direction */}
       <path
         d="M138 96 L146 100 L138 104"
         fill="none"
@@ -473,21 +1159,6 @@ function ReceiveDiagram() {
 
 function ReconfigureDiagram() {
   const jade = ACCENT_HEX.jade;
-  // A stylized "project metadata" card. Four field rows (name, icon,
-  // description, links). A jade marker stroke writes under each row's value
-  // in sequence while a pen-tip glyph hops along to match, suggesting the
-  // creator editing on-chain metadata via `pandabox::update_metadata`.
-  //
-  // The animation cycles 5s — slow enough to read each field as it's
-  // touched. CYCLE timing:
-  //   0–0.4s  pen rests on row 1 (name) → marker writes
-  //   1.0s    pen jumps to row 2 (icon) → marker writes
-  //   2.0s    pen jumps to row 3 (description) → marker writes
-  //   3.0s    pen jumps to row 4 (links) → marker writes
-  //   4.5s    pen returns home, all marks fade
-  //
-  // Each row's underline rect uses `hiw-mu-write` with a staggered delay so
-  // the strokes appear in sequence, matching the pen's position.
   const ROW_DURATION = "5s";
   return (
     <svg
@@ -495,7 +1166,6 @@ function ReconfigureDiagram() {
       className="absolute inset-0 h-full w-full"
       aria-hidden
     >
-      {/* Project metadata card frame */}
       <rect
         x="40"
         y="22"
@@ -506,7 +1176,6 @@ function ReconfigureDiagram() {
         strokeWidth="1"
       />
 
-      {/* Card header strip */}
       <line
         x1="40"
         y1="40"
@@ -540,7 +1209,6 @@ function ReconfigureDiagram() {
         </text>
       </g>
 
-      {/* Row 1 — NAME */}
       <g>
         <text
           x="50"
@@ -577,7 +1245,6 @@ function ReconfigureDiagram() {
         />
       </g>
 
-      {/* Row 2 — ICON */}
       <g>
         <text
           x="50"
@@ -623,7 +1290,6 @@ function ReconfigureDiagram() {
         />
       </g>
 
-      {/* Row 3 — DESCRIPTION */}
       <g>
         <text
           x="50"
@@ -667,7 +1333,6 @@ function ReconfigureDiagram() {
         />
       </g>
 
-      {/* Row 4 — LINKS */}
       <g>
         <text
           x="50"
@@ -680,7 +1345,6 @@ function ReconfigureDiagram() {
         >
           LINKS
         </text>
-        {/* Three small link chips */}
         <g opacity="0.7">
           <rect
             x="50"
@@ -725,8 +1389,6 @@ function ReconfigureDiagram() {
         />
       </g>
 
-      {/* Pen-tip glyph that traverses the rows in sync with the writes.
-          Sits at the right edge of the card and steps down 28px per row. */}
       <g
         style={{
           transformBox: "fill-box",
@@ -734,7 +1396,6 @@ function ReconfigureDiagram() {
           animation: `hiw-mu-pen ${ROW_DURATION} ease-in-out infinite`,
         }}
       >
-        {/* Nib + barrel */}
         <g transform="translate(218 64)">
           <polygon
             points="0,0 10,-3 12,-1 4,7"
@@ -751,7 +1412,6 @@ function ReconfigureDiagram() {
             stroke="#161310"
             strokeWidth="1.2"
           />
-          {/* Ink droplet under tip — pulses softly */}
           <circle
             cx="4"
             cy="11"
@@ -766,7 +1426,6 @@ function ReconfigureDiagram() {
         </g>
       </g>
 
-      {/* Bottom — module call label */}
       <text
         x="140"
         y="14"
