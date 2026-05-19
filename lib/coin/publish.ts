@@ -157,6 +157,27 @@ export type PublishedCoinResult = {
 import type { SuiJsonRpcClient, SuiObjectChange } from "@mysten/sui/jsonRpc";
 
 /**
+ * Error thrown when the publish tx confirmed on-chain but the fullnode
+ * returned an empty `objectChanges` array (despite us asking for it). The
+ * package, TreasuryCap, and CoinMetadata exist — the caller can recover by
+ * pasting the IDs into the "I already have a coin" mode. We carry the
+ * transaction digest so the UI can deep-link to Sui Explorer.
+ */
+export class MissingObjectChangesError extends Error {
+  digest: string;
+  constructor(digest: string) {
+    super(
+      "Your coin published successfully on-chain, but the Sui RPC didn't " +
+        "return the new object IDs in time. Open the transaction on Sui " +
+        "Explorer to grab the package ID, TreasuryCap, and CoinMetadata, " +
+        "then switch to 'I already have a coin' and paste them in.",
+    );
+    this.name = "MissingObjectChangesError";
+    this.digest = digest;
+  }
+}
+
+/**
  * Pull the new package ID + Coin objects out of a publish tx's
  * `objectChanges`. The publish creates one of each: a `published` change for
  * the new package, `TreasuryCap<T>` (created, owned by sender),
@@ -164,9 +185,10 @@ import type { SuiJsonRpcClient, SuiObjectChange } from "@mysten/sui/jsonRpc";
  */
 export function parsePublishedCoin(
   changes: SuiObjectChange[] | null | undefined,
+  digest?: string,
 ): PublishedCoinResult {
   if (!changes || changes.length === 0) {
-    throw new Error("Publish succeeded but returned no objectChanges.");
+    throw new MissingObjectChangesError(digest ?? "");
   }
 
   let packageId: string | null = null;
@@ -220,6 +242,11 @@ export function parsePublishedCoin(
  * After the wallet returns a digest, wait for the tx to be indexed and fetch
  * its `objectChanges`. Uses the legacy `SuiJsonRpcClient` shape since that's
  * what dapp-kit's `useSuiClient` resolves to in this project.
+ *
+ * Some fullnodes confirm the tx (status: success) before they finish indexing
+ * object changes, returning an empty `objectChanges` array. When that happens
+ * we re-fetch `getTransactionBlock` with backoff up to ~8s before giving up —
+ * usually the index catches up within 1–2 polls.
  */
 export async function fetchPublishResult(
   client: SuiJsonRpcClient,
@@ -234,5 +261,27 @@ export async function fetchPublishResult(
       res.effects?.status?.error ?? "Publish transaction failed on chain.",
     );
   }
+
+  if (res.objectChanges && res.objectChanges.length > 0) {
+    return { objectChanges: res.objectChanges };
+  }
+
+  // Empty objectChanges despite success — fullnode hasn't indexed yet. Poll.
+  const delays = [500, 800, 1200, 1800, 2600];
+  for (const ms of delays) {
+    await new Promise((r) => setTimeout(r, ms));
+    try {
+      const retry = await client.getTransactionBlock({
+        digest,
+        options: { showEffects: true, showObjectChanges: true },
+      });
+      if (retry.objectChanges && retry.objectChanges.length > 0) {
+        return { objectChanges: retry.objectChanges };
+      }
+    } catch {
+      // transient — keep polling
+    }
+  }
+
   return { objectChanges: res.objectChanges };
 }

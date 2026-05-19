@@ -9,7 +9,7 @@ import {
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
-import { useWizard } from "@/lib/store/wizard";
+import { STORAGE_KEY, useWizard } from "@/lib/store/wizard";
 import {
   StepCoin,
   StepIdentity,
@@ -136,12 +136,12 @@ export function StepDeployForm() {
         // No package — local-only simulated success.
         await new Promise((r) => setTimeout(r, 600));
         const snapshot = snapshotDraft(draft);
+        clearPersistedDraft();
         setState({
           kind: "success",
           digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
           snapshot,
         });
-        reset();
         return;
       }
 
@@ -166,8 +166,8 @@ export function StepDeployForm() {
 
       const result = await signAndExecute({ transaction: tx });
       const snapshot = snapshotDraft(draft);
+      clearPersistedDraft();
       setState({ kind: "success", digest: result.digest, snapshot });
-      reset();
     } catch (err) {
       setState({
         kind: "error",
@@ -301,7 +301,7 @@ export function StepDeployForm() {
           </span>
         </div>
         <p className="font-mono text-[10px] text-ink/40">
-          Draft auto-saves to your browser as <code>pandabox:draft:v2</code>.
+          Draft auto-saves to your browser as <code>pandabox:draft:v3</code>.
         </p>
       </StepCard>
 
@@ -439,6 +439,14 @@ export function StepDeployForm() {
                   value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
                 />
                 <SummaryRow
+                  label="Max supply"
+                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                />
+                <SummaryRow
+                  label="Minted at launch"
+                  value="0 — lazily minted on claim"
+                />
+                <SummaryRow
                   label="Max raise"
                   value={`${formatAmount(maxRaiseSui(draft.sale.tokensPerSui, draft.sale.allocationTokens), { maxFractionDigits: 4 })} SUI`}
                 />
@@ -455,7 +463,7 @@ export function StepDeployForm() {
                   value={
                     draft.sale.unsoldAction === "transfer_to_creator"
                       ? "Returned to your wallet"
-                      : "Burned"
+                      : "Burned (reduces final supply)"
                   }
                 />
               </dl>
@@ -576,6 +584,22 @@ export function StepDeployForm() {
       </Modal>
     </div>
   );
+}
+
+/**
+ * Wipe the persisted draft from localStorage without touching React state.
+ * Keeping the in-memory draft alive lets the success modal continue to
+ * render (it lives inside StepDeployForm, which would unmount if reset()
+ * sent the wizard back to step 1). A page refresh during the success modal
+ * will read the now-empty key and start a fresh wizard.
+ */
+function clearPersistedDraft() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Storage may be disabled (private mode, quota) — non-fatal.
+  }
 }
 
 function snapshotDraft(

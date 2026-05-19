@@ -4,9 +4,10 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { DraftV2 } from "./wizard-schema";
 
-// Bumped to v2 because the v1 shape is incompatible. Old localStorage drafts
-// won't migrate — they're discarded on first read of the new schema.
-export const STORAGE_KEY = "pandabox:draft:v2";
+// Bumped to v3 to wipe stale drafts written before sale defaults were
+// removed and the post-deploy auto-reset was wired. Older shapes don't
+// migrate — they're discarded on first read.
+export const STORAGE_KEY = "pandabox:draft:v3";
 
 export function initialDraft(): DraftV2 {
   return {

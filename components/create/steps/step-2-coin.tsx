@@ -14,9 +14,11 @@ import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
 import {
   buildPublishCoinTx,
   fetchPublishResult,
+  MissingObjectChangesError,
   parsePublishedCoin,
   rewriteCoinBytecode,
 } from "@/lib/coin/publish";
+import { explorerUrl } from "@/lib/sui";
 import { renderCoinSource } from "@/lib/coin/source-template";
 import { uploadBlob } from "@/lib/ipfs";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
@@ -98,6 +100,7 @@ export function StepCoinForm() {
           account={account}
           client={client}
           signAndExecute={signAndExecute}
+          onSwitchToPaste={() => setMode("paste")}
         />
       ) : (
         <PasteCoinPanel coin={coin} patch={patch} client={client} />
@@ -115,6 +118,7 @@ type PublishState =
   | { kind: "fetching"; digest: string }
   | { kind: "pinning" }
   | { kind: "ok"; digest: string; packageId: string }
+  | { kind: "stranded"; digest: string; message: string }
   | { kind: "error"; message: string };
 
 function PublishCoinPanel({
@@ -125,6 +129,7 @@ function PublishCoinPanel({
   account,
   client,
   signAndExecute,
+  onSwitchToPaste,
 }: {
   identity: ReturnType<typeof useWizard.getState>["draft"]["identity"];
   coin: ReturnType<typeof useWizard.getState>["draft"]["coin"];
@@ -133,6 +138,7 @@ function PublishCoinPanel({
   account: ReturnType<typeof useCurrentAccount>;
   client: ReturnType<typeof useSuiClient>;
   signAndExecute: ReturnType<typeof useSignAndExecuteTransaction>["mutateAsync"];
+  onSwitchToPaste: () => void;
 }) {
   // Derive sensible defaults from the identity step.
   const defaultTicker = (identity.ticker ?? "").trim();
@@ -197,7 +203,7 @@ function PublishCoinPanel({
 
       setState({ kind: "fetching", digest });
       const full = await fetchPublishResult(client, digest);
-      const parsed = parsePublishedCoin(full.objectChanges);
+      const parsed = parsePublishedCoin(full.objectChanges, digest);
 
       // Pin a rendered source.move blob for the audit trail (best effort —
       // a failed pin shouldn't block the user from moving on).
@@ -231,6 +237,14 @@ function PublishCoinPanel({
 
       setState({ kind: "ok", digest, packageId: parsed.packageId });
     } catch (err) {
+      if (err instanceof MissingObjectChangesError) {
+        setState({
+          kind: "stranded",
+          digest: err.digest,
+          message: err.message,
+        });
+        return;
+      }
       setState({
         kind: "error",
         message: err instanceof Error ? err.message : "Publish failed.",
@@ -380,6 +394,54 @@ function PublishCoinPanel({
           >
             {state.message}
           </p>
+        )}
+        {state.kind === "stranded" && (
+          <Frame className="border-sun bg-sun/10 [&::after]:bg-sun/25 [&::before]:bg-sun/25">
+            <div role="alert" className="space-y-3 text-sm text-ink/80">
+              <div className="flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="block h-1.5 w-1.5 rounded-full bg-sun"
+                />
+                <span className="font-mono-label text-ink">
+                  Published — but the RPC went quiet
+                </span>
+              </div>
+              <p>{state.message}</p>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <a
+                  href={explorerUrl("tx", state.digest)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cn(
+                    "inline-flex h-10 items-center gap-2 border border-ink bg-bone px-4 shadow-offset-sm",
+                    "font-sans font-medium uppercase tracking-[0.12em] text-[0.75rem] text-ink",
+                    "transition-all duration-200 ease-atelier",
+                    "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+                  )}
+                >
+                  <span>Open on Sui Explorer</span>
+                  <ArrowDiag size={12} />
+                </a>
+                <button
+                  type="button"
+                  onClick={onSwitchToPaste}
+                  className={cn(
+                    "inline-flex h-10 items-center gap-2 border border-ink bg-saffron px-4 text-ink shadow-offset-sm",
+                    "font-sans font-medium uppercase tracking-[0.12em] text-[0.75rem]",
+                    "transition-all duration-200 ease-atelier",
+                    "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+                  )}
+                >
+                  <span>Switch to paste mode</span>
+                  <ArrowDiag size={12} />
+                </button>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
+                digest · {state.digest}
+              </p>
+            </div>
+          </Frame>
         )}
       </StepCard>
     </>

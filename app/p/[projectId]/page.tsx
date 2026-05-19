@@ -259,8 +259,19 @@ export default async function ProjectPage({ params }: Props) {
                   />
                 </div>
 
-                {/* Tertiary spec line — unsold action + treasury balance */}
+                {/* Tertiary spec line — supply + unsold action + treasury balance */}
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                  <span>
+                    max supply{" "}
+                    <span className="text-ink/70">
+                      {formatToken(
+                        project.fundingAllocation,
+                        PROJECT_COIN_DECIMALS,
+                      )}{" "}
+                      {tkr}
+                    </span>
+                  </span>
+                  <span className="text-ink/20">·</span>
                   <span>
                     unsold{" "}
                     <span className="text-ink/70">

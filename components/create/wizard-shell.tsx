@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useWizard } from "@/lib/store/wizard";
-import { ArrowDiag } from "@pandasui/ui";
+import { ArrowDiag, Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
 import { Hairline } from "@/components/primitives/hairline";
@@ -30,6 +31,7 @@ export function WizardShell() {
   const goPrev = useWizard((s) => s.goPrev);
   const reset = useWizard((s) => s.reset);
   const hydrated = useWizard((s) => s.hydrated);
+  const [resetOpen, setResetOpen] = useState(false);
 
   if (!hydrated) {
     return (
@@ -56,11 +58,18 @@ export function WizardShell() {
             </span>
             <button
               type="button"
-              onClick={() => {
-                if (confirm("Clear draft and start over?")) reset();
-              }}
-              className="font-mono-label text-[10px] text-ink/45 transition-colors hover:text-poppy"
+              onClick={() => setResetOpen(true)}
+              className={cn(
+                "inline-flex h-7 items-center gap-1.5 border border-ink/25 bg-bone px-2.5",
+                "font-mono-label text-[10px] text-ink/70 transition-all duration-200 ease-atelier",
+                "hover:-translate-y-[1px] hover:border-poppy hover:text-poppy hover:shadow-offset-sm",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              )}
             >
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full bg-poppy/70"
+              />
               reset draft
             </button>
           </div>
@@ -137,6 +146,66 @@ export function WizardShell() {
           )}
         </div>
       </Container>
+
+      <Modal
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+        title="Reset draft?"
+      >
+        <div className="space-y-5">
+          <p className="text-sm text-ink/75">
+            This clears every field in the wizard and removes the saved draft
+            from your browser. Nothing on-chain is affected — you just start
+            from a blank form.
+          </p>
+          <ul className="space-y-1.5 border border-ink/15 bg-bone/60 px-4 py-3 font-mono text-[11px] text-ink/65">
+            <li className="flex items-baseline gap-2">
+              <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
+              identity, coin, sale, deploy — all wiped
+            </li>
+            <li className="flex items-baseline gap-2">
+              <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
+              <code>pandabox:draft:v3</code> removed from localStorage
+            </li>
+            <li className="flex items-baseline gap-2">
+              <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
+              this cannot be undone
+            </li>
+          </ul>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setResetOpen(false)}
+              className={cn(
+                "inline-flex h-10 items-center justify-center border border-ink/25 bg-bone px-4",
+                "font-mono-label text-[10px] text-ink/70 transition-all duration-200 ease-atelier",
+                "hover:-translate-y-[1px] hover:border-ink hover:text-ink hover:shadow-offset-sm",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              )}
+            >
+              Keep draft
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                reset();
+                setResetOpen(false);
+              }}
+              className={cn(
+                "inline-flex h-10 items-center gap-2 border border-ink bg-poppy px-4 text-bone shadow-offset-sm",
+                "font-sans font-medium uppercase tracking-[0.12em] text-[0.75rem]",
+                "transition-all duration-200 ease-atelier",
+                "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+                "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              )}
+            >
+              <span>Reset draft</span>
+              <ArrowDiag size={12} />
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

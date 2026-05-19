@@ -121,7 +121,30 @@ export function StepSaleForm() {
                 : "—"
             }
           />
+          <DerivedRow
+            label={`Max supply · ${ticker}`}
+            value={
+              allocation
+                ? `${new BigNumber(allocation).toFormat(0)} ${ticker}`
+                : "—"
+            }
+          />
+          <DerivedRow
+            label="Minted at launch"
+            value="0 — minted on claim"
+          />
         </div>
+        <p className="mt-2 font-mono text-[10px] leading-relaxed text-ink/55">
+          The coin starts at <span className="text-ink/75">0 supply</span>.
+          Tokens are minted lazily when supporters call{" "}
+          <code className="font-mono">claim</code> on their receipts. Final
+          circulating supply ={" "}
+          <span className="text-ink/75">claimed</span>
+          {sale.unsoldAction === "transfer_to_creator"
+            ? " + unsold (returned to your wallet)"
+            : " (unsold portion is burned)"}
+          .
+        </p>
       </StepCard>
 
       <StepCard title="Sale window" meta={durationDays != null ? `${durationDays}d` : "no time cap"}>
