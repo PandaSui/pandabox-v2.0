@@ -8,7 +8,8 @@ export type Category =
   | "gaming"
   | "music"
   | "social"
-  | "rwa";
+  | "rwa"
+  | "meme";
 
 export type SortKey = "trending" | "newest" | "most-funded" | "ending-soonest";
 

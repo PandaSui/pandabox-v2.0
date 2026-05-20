@@ -18,6 +18,7 @@ const CATEGORIES: { value: Category; label: string }[] = [
   { value: "music", label: "Music" },
   { value: "social", label: "Social" },
   { value: "rwa", label: "RWA" },
+  { value: "meme", label: "Meme" },
 ];
 
 export function StepIdentityForm() {

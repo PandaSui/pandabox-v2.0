@@ -9,6 +9,7 @@ export const CATEGORY = z.enum([
   "music",
   "social",
   "rwa",
+  "meme",
 ]);
 
 /* ───────────────────────── Step 1 — Identity ───────────────────────── */

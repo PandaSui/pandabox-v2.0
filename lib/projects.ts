@@ -409,3 +409,21 @@ export async function getOnchainProject(
   const s = await cachedHydrated(id);
   return s ? deserializeHydrated(s) : null;
 }
+
+/**
+ * List variant that hydrates every project's IPFS details + description in
+ * parallel. Each hydration hits the per-id `cachedHydrated` cache, so this
+ * is cheap on repeat calls and gracefully degrades to whatever the on-chain
+ * read returned if an IPFS fetch fails. Used by `/explore` so the grid can
+ * filter on `details.category`.
+ */
+export async function getHydratedOnchainProjects(): Promise<HydratedProject[]> {
+  const list = await getOnchainProjects();
+  const hydrated = await Promise.all(
+    list.map(async (p) => {
+      const s = await cachedHydrated(p.id);
+      return s ? deserializeHydrated(s) : { ...p, description: null, details: null };
+    }),
+  );
+  return hydrated;
+}

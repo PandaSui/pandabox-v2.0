@@ -21,6 +21,7 @@ const CATEGORIES: ReadonlySet<Category> = new Set([
   "music",
   "social",
   "rwa",
+  "meme",
 ]);
 
 export async function GET(request: Request) {

@@ -40,6 +40,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   music: "Music",
   social: "Social",
   rwa: "RWA",
+  meme: "Meme",
 };
 
 const CTA_BASE =

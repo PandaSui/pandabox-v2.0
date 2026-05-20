@@ -24,6 +24,7 @@ const CATS: { key: Category | null; label: string }[] = [
   { key: "music", label: "Music" },
   { key: "social", label: "Social" },
   { key: "rwa", label: "RWA" },
+  { key: "meme", label: "Meme" },
 ];
 
 const SORTS: { key: SortKey; label: string }[] = [

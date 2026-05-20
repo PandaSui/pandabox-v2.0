@@ -23,6 +23,7 @@ const CATEGORY_ACCENT: Record<Category, Accent> = {
   music: "plum",
   social: "jade",
   rwa: "sky",
+  meme: "poppy",
 };
 const ACCENT_TEXT: Record<Accent, string> = {
   saffron: "text-saffron",
