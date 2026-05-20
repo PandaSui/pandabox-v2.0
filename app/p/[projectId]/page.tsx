@@ -6,7 +6,6 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { Marker } from "@/components/primitives/marker";
 import { Address } from "@/components/identity/address";
 import { CoinType } from "@/components/identity/coin-type";
 import { ProjectActionRail } from "@/components/project/project-action-rail";
@@ -14,6 +13,7 @@ import { ActivityFeed } from "@/components/project/activity-feed";
 import { CoverFrame } from "@/components/project/cover-frame";
 import { OnchainRecord } from "@/components/project/onchain-record";
 import { SharePill } from "@/components/project/share-pill";
+import { DetailFundingMeter } from "@/components/project/detail-funding-meter";
 import { getOnchainProject, type HydratedProject } from "@/lib/projects";
 import { getProjectActivity, type ActivityItem } from "@/lib/activity";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
@@ -192,32 +192,12 @@ export default async function ProjectPage({ params }: Props) {
 
               {/* Progress meter */}
               <div className="mt-7">
-                <div className="flex items-baseline justify-between">
-                  <MonoLabel className="text-[10px]">Raised</MonoLabel>
-                  <span className="font-mono tabular-nums text-sm text-ink">
-                    {pct.toFixed(2)}
-                    <span className="text-ink/45">%</span>
-                  </span>
-                </div>
-                <div className="relative mt-2 h-[5px] overflow-hidden bg-ink/10">
-                  <div
-                    className="absolute inset-y-0 left-0 bg-saffron transition-[width] duration-500 ease-atelier"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                <div className="mt-2 flex items-baseline justify-between font-mono text-[12px] tabular-nums text-ink/60">
-                  <span>
-                    <Marker color="saffron">
-                      <span className="text-ink">
-                        {formatSui(raisedMist)} SUI
-                      </span>
-                    </Marker>
-                  </span>
-                  <span>
-                    of {formatSui(targetMist)} SUI{" "}
-                    <span className="text-ink/40">target</span>
-                  </span>
-                </div>
+                <DetailFundingMeter
+                  pct={pct}
+                  live={live}
+                  raisedLabel={<>{formatSui(raisedMist)} SUI</>}
+                  targetLabel={<>{formatSui(targetMist)} SUI</>}
+                />
               </div>
 
               {/* Supporter strip — social proof, even when empty */}

@@ -12,6 +12,7 @@ import { SuiGlyph } from "@/components/identity/sui-glyph";
 import type { OnChainProject } from "@/lib/projects";
 import { hasValidParams } from "@/lib/project-health";
 import { TokenDisc } from "./token-disc";
+import { FundingBar } from "./funding-bar";
 
 type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
 
@@ -70,6 +71,7 @@ export function OnchainProjectCard({
 }) {
   const a: Accent = accent ?? "plum";
   const scope = useRef<HTMLElement>(null);
+  const pctRef = useRef<HTMLSpanElement>(null);
 
   const validParams = hasValidParams(project);
   const safeBaseRate = BigInt(project.baseRate || 1);
@@ -95,44 +97,6 @@ export function OnchainProjectCard({
     () => {
       if (!scope.current) return;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      // Progress-bar reveal + percent count-up on first viewport entry.
-      const fill = scope.current.querySelector<HTMLElement>("[data-progress-fill]");
-      const percent = scope.current.querySelector<HTMLElement>("[data-progress-pct]");
-      let progressIO: IntersectionObserver | null = null;
-      if (fill && !reduce) {
-        gsap.set(fill, { width: "0%" });
-        progressIO = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (!entry.isIntersecting) continue;
-              gsap.to(fill, {
-                width: `${pct}%`,
-                duration: 0.9,
-                ease: "power3.out",
-              });
-              if (percent) {
-                const obj = { v: 0 };
-                gsap.to(obj, {
-                  v: pct,
-                  duration: 0.9,
-                  ease: "power3.out",
-                  onUpdate: () => {
-                    percent.firstChild!.textContent = obj.v.toFixed(
-                      obj.v >= 10 ? 0 : 1,
-                    );
-                  },
-                });
-              }
-              progressIO?.disconnect();
-            }
-          },
-          { rootMargin: "0px 0px -8% 0px", threshold: 0.1 },
-        );
-        progressIO.observe(scope.current);
-      } else if (fill) {
-        gsap.set(fill, { width: `${pct}%` });
-      }
 
       // Continuous live-dot pulse — slower + softer than a CSS keyframe so
       // it doesn't compete with the Treasury Pulse on the page.
@@ -180,7 +144,6 @@ export function OnchainProjectCard({
         article.removeEventListener("mouseleave", onLeave);
         article.removeEventListener("focusin", onEnter);
         article.removeEventListener("focusout", onLeave);
-        progressIO?.disconnect();
       };
     },
     { scope, dependencies: [pct] },
@@ -391,21 +354,20 @@ export function OnchainProjectCard({
                 / {formatSuiFromMist(targetMist)}
               </span>
             </span>
-            <span data-progress-pct className="text-ink">
-              <span>{pct.toFixed(pct >= 10 ? 0 : 1)}</span>
+            <span className="text-base font-medium text-ink leading-none">
+              <span ref={pctRef}>
+                <span>{pct.toFixed(pct >= 10 ? 0 : 1)}</span>
+              </span>
               <span className="text-ink/45">%</span>
             </span>
           </div>
-          <div className="relative mt-1.5 h-[3px] overflow-hidden bg-ink/10">
-            <div
-              data-progress-fill
-              className={cn("absolute inset-y-0 left-0", ACCENT_BG_SOLID[a])}
-              style={{ width: `${pct}%` }}
-            />
-            {/* 100% reference tick */}
-            <span
-              aria-hidden
-              className="absolute right-0 top-0 h-full w-px bg-ink/20"
+          <div className="mt-2">
+            <FundingBar
+              pct={pct}
+              live={live}
+              accent={a}
+              size="md"
+              pctRef={pctRef}
             />
           </div>
         </div>
