@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@pandasui/ui/lib";
 import { gatewayUrl, isLikelyCid, resolveBlobRef, uploadBlob } from "@/lib/ipfs";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -50,12 +50,28 @@ export function ImageUpload({
 }) {
   const [state, setState] = useState<UploadState>({ kind: "idle" });
   const [dragging, setDragging] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+  // Gateway propagation can lag a few seconds after pin — bump this on
+  // <img onError> with backoff so we re-request the same URL up to 4×.
+  const [retryAttempt, setRetryAttempt] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const resolved = resolveBlobRef(value);
   const isDraftPreview = !resolved && !!value && value.startsWith("/");
   const previewUrl = resolved?.url ?? (isDraftPreview ? value : null);
+
+  // Reset load state whenever the preview URL changes so a new upload (or
+  // pasted CID) starts the skeleton fresh and doesn't inherit the previous
+  // image's loaded=true.
+  useEffect(() => {
+    setImgLoaded(false);
+    setRetryAttempt(0);
+    return () => {
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, [previewUrl]);
 
   const startUpload = useCallback(
     async (file: File) => {
@@ -163,6 +179,23 @@ export function ImageUpload({
   const isCover = variant === "cover";
   const aspect = isCover ? "aspect-[16/10]" : "aspect-square";
   const uploading = state.kind === "uploading";
+  // Skeleton sits between "pin succeeded" and "gateway returns bytes". When
+  // an upload is still in flight, the upload card is already the source of
+  // truth so we hide the skeleton to avoid double-status.
+  const showSkeleton = !!previewUrl && !imgLoaded && !uploading;
+  // Cache-bust on retry so the gateway can't return a stale 404 from its
+  // edge cache while the pin finishes propagating.
+  const imgSrc =
+    previewUrl && retryAttempt > 0
+      ? `${previewUrl}${previewUrl.includes("?") ? "&" : "?"}r=${retryAttempt}`
+      : previewUrl;
+  const handleImgError = () => {
+    if (retryAttempt >= 4) return;
+    const delayMs = 800 * (retryAttempt + 1);
+    retryTimerRef.current = setTimeout(() => {
+      setRetryAttempt((n) => n + 1);
+    }, delayMs);
+  };
 
   return (
     <div className="space-y-3">
@@ -198,11 +231,18 @@ export function ImageUpload({
         {previewUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={previewUrl}
+            key={`${previewUrl}-${retryAttempt}`}
+            src={imgSrc ?? previewUrl}
             alt=""
+            onLoad={() => setImgLoaded(true)}
+            onError={handleImgError}
             className={cn(
-              "h-full w-full object-cover",
-              uploading && "opacity-60",
+              "h-full w-full object-cover transition-opacity duration-300",
+              uploading
+                ? "opacity-60"
+                : imgLoaded
+                  ? "opacity-100"
+                  : "opacity-0",
             )}
           />
         ) : (
@@ -221,7 +261,48 @@ export function ImageUpload({
           </button>
         )}
 
-        {previewUrl && !uploading && (
+        {/* IPFS gateway warm-up skeleton — pin succeeded but the gateway
+            hasn't started serving the blob yet (typically a few seconds).
+            We pulse a neutral surface and show a small status pill so the
+            user knows the image is coming, not stuck. */}
+        {showSkeleton && (
+          <div
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+            className="pointer-events-none absolute inset-0"
+          >
+            <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-ink/[0.05] via-ink/[0.12] to-ink/[0.05]" />
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-60"
+              style={{
+                background:
+                  "repeating-linear-gradient(115deg, rgba(22,19,16,0.05) 0 8px, transparent 8px 22px)",
+              }}
+            />
+            <div className="absolute inset-x-3 bottom-3 border border-ink bg-bone shadow-offset-sm">
+              <div className="flex items-center justify-between gap-3 px-3 py-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="block h-1.5 w-1.5 rounded-full bg-saffron stat-live-dot" />
+                  <span className="font-mono-label text-[10px] text-ink">
+                    loading from ipfs
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-ink/45">
+                  {retryAttempt > 0
+                    ? `gateway retry ${retryAttempt}/4`
+                    : "gateway warm-up"}
+                </span>
+              </div>
+              <div className="relative h-[2px] w-full overflow-hidden bg-ink/10">
+                <div className="ipfs-indeterminate-bar absolute inset-y-0 left-0 w-1/3 bg-saffron" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {previewUrl && !uploading && imgLoaded && (
           <div className="absolute right-2 top-2 flex gap-1">
             <button
               type="button"

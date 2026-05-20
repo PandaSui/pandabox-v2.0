@@ -12,13 +12,13 @@ import type { Category } from "@/types/pandabox";
 const CATEGORIES: { value: Category; label: string }[] = [
   { value: "art", label: "Art" },
   { value: "infra", label: "Infra" },
+  { value: "meme", label: "Meme" },
   { value: "dao", label: "DAO" },
   { value: "research", label: "Research" },
   { value: "gaming", label: "Gaming" },
   { value: "music", label: "Music" },
   { value: "social", label: "Social" },
   { value: "rwa", label: "RWA" },
-  { value: "meme", label: "Meme" },
 ];
 
 export function StepIdentityForm() {
