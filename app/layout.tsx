@@ -89,8 +89,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
-          <PageTransition />
-          {children}
+          <PageTransition>{children}</PageTransition>
         </Providers>
       </body>
     </html>
