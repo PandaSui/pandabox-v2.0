@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWizard } from "@/lib/store/wizard";
+import { computeWizardProgress } from "@/lib/store/wizard-progress";
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
@@ -31,6 +32,10 @@ export function WizardShell() {
   const goPrev = useWizard((s) => s.goPrev);
   const reset = useWizard((s) => s.reset);
   const hydrated = useWizard((s) => s.hydrated);
+  // Field-driven progress. Selector returns a primitive number so Zustand's
+  // default Object.is equality short-circuits re-renders when only an
+  // unrelated bit of draft state (e.g. step) changes.
+  const pct = useWizard((s) => computeWizardProgress(s.draft).pct);
   const [resetOpen, setResetOpen] = useState(false);
 
   if (!hydrated) {
@@ -44,8 +49,6 @@ export function WizardShell() {
       </Container>
     );
   }
-
-  const pct = Math.round(((step - 1) / (TOTAL_STEPS - 1)) * 100);
 
   return (
     <>
