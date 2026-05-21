@@ -16,6 +16,7 @@ import { ProjectAvatar } from "@/components/identity/project-avatar";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
 import { ManageWorkspace } from "./manage-workspace";
+import { bustProjectsCache } from "@/lib/server-actions/projects-cache";
 import type {
   DashboardOwnedRow,
   DashboardPayload,
@@ -62,6 +63,23 @@ export function DashboardShell() {
     const params = new URLSearchParams(searchParams.toString());
     params.set("manage", projectId);
     router.push(`/dashboard?${params.toString()}`);
+  };
+
+  // Refresh = bust the server-side `unstable_cache` tags first, then bump
+  // the client refresh key to re-fetch /api/dashboard/[address]. Without
+  // the tag bust, the underlying readers would serve stale chain data
+  // (projects ttl=60s, holdings ttl=20s) and a refresh click would be a
+  // no-op until those TTLs naturally expire. Flip loading optimistically
+  // so the spinner doesn't lag the click.
+  const onRefresh = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await bustProjectsCache();
+    } catch (err) {
+      console.warn("[dashboard] cache bust failed", err);
+    }
+    setRefreshKey((k) => k + 1);
   };
 
   const managedRow =
@@ -139,11 +157,21 @@ export function DashboardShell() {
           </div>
           <button
             type="button"
-            onClick={() => setRefreshKey((k) => k + 1)}
+            onClick={onRefresh}
             disabled={loading}
-            className="font-mono-label text-[10px] text-ink/45 transition-colors hover:text-ink disabled:opacity-40"
+            aria-label={loading ? "Refreshing dashboard" : "Refresh dashboard"}
+            className={cn(
+              "group inline-flex h-9 items-center gap-2 border border-ink/25 bg-bone px-3 shadow-offset-sm",
+              "font-mono-label text-[10px] text-ink/70",
+              "transition-all duration-300 ease-atelier",
+              "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:border-ink hover:text-ink hover:shadow-offset",
+              "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              "disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm",
+            )}
           >
-            {loading ? "refreshing…" : "refresh"}
+            <RefreshGlyph spinning={loading} />
+            <span>{loading ? "refreshing" : "refresh"}</span>
           </button>
         </div>
       </header>
@@ -202,6 +230,32 @@ export function DashboardShell() {
         )}
       </section>
     </Container>
+  );
+}
+
+/* ─────────────────────── Glyphs ─────────────────────── */
+
+function RefreshGlyph({ spinning }: { spinning: boolean }) {
+  return (
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={cn(
+        "shrink-0 transition-transform duration-300",
+        spinning && "animate-spin",
+      )}
+    >
+      <polyline points="23 4 23 10 17 10" />
+      <polyline points="1 20 1 14 7 14" />
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+    </svg>
   );
 }
 
