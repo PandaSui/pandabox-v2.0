@@ -1,9 +1,22 @@
 import { NextResponse } from "next/server";
 import { getUserHoldings } from "@/lib/holdings";
-import { getOnchainProjects, type OnChainProject } from "@/lib/projects";
+import {
+  getOnchainProject,
+  getOnchainProjects,
+  type HydratedProject,
+  type OnChainProject,
+  type ProjectDetails,
+} from "@/lib/projects";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Wire-shape for a project on the dashboard. Carries the on-chain core
+ * plus optional `details` (IPFS-pinned project_details.json) so the card
+ * can render state-aware UI — sparklines for seeded pools, ticker from
+ * details, etc. — without the client having to do a second round-trip.
+ * BigInts are serialized to strings since JSON can't carry them.
+ */
 export type OnChainProjectJSON = Omit<
   OnChainProject,
   "fundingAllocation" | "sold" | "suiBalance"
@@ -11,6 +24,7 @@ export type OnChainProjectJSON = Omit<
   fundingAllocation: string;
   sold: string;
   suiBalance: string;
+  details: ProjectDetails | null;
 };
 
 export type DashboardOwnedRow = {
@@ -42,8 +56,11 @@ export async function GET(
 ) {
   const { address } = await context.params;
 
-  // Both reads are short-cached server-side. Joining client-side would require
-  // (N+1) RPC calls so we do it here once instead.
+  // Bulk-fetch the project list + holdings in parallel. The owned rows get
+  // a second hydration pass (per-id cached) so the dashboard can see IPFS
+  // details — required for the seeded-pool sparkline and any future
+  // off-chain-flag UI on owner cards. Supported rows stay on the lighter
+  // on-chain-only shape.
   const [holdings, allProjects] = await Promise.all([
     getUserHoldings(address),
     getOnchainProjects(),
@@ -51,12 +68,19 @@ export async function GET(
 
   const byId = new Map(allProjects.map((p) => [p.id, p]));
 
-  const owned: DashboardOwnedRow[] = [];
-  for (const cap of holdings.adminCaps) {
-    const p = byId.get(cap.projectId);
-    if (!p) continue;
-    owned.push({ project: toJSON(p), capId: cap.capId });
-  }
+  // ── Owned: hydrate each project so we get IPFS `details` (incl.
+  //    liquidity flag). `getOnchainProject` is unstable_cache'd per-id
+  //    with a 30s revalidate, so repeat hits during a session are free.
+  const ownedHydrated = await Promise.all(
+    holdings.adminCaps.map(async (cap) => {
+      const p = await getOnchainProject(cap.projectId);
+      if (!p) return null;
+      return { project: toHydratedJSON(p), capId: cap.capId };
+    }),
+  );
+  const owned: DashboardOwnedRow[] = ownedHydrated.filter(
+    (row): row is DashboardOwnedRow => row !== null,
+  );
 
   const supported: DashboardSupportedRow[] = [];
   for (const [projectId, receipts] of Object.entries(
@@ -97,5 +121,16 @@ function toJSON(p: OnChainProject): OnChainProjectJSON {
     fundingAllocation: p.fundingAllocation.toString(),
     sold: p.sold.toString(),
     suiBalance: p.suiBalance.toString(),
+    details: null,
+  };
+}
+
+function toHydratedJSON(p: HydratedProject): OnChainProjectJSON {
+  return {
+    ...p,
+    fundingAllocation: p.fundingAllocation.toString(),
+    sold: p.sold.toString(),
+    suiBalance: p.suiBalance.toString(),
+    details: p.details,
   };
 }

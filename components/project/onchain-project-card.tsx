@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { cn } from "@pandasui/ui/lib";
@@ -161,28 +161,13 @@ export function OnchainProjectCard({
     >
       {/* ─── Cover panel ─── */}
       <div className="relative aspect-[16/9] overflow-hidden border-b border-ink/15 bg-bone">
-        {/* Backdrop: a softly-blurred copy of the project logo. We render it
-            zoomed slightly past the panel so the blur halo doesn't reveal
-            the bone background at the edges. When the project has no icon
-            we fall back to the soft accent tint, preserving the visual rhythm. */}
-        {project.iconUrl ? (
-          <div aria-hidden className="absolute inset-0 overflow-hidden">
-            <Image
-              src={project.iconUrl}
-              alt=""
-              fill
-              unoptimized
-              sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
-              data-cover-img
-              className="scale-125 object-cover opacity-65 blur-2xl saturate-125"
-            />
-          </div>
-        ) : (
-          <div
-            aria-hidden
-            className={cn("absolute inset-0", ACCENT_BG_SOFT[a])}
-          />
-        )}
+        {/* Backdrop: a softly-blurred copy of the project logo. We render
+            it zoomed slightly past the panel so the blur halo doesn't
+            reveal the bone background at the edges. The accent tint is
+            always painted underneath — visible during the IPFS round-trip
+            and on error/no-src — so the card never shows a blank slot
+            while the image is fetching. */}
+        <CoverBackdrop src={project.iconUrl} accent={a} />
         {/* A whisper of the bone background on top of the blur so the disc
             doesn't fight the backdrop for contrast. */}
         <div aria-hidden className="absolute inset-0 bg-bone/35" />
@@ -432,6 +417,53 @@ function formatToken(raw: bigint, decimals = 9): string {
 function shortAddr(addr: string): string {
   if (!addr || addr.length < 12) return addr;
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
+/**
+ * Cover-panel backdrop. Always renders the accent tint so the card has a
+ * filled silhouette before the IPFS image lands — what used to be a
+ * blank flash during gateway round-trips is now a soft tinted aura that
+ * the blurred image fades into over 500ms once it decodes. Falls back to
+ * the bare tint on `<Image>` errors and on projects without an iconUrl.
+ *
+ * The fade-in is slower than the centered <TokenDisc>'s 300ms because
+ * this layer is already heavily blurred — a fast pop would feel jarring
+ * against the soft target state; the longer transition matches the
+ * "settling fog" visual idea.
+ */
+function CoverBackdrop({
+  src,
+  accent,
+}: {
+  src: string | null | undefined;
+  accent: Accent;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
+  const showImage = !!src && !errored;
+  return (
+    <div aria-hidden className="absolute inset-0 overflow-hidden">
+      {/* Always-painted tint base. Visible during load, on error, on
+          no-src — keeps the card silhouette filled at all times. */}
+      <div className={cn("absolute inset-0", ACCENT_BG_SOFT[accent])} />
+      {showImage && (
+        <Image
+          src={src as string}
+          alt=""
+          fill
+          unoptimized
+          sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+          data-cover-img
+          onLoad={() => setLoaded(true)}
+          onError={() => setErrored(true)}
+          className={cn(
+            "scale-125 object-cover blur-2xl saturate-125 transition-opacity duration-500",
+            loaded ? "opacity-65" : "opacity-0",
+          )}
+        />
+      )}
+    </div>
+  );
 }
 
 function shortTokenSlug(typeStr: string): string {
