@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCurrentAccount } from "@mysten/dapp-kit";
@@ -13,6 +12,7 @@ import { AccentRule } from "@/components/primitives/accent-rule";
 import { Hairline } from "@/components/primitives/hairline";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
+import { ProjectAvatar } from "@/components/identity/project-avatar";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
 import { ManageWorkspace } from "./manage-workspace";
@@ -345,22 +345,7 @@ function CardHeader({
   const ticker = lastSegment(project.tokenType).toUpperCase() || "TOK";
   return (
     <header className="flex items-center gap-3 border-b border-ink/15 px-5 py-3">
-      {project.iconUrl ? (
-        <div className="relative h-10 w-10 overflow-hidden rounded-full border border-ink/40 bg-bone">
-          <Image
-            src={project.iconUrl}
-            alt=""
-            fill
-            sizes="40px"
-            className="object-cover"
-            unoptimized
-          />
-        </div>
-      ) : (
-        <div className="grid h-10 w-10 place-items-center rounded-full border border-ink/40 bg-bone font-display text-lg">
-          {(project.name?.[0] ?? "P").toUpperCase()}
-        </div>
-      )}
+      <ProjectAvatar src={project.iconUrl} name={project.name} size={40} />
       <div className="min-w-0 flex-1">
         <Link
           href={`/p/${project.id}`}

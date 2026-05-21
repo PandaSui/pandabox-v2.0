@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
+import { ProjectAvatar } from "@/components/identity/project-avatar";
 import { AdminPanel } from "@/components/project/admin-panel";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
@@ -169,22 +169,7 @@ function Loaded({
       {/* ── Project header strip ───────────────────────────────── */}
       <header className="border border-ink/15 bg-bone shadow-offset-sm">
         <div className="flex flex-wrap items-center gap-4 border-b border-ink/15 px-5 py-4">
-          {project.iconUrl ? (
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-ink/40 bg-bone">
-              <Image
-                src={project.iconUrl}
-                alt=""
-                fill
-                sizes="56px"
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-ink/40 bg-bone font-display text-xl">
-              {(project.name?.[0] ?? "P").toUpperCase()}
-            </div>
-          )}
+          <ProjectAvatar src={project.iconUrl} name={project.name} size={56} />
 
           <div className="min-w-0 flex-1">
             <h1 className="truncate font-display text-2xl leading-tight">
