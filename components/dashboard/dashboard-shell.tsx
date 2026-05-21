@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
@@ -14,6 +15,7 @@ import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
+import { ManageWorkspace } from "./manage-workspace";
 import type {
   DashboardOwnedRow,
   DashboardPayload,
@@ -40,6 +42,14 @@ const CTA_BASE =
  */
 export function DashboardShell() {
   const account = useCurrentAccount();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // Manage workspace toggle — URL-driven so browser back works, refresh
+  // preserves state, and the view is shareable internally. When the param
+  // is set and we have a matching owned row, the workspace replaces the
+  // project lists below.
+  const manageId = searchParams.get("manage");
+
   const [data, setData] = useState<DashboardPayload | null>(null);
   // Start in `loading: true` so the first paint shows the skeleton instead
   // of briefly flashing the empty state while the useEffect spins up the
@@ -47,6 +57,15 @@ export function DashboardShell() {
   // card doesn't think it's still hydrating.
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const openManage = (projectId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("manage", projectId);
+    router.push(`/dashboard?${params.toString()}`);
+  };
+
+  const managedRow =
+    manageId && data ? data.owned.find((r) => r.project.id === manageId) : null;
 
   useEffect(() => {
     if (!account) {
@@ -66,6 +85,21 @@ export function DashboardShell() {
       .finally(() => setLoading(false));
     return () => ac.abort();
   }, [account, refreshKey]);
+
+  // Manage workspace branch — replaces the dashboard list entirely so the
+  // user has the full viewport for admin work. Wallet still has to be
+  // connected since AdminPanel signs transactions inside.
+  if (account && managedRow) {
+    return (
+      <Container>
+        <ManageWorkspace
+          projectId={managedRow.project.id}
+          capId={managedRow.capId}
+          coinType={managedRow.project.tokenType}
+        />
+      </Container>
+    );
+  }
 
   if (!account) {
     return (
@@ -125,7 +159,11 @@ export function DashboardShell() {
         ) : data && data.owned.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {data.owned.map((row) => (
-              <OwnedCard key={row.capId} row={row} />
+              <OwnedCard
+                key={row.capId}
+                row={row}
+                onManage={() => openManage(row.project.id)}
+              />
             ))}
           </div>
         ) : (
@@ -169,7 +207,13 @@ export function DashboardShell() {
 
 /* ─────────────────────── Cards ─────────────────────── */
 
-function OwnedCard({ row }: { row: DashboardOwnedRow }) {
+function OwnedCard({
+  row,
+  onManage,
+}: {
+  row: DashboardOwnedRow;
+  onManage: () => void;
+}) {
   const p = row.project;
   const ticker = lastSegment(p.tokenType).toUpperCase() || "TOK";
   const pct =
@@ -206,13 +250,17 @@ function OwnedCard({ row }: { row: DashboardOwnedRow }) {
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
             cap {shortMid(row.capId)}
           </span>
-          <Link
-            href={`/p/${p.id}`}
+          {/* Manage stays in-place — opens the workspace via ?manage=<id>
+              rather than navigating to /p/[id]. Keeps the user on the
+              dashboard surface they came from. */}
+          <button
+            type="button"
+            onClick={onManage}
             className={cn(CTA_BASE, "bg-saffron text-ink")}
           >
             Manage
             <ArrowDiag size={12} />
-          </Link>
+          </button>
         </div>
       </div>
     </article>
