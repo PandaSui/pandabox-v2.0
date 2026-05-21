@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@pandasui/ui/lib";
 
 /**
@@ -18,6 +18,20 @@ export function SharePill({
   className?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  // tweetHref is computed post-mount so SSR and the first CSR render emit
+  // the same href ("…?text="). Previously the component conditionally
+  // included window.location during render, which produced a server/client
+  // mismatch and triggered a hydration warning.
+  const [tweetHref, setTweetHref] = useState(
+    "https://twitter.com/intent/tweet?text=",
+  );
+
+  useEffect(() => {
+    const tweet = `Backing ${projectName} (${ticker}) on Pandabox — programmable on-chain funding on Sui.\n\n${window.location.href}`;
+    setTweetHref(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
+    );
+  }, [projectName, ticker]);
 
   const onCopy = async () => {
     try {
@@ -28,12 +42,6 @@ export function SharePill({
       /* clipboard blocked — swallow silently */
     }
   };
-
-  const tweet =
-    typeof window === "undefined"
-      ? ""
-      : `Backing ${projectName} (${ticker}) on Pandabox — programmable on-chain funding on Sui.\n\n${window.location.href}`;
-  const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
 
   return (
     <div className={cn("inline-flex items-center gap-1.5", className)}>

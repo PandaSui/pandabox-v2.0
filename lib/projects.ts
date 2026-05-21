@@ -38,6 +38,19 @@ export type OnChainProject = {
   sourceCodeBlobId: string;
   /** Hex coin type carried by the Project<T> generic. */
   tokenType: string;
+  /**
+   * True once the creator has paired SUI/<T> liquidity on a DEX. Until this
+   * flips, the project is in primary issuance (Pandabox `contribute`) and no
+   * external price chart can render — there is no pool to read from. The
+   * Move struct does not yet expose this; readers default it to false and the
+   * UI shows a placeholder chart. Wiring the on-chain field is a follow-up
+   * Move PR — see CLAUDE.md.
+   */
+  liquiditySeeded: boolean;
+  /** Pool object ID on the chosen DEX once seeded. */
+  poolId?: string;
+  /** Which DEX the liquidity lives on. Cetus is the default target. */
+  dex?: "cetus";
 };
 
 /**
@@ -54,6 +67,21 @@ export type ProjectDetails = {
     twitter?: string;
     website?: string;
     discord?: string;
+  };
+  /**
+   * Off-chain liquidity flag. The Move `Project<T>` struct doesn't yet expose
+   * `liquidity_seeded` natively — until that ships, the creator marks the
+   * pool as seeded by pinning an updated `project_details.json` (with this
+   * sub-object set) via `update_metadata`. The verify route confirms the
+   * pool object exists on-chain before pinning, so a creator can't flip the
+   * flag without an actual paired pool. Trust-degraded vs. a real Move
+   * field, but materially better than a pure UI toggle.
+   */
+  liquidity?: {
+    seeded: boolean;
+    poolId: string;
+    dex: "cetus";
+    seededAtMs?: number;
   };
 };
 
@@ -101,6 +129,34 @@ function extractTokenType(typeStr: string): string {
   const gt = typeStr.lastIndexOf(">");
   if (lt === -1 || gt === -1 || gt < lt) return "";
   return typeStr.slice(lt + 1, gt);
+}
+
+/**
+ * Dev-only override for verifying the price chart end-to-end before the
+ * real seed-liquidity flow lands. When both env vars are set, the named
+ * project is forced into `liquiditySeeded: true` and its `poolId` is
+ * swapped for a real Sui DEX pool address GeckoTerminal indexes (e.g.
+ * USDC/SUI, DEEP/SUI, CETUS/SUI). The /api/chart proxy then returns live
+ * OHLCV against that pool and the chart renders.
+ *
+ * Leave both unset in production. Example .env entries:
+ *
+ *   NEXT_PUBLIC_CHART_TEST_PROJECT_ID=0xabc...
+ *   # USDC/SUI on Cetus — high-volume, always indexed
+ *   NEXT_PUBLIC_CHART_TEST_POOL_ID=0x0df4f02d0e210169cb6d5aabd03c3058328c06f2c4dbb0804faa041159c78443
+ */
+const TEST_PROJECT_ID = process.env.NEXT_PUBLIC_CHART_TEST_PROJECT_ID?.trim();
+const TEST_POOL_ID = process.env.NEXT_PUBLIC_CHART_TEST_POOL_ID?.trim();
+
+function applyTestOverride<T extends OnChainProject>(p: T): T {
+  if (!TEST_PROJECT_ID || !TEST_POOL_ID) return p;
+  if (p.id !== TEST_PROJECT_ID) return p;
+  return {
+    ...p,
+    liquiditySeeded: true,
+    poolId: TEST_POOL_ID,
+    dex: "cetus",
+  };
 }
 
 /**
@@ -212,12 +268,19 @@ async function listProjectsOnchain(): Promise<OnChainProject[]> {
       projectDetailsBlobId: String(fields.project_details_blob_id ?? ""),
       sourceCodeBlobId: String(fields.source_code_blob_id ?? ""),
       tokenType: extractTokenType(content.type),
+      // Stubbed until the Move Project struct exposes a liquidity_seeded flag.
+      liquiditySeeded: Boolean(fields.liquidity_seeded ?? false),
+      poolId: typeof fields.pool_id === "string" ? fields.pool_id : undefined,
+      dex:
+        typeof fields.dex === "string" && fields.dex === "cetus"
+          ? "cetus"
+          : undefined,
     });
   }
 
   // Newest first (highest project_number).
   projects.sort((a, b) => b.number - a.number);
-  return projects;
+  return projects.map(applyTestOverride);
 }
 
 /* unstable_cache uses JSON serialization, which can't carry BigInts. We
@@ -275,6 +338,11 @@ async function readOneOnchain(id: string): Promise<OnChainProject | null> {
   if (!IS_DEPLOYED) return null;
   if (!/^0x[0-9a-fA-F]{1,64}$/.test(id)) return null;
 
+  const built = await readOneOnchainInner(id);
+  return built ? applyTestOverride(built) : built;
+}
+
+async function readOneOnchainInner(id: string): Promise<OnChainProject | null> {
   const res = await client().getObject({
     id,
     options: { showContent: true, showType: true },
@@ -309,6 +377,12 @@ async function readOneOnchain(id: string): Promise<OnChainProject | null> {
     projectDetailsBlobId: String(fields.project_details_blob_id ?? ""),
     sourceCodeBlobId: String(fields.source_code_blob_id ?? ""),
     tokenType: extractTokenType(type),
+    liquiditySeeded: Boolean(fields.liquidity_seeded ?? false),
+    poolId: typeof fields.pool_id === "string" ? fields.pool_id : undefined,
+    dex:
+      typeof fields.dex === "string" && fields.dex === "cetus"
+        ? "cetus"
+        : undefined,
   };
 }
 
@@ -331,7 +405,20 @@ async function readHydratedOnchain(id: string): Promise<HydratedProject | null> 
     fetchDetailsJson(p.projectDetailsBlobId),
   ]);
 
-  return { ...p, description, details };
+  // Off-chain liquidity flag pinned in project_details.json overrides the
+  // on-chain stub. When the Move struct grows a real `liquidity_seeded`
+  // field, the on-chain value should take priority — until then IPFS wins
+  // so the dashboard "Seed Cetus pool" flow has something to flip.
+  const ipfsLiq = details?.liquidity;
+  const merged: HydratedProject = {
+    ...p,
+    description,
+    details,
+    liquiditySeeded: p.liquiditySeeded || Boolean(ipfsLiq?.seeded),
+    poolId: p.poolId ?? ipfsLiq?.poolId,
+    dex: p.dex ?? ipfsLiq?.dex,
+  };
+  return merged;
 }
 
 async function fetchMarkdown(blobIdOrUrl: string): Promise<string | null> {

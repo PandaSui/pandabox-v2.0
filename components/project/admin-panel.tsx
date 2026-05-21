@@ -22,6 +22,7 @@ import {
 } from "@/lib/contracts/pandabox";
 import type { AdminCapHolding } from "@/lib/holdings";
 import type { HydratedProject } from "@/lib/projects";
+import { SeedLiquidityModal } from "./seed-liquidity-modal";
 
 const CTA_BASE =
   "group relative inline-flex w-full items-center justify-center gap-2 h-11 px-5 font-sans font-medium uppercase tracking-[0.12em] text-[0.75rem] " +
@@ -37,7 +38,8 @@ type Action =
   | "finalize"
   | "unsold"
   | "transfer"
-  | "renounce";
+  | "renounce"
+  | "seedLiquidity";
 
 type TxState =
   | { kind: "idle" }
@@ -219,6 +221,46 @@ export function AdminPanel({
           >
             <span>Update metadata</span>
           </button>
+          {/*
+           * Off-chain liquidity seed. Until the Move struct grows a real
+           * `liquidity_seeded` field, the chart's "live trading" state is
+           * driven by a flag we pin to project_details.json. Once the
+           * creator marks it seeded against a verified Cetus pool, the
+           * price chart on the project page switches from placeholder to
+           * live OHLCV from GeckoTerminal. Already-seeded projects skip showing
+           * this button so it doesn't pretend to be a re-seed flow.
+           */}
+          {!project.liquiditySeeded && (
+            <button
+              type="button"
+              onClick={() => setOpen("seedLiquidity")}
+              disabled={busy}
+              className={cn(CTA_BASE, "bg-bone border-jade text-jade")}
+              title="Mark this project's Cetus pool as live to enable the price chart"
+            >
+              <span>Seed Cetus pool</span>
+              <ArrowDiag size={12} />
+            </button>
+          )}
+          {project.liquiditySeeded && (
+            <div className="flex items-start gap-2 border border-jade/30 bg-jade/[0.06] px-3 py-2">
+              <span
+                aria-hidden
+                className="mt-[3px] block h-1.5 w-1.5 shrink-0 rounded-full bg-jade"
+                style={{
+                  animation: "stat-live-dot 1.4s ease-in-out infinite",
+                }}
+              />
+              <p className="font-mono text-[10.5px] leading-snug text-jade">
+                <span className="font-semibold uppercase tracking-[0.14em]">
+                  Liquidity seeded
+                </span>{" "}
+                <span className="text-ink/65">
+                  · price chart is live on this project's page.
+                </span>
+              </p>
+            </div>
+          )}
           {showFinalize && (
             <button
               type="button"
@@ -391,6 +433,13 @@ export function AdminPanel({
               }),
             )
           }
+        />
+      )}
+      {open === "seedLiquidity" && (
+        <SeedLiquidityModal
+          project={project}
+          cap={cap}
+          onClose={() => setOpen(null)}
         />
       )}
       {open === "renounce" && (

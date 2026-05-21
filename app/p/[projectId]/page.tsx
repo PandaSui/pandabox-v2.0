@@ -12,6 +12,7 @@ import { ProjectActionRail } from "@/components/project/project-action-rail";
 import { ActivityFeed } from "@/components/project/activity-feed";
 import { CoverFrame } from "@/components/project/cover-frame";
 import { OnchainRecord } from "@/components/project/onchain-record";
+import { PriceChart } from "@/components/project/price-chart";
 import { SharePill } from "@/components/project/share-pill";
 import { DetailFundingMeter } from "@/components/project/detail-funding-meter";
 import { getOnchainProject, type HydratedProject } from "@/lib/projects";
@@ -331,6 +332,9 @@ export default async function ProjectPage({ params }: Props) {
             />
           </Container>
         </section>
+
+        {/* ─── Price chart — placeholder until the creator seeds a Cetus pool ─── */}
+        <PriceChart project={project} />
 
         {/* ─── Body: about + activity (left), pay rail (right, sticky) ─── */}
         <section>
