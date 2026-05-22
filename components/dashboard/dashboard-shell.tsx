@@ -189,17 +189,21 @@ export function DashboardShell() {
         </button>
       </header>
 
+      {/* Skeleton spans the whole no-data window via `!data` — not
+          `loading` — because there's a render between `account` hydrating
+          and the fetch effect firing where `loading` is false but data is
+          still null, which would otherwise flash EmptyState. */}
       {/* ── KPI strip — portfolio-level numbers ──────────────── */}
       <KpiStrip
         owned={data?.owned}
         supported={data?.supported}
-        loading={loading && !data}
+        loading={!data}
       />
 
       {/* ── Owned projects ────────────────────────────────────── */}
       <OwnedSection
         rows={data?.owned}
-        loading={loading && !data}
+        loading={!data}
         filter={filter}
         sort={sort}
         onFilterChange={setFilter}
@@ -210,7 +214,7 @@ export function DashboardShell() {
       <Hairline />
 
       {/* ── Supported projects ────────────────────────────────── */}
-      <SupportedSection rows={data?.supported} loading={loading && !data} />
+      <SupportedSection rows={data?.supported} loading={!data} />
     </Container>
   );
 }
