@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { DashboardShell } from "@/components/dashboard";
@@ -13,7 +14,9 @@ export default function DashboardPage() {
     <>
       <Nav />
       <main id="main">
-        <DashboardShell />
+        <Suspense fallback={null}>
+          <DashboardShell />
+        </Suspense>
         <Footer />
       </main>
     </>
