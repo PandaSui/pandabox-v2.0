@@ -67,7 +67,7 @@ export function Footer({ className }: { className?: string }) {
       <div className="border-t border-ink/15">
         <div className="container flex items-center justify-between py-4 text-xs text-ink/50">
           <span className="font-mono-label">© Pandabox</span>
-          <span className="font-mono-label">v1 · testnet build</span>
+          <span className="font-mono-label">v2 · Mainnet build</span>
         </div>
       </div>
     </footer>
