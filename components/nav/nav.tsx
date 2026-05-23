@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PandaMark } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
@@ -8,12 +9,22 @@ import { TreasuryPulse } from "@/components/pulse";
 import { AdminNavLink } from "./admin-nav-link";
 import { cn } from "@pandasui/ui/lib";
 
+// Each nav destination owns a semantic accent — so the bar that paints under
+// the active item also previews the color register the page itself leans on.
+// Discovery is saffron (default active), creation is poppy (inflow), the
+// supporter dashboard is jade (community), docs is sky (methodical).
 const LINKS = [
-  { href: "/explore", label: "Explore" },
-  { href: "/create", label: "Create" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/docs", label: "Docs" },
+  { href: "/explore", label: "Explore", bar: "bg-saffron" },
+  { href: "/create", label: "Create", bar: "bg-poppy" },
+  { href: "/dashboard", label: "Dashboard", bar: "bg-jade" },
+  { href: "/docs", label: "Docs", bar: "bg-sky" },
 ];
+
+function useIsActive() {
+  const pathname = usePathname() ?? "";
+  return (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
+}
 
 type NavProps = {
   showPulse?: boolean;
@@ -128,6 +139,7 @@ function NavInner({
   mobileOpen: boolean;
   onToggleMobile: () => void;
 }) {
+  const isActive = useIsActive();
   return (
     <div className="container flex h-16 items-center justify-between gap-3 md:gap-6">
       <Link
@@ -140,15 +152,30 @@ function NavInner({
       </Link>
 
       <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
-        {LINKS.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            className="font-mono-label px-3 py-1.5 text-ink/70 hover:text-ink"
-          >
-            {l.label}
-          </Link>
-        ))}
+        {LINKS.map((l) => {
+          const active = isActive(l.href);
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "relative font-mono-label px-3 py-1.5 transition-colors",
+                active ? "text-ink" : "text-ink/70 hover:text-ink",
+              )}
+            >
+              {l.label}
+              <span
+                aria-hidden
+                className={cn(
+                  "pointer-events-none absolute inset-x-3 bottom-1 h-[2px] origin-center transition-transform duration-300 ease-out",
+                  l.bar,
+                  active ? "scale-x-100" : "scale-x-0",
+                )}
+              />
+            </Link>
+          );
+        })}
         <AdminNavLink />
       </nav>
 
@@ -176,6 +203,7 @@ function NavInner({
 }
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const isActive = useIsActive();
   return (
     <div
       className={cn(
@@ -218,16 +246,31 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           </button>
         </div>
         <nav aria-label="Mobile" className="container flex flex-col pb-6 pt-2">
-          {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onClose}
-              className="font-mono-label border-b border-ink/10 py-4 text-ink/80 hover:text-ink"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {LINKS.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={onClose}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative font-mono-label border-b border-ink/10 py-4 pl-3 transition-colors",
+                  active ? "text-ink" : "text-ink/80 hover:text-ink",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 origin-center transition-transform duration-300 ease-out",
+                    l.bar,
+                    active ? "scale-y-100" : "scale-y-0",
+                  )}
+                />
+                {l.label}
+              </Link>
+            );
+          })}
           <div onClick={onClose} className="py-2">
             <AdminNavLink />
           </div>

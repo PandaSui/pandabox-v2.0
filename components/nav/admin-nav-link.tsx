@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { PACKAGE_ID } from "@/lib/contracts/pandabox";
+import { cn } from "@pandasui/ui/lib";
 
 /**
  * Conditional "Admin" link — renders only when the connected wallet holds
@@ -49,14 +51,28 @@ export function AdminNavLink() {
     return () => ac.abort();
   }, [account, client]);
 
+  const pathname = usePathname() ?? "";
+  const active = pathname === "/admin" || pathname.startsWith("/admin/");
+
   if (!show) return null;
 
   return (
     <Link
       href="/admin"
-      className="font-mono-label px-3 py-1.5 text-sky hover:text-ink"
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "relative font-mono-label px-3 py-1.5 transition-colors",
+        active ? "text-ink" : "text-sky hover:text-ink",
+      )}
     >
       Admin
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-3 bottom-1 h-[2px] origin-center bg-sky transition-transform duration-300 ease-out",
+          active ? "scale-x-100" : "scale-x-0",
+        )}
+      />
     </Link>
   );
 }
