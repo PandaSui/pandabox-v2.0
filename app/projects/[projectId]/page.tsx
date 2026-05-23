@@ -396,7 +396,6 @@ export default async function ProjectPage({ params }: Props) {
             tokenType={project.tokenType}
             createdAtMs={project.createdAtMs}
             socials={socials}
-            sourceCodeBlobId={project.sourceCodeBlobId}
           />
         </section>
 

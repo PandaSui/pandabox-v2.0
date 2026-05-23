@@ -29,13 +29,11 @@ export function OnchainRecord({
   tokenType,
   createdAtMs,
   socials = {},
-  sourceCodeBlobId,
 }: {
   projectId: string;
   tokenType?: string;
   createdAtMs?: number;
   socials?: Socials;
-  sourceCodeBlobId?: string;
 }) {
   const scope = useRef<HTMLElement>(null);
 
@@ -87,10 +85,7 @@ export function OnchainRecord({
   );
 
   const hasLinks =
-    !!socials.website ||
-    !!socials.twitter ||
-    !!socials.discord ||
-    !!sourceCodeBlobId;
+    !!socials.website || !!socials.twitter || !!socials.discord;
 
   return (
     <section
@@ -172,7 +167,7 @@ export function OnchainRecord({
             <DeployedReadout ms={createdAtMs} />
           </Cell>
 
-          <Cell glyph={<GlyphLinks />} label="Links" footnote="social · source">
+          <Cell glyph={<GlyphLinks />} label="Links" footnote="social">
             {hasLinks ? (
               <div className="flex flex-wrap gap-1.5">
                 {socials.website && (
@@ -194,13 +189,6 @@ export function OnchainRecord({
                     href={socials.discord}
                     label="discord"
                     icon={<GlyphDiscord />}
-                  />
-                )}
-                {sourceCodeBlobId && (
-                  <LinkChip
-                    href={`https://gateway.pinata.cloud/ipfs/${sourceCodeBlobId}`}
-                    label="source"
-                    icon={<GlyphCode />}
                   />
                 )}
               </div>
@@ -487,16 +475,6 @@ function GlyphDiscord() {
       />
       <circle cx="6" cy="9" r="0.9" fill="currentColor" />
       <circle cx="10" cy="9" r="0.9" fill="currentColor" />
-    </svg>
-  );
-}
-
-function GlyphCode() {
-  return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path d="M5 5 L2 8 L5 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M11 5 L14 8 L11 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="9.5" y1="3.5" x2="6.5" y2="12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
