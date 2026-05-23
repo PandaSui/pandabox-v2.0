@@ -341,7 +341,7 @@ export function OnchainProjectCard({
             </span>
             <span className="text-base font-medium text-ink leading-none">
               <span ref={pctRef}>
-                <span>{pct.toFixed(pct >= 10 ? 0 : 1)}</span>
+                <span>{pct.toFixed(pct >= 10 ? 0 : pct >= 1 ? 1 : 2)}</span>
               </span>
               <span className="text-ink/45">%</span>
             </span>

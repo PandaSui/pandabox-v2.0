@@ -104,7 +104,9 @@ export function FundingBar({
         if (tickEls) gsap.set(tickEls, { opacity: 1, scaleY: 1 });
         const pctEl = pctRef?.current;
         if (pctEl?.firstChild) {
-          pctEl.firstChild.textContent = pct.toFixed(pct >= 10 ? 0 : 1);
+          pctEl.firstChild.textContent = pct.toFixed(
+            pct >= 10 ? 0 : pct >= 1 ? 1 : 2,
+          );
         }
         return;
       }
@@ -166,7 +168,7 @@ export function FundingBar({
                   ease: "expo.out",
                   onUpdate: () => {
                     pctEl.firstChild!.textContent = obj.v.toFixed(
-                      obj.v >= 10 ? 0 : 1,
+                      obj.v >= 10 ? 0 : obj.v >= 1 ? 1 : 2,
                     );
                   },
                 },

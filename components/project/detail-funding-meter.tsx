@@ -22,7 +22,7 @@ export function DetailFundingMeter({
   targetLabel: ReactNode;
 }) {
   const pctRef = useRef<HTMLSpanElement>(null);
-  const initial = pct.toFixed(pct >= 10 ? 0 : 1);
+  const initial = pct.toFixed(pct >= 10 ? 0 : pct >= 1 ? 1 : 2);
 
   return (
     <div>
