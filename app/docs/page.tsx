@@ -62,8 +62,8 @@ export default function DocsPage() {
             How Pandabox actually works.
           </h1>
           <p className="mt-2 max-w-prose text-sm text-ink/60">
-            Three tabs. Mechanics is the protocol; Walk the wizard is the
-            create flow; Reference holds the glossary and FAQ.
+            Three tabs. Mechanics is the protocol; Walk the wizard is the create
+            flow; Reference holds the glossary and FAQ.
           </p>
         </Container>
 
@@ -94,23 +94,22 @@ function MechanicsPanel() {
           Pandabox is a Move package on Sui. A creator deploys a{" "}
           <Term>Project</Term> — a Sui object that owns a SUI treasury and a
           locked <Term>TreasuryCap</Term> for the project's own coin. The
-          project then runs a single sale at a fixed rate: supporters
-          contribute SUI and earn the right to claim project tokens at the
-          configured price.
+          project then runs a single sale at a fixed rate: supporters contribute
+          SUI and earn the right to claim project tokens at the configured
+          price.
         </P>
         <P>
           Supporters don't receive tokens directly. They receive a{" "}
           <Term>ContributionReceipt</Term> — a transferable Sui NFT holding
-          their entitlement. They <Term>claim</Term> their tokens by burning
-          the receipt after the sale closes. Any payment that would exceed
-          the remaining allocation is refunded in the same transaction.
+          their entitlement. They <Term>claim</Term> their tokens by burning the
+          receipt after the sale closes. Any payment that would exceed the
+          remaining allocation is refunded in the same transaction.
         </P>
         <P>
-          The sale ends in one of three ways: the configured end time
-          arrives, the full allocation sells out, or the platform admin
-          closes it. After close, the creator withdraws the raised SUI
-          (minus a platform fee) and processes any unsold tokens per the
-          policy they chose at deploy.
+          The sale ends in one of three ways: the configured end time arrives,
+          the full allocation sells out, or the platform admin closes it. After
+          close, the creator withdraws the raised SUI (minus a platform fee) and
+          processes any unsold tokens per the policy they chose at deploy.
         </P>
         <TryIt href="/create" label="Start a draft project →" />
       </Section>
@@ -118,67 +117,75 @@ function MechanicsPanel() {
       <Section id="window" label="02 / Sale window">
         <P>
           Every sale has a single locked window. You set an{" "}
-          <Term>end time</Term> at deploy — or leave it open and close the
-          sale manually as admin. Until the sale finalizes, anyone can
-          contribute at the fixed rate.
+          <Term>end time</Term> at deploy — or leave it open and close the sale
+          manually as admin. Until the sale finalizes, anyone can contribute at
+          the fixed rate.
         </P>
         <P>
-          Three things finalize a sale: the end time elapses
-          (<Term>Time</Term>), the allocation sells out (<Term>Sellout</Term>),
-          or the admin force-closes it (<Term>Admin</Term>). Finalization is
-          the gate for token claims, SUI withdrawal, and unsold-supply
-          processing — none of those work while the sale is still active.
+          Three things finalize a sale: the end time elapses (<Term>Time</Term>
+          ), the allocation sells out (<Term>Sellout</Term>), or the admin
+          force-closes it (<Term>Admin</Term>). Finalization is the gate for
+          token claims, SUI withdrawal, and unsold-supply processing — none of
+          those work while the sale is still active.
         </P>
         <P>
-          Finalization can be triggered by the admin
-          (<code>try_finalize</code>) or by anyone once the conditions are
-          met (<code>permissionless_finalize</code>) — so a stalled creator
-          can't trap supporters' claims after an end time has passed.
+          Finalization can be triggered by the admin (<code>try_finalize</code>)
+          or by anyone once the conditions are met (
+          <code>permissionless_finalize</code>) — so a stalled creator can't
+          trap supporters' claims after an end time has passed.
         </P>
-        <TryIt href="/docs?tab=wizard#wizard-sale" label="See it in step 03 →" />
+        <TryIt
+          href="/docs?tab=wizard#wizard-sale"
+          label="See it in step 03 →"
+        />
       </Section>
 
       <Section id="rate" label="03 / Base rate & allocation">
         <P>
           Two numbers govern the sale: the <Term>base rate</Term> (project
           tokens issued per 1 SUI) and the <Term>funding allocation</Term>{" "}
-          (total project tokens to sell). Both are set at deploy and frozen
-          for the life of the project — they can't be changed by metadata
-          updates or admin actions.
+          (total project tokens to sell). Both are set at deploy and frozen for
+          the life of the project — they can't be changed by metadata updates or
+          admin actions.
         </P>
         <Code>
-          base rate         = 1,000 tokens / SUI<br />
-          funding alloc.    = 1,000,000 tokens<br />
-          implied max raise = 1,000 SUI<br />
+          base rate = 1,000 tokens / SUI
+          <br />
+          funding alloc. = 1,000,000 tokens
+          <br />
+          implied max raise = 1,000 SUI
+          <br />
           if a supporter pays 12 SUI → entitled to 12,000 tokens
         </Code>
         <P>
-          If a contribution would push past the remaining allocation, only
-          the affordable portion is accepted and the rest is refunded in the
-          same transaction. Supporters never overpay.
+          If a contribution would push past the remaining allocation, only the
+          affordable portion is accepted and the rest is refunded in the same
+          transaction. Supporters never overpay.
         </P>
-        <TryIt href="/docs?tab=wizard#wizard-sale" label="See it in step 03 →" />
+        <TryIt
+          href="/docs?tab=wizard#wizard-sale"
+          label="See it in step 03 →"
+        />
       </Section>
 
       <Section id="claim" label="04 / Contribute & claim">
         <P>
           <Term>Contribute.</Term> A supporter calls <code>contribute</code>{" "}
-          with a SUI coin. The project records the contribution against
-          their address and returns a <Term>ContributionReceipt</Term> NFT —
-          plus a refund coin if the payment exceeded what could be
-          allocated.
+          with a SUI coin. The project records the contribution against their
+          address and returns a <Term>ContributionReceipt</Term> NFT — plus a
+          refund coin if the payment exceeded what could be allocated.
         </P>
         <P>
           <Term>Claim.</Term> After the sale finalizes, the supporter burns
-          their receipt with <code>claim</code> and receives the project
-          tokens. Multiple receipts (from several contributions) can be
-          burned together in one call via <code>claim_multiple</code>,
-          returning a single merged coin.
+          their receipt with <code>claim</code> and receives the project tokens.
+          Multiple receipts (from several contributions) can be burned together
+          in one call via <code>claim_multiple</code>, returning a single merged
+          coin.
         </P>
         <P>
-          Receipts are regular Sui objects: transferable, sellable on
-          secondary markets, and they don't expire. Claims remain open as
-          long as the project object lives.
+          Receipts are regular Sui objects: transferable, sellable on secondary
+          markets, and they don't expire. Claims remain open as long as the
+          project object lives.
         </P>
         <TryIt href="/dashboard" label="View your receipts on Dashboard →" />
       </Section>
@@ -186,13 +193,13 @@ function MechanicsPanel() {
       <Section id="unsold" label="05 / Unsold supply">
         <P>
           If the sale closes with tokens left in the allocation, the creator
-          runs <code>process_unsold</code> to execute the policy they picked
-          at deploy:
+          runs <code>process_unsold</code> to execute the policy they picked at
+          deploy:
         </P>
         <P>
           <Term>Burn</Term> — the unsold supply is destroyed, raising the
-          implied price of every claimed token. Signals scarcity: the float
-          is exactly what the sale raised.
+          implied price of every claimed token. Signals scarcity: the float is
+          exactly what the sale raised.
         </P>
         <P>
           <Term>Transfer to creator</Term> — the unsold supply moves to the
@@ -201,32 +208,34 @@ function MechanicsPanel() {
           project page surfaces this as <code>UNSOLD → CREATOR</code> in the
           spec line so supporters see the policy before paying.
         </P>
-        <TryIt href="/docs?tab=wizard#wizard-sale" label="See it in step 03 →" />
+        <TryIt
+          href="/docs?tab=wizard#wizard-sale"
+          label="See it in step 03 →"
+        />
       </Section>
 
       <Section id="finalize" label="06 / Finalize & withdraw">
         <P>
-          Once finalized, the creator calls <code>withdraw_sui</code> to
-          pull raised SUI from the project treasury. The platform fee (in
-          basis points, set by Pandabox) is skimmed automatically — the
-          creator receives the net amount, the fee accrues to the platform
-          treasury. Withdrawals can be partial; the cap holder can withdraw
-          the rest later.
+          Once finalized, the creator calls <code>withdraw_sui</code> to pull
+          raised SUI from the project treasury. The platform fee (in basis
+          points, set by Pandabox) is skimmed automatically — the creator
+          receives the net amount, the fee accrues to the platform treasury.
+          Withdrawals can be partial; the cap holder can withdraw the rest
+          later.
         </P>
         <P>
           The <Term>ProjectAdminCap</Term> minted at deploy is a regular Sui
-          object. It moves via <code>transfer_project_admin</code> (which
-          emits the event the indexer relies on — prefer this over a raw
-          object transfer) or destroys itself via{" "}
-          <code>renounce_project_admin</code>, leaving the project
-          permanently un-administered — useful for community projects that
-          want to remove themselves from the creator's discretion.
+          object. It moves via <code>transfer_project_admin</code> (which emits
+          the event the indexer relies on — prefer this over a raw object
+          transfer) or destroys itself via <code>renounce_project_admin</code>,
+          leaving the project permanently un-administered — useful for community
+          projects that want to remove themselves from the creator's discretion.
         </P>
         <P>
-          Project metadata — name, description, icon URL, source-code blob,
-          and the off-chain details JSON (tagline, category, socials) —
-          stays editable via <code>update_metadata</code> whether the sale
-          is active or closed.
+          Project metadata — name, description, icon URL, source-code blob, and
+          the off-chain details JSON (tagline, category, socials) — stays
+          editable via <code>update_metadata</code> whether the sale is active
+          or closed.
         </P>
       </Section>
     </>
@@ -242,11 +251,10 @@ function WizardPanel() {
         <P>
           The create flow is four steps. Everything you fill in here lands
           either on-chain (sale params, name, blob CIDs) or in the
-          project_details JSON pinned to IPFS (tagline, category, socials).
-          A live preview on the right shows exactly what supporters will
-          see.
+          project_details JSON pinned to IPFS (tagline, category, socials). A
+          live preview on the right shows exactly what supporters will see.
         </P>
-        <TryIt href="/create" label="Open the wizard →" />
+        <TryIt href="/create" label="Open the wizard " />
       </Section>
 
       <Shot
@@ -296,17 +304,50 @@ function ReferencePanel() {
       <Section id="glossary" label="Glossary">
         <Glossary
           entries={[
-            ["Project", "A shared Sui object holding the SUI treasury, the locked TreasuryCap<T>, and the sale parameters."],
-            ["ProjectAdminCap", "Owned Sui object granting admin rights: withdraw SUI, process unsold, update metadata, finalize, transfer, renounce."],
-            ["ContributionReceipt", "NFT minted on contribute. Burnable for the entitled tokens after finalize. Transferable like any Sui object."],
-            ["Base rate", "Project tokens issued per 1 SUI of contribution. Frozen at deploy."],
-            ["Funding allocation", "Total project tokens to sell. Once reached, sellout triggers. Frozen at deploy."],
-            ["Unsold action", "Policy for tokens left at sale close: Burn, or Transfer to creator. Frozen at deploy."],
-            ["End time", "Optional sale end timestamp. If null, only admin close or sellout can finalize."],
-            ["Finalize", "Lock the sale. Required before claims, SUI withdrawal, or unsold processing. Permissionless once conditions are met."],
-            ["Close trigger", "Why the sale ended: Time, Sellout, or Admin. Recorded on-chain."],
-            ["Project status", "Active (selling), Closed (finalized), or Compromised (platform-flagged)."],
-            ["Platform fee", "Basis-point cut of withdrawn SUI taken by Pandabox. Set by the platform admin, applied at withdraw_sui."],
+            [
+              "Project",
+              "A shared Sui object holding the SUI treasury, the locked TreasuryCap<T>, and the sale parameters.",
+            ],
+            [
+              "ProjectAdminCap",
+              "Owned Sui object granting admin rights: withdraw SUI, process unsold, update metadata, finalize, transfer, renounce.",
+            ],
+            [
+              "ContributionReceipt",
+              "NFT minted on contribute. Burnable for the entitled tokens after finalize. Transferable like any Sui object.",
+            ],
+            [
+              "Base rate",
+              "Project tokens issued per 1 SUI of contribution. Frozen at deploy.",
+            ],
+            [
+              "Funding allocation",
+              "Total project tokens to sell. Once reached, sellout triggers. Frozen at deploy.",
+            ],
+            [
+              "Unsold action",
+              "Policy for tokens left at sale close: Burn, or Transfer to creator. Frozen at deploy.",
+            ],
+            [
+              "End time",
+              "Optional sale end timestamp. If null, only admin close or sellout can finalize.",
+            ],
+            [
+              "Finalize",
+              "Lock the sale. Required before claims, SUI withdrawal, or unsold processing. Permissionless once conditions are met.",
+            ],
+            [
+              "Close trigger",
+              "Why the sale ended: Time, Sellout, or Admin. Recorded on-chain.",
+            ],
+            [
+              "Project status",
+              "Active (selling), Closed (finalized), or Compromised (platform-flagged).",
+            ],
+            [
+              "Platform fee",
+              "Basis-point cut of withdrawn SUI taken by Pandabox. Set by the platform admin, applied at withdraw_sui.",
+            ],
             ["MIST", "Smallest SUI unit. 1 SUI = 1,000,000,000 MIST."],
           ]}
         />
@@ -314,36 +355,36 @@ function ReferencePanel() {
 
       <Section id="faq" label="FAQ">
         <FaqItem q="Is this audited?">
-          Not yet. Pandabox is in testnet. A formal audit will land before
-          the mainnet ramp.
+          Not yet. Pandabox is in testnet. A formal audit will land before the
+          mainnet ramp.
         </FaqItem>
         <FaqItem q="Can I edit my project after deploy?">
-          Yes for off-chain identity: name, description, cover image (icon
-          URL), source-code blob, tagline, category, and social links all
-          update via <code>update_metadata</code> at any time. No for sale
-          economics: base rate, funding allocation, end time, and the
-          unsold-supply policy are frozen at deploy. The coin's symbol and
-          decimals are set by the coin module you deployed before Pandabox
-          — those can't be changed here either.
+          Yes for off-chain identity: name, description, cover image (icon URL),
+          source-code blob, tagline, category, and social links all update via{" "}
+          <code>update_metadata</code> at any time. No for sale economics: base
+          rate, funding allocation, end time, and the unsold-supply policy are
+          frozen at deploy. The coin's symbol and decimals are set by the coin
+          module you deployed before Pandabox — those can't be changed here
+          either.
         </FaqItem>
         <FaqItem q="How does gas work?">
           Every transaction is paid by the wallet that signs it. Create,
-          contribute, claim, withdraw — all signer-paid. Sui gas is
-          typically sub-cent at mainnet rates, so the practical cost to
-          back a project is the SUI you contribute, not the gas.
+          contribute, claim, withdraw — all signer-paid. Sui gas is typically
+          sub-cent at mainnet rates, so the practical cost to back a project is
+          the SUI you contribute, not the gas.
         </FaqItem>
         <FaqItem q="What if a supporter never claims?">
           Receipts don't expire. The tokens stay locked in the project's
-          TreasuryCap until the holder burns the receipt with{" "}
-          <code>claim</code>. A receipt is a real Sui object, so it can
-          also be transferred or sold to someone else who'll claim it.
+          TreasuryCap until the holder burns the receipt with <code>claim</code>
+          . A receipt is a real Sui object, so it can also be transferred or
+          sold to someone else who'll claim it.
         </FaqItem>
         <FaqItem q="Can I transfer the ProjectAdminCap?">
-          Yes — use <code>transfer_project_admin</code> so the event lands
-          in the indexer. The cap doesn't carry any project tokens or
-          raised SUI; it's purely the admin key. You can also call{" "}
-          <code>renounce_project_admin</code> to destroy it permanently —
-          the project then runs without any admin at all.
+          Yes — use <code>transfer_project_admin</code> so the event lands in
+          the indexer. The cap doesn't carry any project tokens or raised SUI;
+          it's purely the admin key. You can also call{" "}
+          <code>renounce_project_admin</code> to destroy it permanently — the
+          project then runs without any admin at all.
         </FaqItem>
         <FaqItem q="What does the 'Compromised' status mean?">
           The platform admin can flag a project as Compromised when there's
@@ -353,8 +394,8 @@ function ReferencePanel() {
           clearly. It does not seize funds.
         </FaqItem>
         <FaqItem q="How do I get listed on the landing's featured row?">
-          Featured is just sort by SUI raised, top three. Raise enough and
-          you appear automatically.
+          Featured is just sort by SUI raised, top three. Raise enough and you
+          appear automatically.
         </FaqItem>
       </Section>
     </>
@@ -420,10 +461,7 @@ function Shot({
   caption: string;
 }) {
   return (
-    <figure
-      id={id}
-      className="scroll-mt-32 border border-ink/15 bg-bone"
-    >
+    <figure id={id} className="scroll-mt-32 border border-ink/15 bg-bone">
       <Image
         src={src}
         alt={alt}
@@ -474,13 +512,7 @@ function Row({ term, def }: { term: string; def: string }) {
   );
 }
 
-function FaqItem({
-  q,
-  children,
-}: {
-  q: string;
-  children: React.ReactNode;
-}) {
+function FaqItem({ q, children }: { q: string; children: React.ReactNode }) {
   return (
     <details className="group border-b border-ink/15 py-3">
       <summary className="flex cursor-pointer items-baseline justify-between gap-3 list-none">
