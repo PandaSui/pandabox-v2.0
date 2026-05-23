@@ -75,7 +75,15 @@ export function OnchainExploreGrid({
         );
       });
     }
+    const isLive = (p: HydratedProject) =>
+      p.status === "live" && now < p.endTimeMs;
     list.sort((a, b) => {
+      // Live always ranks above ended/closed, regardless of the chosen sort —
+      // when the status filter is "all" (the default), live work should still
+      // surface first.
+      const al = isLive(a) ? 0 : 1;
+      const bl = isLive(b) ? 0 : 1;
+      if (al !== bl) return al - bl;
       if (sort === "newest") return b.createdAtMs - a.createdAtMs;
       if (sort === "ending-soonest") {
         const am = a.endTimeMs > now ? a.endTimeMs - now : Number.MAX_SAFE_INTEGER;

@@ -20,6 +20,37 @@ import { getProjectActivity, type ActivityItem } from "@/lib/activity";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 import { hasValidParams } from "@/lib/project-health";
 import { resolveBlobRef } from "@/lib/ipfs";
+import type { Accent } from "@/types/pandabox";
+
+const CATEGORY_ACCENT: Record<string, Accent> = {
+  art: "saffron",
+  music: "saffron",
+  meme: "saffron",
+  infra: "poppy",
+  rwa: "sun",
+  dao: "jade",
+  social: "jade",
+  research: "sky",
+  gaming: "plum",
+};
+
+const CATEGORY_PILL: Record<Accent, string> = {
+  saffron: "bg-saffron/15 text-ink",
+  poppy: "bg-poppy/15 text-ink",
+  jade: "bg-jade/15 text-ink",
+  sky: "bg-sky/15 text-ink",
+  sun: "bg-sun/20 text-ink",
+  plum: "bg-plum/15 text-ink",
+};
+
+const CATEGORY_DOT: Record<Accent, string> = {
+  saffron: "bg-saffron",
+  poppy: "bg-poppy",
+  jade: "bg-jade",
+  sky: "bg-sky",
+  sun: "bg-sun",
+  plum: "bg-plum",
+};
 
 type Props = {
   params: Promise<{ projectId: string }>;
@@ -94,6 +125,7 @@ export default async function ProjectPage({ params }: Props) {
       : 0;
 
   const category = project.details?.category ?? "project";
+  const categoryAccent = CATEGORY_ACCENT[category.toLowerCase()] ?? "saffron";
   const tagline = project.details?.tagline ?? "";
   const socials = project.details?.socials ?? {};
 
@@ -149,10 +181,22 @@ export default async function ProjectPage({ params }: Props) {
           <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[1.2fr_1fr] lg:py-14">
             {/* Left — identity, progress, supporters, spec line */}
             <div className="min-w-0 flex flex-col justify-center">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <MonoLabel className="uppercase tracking-[0.18em]">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-2 px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em]",
+                    CATEGORY_PILL[categoryAccent],
+                  )}
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "block h-1.5 w-1.5 rounded-full",
+                      CATEGORY_DOT[categoryAccent],
+                    )}
+                  />
                   {category}
-                </MonoLabel>
+                </span>
                 <SharePill projectName={project.name} ticker={tkr} />
               </div>
 
