@@ -220,6 +220,60 @@ export function FeaturedProjectsView({
             once: true,
           },
         });
+
+        // ─── Connector pulse — energy traveling between cards ──
+        // After the dashed line settles, ride a dot along the arc on a
+        // continuous loop. The endpoint caps "ping" (radius +1.4) at the
+        // start and end of each cycle so the eye reads the handoff. Tiny
+        // motion, but it makes the three cards feel wired together.
+        const arc = path.closest("svg");
+        if (!arc) return;
+        const dot = arc.querySelector<SVGCircleElement>("[data-pulse-dot]");
+        const leftCap = arc.querySelector<SVGCircleElement>("[data-cap-left]");
+        const rightCap = arc.querySelector<SVGCircleElement>("[data-cap-right]");
+        if (!dot) return;
+
+        const state = { t: 0 };
+        gsap.to(state, {
+          t: 1,
+          duration: 2.4,
+          ease: "power1.inOut",
+          repeat: -1,
+          repeatDelay: 0.6,
+          // Start after the dashed draw has resolved + a beat of stillness,
+          // so the eye notices the line first, the pulse second.
+          delay: 1.9,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 72%",
+            once: true,
+          },
+          onUpdate: () => {
+            const p = path.getPointAtLength(state.t * len);
+            dot.setAttribute("cx", p.x.toFixed(2));
+            dot.setAttribute("cy", p.y.toFixed(2));
+            // Bell-curve opacity: fade in over the first 12%, hold, fade
+            // out over the last 12%. Reads as a packet, not a streak.
+            const o =
+              state.t < 0.12
+                ? state.t / 0.12
+                : state.t > 0.88
+                  ? (1 - state.t) / 0.12
+                  : 1;
+            dot.setAttribute("opacity", o.toFixed(3));
+            // Endpoint cap pings — start cap brightens as the pulse leaves,
+            // end cap brightens as it arrives. Both decay back to the
+            // resting r=2 within the same window.
+            if (leftCap) {
+              const k = state.t < 0.18 ? 1 - state.t / 0.18 : 0;
+              leftCap.setAttribute("r", (2 + k * 1.4).toFixed(2));
+            }
+            if (rightCap) {
+              const k = state.t > 0.82 ? (state.t - 0.82) / 0.18 : 0;
+              rightCap.setAttribute("r", (2 + k * 1.4).toFixed(2));
+            }
+          },
+        });
       });
 
       // ─── Activity ticker — infinite horizontal scroll ────────────
@@ -507,8 +561,21 @@ function ConnectorArc({
         strokeWidth="1.4"
         strokeLinecap="round"
       />
-      <circle cx="4" cy="26" r="2" fill={color} />
-      <circle cx="56" cy="26" r="2" fill={color} />
+      {/* Endpoint caps — light up briefly each time the traveling pulse
+          arrives or departs, reading as packets handing off between cards. */}
+      <circle data-cap-left cx="4" cy="26" r="2" fill={color} />
+      <circle data-cap-right cx="56" cy="26" r="2" fill={color} />
+      {/* The traveling pulse — rides the arc start→end in an infinite loop
+          after the initial dashed draw resolves. Bell-curve opacity gives
+          the dot a natural rise / hold / fade across each cycle. */}
+      <circle
+        data-pulse-dot
+        cx="4"
+        cy="26"
+        r="2.2"
+        fill={color}
+        opacity="0"
+      />
     </svg>
   );
 }
