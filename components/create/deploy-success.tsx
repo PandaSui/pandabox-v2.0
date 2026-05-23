@@ -18,7 +18,7 @@ type DeploySuccessProps = {
   endTimeMs?: number | null;
   /** Fully-qualified Move coin type — the on-chain CA users paste into wallets. */
   coinType?: string;
-  /** Project<T> shared object ID. When present, the share URL deep-links to /p/[id]. */
+  /** Project<T> shared object ID. When present, the share URL deep-links to /projects/[id]. */
   projectId?: string;
   txDigest: string;
   onContinue?: () => void;
@@ -63,7 +63,7 @@ export function DeploySuccess({
   // where the cover-image OG card comes from. The CA lives on the project
   // page itself, so the tweet just hands over the link.
   const shareUrl = projectId
-    ? `${SITE_URL}/p/${projectId}`
+    ? `${SITE_URL}/projects/${projectId}`
     : `${SITE_URL}/explore`;
   const tweet = `Just launched ${projectName} on @0xPandaSui — programmable on-chain funding on Sui.\n\n${shareUrl}`;
   const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;

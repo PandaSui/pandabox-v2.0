@@ -47,7 +47,7 @@ export function ProjectCard({
 
   return (
     <Link
-      href={`/p/${project.id}`}
+      href={`/projects/${project.id}`}
       className={cn(
         "group relative block bg-bone/40 transition-all duration-200 ease-quartOut",
         "border border-ink/15 hover:-translate-y-0.5 hover:border-ink/40",

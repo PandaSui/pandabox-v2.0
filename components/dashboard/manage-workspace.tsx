@@ -23,7 +23,7 @@ import type { HydratedProject } from "@/lib/projects";
  * (the dashboard payload only carries the on-chain core), then mounts the
  * existing AdminPanel on the right rail. Left rail surfaces spec data —
  * pool, treasury, supply — so the creator doesn't need to bounce to
- * /p/[id] to see the headlines while they're managing.
+ * /projects/[id] to see the headlines while they're managing.
  *
  * AdminPanel is reused as-is; this file owns layout + chrome only. When
  * an admin action lands a tx, AdminPanel's internal state shows the
@@ -111,7 +111,7 @@ export function ManageWorkspace({
             back to dashboard
           </button>
           <Link
-            href={`/p/${projectId}`}
+            href={`/projects/${projectId}`}
             className="group inline-flex items-center gap-2 font-mono-label text-[10px] text-ink/55 transition-colors hover:text-ink"
           >
             <span>open public page</span>

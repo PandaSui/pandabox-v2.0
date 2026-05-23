@@ -4,21 +4,37 @@ import { Providers } from "./providers";
 import { PageTransition } from "@/components/motion";
 import "./globals.css";
 
-const SITE_URL = "https://pandabox.pandasui.com";
+const SITE_URL = "https://pandabox.money";
 const SITE_NAME = "Pandabox";
-const TITLE = "Pandabox — Pandasui's box-pack experience on Sui.";
+const TITLE = "Pandabox — Fund what's worth funding. On Sui.";
 const DESCRIPTION =
-  "Pandabox is the next-generation box-pack experience on Sui, built by Pandasui.";
+  "A programmable funding launchpad on Sui. Launch a project, set the rate, run an on-chain sale — every parameter, every transaction, on-chain.";
+const OG_IMAGE = {
+  url: "/og-image.png",
+  width: 1568,
+  height: 1003,
+  alt: "Pandabox — programmable funding launchpad for Sui.",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: TITLE,
-    template: "%s — Pandabox",
+    template: "%s · Pandabox",
   },
   description: DESCRIPTION,
   applicationName: SITE_NAME,
-  keywords: ["Pandabox", "Pandasui", "Sui Network", "NFT", "Mystery Box"],
+  keywords: [
+    "Pandabox",
+    "Pandasui",
+    "Sui Network",
+    "Sui",
+    "funding launchpad",
+    "IDO",
+    "token sale",
+    "on-chain funding",
+    "Move",
+  ],
   authors: [{ name: "Pandasui", url: SITE_URL }],
   creator: "Pandasui",
   publisher: "Pandasui",
@@ -41,6 +57,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
@@ -48,6 +65,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     site: "0xPandaSui",
     creator: "0xPandaSui",
+    images: [OG_IMAGE.url],
   },
   robots: {
     index: true,

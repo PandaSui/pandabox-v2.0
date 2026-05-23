@@ -19,7 +19,6 @@ import { getOnchainProject, type HydratedProject } from "@/lib/projects";
 import { getProjectActivity, type ActivityItem } from "@/lib/activity";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 import { hasValidParams } from "@/lib/project-health";
-import { resolveBlobRef } from "@/lib/ipfs";
 import type { Accent } from "@/types/pandabox";
 
 const CATEGORY_ACCENT: Record<string, Accent> = {
@@ -68,12 +67,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     project.details?.tagline ??
     `${project.name} (${tkr}) — on-chain funding on Sui, powered by Pandabox.`;
-  // X / OpenGraph fetches a fully-qualified image URL — IPFS / Walrus refs
-  // get rewritten to their gateway URL so social previews can resolve them.
-  const cover = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
-  const images = cover ? [{ url: cover, alt: project.name }] : undefined;
-  const url = `/p/${project.id}`;
+  const url = `/projects/${project.id}`;
 
+  // Note: og:image + twitter:image come from `opengraph-image.tsx` colocated
+  // in this route — Next wires both automatically. Don't add `images` here or
+  // it'll override the dynamic generator with the static IPFS URL.
   return {
     title,
     description,
@@ -83,13 +81,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      images,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: images?.map((i) => i.url),
     },
   };
 }

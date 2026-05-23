@@ -96,7 +96,7 @@ export function OwnedCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <Link
-              href={`/p/${p.id}`}
+              href={`/projects/${p.id}`}
               className="block truncate font-display text-lg leading-tight hover:underline hover:underline-offset-4"
               title={p.name}
             >

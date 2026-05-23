@@ -404,10 +404,10 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
   const endedAwaiting = state === "ended-awaiting";
 
   const action = closed
-    ? { label: "Claim tokens", href: `/p/${p.id}#pay`, accent: "saffron" as const }
+    ? { label: "Claim tokens", href: `/projects/${p.id}#pay`, accent: "saffron" as const }
     : endedAwaiting
-      ? { label: "Finalize sale", href: `/p/${p.id}#pay`, accent: "saffron" as const }
-      : { label: "Open project", href: `/p/${p.id}`, accent: "bone" as const };
+      ? { label: "Finalize sale", href: `/projects/${p.id}#pay`, accent: "saffron" as const }
+      : { label: "Open project", href: `/projects/${p.id}`, accent: "bone" as const };
 
   return (
     <article
@@ -427,7 +427,7 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
         <ProjectAvatar src={p.iconUrl} name={p.name} size={40} />
         <div className="min-w-0 flex-1">
           <Link
-            href={`/p/${p.id}`}
+            href={`/projects/${p.id}`}
             className="block truncate font-display text-lg leading-tight hover:underline hover:underline-offset-4"
           >
             {p.name || "Untitled project"}

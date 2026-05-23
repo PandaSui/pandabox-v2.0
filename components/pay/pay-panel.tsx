@@ -210,7 +210,7 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
             title="Payment confirmed"
             projectName={project.name}
             txDigest={submitState.digest}
-            primaryHref={`/p/${project.id}`}
+            primaryHref={`/projects/${project.id}`}
             primaryLabel="Back to project"
           />
         ) : (

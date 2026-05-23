@@ -36,7 +36,7 @@ export function ProjectRow({
 }) {
   return (
     <Link
-      href={`/p/${project.id}`}
+      href={`/projects/${project.id}`}
       className={cn(
         "group flex items-center gap-4 border border-ink/15 bg-bone/40 p-3 transition-all",
         "hover:-translate-y-0.5 hover:border-ink/40",

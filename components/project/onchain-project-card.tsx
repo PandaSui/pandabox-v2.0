@@ -284,14 +284,14 @@ export function OnchainProjectCard({
           status pill are all clickable. The body Link below keeps the
           underline-on-hover hint on the title. */}
       <Link
-        href={`/p/${project.id}`}
+        href={`/projects/${project.id}`}
         aria-label={`View ${project.name || "project"}`}
         className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       />
 
       {/* ─── Body ─── */}
       <Link
-        href={`/p/${project.id}`}
+        href={`/projects/${project.id}`}
         tabIndex={-1}
         aria-hidden
         className="relative z-0 flex flex-1 flex-col px-4 pt-3.5 pb-4"

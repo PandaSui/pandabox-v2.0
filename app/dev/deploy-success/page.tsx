@@ -23,7 +23,7 @@ const FIXTURE = {
     "0x1951ebda0d3f7e9c4d6e2a1c5b8f0a3e7d9c4b6a2e8f1d5c7b3a9e0f2d4c6b8a::oono::OONO",
   // The shared Project<T> object ID created by `create_project`. When this
   // is set, the continue CTA flips to "Open project page" and the X tweet
-  // links to /p/[projectId] so X can fetch the OG card.
+  // links to /projects/[projectId] so X can fetch the OG card.
   projectId:
     "0xab12cd34ef56789012345678901234567890abcdef1234567890abcd1234efaa",
 };
@@ -32,7 +32,7 @@ export default function DeploySuccessPreview() {
   const [open, setOpen] = useState(true);
   // Toggle the late-arriving project ID so you can preview both states:
   //   - off  → continue CTA reads "See it on Explore", tweet links /explore
-  //   - on   → continue CTA reads "Open project page", tweet links /p/[id]
+  //   - on   → continue CTA reads "Open project page", tweet links /projects/[id]
   const [hasProjectId, setHasProjectId] = useState(true);
 
   return (

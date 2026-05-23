@@ -48,7 +48,7 @@ type TxState =
   | { kind: "error"; action: Action; message: string };
 
 /**
- * Project-creator admin panel — surfaced on `/p/[id]` when the connected
+ * Project-creator admin panel — surfaced on `/projects/[id]` when the connected
  * wallet owns the `ProjectAdminCap<T>` for that project. Exposes every
  * creator-side mutation the on-chain `project` module supports:
  *

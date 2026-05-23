@@ -14,6 +14,16 @@ const config: NextConfig = {
       { protocol: "https", hostname: "cloudflare-ipfs.com" },
     ],
   },
+  async redirects() {
+    return [
+      // Legacy project URL — keep old shares and OG cards resolvable.
+      {
+        source: "/p/:projectId",
+        destination: "/projects/:projectId",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default config;

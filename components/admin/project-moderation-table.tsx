@@ -278,7 +278,7 @@ function ProjectRow({
             </span>
           )}
           <Link
-            href={`/p/${project.id}`}
+            href={`/projects/${project.id}`}
             className="font-display text-[13px] text-ink hover:underline"
           >
             {project.name || "Unnamed"}

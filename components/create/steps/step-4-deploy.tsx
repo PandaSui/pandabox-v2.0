@@ -217,7 +217,7 @@ export function StepDeployForm() {
   const onFinishSuccess = () => {
     const next =
       state.kind === "success" && state.snapshot.projectId
-        ? `/p/${state.snapshot.projectId}`
+        ? `/projects/${state.snapshot.projectId}`
         : "/explore";
     // Kick off the route transition *before* resetting the wizard. If we
     // reset() first, the wizard's `step` flips to 1 and `WizardShell` would
