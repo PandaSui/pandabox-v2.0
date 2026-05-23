@@ -44,6 +44,22 @@ const PAGE = 12;
 
 const ACCENT_ROTATION = ["saffron", "poppy", "jade", "sky", "sun", "plum"] as const;
 
+// Semantic tint per category — matches the pill on the project detail page so
+// a chip on /explore and the pill on /projects/[id] read as the same accent.
+// Three creative-register categories (art / music / meme) share saffron by
+// design; the rest each get their own accent.
+const CATEGORY_PILL: Record<Category, string> = {
+  art: "bg-saffron/12 border-saffron/45",
+  music: "bg-saffron/12 border-saffron/45",
+  meme: "bg-saffron/12 border-saffron/45",
+  infra: "bg-poppy/12 border-poppy/45",
+  rwa: "bg-sun/18 border-sun/55",
+  dao: "bg-jade/12 border-jade/45",
+  social: "bg-jade/12 border-jade/45",
+  research: "bg-sky/12 border-sky/45",
+  gaming: "bg-plum/12 border-plum/45",
+};
+
 export function OnchainExploreGrid({
   projects,
 }: {
@@ -223,7 +239,12 @@ export function OnchainExploreGrid({
                         ? "border-ink bg-ink text-bone"
                         : disabled
                           ? "border-ink/15 text-ink/30 cursor-not-allowed"
-                          : "border-ink/20 text-ink/70 hover:border-ink hover:text-ink hover:-translate-y-[1px]",
+                          : c.key === "all"
+                            ? "border-ink/20 text-ink/70 hover:border-ink hover:text-ink hover:-translate-y-[1px]"
+                            : cn(
+                                CATEGORY_PILL[c.key as Category],
+                                "text-ink/80 hover:border-ink hover:text-ink hover:-translate-y-[1px]",
+                              ),
                     )}
                   >
                     <span>{c.label}</span>
