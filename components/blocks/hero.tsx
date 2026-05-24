@@ -136,7 +136,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
             className="mt-7 max-w-[48ch] text-base text-ink/70 opacity-0 md:text-lg"
           >
             Pandabox is the programmable funding platform for Sui. Launch a
-            project in minutes. Receive SUI, issue tokens, define payouts — all
+            project in minutes. Receive SUI, issue tokens, define payouts all
             on-chain, all transparent, all yours.
           </p>
 
