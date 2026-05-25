@@ -21,6 +21,7 @@
     "links": {
       "explore": "탐색",
       "create": "생성",
+      "tools": "도구",
       "dashboard": "대시보드",
       "docs": "문서",
       "admin": "관리자"
@@ -220,6 +221,18 @@
       "largest": "최대",
       "paymentsWindow": "{count}건 결제 · 24시간"
     },
+    "tools": {
+      "eyebrow": "온체인 도구",
+      "title": "런치패드 그 이상. 모금 주변의 모든 것을 위한 툴킷.",
+      "subtitle": "Pandabox는 프로젝트와 짝을 이루는 유틸리티를 제공합니다 — 대량 배포, 바이백 풀, 그리고 더 많은 도구가 준비 중입니다. 모두 온체인, 모두 당신이 서명합니다.",
+      "counterShipping": "{count} 출시 준비 중",
+      "counterMore": "더 많은 도구가 준비 중",
+      "futureEyebrow": "다음",
+      "futureTitle": "더 많은 도구, 곧.",
+      "futureBody": "런치패드 자체와 동일한 정성으로 출시되도록 유틸리티를 하나씩 쌓아갑니다. 제안해주세요 — 모두 읽습니다.",
+      "ctaPrimary": "모든 도구 보기",
+      "ctaSecondary": "스펙 읽기"
+    },
     "heroConsole": {
       "liveConsole": "라이브 콘솔",
       "streamSequenceAria": "스트림 시퀀스",
@@ -237,6 +250,74 @@
         "platformFee": "플랫폼 수수료",
         "treasury": "트레저리"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "온체인 도구 — Pandabox",
+    "eyebrow": "온체인 도구",
+    "headline": "모금 주변 작업을 위한 툴킷.",
+    "subtitle": "Pandabox는 프로젝트 옆에 두는 작고 날카로운 유틸리티를 제공합니다. 지갑 목록에 토큰 대량 전송, 트레저리 기반 바이백 풀 운영, 예전에는 커스텀 컨트랙트가 필요했던 작업의 자동화. 모든 도구는 Move 호출이고, 모든 Move 호출은 당신이 서명합니다.",
+    "liveCount": "가동 중 {count}",
+    "soonCount": "출시 예정 {count}",
+    "totalCount": "총 {count}",
+    "sectionAvailable": "도구",
+    "sectionAvailableSpec": "alpha · Sui mainnet 지원",
+    "roadmapEyebrow": "로드맵",
+    "roadmapTitle": "다음에 만들고 있는 것.",
+    "roadmapBody": "위 도구들 뒤에 네 가지가 더 대기 중입니다. 아직 공개적으로 스펙을 내놓을 단계는 아닙니다 — 하지만 앞으로의 사이클에서 하나씩, 서명되고 온체인 상태로 이곳에 등장할 것입니다. 이 공간을 주시해주세요.",
+    "roadmapLocked": "잠김 · 곧 공개",
+    "roadmapLockedAria": "예정된 도구 — 세부 사항 미공개",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "도구 제안",
+    "suggestTitle": "Pandabox가 아직 제공하지 않는 도구가 필요하신가요?",
+    "suggestBody": "한 단락 스펙으로 issue를 열어주세요. 매주 금요일에 도구 요청을 검토하고, 가장 좋은 것들이 이 페이지의 다음 항목이 됩니다.",
+    "suggestCta": "Issue 열기",
+    "items": {
+      "airdrop": {
+        "name": "에어드랍",
+        "tagline": "SUI나 프로젝트 토큰을 단일 서명 트랜잭션으로 수천 개의 지갑에 배포합니다.",
+        "description": "CSV를 올리고, 한 번 서명하고, 수신자가 채워지는 것을 지켜보세요. 토큰 런치, 컨트리뷰터 보상, 한 번에 하나씩 서명할 수 없는 커뮤니티 드롭에 맞춰 설계되었습니다.",
+        "cap1": "대량 전송 · 트랜잭션당 최대 10,000개 주소",
+        "cap2": "프리플라이트가 모든 주소를 온체인에서 검증",
+        "cap3": "빈 지갑 수신자를 위한 가스 스폰서십 옵션"
+      },
+      "redeem": {
+        "name": "Redeem · 바이백 & 환불",
+        "tagline": "영구적인 바이백 또는 환불 풀을 구축하세요 — 배포 시 모드를 고르고, 트레저리에서 자금을 채우고, 다시는 되돌릴 수 없는 규칙으로 보유자가 현금화하게 하세요.",
+        "description": "두 가지 모드, 하나의 컨트랙트. 프로젝트 매니저는 프로젝트가 정한 플로어에서 토큰을 매입하는 바이백 풀이나, 서포터가 지불한 비율로 SUI를 돌려주는 환불 풀을 운영할 수 있습니다. 어떤 것을 고르든 영구적입니다 — 풀이 가동되는 순간 조건은 온체인에 잠깁니다. 관리자 오버라이드는 없습니다. 그것이 보유자에게 보이는 신뢰의 보증입니다.",
+        "cap1": "두 가지 모드 — 플로어 바이백 또는 원래 비율의 환불",
+        "cap2": "영구적 · 배포 후에는 조건을 변경할 수 없음",
+        "cap3": "단일 Move 호출에서 burn-and-receive — 중개자 없음"
+      }
+    },
+    "shared": {
+      "statusAvailable": "가동 중",
+      "statusSoon": "출시 예정",
+      "ctaOpen": "도구 열기",
+      "ctaNotify": "알림 받기",
+      "capabilities": "기능",
+      "onchainHint": "온체인 도구"
     }
   },
   "footer": {

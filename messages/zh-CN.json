@@ -21,6 +21,7 @@
     "links": {
       "explore": "探索",
       "create": "创建",
+      "tools": "工具",
       "dashboard": "控制台",
       "docs": "文档",
       "admin": "管理"
@@ -220,6 +221,18 @@
       "largest": "最大",
       "paymentsWindow": "{count} 笔支付 · 24 小时"
     },
+    "tools": {
+      "eyebrow": "链上工具",
+      "title": "不仅是发射台。是围绕募资的完整工具箱。",
+      "subtitle": "Pandabox 推出与项目配套的工具——批量分发、回购池等更多正在路上。全部链上,全部由你签名。",
+      "counterShipping": "{count} 即将上线",
+      "counterMore": "更多在排队",
+      "futureEyebrow": "下一个",
+      "futureTitle": "更多工具,即将到来。",
+      "futureBody": "我们一次一个堆积工具,让每一个都以与发射台本身同等的细致出货。提个建议吧——我们都看。",
+      "ctaPrimary": "查看所有工具",
+      "ctaSecondary": "阅读规范"
+    },
     "heroConsole": {
       "liveConsole": "实时控制台",
       "streamSequenceAria": "事件流序列",
@@ -237,6 +250,74 @@
         "platformFee": "平台费用",
         "treasury": "金库"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "链上工具 — Pandabox",
+    "eyebrow": "链上工具",
+    "headline": "为募资周边工作准备的工具箱。",
+    "subtitle": "Pandabox 提供与项目并肩的小而锋利的工具。向钱包列表批量发送代币,基于金库运行回购池,自动化以往需要自定义合约的工作。每个工具都是一次 Move 调用,每次 Move 调用都由你签名。",
+    "liveCount": "{count} 已上线",
+    "soonCount": "{count} 即将推出",
+    "totalCount": "共 {count}",
+    "sectionAvailable": "工具",
+    "sectionAvailableSpec": "alpha · 已就绪 Sui mainnet",
+    "roadmapEyebrow": "路线图",
+    "roadmapTitle": "我们接下来在建的。",
+    "roadmapBody": "上面这些之后还有四个工具排队。我们还没准备好公开它们的规范——但在接下来的周期里,你会看到它们一个一个落地这里,已签名、已上链。请持续关注这个位置。",
+    "roadmapLocked": "锁定 · 即将",
+    "roadmapLockedAria": "即将推出的工具——详情尚未披露",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "建议一个工具",
+    "suggestTitle": "需要 Pandabox 还没提供的东西?",
+    "suggestBody": "用一段简短的规范开一个 issue。我们每周五分流工具请求,最棒的会成为本页的下一个项目。",
+    "suggestCta": "开一个 issue",
+    "items": {
+      "airdrop": {
+        "name": "空投",
+        "tagline": "通过单次签名交易,将 SUI 或任意项目代币分发到上千个钱包。",
+        "description": "导入 CSV,签名一次,然后看着接收方一个个填满。为代币发行、贡献者奖励、社区空投而生——那些一个一个签名根本不现实的场景。",
+        "cap1": "批量发送 · 每 tx 最多 10,000 个地址",
+        "cap2": "预检逐地址在链上校验",
+        "cap3": "为空钱包接收者提供赞助 Gas 选项"
+      },
+      "redeem": {
+        "name": "Redeem · 回购与退款",
+        "tagline": "建立一个永久的回购或退款池——部署时选择模式,从金库注资,然后让持有者按你再也无法逆转的规则兑现。",
+        "description": "两种模式,一份合约。项目经理可以运行一个按项目设定底价回购代币的回购池,或一个按原始支付比例向支持者退还 SUI 的退款池。无论选哪一个,都是永久的——池一旦上线,条款就锁定在链上。没有管理员覆盖。这就是持有者看到的信任保证。",
+        "cap1": "两种模式——按底价回购,或按原始比例退款",
+        "cap2": "永久 · 部署后条款无法更改",
+        "cap3": "单次 Move 调用即销毁兑现——无中间人"
+      }
+    },
+    "shared": {
+      "statusAvailable": "已上线",
+      "statusSoon": "即将推出",
+      "ctaOpen": "打开工具",
+      "ctaNotify": "通知我",
+      "capabilities": "功能",
+      "onchainHint": "链上工具"
     }
   },
   "footer": {

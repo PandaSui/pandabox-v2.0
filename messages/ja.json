@@ -21,6 +21,7 @@
     "links": {
       "explore": "探索",
       "create": "作成",
+      "tools": "ツール",
       "dashboard": "ダッシュボード",
       "docs": "ドキュメント",
       "admin": "管理"
@@ -220,6 +221,18 @@
       "largest": "最大",
       "paymentsWindow": "{count} ペイメント · 24時間"
     },
+    "tools": {
+      "eyebrow": "オンチェーンツール",
+      "title": "ローンチパッド以上。資金調達の周辺をまるごとカバーするツールキット。",
+      "subtitle": "Pandaboxはプロジェクトに寄り添うユーティリティを提供します — 一括配布、買い戻しプール、そしてさらに多くを準備中。すべてオンチェーン、すべてあなたが署名します。",
+      "counterShipping": "{count} 公開準備中",
+      "counterMore": "さらにパイプライン上",
+      "futureEyebrow": "次に来るもの",
+      "futureTitle": "もっとツール、近日公開。",
+      "futureBody": "ローンチパッド本体と同じ丁寧さで届けられるよう、ユーティリティを一つずつ積み上げています。提案してください — 全部読みます。",
+      "ctaPrimary": "すべてのツールを見る",
+      "ctaSecondary": "仕様書を読む"
+    },
     "heroConsole": {
       "liveConsole": "ライブコンソール",
       "streamSequenceAria": "ストリームシーケンス",
@@ -237,6 +250,74 @@
         "platformFee": "プラットフォーム手数料",
         "treasury": "トレジャリー"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "オンチェーンツール — Pandabox",
+    "eyebrow": "オンチェーンツール",
+    "headline": "資金調達の周辺作業のためのツールキット。",
+    "subtitle": "Pandaboxはプロジェクトの隣に置く、小さくて鋭いユーティリティを提供します。ウォレットリストへのトークン一括送信、トレジャリーを使った買い戻しプール、以前はカスタムコントラクトが必要だった作業の自動化。すべてのツールはMoveコール、すべてのMoveコールはあなたが署名するものです。",
+    "liveCount": "稼働中 {count}",
+    "soonCount": "近日公開 {count}",
+    "totalCount": "合計 {count}",
+    "sectionAvailable": "ツール",
+    "sectionAvailableSpec": "alpha · Sui mainnet 対応",
+    "roadmapEyebrow": "ロードマップ",
+    "roadmapTitle": "次に作っているもの。",
+    "roadmapBody": "上記の後ろにあと4つのツールが控えています。まだ公にスペックを出す段階ではありません — でも、今後のサイクルで、署名済み・オンチェーンで、ここに一つずつ着地していきます。このスペースを見ていてください。",
+    "roadmapLocked": "ロック中 · 近日",
+    "roadmapLockedAria": "今後のツール — 詳細はまだ公開されていません",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "ツールを提案する",
+    "suggestTitle": "Pandaboxにまだないものが必要ですか?",
+    "suggestBody": "簡単なスペックを添えてissueを開いてください。毎週金曜にツール要望をトリアージし、優れたものがこのページの次のアイテムになります。",
+    "suggestCta": "issueを開く",
+    "items": {
+      "airdrop": {
+        "name": "エアドロップ",
+        "tagline": "SUIまたはプロジェクトトークンを、署名一回で数千のウォレットに配布します。",
+        "description": "CSVを投入し、一度署名し、受信者が埋まっていくのを見るだけ。一件ずつ署名できないトークン公開、コントリビューター報酬、コミュニティドロップ向け。",
+        "cap1": "一括送信 · 1 txあたり最大10,000アドレス",
+        "cap2": "プリフライトで全アドレスをオンチェーンで検証",
+        "cap3": "空ウォレットの受信者向けスポンサーガスオプション"
+      },
+      "redeem": {
+        "name": "Redeem · 買い戻し & 払い戻し",
+        "tagline": "永続的な買い戻しまたは払い戻しプールを構築 — デプロイ時にモードを選び、トレジャリーから資金を入れ、保有者には決して覆せないルールで現金化させましょう。",
+        "description": "二つのモード、ひとつのコントラクト。プロジェクトマネージャーは、プロジェクトが定めたフロアでトークンを買い戻すプール、またはサポーターが支払ったレートでSUIを返す払い戻しプールを運営できます。どちらを選んでも永続的です — プールが稼働した瞬間、条件はオンチェーンでロックされます。管理者によるオーバーライドはありません。それが保有者の見る信頼の保証です。",
+        "cap1": "二つのモード — フロアでの買い戻し、または当初レートでの払い戻し",
+        "cap2": "永続 · デプロイ後、条件は変更できません",
+        "cap3": "1回のMoveコールでburn-and-receive — 仲介者なし"
+      }
+    },
+    "shared": {
+      "statusAvailable": "稼働中",
+      "statusSoon": "近日公開",
+      "ctaOpen": "ツールを開く",
+      "ctaNotify": "通知を受け取る",
+      "capabilities": "できること",
+      "onchainHint": "オンチェーンツール"
     }
   },
   "footer": {

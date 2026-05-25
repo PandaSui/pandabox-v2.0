@@ -7,6 +7,7 @@ import {
   Footer,
   Hero,
   HowItWorks,
+  OnchainTools,
   TheNumbers,
   WhySui,
   type HeroStats,
@@ -35,9 +36,10 @@ export default async function Landing() {
           <FeaturedProjects />
         </Suspense>
         <HowItWorks />
-
+        <OnchainTools />
         <TheNumbers />
         <WhySui />
+
         <FinalCta />
         <Footer />
       </main>

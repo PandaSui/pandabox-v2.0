@@ -21,6 +21,7 @@
     "links": {
       "explore": "Odkrywaj",
       "create": "Utwórz",
+      "tools": "Narzędzia",
       "dashboard": "Panel",
       "docs": "Dokumentacja",
       "admin": "Admin"
@@ -220,6 +221,18 @@
       "largest": "Największa",
       "paymentsWindow": "{count} płatności · 24h"
     },
+    "tools": {
+      "eyebrow": "Narzędzia onchain",
+      "title": "Więcej niż launchpad. Zestaw narzędzi do wszystkiego wokół zbiórki.",
+      "subtitle": "Pandabox dostarcza narzędzia działające ramię w ramię z twoim projektem — masowe dystrybucje, pule wykupu i więcej w przygotowaniu. Wszystko on-chain, wszystko podpisane przez ciebie.",
+      "counterShipping": "{count} w drodze",
+      "counterMore": "więcej w kolejce",
+      "futureEyebrow": "Następne",
+      "futureTitle": "Więcej narzędzi, wkrótce.",
+      "futureBody": "Dokładamy narzędzia jedno po drugim, żeby każde wychodziło z taką samą starannością jak sam launchpad. Zaproponuj — czytamy wszystko.",
+      "ctaPrimary": "Przeglądaj wszystkie narzędzia",
+      "ctaSecondary": "Przeczytaj specyfikację"
+    },
     "heroConsole": {
       "liveConsole": "Konsola na żywo",
       "streamSequenceAria": "Sekwencja strumienia",
@@ -237,6 +250,74 @@
         "platformFee": "Opłata platformy",
         "treasury": "Skarbiec"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Narzędzia onchain — Pandabox",
+    "eyebrow": "Narzędzia onchain",
+    "headline": "Zestaw narzędzi do pracy wokół zbiórki.",
+    "subtitle": "Pandabox dostarcza małe, precyzyjne narzędzia działające obok twojego projektu. Masowy przesył tokenów do listy portfeli, uruchamianie puli wykupu ze skarbu, automatyzacja pracy, która kiedyś wymagała własnego kontraktu. Każde narzędzie to wywołanie Move, a każde wywołanie Move ty podpisujesz.",
+    "liveCount": "{count} aktywnych",
+    "soonCount": "{count} wkrótce",
+    "totalCount": "{count} łącznie",
+    "sectionAvailable": "Narzędzia",
+    "sectionAvailableSpec": "alpha · gotowe dla Sui mainnet",
+    "roadmapEyebrow": "W planach",
+    "roadmapTitle": "Co budujemy dalej.",
+    "roadmapBody": "Cztery kolejne narzędzia czekają w kolejce za tymi powyżej. Nie jesteśmy jeszcze gotowi, by ujawnić ich specyfikację publicznie — ale zobaczysz, jak lądują tu po kolei, podpisane i on-chain, w nadchodzących cyklach. Trzymaj rękę na pulsie.",
+    "roadmapLocked": "Zablokowane · wkrótce",
+    "roadmapLockedAria": "Nadchodzące narzędzie — szczegóły jeszcze nieujawnione",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Zaproponuj narzędzie",
+    "suggestTitle": "Potrzebujesz czegoś, czego Pandabox jeszcze nie ma?",
+    "suggestBody": "Otwórz issue z krótką specyfikacją w jednym akapicie. Co piątek selekcjonujemy zgłoszenia, a najlepsze stają się następną rzeczą na tej stronie.",
+    "suggestCta": "Otwórz issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Dystrybuuj SUI lub dowolny token projektu do tysięcy portfeli w jednej podpisanej transakcji.",
+        "description": "Wrzuć CSV, podpisz raz, obserwuj, jak odbiorcy się wypełniają. Stworzone dla launchów tokenów, nagród dla kontrybutorów i community dropów, gdy podpisywanie pojedynczo nie wchodzi w grę.",
+        "cap1": "Wysyłka masowa · do 10 000 adresów na tx",
+        "cap2": "Pre-flight waliduje każdy adres on-chain",
+        "cap3": "Opcja sponsorowanego gazu dla odbiorców z pustymi portfelami"
+      },
+      "redeem": {
+        "name": "Redeem · Wykup & Zwroty",
+        "tagline": "Postaw stały pool wykupu lub zwrotu — wybierz tryb przy wdrożeniu, zasil ze skarbu i pozwól holderom wypłacać na zasadach, których nigdy nie będziesz mógł cofnąć.",
+        "description": "Dwa tryby, jeden kontrakt. Project managerowie mogą prowadzić pool wykupu, który kupuje tokeny po cenie floor określonej przez projekt, albo pool zwrotów, który oddaje SUI supporterom po cenie, którą zapłacili. To, co wybierzesz, jest trwałe — gdy pool jest aktywny, warunki są zablokowane on-chain. Bez admin override. To gwarancja zaufania, którą widzą holderzy.",
+        "cap1": "Dwa tryby — wykup po floor lub zwrot po cenie pierwotnej",
+        "cap2": "Trwałe · po wdrożeniu warunków nie da się zmienić",
+        "cap3": "Burn-and-receive w jednym wywołaniu Move — bez pośrednika"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Aktywne",
+      "statusSoon": "Wkrótce",
+      "ctaOpen": "Otwórz narzędzie",
+      "ctaNotify": "Powiadom mnie",
+      "capabilities": "Co potrafi",
+      "onchainHint": "Narzędzie onchain"
     }
   },
   "footer": {

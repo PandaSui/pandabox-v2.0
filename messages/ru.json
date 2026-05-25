@@ -21,6 +21,7 @@
     "links": {
       "explore": "Обзор",
       "create": "Создать",
+      "tools": "Инструменты",
       "dashboard": "Панель",
       "docs": "Документация",
       "admin": "Админ"
@@ -220,6 +221,18 @@
       "largest": "Крупнейший",
       "paymentsWindow": "{count} платежей · 24 ч"
     },
+    "tools": {
+      "eyebrow": "Onchain-инструменты",
+      "title": "Больше, чем лаунчпад. Набор инструментов для всего вокруг сбора.",
+      "subtitle": "Pandabox выпускает утилиты, которые работают в паре с вашим проектом — массовые рассылки, пулы выкупа и другое в разработке. Всё on-chain, всё подписываете вы.",
+      "counterShipping": "{count} в работе",
+      "counterMore": "ещё в очереди",
+      "futureEyebrow": "Дальше",
+      "futureTitle": "Больше инструментов, скоро.",
+      "futureBody": "Мы наращиваем утилиты по одной, чтобы каждая выходила с той же тщательностью, что и сам лаунчпад. Предложите свою — мы читаем всё.",
+      "ctaPrimary": "Все инструменты",
+      "ctaSecondary": "Читать спецификацию"
+    },
     "heroConsole": {
       "liveConsole": "Живая консоль",
       "streamSequenceAria": "Последовательность потока",
@@ -237,6 +250,74 @@
         "platformFee": "Комиссия платформы",
         "treasury": "Казна"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Onchain-инструменты — Pandabox",
+    "eyebrow": "Onchain-инструменты",
+    "headline": "Набор инструментов для работы вокруг сбора.",
+    "subtitle": "Pandabox даёт небольшие, точные утилиты, которые живут рядом с вашим проектом. Массовая отправка токенов в список кошельков, пул выкупа против казны, автоматизация работы, для которой раньше нужен был кастомный контракт. Каждый инструмент — это Move-вызов, и каждый Move-вызов подписываете вы.",
+    "liveCount": "{count} активно",
+    "soonCount": "{count} скоро",
+    "totalCount": "всего {count}",
+    "sectionAvailable": "Инструменты",
+    "sectionAvailableSpec": "alpha · готово для Sui mainnet",
+    "roadmapEyebrow": "В дорожной карте",
+    "roadmapTitle": "Что мы строим дальше.",
+    "roadmapBody": "За инструментами выше в очереди стоят ещё четыре. Публиковать их спецификацию пока рано — но они появятся здесь по одному, подписанные и on-chain, в ближайших циклах. Следите за этим пространством.",
+    "roadmapLocked": "Закрыто · скоро",
+    "roadmapLockedAria": "Предстоящий инструмент — детали пока не раскрыты",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Предложить инструмент",
+    "suggestTitle": "Нужно то, чего Pandabox пока не предлагает?",
+    "suggestBody": "Откройте issue с короткой спецификацией. Мы разбираем заявки каждую пятницу, и лучшие становятся следующим пунктом на этой странице.",
+    "suggestCta": "Открыть issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Распределите SUI или любой токен проекта на тысячи кошельков в одной подписанной транзакции.",
+        "description": "Загрузите CSV, подпишите один раз, смотрите, как заполняются получатели. Создано для запусков токенов, наград контрибьюторам и комьюнити-дропов, где подписывать по одному платежу — не вариант.",
+        "cap1": "Массовая отправка · до 10 000 адресов на tx",
+        "cap2": "Pre-flight проверяет каждый адрес on-chain",
+        "cap3": "Опция спонсируемого газа для получателей с пустыми кошельками"
+      },
+      "redeem": {
+        "name": "Redeem · Выкуп и возвраты",
+        "tagline": "Создайте постоянный пул выкупа или возврата — выберите режим при деплое, наполните его из казны и дайте держателям обналичивать по правилам, которые вы уже не сможете отменить.",
+        "description": "Два режима, один контракт. Менеджеры проекта могут запустить пул выкупа, который покупает токены по floor-цене, заданной проектом, или пул возврата, который возвращает SUI сторонникам по той ставке, по которой они платили. Что бы вы ни выбрали — это навсегда. Как только пул запущен, условия зафиксированы on-chain. Никакого admin-override. Это и есть гарантия доверия, которую видят держатели.",
+        "cap1": "Два режима — выкуп по floor или возврат по исходной ставке",
+        "cap2": "Навсегда · после деплоя условия изменить нельзя",
+        "cap3": "Burn-and-receive в одном Move-вызове — без посредников"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Активно",
+      "statusSoon": "Скоро",
+      "ctaOpen": "Открыть инструмент",
+      "ctaNotify": "Уведомить меня",
+      "capabilities": "Что делает",
+      "onchainHint": "Onchain-инструмент"
     }
   },
   "footer": {

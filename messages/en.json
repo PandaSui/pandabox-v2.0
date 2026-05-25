@@ -21,6 +21,7 @@
     "links": {
       "explore": "Explore",
       "create": "Create",
+      "tools": "Tools",
       "dashboard": "Dashboard",
       "docs": "Docs",
       "admin": "Admin"
@@ -220,6 +221,18 @@
       "largest": "Largest",
       "paymentsWindow": "{count} payments · 24h"
     },
+    "tools": {
+      "eyebrow": "Onchain tools",
+      "title": "More than a launchpad. A toolkit for everything around the raise.",
+      "subtitle": "Pandabox ships utilities that pair with your project — bulk distributions, buyback pools, and more in the pipeline. All on-chain, all signed by you.",
+      "counterShipping": "{count} on the way",
+      "counterMore": "more in the pipeline",
+      "futureEyebrow": "Next up",
+      "futureTitle": "More tools, soon.",
+      "futureBody": "We're stacking utilities one at a time so each ships with the same care as the launchpad itself. Suggest one — we read everything.",
+      "ctaPrimary": "Explore all tools",
+      "ctaSecondary": "Read the spec"
+    },
     "heroConsole": {
       "liveConsole": "Live console",
       "streamSequenceAria": "Stream sequence",
@@ -237,6 +250,74 @@
         "platformFee": "Platform fee",
         "treasury": "Treasury"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Onchain tools — Pandabox",
+    "eyebrow": "Onchain tools",
+    "headline": "A toolkit for the work around the raise.",
+    "subtitle": "Pandabox ships small, sharp utilities that sit next to your project. Bulk send tokens to a list of wallets, run a buyback pool against your treasury, automate the work that used to need a custom contract. Every tool is a Move call, every Move call is yours to sign.",
+    "liveCount": "{count} live",
+    "soonCount": "{count} coming soon",
+    "totalCount": "{count} total",
+    "sectionAvailable": "Tools",
+    "sectionAvailableSpec": "alpha · sui mainnet ready",
+    "roadmapEyebrow": "On the roadmap",
+    "roadmapTitle": "What we're building next.",
+    "roadmapBody": "Four more tools are queued behind the ones above. We're not ready to spec them publicly yet — but you'll see them land here one at a time, signed and on-chain, over the coming cycles. Watch this space.",
+    "roadmapLocked": "Locked · soon",
+    "roadmapLockedAria": "Upcoming tool — details not yet disclosed",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Suggest a tool",
+    "suggestTitle": "Need something Pandabox doesn't ship yet?",
+    "suggestBody": "Open an issue with a one-paragraph spec. We triage tool requests every Friday and the best ones become the next thing on this page.",
+    "suggestCta": "Open an issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Distribute SUI or any project token to thousands of wallets in a single signed transaction.",
+        "description": "Drop in a CSV, sign once, watch the recipients fill. Built for token launches, contributor rewards, and community drops where signing one payment at a time isn't an option.",
+        "cap1": "Bulk send · up to 10,000 addresses per tx",
+        "cap2": "Pre-flight validates every address on-chain",
+        "cap3": "Sponsored gas option for recipients with empty wallets"
+      },
+      "redeem": {
+        "name": "Redeem · Buybacks & Refunds",
+        "tagline": "Stand up a permanent buyback or refund pool — pick the mode at deploy, fund it from your treasury, and let holders cash out on rules you can never reverse.",
+        "description": "Two modes, one contract. Project managers can run a buyback pool that purchases tokens at a project-defined floor, or a refund pool that returns SUI to supporters at the rate they paid. Whichever you pick is permanent — once the pool is live, the terms are locked on-chain. No admin override. That's the trust guarantee holders see.",
+        "cap1": "Two modes — buyback at floor, or refund at original rate",
+        "cap2": "Permanent · once deployed, terms cannot be changed",
+        "cap3": "Burn-and-receive in one Move call — no intermediary"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Live",
+      "statusSoon": "Coming soon",
+      "ctaOpen": "Open tool",
+      "ctaNotify": "Notify me",
+      "capabilities": "What it does",
+      "onchainHint": "Onchain tool"
     }
   },
   "footer": {

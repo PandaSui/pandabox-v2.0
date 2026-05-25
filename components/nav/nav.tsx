@@ -18,6 +18,7 @@ import { cn } from "@pandasui/ui/lib";
 const LINKS = [
   { href: "/explore", labelKey: "explore", bar: "bg-saffron" },
   { href: "/create", labelKey: "create", bar: "bg-poppy" },
+  { href: "/tools", labelKey: "tools", bar: "bg-sun" },
   { href: "/dashboard", labelKey: "dashboard", bar: "bg-jade" },
   { href: "/docs", labelKey: "docs", bar: "bg-sky" },
 ] as const;

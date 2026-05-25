@@ -21,6 +21,7 @@
     "links": {
       "explore": "Explorar",
       "create": "Crear",
+      "tools": "Herramientas",
       "dashboard": "Panel",
       "docs": "Documentación",
       "admin": "Admin"
@@ -220,6 +221,18 @@
       "largest": "Mayor",
       "paymentsWindow": "{count} pagos · 24h"
     },
+    "tools": {
+      "eyebrow": "Herramientas onchain",
+      "title": "Más que un launchpad. Un kit de herramientas para todo lo que rodea la recaudación.",
+      "subtitle": "Pandabox lanza utilidades que se acoplan a tu proyecto — distribuciones masivas, pools de recompra y más en preparación. Todo on-chain, todo firmado por ti.",
+      "counterShipping": "{count} en camino",
+      "counterMore": "más en preparación",
+      "futureEyebrow": "Próximamente",
+      "futureTitle": "Más herramientas, pronto.",
+      "futureBody": "Apilamos utilidades una a una para que cada una salga con el mismo cuidado que el propio launchpad. Sugiere una — leemos todo.",
+      "ctaPrimary": "Explorar todas las herramientas",
+      "ctaSecondary": "Leer la spec"
+    },
     "heroConsole": {
       "liveConsole": "Consola en vivo",
       "streamSequenceAria": "Secuencia de stream",
@@ -237,6 +250,74 @@
         "platformFee": "Comisión de plataforma",
         "treasury": "Tesoro"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Herramientas onchain — Pandabox",
+    "eyebrow": "Herramientas onchain",
+    "headline": "Un kit para el trabajo que rodea a la recaudación.",
+    "subtitle": "Pandabox ofrece utilidades pequeñas y afiladas que viven al lado de tu proyecto. Envía tokens en masa a una lista de wallets, ejecuta un pool de recompra contra tu tesorería, automatiza el trabajo que antes requería un contrato a medida. Cada herramienta es una llamada Move, y cada llamada Move la firmas tú.",
+    "liveCount": "{count} activas",
+    "soonCount": "{count} próximas",
+    "totalCount": "{count} totales",
+    "sectionAvailable": "Herramientas",
+    "sectionAvailableSpec": "alpha · listo para Sui mainnet",
+    "roadmapEyebrow": "En la hoja de ruta",
+    "roadmapTitle": "Lo que construimos a continuación.",
+    "roadmapBody": "Cuatro herramientas más están en cola detrás de las anteriores. Aún no estamos listos para especificarlas en público — pero las verás aterrizar aquí una a una, firmadas y on-chain, en los próximos ciclos. Mantente atento.",
+    "roadmapLocked": "Bloqueado · pronto",
+    "roadmapLockedAria": "Herramienta próxima — detalles aún no revelados",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Sugerir una herramienta",
+    "suggestTitle": "¿Necesitas algo que Pandabox aún no ofrece?",
+    "suggestBody": "Abre un issue con una spec breve. Revisamos las peticiones cada viernes y las mejores se convierten en lo siguiente en esta página.",
+    "suggestCta": "Abrir un issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Distribuye SUI o cualquier token del proyecto a miles de wallets en una sola transacción firmada.",
+        "description": "Sube un CSV, firma una vez, mira cómo se llenan los destinatarios. Pensado para lanzamientos de token, recompensas a contribuidores y drops comunitarios donde firmar uno a uno no es opción.",
+        "cap1": "Envío masivo · hasta 10.000 direcciones por tx",
+        "cap2": "Pre-vuelo valida cada dirección on-chain",
+        "cap3": "Opción de gas patrocinado para destinatarios con wallets vacías"
+      },
+      "redeem": {
+        "name": "Redeem · Recompras y Reembolsos",
+        "tagline": "Monta un pool permanente de recompra o reembolso — elige el modo al desplegar, fináncialo desde tu tesorería y deja que los holders cobren con reglas que nunca podrás revertir.",
+        "description": "Dos modos, un contrato. Los project managers pueden operar un pool de recompra que compra tokens a un floor definido por el proyecto, o un pool de reembolso que devuelve SUI a los supporters al precio que pagaron. Lo que elijas es permanente — una vez en marcha, los términos quedan bloqueados on-chain. Sin override de admin. Esa es la garantía de confianza que ven los holders.",
+        "cap1": "Dos modos — recompra al floor o reembolso al precio original",
+        "cap2": "Permanente · tras el despliegue, los términos no pueden cambiarse",
+        "cap3": "Burn-and-receive en una sola llamada Move — sin intermediarios"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Activa",
+      "statusSoon": "Próximamente",
+      "ctaOpen": "Abrir herramienta",
+      "ctaNotify": "Avisarme",
+      "capabilities": "Qué hace",
+      "onchainHint": "Herramienta onchain"
     }
   },
   "footer": {

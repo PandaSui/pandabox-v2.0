@@ -21,6 +21,7 @@
     "links": {
       "explore": "Khám phá",
       "create": "Tạo",
+      "tools": "Công cụ",
       "dashboard": "Bảng điều khiển",
       "docs": "Tài liệu",
       "admin": "Quản trị"
@@ -220,6 +221,18 @@
       "largest": "Lớn nhất",
       "paymentsWindow": "{count} thanh toán · 24 giờ"
     },
+    "tools": {
+      "eyebrow": "Công cụ onchain",
+      "title": "Hơn cả một launchpad. Bộ công cụ cho mọi việc xung quanh việc gọi vốn.",
+      "subtitle": "Pandabox phát hành các tiện ích đi kèm với dự án của bạn — phân phối hàng loạt, bể mua lại, và nhiều thứ nữa đang được chuẩn bị. Tất cả on-chain, tất cả do bạn ký.",
+      "counterShipping": "{count} sắp ra mắt",
+      "counterMore": "thêm trong hàng đợi",
+      "futureEyebrow": "Tiếp theo",
+      "futureTitle": "Thêm công cụ, sớm thôi.",
+      "futureBody": "Chúng tôi xếp các tiện ích từng cái một để mỗi cái ra mắt với sự chăm chút như chính launchpad. Hãy đề xuất một cái — chúng tôi đọc hết.",
+      "ctaPrimary": "Khám phá tất cả công cụ",
+      "ctaSecondary": "Đọc spec"
+    },
     "heroConsole": {
       "liveConsole": "Console trực tiếp",
       "streamSequenceAria": "Chuỗi luồng",
@@ -237,6 +250,74 @@
         "platformFee": "Phí nền tảng",
         "treasury": "Ngân quỹ"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Công cụ onchain — Pandabox",
+    "eyebrow": "Công cụ onchain",
+    "headline": "Bộ công cụ cho công việc quanh đợt gọi vốn.",
+    "subtitle": "Pandabox cung cấp các tiện ích nhỏ, sắc bén ngồi cạnh dự án của bạn. Gửi token hàng loạt cho danh sách ví, chạy bể mua lại từ treasury, tự động hóa công việc trước đây cần hợp đồng riêng. Mỗi công cụ là một Move call, mỗi Move call là của bạn để ký.",
+    "liveCount": "{count} đang chạy",
+    "soonCount": "{count} sắp tới",
+    "totalCount": "{count} tổng",
+    "sectionAvailable": "Công cụ",
+    "sectionAvailableSpec": "alpha · sẵn sàng cho Sui mainnet",
+    "roadmapEyebrow": "Lộ trình",
+    "roadmapTitle": "Cái chúng tôi đang xây tiếp theo.",
+    "roadmapBody": "Bốn công cụ nữa đang xếp hàng phía sau những cái trên. Chúng tôi chưa sẵn sàng công bố spec công khai — nhưng bạn sẽ thấy chúng đáp xuống đây từng cái một, đã được ký và on-chain, qua các chu kỳ tới. Theo dõi không gian này.",
+    "roadmapLocked": "Đã khoá · sắp tới",
+    "roadmapLockedAria": "Công cụ sắp ra mắt — chi tiết chưa công bố",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Đề xuất công cụ",
+    "suggestTitle": "Cần thứ Pandabox chưa có?",
+    "suggestBody": "Mở một issue với spec ngắn một đoạn. Chúng tôi phân loại đề xuất công cụ mỗi thứ Sáu và những cái tốt nhất trở thành mục tiếp theo trên trang này.",
+    "suggestCta": "Mở issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Phân phối SUI hoặc bất kỳ token dự án nào tới hàng nghìn ví trong một giao dịch đã ký duy nhất.",
+        "description": "Nạp CSV, ký một lần, xem người nhận được điền vào. Được thiết kế cho ra mắt token, thưởng cộng tác viên và drop cộng đồng nơi việc ký từng giao dịch không phải lựa chọn.",
+        "cap1": "Gửi hàng loạt · tối đa 10.000 địa chỉ mỗi tx",
+        "cap2": "Pre-flight xác thực từng địa chỉ on-chain",
+        "cap3": "Tuỳ chọn gas tài trợ cho người nhận có ví trống"
+      },
+      "redeem": {
+        "name": "Redeem · Mua lại & Hoàn trả",
+        "tagline": "Dựng một bể mua lại hoặc hoàn trả vĩnh viễn — chọn chế độ khi deploy, nạp từ treasury, và để holder rút theo các quy tắc bạn không bao giờ có thể đảo ngược.",
+        "description": "Hai chế độ, một hợp đồng. Project manager có thể chạy bể mua lại để mua token tại mức floor do dự án định, hoặc bể hoàn trả để trả lại SUI cho supporter theo đúng tỷ giá họ đã trả. Chọn cái nào cũng vĩnh viễn — khi bể đã chạy, các điều khoản bị khoá on-chain. Không có override của admin. Đó là sự bảo đảm về niềm tin mà holder nhìn thấy.",
+        "cap1": "Hai chế độ — mua lại tại floor, hoặc hoàn trả theo tỷ giá gốc",
+        "cap2": "Vĩnh viễn · sau khi deploy, điều khoản không thể thay đổi",
+        "cap3": "Burn-and-receive trong một Move call — không trung gian"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Đang chạy",
+      "statusSoon": "Sắp ra mắt",
+      "ctaOpen": "Mở công cụ",
+      "ctaNotify": "Báo cho tôi",
+      "capabilities": "Chức năng",
+      "onchainHint": "Công cụ onchain"
     }
   },
   "footer": {

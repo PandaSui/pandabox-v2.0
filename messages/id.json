@@ -21,6 +21,7 @@
     "links": {
       "explore": "Jelajahi",
       "create": "Buat",
+      "tools": "Alat",
       "dashboard": "Dasbor",
       "docs": "Dokumen",
       "admin": "Admin"
@@ -220,6 +221,18 @@
       "largest": "Terbesar",
       "paymentsWindow": "{count} pembayaran · 24j"
     },
+    "tools": {
+      "eyebrow": "Alat onchain",
+      "title": "Lebih dari sekadar launchpad. Toolkit untuk semua hal di sekitar penggalangan.",
+      "subtitle": "Pandabox merilis utilitas yang berpasangan dengan proyekmu — distribusi massal, kolam buyback, dan lainnya sedang disiapkan. Semua on-chain, semua kamu yang tandatangani.",
+      "counterShipping": "{count} sedang disiapkan",
+      "counterMore": "lainnya dalam antrean",
+      "futureEyebrow": "Selanjutnya",
+      "futureTitle": "Lebih banyak alat, segera.",
+      "futureBody": "Kami menambah utilitas satu per satu agar setiap rilis seserius launchpad-nya sendiri. Saranin satu — kami baca semuanya.",
+      "ctaPrimary": "Lihat semua alat",
+      "ctaSecondary": "Baca spec"
+    },
     "heroConsole": {
       "liveConsole": "Konsol langsung",
       "streamSequenceAria": "Urutan stream",
@@ -237,6 +250,74 @@
         "platformFee": "Biaya platform",
         "treasury": "Treasury"
       }
+    }
+  },
+  "tools": {
+    "metaTitle": "Alat Onchain — Pandabox",
+    "eyebrow": "Alat onchain",
+    "headline": "Toolkit untuk pekerjaan di sekitar penggalangan.",
+    "subtitle": "Pandabox menyediakan utilitas kecil dan tajam yang berdampingan dengan proyekmu. Kirim token massal ke daftar wallet, jalankan buyback pool dari treasury, otomatiskan pekerjaan yang dulu butuh kontrak khusus. Setiap alat adalah Move call, setiap Move call kamu yang tandatangani.",
+    "liveCount": "{count} aktif",
+    "soonCount": "{count} segera",
+    "totalCount": "{count} total",
+    "sectionAvailable": "Alat",
+    "sectionAvailableSpec": "alpha · siap untuk Sui mainnet",
+    "roadmapEyebrow": "Di roadmap",
+    "roadmapTitle": "Yang sedang kami bangun selanjutnya.",
+    "roadmapBody": "Empat alat lain mengantre di belakang yang di atas. Kami belum siap menjelaskan detailnya — tapi kamu akan melihatnya muncul di sini satu per satu, sudah ditandatangani dan on-chain, di siklus berikutnya. Pantau terus.",
+    "roadmapLocked": "Terkunci · segera",
+    "roadmapLockedAria": "Alat mendatang — detail belum diungkap",
+    "roadmapItems": {
+      "sniper": {
+        "tag": "Anti-snipe",
+        "title": "Anti-snipe queue",
+        "body": "Per-wallet rate limit on the opening seconds of a cycle. Stops bots, lets humans get a fair fill."
+      },
+      "vesting": {
+        "tag": "Vesting",
+        "title": "Linear vesting",
+        "body": "Stream reserved tokens to team and partner addresses on a per-second schedule. Cancellable by the AdminCap."
+      },
+      "splits": {
+        "tag": "Splits",
+        "title": "Multi-receiver splits",
+        "body": "Define a payout split once and route every cycle distribution through it. Hand it to a DAO if you outgrow it."
+      },
+      "merkle": {
+        "tag": "Claims",
+        "title": "Merkle claim portal",
+        "body": "Publish a root, let recipients claim on-chain at their own pace. Pairs naturally with the airdrop tool."
+      }
+    },
+    "suggestEyebrow": "Sarankan alat",
+    "suggestTitle": "Butuh sesuatu yang belum disediakan Pandabox?",
+    "suggestBody": "Buka issue dengan spec singkat satu paragraf. Kami menyortir permintaan alat tiap Jumat dan yang terbaik jadi hal selanjutnya di halaman ini.",
+    "suggestCta": "Buka issue",
+    "items": {
+      "airdrop": {
+        "name": "Airdrop",
+        "tagline": "Distribusikan SUI atau token proyek apa pun ke ribuan wallet dalam satu transaksi yang ditandatangani.",
+        "description": "Unggah CSV, tandatangani sekali, lihat penerima terisi. Dibuat untuk peluncuran token, hadiah kontributor, dan drop komunitas saat menandatangani satu per satu bukan pilihan.",
+        "cap1": "Pengiriman massal · hingga 10.000 alamat per tx",
+        "cap2": "Pre-flight memvalidasi setiap alamat on-chain",
+        "cap3": "Opsi gas yang disponsori untuk penerima dengan wallet kosong"
+      },
+      "redeem": {
+        "name": "Redeem · Buyback & Refund",
+        "tagline": "Dirikan pool buyback atau refund permanen — pilih modenya saat deploy, danai dari treasury, lalu biarkan holder mencairkan dengan aturan yang tak akan pernah bisa kamu balikkan.",
+        "description": "Dua mode, satu kontrak. Project manager bisa menjalankan buyback pool yang membeli token pada floor yang ditentukan proyek, atau refund pool yang mengembalikan SUI ke supporter pada tarif yang mereka bayarkan. Mode yang kamu pilih bersifat permanen — begitu pool live, syaratnya terkunci on-chain. Tidak ada override admin. Itu jaminan kepercayaan yang dilihat holder.",
+        "cap1": "Dua mode — buyback di floor, atau refund pada tarif asli",
+        "cap2": "Permanen · setelah deploy, syarat tak bisa diubah",
+        "cap3": "Burn-and-receive dalam satu Move call — tanpa perantara"
+      }
+    },
+    "shared": {
+      "statusAvailable": "Aktif",
+      "statusSoon": "Segera",
+      "ctaOpen": "Buka alat",
+      "ctaNotify": "Beri tahu saya",
+      "capabilities": "Apa fungsinya",
+      "onchainHint": "Alat onchain"
     }
   },
   "footer": {
