@@ -59,6 +59,29 @@ export default async function DevPage() {
             Visual register for the building blocks. Anything new in the
             product is built from these.
           </p>
+          {/* Modal previews — full-page routes that mount real modals with
+              fixture data, so we can iterate on them without going through a
+              live transaction. */}
+          <nav
+            aria-label="Modal previews"
+            className="mt-5 flex flex-wrap items-center gap-2"
+          >
+            <span className="font-mono-label text-[10px] text-ink/40">
+              modal previews
+            </span>
+            <a
+              href="/dev/deploy-success"
+              className="inline-flex h-7 items-center border border-ink/25 px-2.5 font-mono-label text-[10px] text-ink/70 transition-colors hover:border-ink hover:text-ink"
+            >
+              deploy-success
+            </a>
+            <a
+              href="/dev/withdraw-success"
+              className="inline-flex h-7 items-center border border-ink/25 px-2.5 font-mono-label text-[10px] text-ink/70 transition-colors hover:border-ink hover:text-ink"
+            >
+              withdraw-success
+            </a>
+          </nav>
         </div>
 
         <Section label="01 / Mono-label + accent rule">

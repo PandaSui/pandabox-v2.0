@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -20,6 +21,8 @@ import {
   IS_DEPLOYED,
   PROJECT_COIN_DECIMALS,
 } from "@/lib/contracts/pandabox";
+import { explorerUrl } from "@/lib/sui";
+import { usePlatformFeeBps } from "@/lib/hooks/use-platform-fee-bps";
 import type { AdminCapHolding } from "@/lib/holdings";
 import type { HydratedProject } from "@/lib/projects";
 import { SeedLiquidityModal } from "./seed-liquidity-modal";
@@ -67,7 +70,12 @@ export function AdminPanel({
 }) {
   const account = useCurrentAccount();
   const client = useSuiClient();
+  const router = useRouter();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  // Reads the on-chain `Platform.fee_bps` so the withdraw flow can show the
+  // real net after the protocol skim instead of a placeholder. Null while
+  // loading or if the platform object id isn't configured.
+  const { feeBps } = usePlatformFeeBps();
 
   const [open, setOpen] = useState<Action | null>(null);
   const [tx, setTx] = useState<TxState>({ kind: "idle" });
@@ -107,8 +115,16 @@ export function AdminPanel({
       const transaction = build();
       const result = await signAndExecute({ transaction });
       setTx({ kind: "success", action, digest: result.digest });
-      // Nudge the page cache so figures refresh on next render.
-      void client.waitForTransaction({ digest: result.digest });
+      // Wait for the tx to be observable on a fullnode, then re-fetch the
+      // server component so the props that drive this panel — treasury,
+      // sold, status — reflect the new on-chain state. Done in the
+      // background so the success modal stays snappy; by the time the
+      // admin dismisses it, the page underneath has fresh numbers (e.g.
+      // 0 SUI in the treasury after a full withdraw, "Withdraw SUI"
+      // disabled).
+      void client
+        .waitForTransaction({ digest: result.digest })
+        .finally(() => router.refresh());
     } catch (err) {
       setTx({
         kind: "error",
@@ -330,6 +346,7 @@ export function AdminPanel({
           state={tx}
           busy={busy}
           recipient={account?.address}
+          feeBps={feeBps}
           onClose={() => setOpen(null)}
           onOpenFinalize={() => {
             setTx({ kind: "idle" });
@@ -483,6 +500,7 @@ function WithdrawModal({
   onSubmit,
   onOpenFinalize,
   recipient,
+  feeBps,
 }: {
   project: HydratedProject;
   cap: AdminCapHolding;
@@ -493,10 +511,22 @@ function WithdrawModal({
   /** Switches the modal stack to the Finalize confirmation when the sale isn't ready. */
   onOpenFinalize: () => void;
   recipient?: string;
+  /**
+   * Live `Platform.fee_bps`. Null while the on-chain read is loading or the
+   * platform object id isn't configured — in that case the modal falls back
+   * to the "− protocol bps" placeholder language.
+   */
+  feeBps?: number | null;
 }) {
   const max = project.suiBalance;
   const maxSui = Number(max) / 1e9;
   const [input, setInput] = useState<string>(maxSui.toFixed(4));
+  // Snapshot of the amount the admin submitted. We need this because once
+  // the tx confirms and `router.refresh()` rehydrates props with the new
+  // treasury balance (0n after a full withdraw), the live `amount` memo
+  // recomputes to 0 — which would falsely tell the success view that 0 SUI
+  // was just withdrawn.
+  const [submittedAmount, setSubmittedAmount] = useState<bigint | null>(null);
 
   const amount = useMemo(() => {
     const bn = new BigNumber(input || "0");
@@ -510,6 +540,15 @@ function WithdrawModal({
   const finalized = project.status === "closed";
   const treasuryHasBalance = max > 0n;
   const amountValid = amount > 0n && amount <= max;
+
+  // Real protocol skim, computed off the live `Platform.fee_bps`. When the
+  // bps read hasn't resolved yet we keep `fee` and `net` null — the UI then
+  // falls back to the "− protocol bps" placeholder rather than showing a
+  // misleading 0% net. Move executes the same integer math on-chain: see
+  // `withdraw_sui` in the project module.
+  const feeMist =
+    feeBps != null ? (amount * BigInt(feeBps)) / 10_000n : null;
+  const netMist = feeMist != null ? amount - feeMist : null;
 
   // Pre-flight is "all green" only when every prerequisite the Move call
   // checks is satisfied. The first failure becomes the blocker we surface
@@ -558,10 +597,13 @@ function WithdrawModal({
       className={state.kind === "success" ? undefined : "max-w-3xl"}
     >
       {state.kind === "success" && state.action === "withdraw" ? (
-        <Success
+        <WithdrawSuccess
+          amount={submittedAmount ?? amount}
           digest={state.digest}
-          label="SUI withdrawn"
-          body="The SUI coin has been transferred to your address (less platform fee)."
+          recipient={recipient}
+          capId={cap.capId}
+          feeBps={feeBps}
+          onClose={onClose}
         />
       ) : (
         <div className="space-y-5 text-xs">
@@ -700,10 +742,16 @@ function WithdrawModal({
                   />
                   <BreakdownRow
                     k="Platform fee"
-                    hint="skimmed by the protocol at execution"
+                    hint={
+                      feeBps != null
+                        ? `${(feeBps / 100).toFixed(2)}% skimmed at execution`
+                        : "skimmed by the protocol at execution"
+                    }
                     v={
-                      <span className="font-mono tabular-nums text-ink/55">
-                        − protocol bps
+                      <span className="font-mono tabular-nums text-poppy">
+                        {feeMist != null
+                          ? `− ${formatSui(feeMist)} SUI`
+                          : "− protocol bps"}
                       </span>
                     }
                   />
@@ -711,7 +759,9 @@ function WithdrawModal({
                     k="You receive"
                     v={
                       <span className="font-mono tabular-nums text-ink">
-                        ≈ {formatSui(amount)} SUI{" "}
+                        {netMist != null
+                          ? `${formatSui(netMist)} SUI`
+                          : `≈ ${formatSui(amount)} SUI`}{" "}
                         <span className="text-ink/45">net</span>
                       </span>
                     }
@@ -804,7 +854,10 @@ function WithdrawModal({
             ) : (
               <button
                 type="button"
-                onClick={() => onSubmit(amount)}
+                onClick={() => {
+                  setSubmittedAmount(amount);
+                  onSubmit(amount);
+                }}
                 disabled={busy || !!blocker}
                 className="h-10 border border-ink bg-saffron px-4 font-medium uppercase tracking-[0.12em] text-[0.72rem] text-ink shadow-offset-sm transition-all duration-300 ease-atelier hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0"
               >
@@ -1103,6 +1156,245 @@ function Success({
         digest · {digest}
       </p>
     </div>
+  );
+}
+
+/**
+ * Withdraw-specific success view. Replaces the generic `<Success>` pill for
+ * the `withdraw_sui` flow because withdraw has unique post-tx data worth
+ * surfacing: the actual SUI amount the admin pulled, where it landed, which
+ * cap authorized it, and the digest you can paste into a block explorer.
+ *
+ * Exported so the `/dev/withdraw-success` route can preview it without
+ * running a real transaction.
+ */
+export function WithdrawSuccess({
+  amount,
+  digest,
+  recipient,
+  capId,
+  feeBps,
+  onClose,
+}: {
+  amount: bigint;
+  digest: string;
+  recipient?: string;
+  capId: string;
+  /**
+   * Live `Platform.fee_bps`. When provided, the receipt shows the actual
+   * fee taken and the real net received. Null/undefined falls back to the
+   * "− protocol bps" placeholder so we never quietly mislead the admin.
+   */
+  feeBps?: number | null;
+  onClose?: () => void;
+}) {
+  const txUrl = explorerUrl("tx", digest);
+  const recipientUrl = recipient ? explorerUrl("address", recipient) : null;
+  // Same integer-math as the Move `withdraw_sui` entry: fee = gross * bps / 10_000.
+  const feeMist =
+    feeBps != null ? (amount * BigInt(feeBps)) / 10_000n : null;
+  const netMist = feeMist != null ? amount - feeMist : null;
+  const feePct = feeBps != null ? (feeBps / 100).toFixed(2) : null;
+
+  return (
+    <div className="space-y-4 text-xs">
+      {/* ── Hero — big display number, jade-bordered ─────────────── */}
+      <div className="border border-jade/35 bg-jade/[0.06]">
+        <div className="flex items-center justify-between border-b border-jade/20 px-4 py-2.5">
+          <span className="inline-flex items-center gap-2">
+            <CheckBadge />
+            <MonoLabel className="text-[10px]" accent="jade">
+              SUI withdrawn
+            </MonoLabel>
+          </span>
+          <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-jade/80">
+            on-chain · finalized
+          </span>
+        </div>
+        <div className="px-4 py-5">
+          {/* Display number = the real net received, not the gross. The
+              gross is still surfaced in the receipt below; leading with
+              gross here would misstate what actually landed in the wallet. */}
+          <div className="font-display leading-none tabular-nums text-ink text-4xl md:text-[2.75rem]">
+            {formatSui(netMist ?? amount)}
+            <span className="ml-2 font-mono text-[12px] uppercase tracking-[0.14em] text-ink/45">
+              SUI
+            </span>
+          </div>
+          <p className="mt-2 text-[12.5px] leading-relaxed text-ink/65">
+            Landed in your address as a{" "}
+            <code className="font-mono text-ink/80">Coin&lt;SUI&gt;</code>
+            {feePct != null && feeBps != null && feeBps > 0 ? (
+              <>
+                {" "}
+                after a{" "}
+                <span className="font-mono text-ink">{feePct}%</span> protocol
+                fee was skimmed from the {formatSui(amount)} SUI gross.
+              </>
+            ) : (
+              <> (less the platform fee skimmed at execution).</>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* ── Receipt — spec sheet of the payout ─────────────────── */}
+      <div className="border border-ink/15">
+        <div className="border-b border-ink/15 px-4 py-2">
+          <MonoLabel className="text-[10px]">Receipt</MonoLabel>
+        </div>
+        <dl className="divide-y divide-ink/10">
+          <ReceiptRow
+            k="Gross"
+            v={`${formatSui(amount)} SUI`}
+            hint="from project treasury"
+          />
+          <ReceiptRow
+            k="Platform fee"
+            v={
+              feeMist != null ? (
+                <span className="text-poppy">
+                  − {formatSui(feeMist)} SUI
+                </span>
+              ) : (
+                "− protocol bps"
+              )
+            }
+            hint={
+              feePct != null
+                ? `${feePct}% skimmed at execution`
+                : "skimmed at execution"
+            }
+            muted={feeMist == null}
+          />
+          <ReceiptRow
+            k="You received"
+            v={
+              <>
+                {netMist != null ? formatSui(netMist) : `≈ ${formatSui(amount)}`}{" "}
+                SUI <span className="text-ink/45">net</span>
+              </>
+            }
+            strong
+          />
+          {recipient && (
+            <ReceiptRow
+              k="Recipient"
+              v={
+                recipientUrl ? (
+                  <a
+                    href={recipientUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="underline-offset-2 hover:underline"
+                  >
+                    {shortMid(recipient)}
+                  </a>
+                ) : (
+                  shortMid(recipient)
+                )
+              }
+              muted
+            />
+          )}
+          <ReceiptRow
+            k="Authorized by"
+            v={`cap ${shortMid(capId)}`}
+            muted
+          />
+        </dl>
+      </div>
+
+      {/* ── Digest + explorer link ─────────────────────────────── */}
+      <div className="flex flex-wrap items-start justify-between gap-3 border border-ink/15 px-4 py-3">
+        <div className="min-w-0 flex-1">
+          <MonoLabel className="block text-[10px]">Transaction digest</MonoLabel>
+          <span className="mt-1 block break-all font-mono text-[11px] text-ink/65">
+            {digest}
+          </span>
+        </div>
+        <a
+          href={txUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="shrink-0 inline-flex items-center gap-1.5 font-mono-label text-[10px] text-jade underline-offset-2 hover:underline"
+        >
+          view on suiscan ↗
+        </a>
+      </div>
+
+      {/* ── Footer ─────────────────────────────────────────────── */}
+      {onClose && (
+        <div className="flex justify-end border-t border-ink/10 pt-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className={cn(
+              "h-10 px-5 border border-ink bg-bone shadow-offset-sm",
+              "font-medium uppercase tracking-[0.12em] text-[0.72rem] text-ink",
+              "transition-all duration-300 ease-atelier",
+              "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
+            )}
+          >
+            Done
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReceiptRow({
+  k,
+  v,
+  hint,
+  muted,
+  strong,
+}: {
+  k: string;
+  v: React.ReactNode;
+  hint?: string;
+  muted?: boolean;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+      <div className="min-w-0">
+        <MonoLabel className="block text-[10px]">{k}</MonoLabel>
+        {hint && (
+          <span className="mt-0.5 block font-mono text-[10px] text-ink/40">
+            {hint}
+          </span>
+        )}
+      </div>
+      <span
+        className={cn(
+          "font-mono tabular-nums text-[12.5px]",
+          strong ? "text-ink" : muted ? "text-ink/55" : "text-ink/80",
+        )}
+      >
+        {v}
+      </span>
+    </div>
+  );
+}
+
+function CheckBadge() {
+  return (
+    <span
+      aria-hidden
+      className="inline-flex h-4 w-4 items-center justify-center border border-jade/55 bg-jade/15 text-jade"
+    >
+      <svg viewBox="0 0 12 12" width="9" height="9" fill="none">
+        <path
+          d="M2 6.5 L5 9 L10 3"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
   );
 }
 
