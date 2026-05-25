@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — Finansuj to, co warte finansowania. Na Sui.",
+    "description": "Programowalny launchpad finansowania na Sui. Uruchom projekt, ustaw kurs, przeprowadź sprzedaż on-chain — każdy parametr, każda transakcja, on-chain.",
+    "ogImageAlt": "Pandabox — programowalny launchpad finansowania dla Sui.",
+    "notFound": {
+      "title": "404 · Nie znaleziono",
+      "description": "Brak sygnału na tej trasie."
+    }
+  },
+  "common": {
+    "skipToContent": "Przejdź do treści",
+    "language": "Język"
+  },
+  "nav": {
+    "homeAria": "Strona główna Pandabox",
+    "primaryAria": "Główne",
+    "mobileAria": "Mobilne",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "links": {
+      "explore": "Eksploruj",
+      "create": "Utwórz",
+      "dashboard": "Panel",
+      "docs": "Dokumentacja",
+      "admin": "Administracja"
+    }
+  },
+  "wallet": {
+    "connect": "Połącz portfel",
+    "pickerTitle": "Połącz portfel Sui",
+    "pickerDescription": "Wybierz portfel, aby się zalogować. Nigdy nie przechowujemy środków — twoje klucze pozostają w twoim portfelu.",
+    "noWallets": "Nie wykryto portfeli Sui w tej przeglądarce.",
+    "installSuiWallet": "Zainstaluj Sui Wallet →",
+    "walletStandard": "Standard portfela Sui",
+    "connectError": "Nie udało się połączyć.",
+    "fallbackName": "Portfel",
+    "balanceLabel": "Saldo",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Kopiuj adres",
+    "copied": "SKOPIOWANO",
+    "viewOnSuiscan": "Zobacz na Suiscan",
+    "disconnect": "Rozłącz"
+  },
+  "pulse": {
+    "totalRaised": "Łącznie zebrano na Pandabox",
+    "mostRecent": "Najnowsze",
+    "flatlinedAria": "Puls skarbca — bez aktywności",
+    "flatlinedCaption": "Brak zdarzeń płatności na tej trasie. Pandabox nie może wyświetlić pulsu dla strony, która nie istnieje."
+  },
+  "notFound": {
+    "eyebrow": "404 · TRASA NIE ZNALEZIONA",
+    "rowStatus": "STATUS",
+    "rowStatusValue": "NIE ZNALEZIONO",
+    "rowSignal": "SYGNAŁ",
+    "rowCycle": "CYKL",
+    "headline": "Brak sygnału na tej trasie.",
+    "body": "Pandabox nie mógł znaleźć tego, czego szukałeś. Albo URL zmienił się między cyklami, albo ta strona nigdy nie była on-chain. Wybierz jedną z aktywnych tras poniżej — wszystkie nadają sygnał.",
+    "ctaExplore": "Eksploruj projekty",
+    "ctaLaunch": "Uruchom projekt",
+    "ctaDocs": "Przeczytaj dokumentację",
+    "backHome": "powrót do pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Na żywo na Sui {network}",
+      "titleFund": "Finansuj to,",
+      "titleWorth": "co warte",
+      "titleFunding": "finansowania.",
+      "titleOnSui": "Na Sui",
+      "tagline": "Pandabox to programowalna platforma finansowania dla Sui. Uruchom projekt w kilka minut. Odbieraj SUI, emituj tokeny, definiuj wypłaty — wszystko on-chain, w pełni transparentnie, w pełni twoje.",
+      "ctaLaunch": "Uruchom projekt",
+      "ctaExplore": "Eksploruj projekty",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · finalny",
+      "marginSpec": "specyfikacja projektu — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Wypuść to",
+      "titleYourProject": "Twój projekt,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "w 3 minuty.",
+      "subhead": "Skonfiguruj cykle, wypłaty i tokeny. Podpisz jedną transakcję Sui. AdminCap pozostaje u ciebie.",
+      "ctaLaunch": "Uruchom projekt",
+      "ctaDocs": "Przeczytaj dokumentację",
+      "tileSign": "Podpis",
+      "tileSignValue": "1 transakcja",
+      "tileGas": "Gas",
+      "tileGasValue": "< 0,001 $",
+      "tileSetup": "Konfiguracja",
+      "tileSetupValue": "6 kroków",
+      "tileKeys": "Klucze",
+      "tileKeysValue": "AdminCap twój",
+      "marginLive": "pandabox.sui · na żywo",
+      "marginRevalidate": "rewalidacja 60s"
+    },
+    "featured": {
+      "title": "Wyróżnione projekty",
+      "subtitle": "Starannie wybrane, obecnie zbierające środki.",
+      "viewAll": "Zobacz wszystkie"
+    }
+  },
+  "footer": {
+    "homeAria": "Strona główna Pandabox",
+    "blurb": "Programowalna platforma finansowania dla Sui. Zbudowana on-chain, otwarta domyślnie.",
+    "navigate": "Nawigacja",
+    "ecosystem": "Ekosystem",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Techniczne",
+    "movePackage": "Pakiet Move",
+    "network": "Sieć",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Build Mainnet"
+  },
+  "explore": {
+    "title": "Eksploruj",
+    "headline": "Finansowane teraz.",
+    "subtitle": "Każda aktywna sprzedaż tokenów na Pandabox, odczytywana bezpośrednio z pakietu Sui mainnet — bez pośredniego indeksera.",
+    "liveCount": "{count} na żywo",
+    "totalCount": "{count} łącznie",
+    "cachedHint": "buforowane 60s",
+    "all": "Wszystkie",
+    "live": "Na żywo",
+    "ended": "Zakończone",
+    "idle": "bezczynne",
+    "verified": "zweryfikowane",
+    "legacy": "starsze",
+    "legacyHint": "Wdrożone przed poprawką skalowania 9 miejsc dziesiętnych — liczby są niewiarygodne.",
+    "filterByCategory": "Filtruj według kategorii",
+    "sortLabel": "Sortuj",
+    "searchLabel": "Szukaj",
+    "sort": {
+      "trending": "Na czasie",
+      "newest": "Najnowsze",
+      "mostFunded": "Najwięcej zebrane",
+      "endingSoonest": "Kończące się najszybciej"
+    },
+    "searchPlaceholder": "szukaj projektów",
+    "searchAria": "Szukaj projektów",
+    "sortAria": "Sortuj projekty",
+    "loadMore": "Załaduj więcej",
+    "empty": "Żaden projekt nie pasuje jeszcze do tych filtrów.",
+    "emptyTitle": "Nic nie pasuje",
+    "resetFilters": "Resetuj filtry",
+    "byCreator": "przez {addr}",
+    "endsNow": "kończy się ",
+    "endedAt": "zakończono ",
+    "unnamed": "Projekt bez nazwy",
+    "viewProject": "Zobacz {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Sztuka",
+      "infra": "Infrastruktura",
+      "dao": "DAO",
+      "research": "Badania",
+      "gaming": "Gaming",
+      "music": "Muzyka",
+      "social": "Społeczność",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Zebrano",
+      "supporters": "Wspierających"
+    },
+    "hero": {
+      "raised": "Zebrano",
+      "supporters": "Wspierających",
+      "heldBy": "posiadane przez",
+      "backThis": "Wesprzyj ten projekt"
+    },
+    "status": {
+      "live": "na żywo",
+      "paused": "wstrzymane",
+      "closed": "zamknięte"
+    }
+  },
+  "pay": {
+    "heading": "Wesprzyj ten projekt",
+    "youReceive": "Otrzymujesz",
+    "remainingHint": "Pozostało do wybicia {amount}, nadwyżka zostanie automatycznie zwrócona.",
+    "memo": "Notatka (opcjonalnie)",
+    "memoPlaceholder": "zapisana on-chain wraz z twoją płatnością",
+    "enterAmount": "Wprowadź kwotę",
+    "payAmount": "Zapłać {amount} SUI",
+    "shareOfSupply": "Udział w podaży",
+    "remainingMintable": "Pozostało do wybicia",
+    "unsold": "Niesprzedane",
+    "unsoldBurn": "Spal",
+    "unsoldTransfer": "Przekaż twórcy",
+    "inspectorTitle": "Inspektor transakcji",
+    "inspectorPreview": "Podgląd przed podpisem. Twój portfel poprosi o podpis tego wywołania Move.",
+    "inspectorNotDeployed": "Pakiet Move nie został jeszcze wdrożony — wysyłka jest symulowana lokalnie, dopóki nie zostanie ustawione NEXT_PUBLIC_PACKAGE_ID.",
+    "inspector": {
+      "package": "pakiet",
+      "module": "moduł",
+      "function": "funkcja",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "zwraca",
+      "returnsValue": "ContributionReceipt + moneta zwrotu → nadawca"
+    },
+    "cancel": "Anuluj",
+    "signSubmit": "Podpisz i wyślij",
+    "signing": "Podpisywanie…",
+    "confirmed": "Płatność potwierdzona",
+    "backToProject": "Powrót do projektu",
+    "connectFirst": "Połącz portfel, aby wesprzeć.",
+    "txFailed": "Transakcja nieudana."
+  }
+}

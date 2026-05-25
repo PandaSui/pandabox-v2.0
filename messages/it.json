@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — Finanzia ciò che merita di essere finanziato. Su Sui.",
+    "description": "Una launchpad di finanziamento programmabile su Sui. Lancia un progetto, imposta il tasso, gestisci una vendita on-chain — ogni parametro, ogni transazione, on-chain.",
+    "ogImageAlt": "Pandabox — launchpad di finanziamento programmabile per Sui.",
+    "notFound": {
+      "title": "404 · Non trovato",
+      "description": "Nessun segnale su questa rotta."
+    }
+  },
+  "common": {
+    "skipToContent": "Vai al contenuto",
+    "language": "Lingua"
+  },
+  "nav": {
+    "homeAria": "Home Pandabox",
+    "primaryAria": "Principale",
+    "mobileAria": "Mobile",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
+    "links": {
+      "explore": "Esplora",
+      "create": "Crea",
+      "dashboard": "Dashboard",
+      "docs": "Documentazione",
+      "admin": "Admin"
+    }
+  },
+  "wallet": {
+    "connect": "Connetti wallet",
+    "pickerTitle": "Connetti un wallet Sui",
+    "pickerDescription": "Scegli un wallet per accedere. Non deteniamo mai la custodia — le tue chiavi restano nel tuo wallet.",
+    "noWallets": "Nessun wallet Sui rilevato in questo browser.",
+    "installSuiWallet": "Installa Sui Wallet →",
+    "walletStandard": "Standard wallet Sui",
+    "connectError": "Impossibile connettersi.",
+    "fallbackName": "Wallet",
+    "balanceLabel": "Saldo",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Copia indirizzo",
+    "copied": "COPIATO",
+    "viewOnSuiscan": "Vedi su Suiscan",
+    "disconnect": "Disconnetti"
+  },
+  "pulse": {
+    "totalRaised": "Totale raccolto su Pandabox",
+    "mostRecent": "Più recente",
+    "flatlinedAria": "Treasury Pulse — segnale piatto",
+    "flatlinedCaption": "Nessun evento di pagamento su questa rotta. Pandabox non può mostrare un battito per una pagina che non esiste."
+  },
+  "notFound": {
+    "eyebrow": "404 · ROTTA NON TROVATA",
+    "rowStatus": "STATO",
+    "rowStatusValue": "NON TROVATO",
+    "rowSignal": "SEGNALE",
+    "rowCycle": "CICLO",
+    "headline": "Nessun segnale su questa rotta.",
+    "body": "Pandabox non ha trovato ciò che stavi cercando. O l'URL è scivolato tra i cicli, o questa pagina non è mai stata on-chain. Scegli una delle rotte attive qui sotto — stanno tutte trasmettendo segnale.",
+    "ctaExplore": "Esplora i progetti",
+    "ctaLaunch": "Lancia un progetto",
+    "ctaDocs": "Leggi la documentazione",
+    "backHome": "torna a pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Live su Sui {network}",
+      "titleFund": "Finanzia ciò",
+      "titleWorth": "che merita",
+      "titleFunding": "di essere finanziato.",
+      "titleOnSui": "Su Sui",
+      "tagline": "Pandabox è la piattaforma di finanziamento programmabile per Sui. Lancia un progetto in pochi minuti. Ricevi SUI, emetti token, definisci i pagamenti — tutto on-chain, tutto trasparente, tutto tuo.",
+      "ctaLaunch": "Lancia un progetto",
+      "ctaExplore": "Esplora i progetti",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · finale",
+      "marginSpec": "spec progetto — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Pubblicalo",
+      "titleYourProject": "Il tuo progetto,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "in 3 minuti.",
+      "subhead": "Configura cicli, pagamenti e token. Firma una transazione Sui. L'admin cap è tuo.",
+      "ctaLaunch": "Lancia un progetto",
+      "ctaDocs": "Leggi la documentazione",
+      "tileSign": "Firma",
+      "tileSignValue": "1 transazione",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0,001",
+      "tileSetup": "Configurazione",
+      "tileSetupValue": "6 passaggi",
+      "tileKeys": "Chiavi",
+      "tileKeysValue": "AdminCap tuo",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "rivalida 60s"
+    },
+    "featured": {
+      "title": "Progetti in evidenza",
+      "subtitle": "Selezionati a mano, attualmente in raccolta.",
+      "viewAll": "Vedi tutti"
+    }
+  },
+  "footer": {
+    "homeAria": "Home Pandabox",
+    "blurb": "La piattaforma di finanziamento programmabile per Sui. Costruita on-chain, aperta per default.",
+    "navigate": "Naviga",
+    "ecosystem": "Ecosistema",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Tecnico",
+    "movePackage": "Pacchetto Move",
+    "network": "Rete",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Build Mainnet"
+  },
+  "explore": {
+    "title": "Esplora",
+    "headline": "In finanziamento ora.",
+    "subtitle": "Ogni vendita di token attiva su Pandabox, letta direttamente dal pacchetto Sui mainnet — senza indexer nel mezzo.",
+    "liveCount": "{count} live",
+    "totalCount": "{count} totali",
+    "cachedHint": "in cache 60s",
+    "all": "Tutti",
+    "live": "Live",
+    "ended": "Terminati",
+    "idle": "inattivo",
+    "verified": "verificato",
+    "legacy": "legacy",
+    "legacyHint": "Distribuito prima del fix di scaling a 9 decimali — i numeri non sono affidabili.",
+    "filterByCategory": "Filtra per categoria",
+    "sortLabel": "Ordina",
+    "searchLabel": "Cerca",
+    "sort": {
+      "trending": "Di tendenza",
+      "newest": "Più recenti",
+      "mostFunded": "Più finanziati",
+      "endingSoonest": "In scadenza"
+    },
+    "searchPlaceholder": "cerca progetti",
+    "searchAria": "Cerca progetti",
+    "sortAria": "Ordina progetti",
+    "loadMore": "Carica altri",
+    "empty": "Nessun progetto corrisponde ancora a questi filtri.",
+    "emptyTitle": "Nessuna corrispondenza",
+    "resetFilters": "Reimposta filtri",
+    "byCreator": "di {addr}",
+    "endsNow": "termina ",
+    "endedAt": "terminato ",
+    "unnamed": "Progetto senza nome",
+    "viewProject": "Vedi {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Arte",
+      "infra": "Infra",
+      "dao": "DAO",
+      "research": "Ricerca",
+      "gaming": "Gaming",
+      "music": "Musica",
+      "social": "Social",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Raccolti",
+      "supporters": "Sostenitori"
+    },
+    "hero": {
+      "raised": "Raccolti",
+      "supporters": "Sostenitori",
+      "heldBy": "detenuto da",
+      "backThis": "Sostieni questo progetto"
+    },
+    "status": {
+      "live": "live",
+      "paused": "in pausa",
+      "closed": "chiuso"
+    }
+  },
+  "pay": {
+    "heading": "Sostieni questo progetto",
+    "youReceive": "Ricevi",
+    "remainingHint": "Mintabile rimanente {amount}, l'eccedenza viene rimborsata automaticamente.",
+    "memo": "Memo (opzionale)",
+    "memoPlaceholder": "registrato on-chain con il tuo pagamento",
+    "enterAmount": "Inserisci un importo",
+    "payAmount": "Paga {amount} SUI",
+    "shareOfSupply": "Quota dell'offerta",
+    "remainingMintable": "Mintabile rimanente",
+    "unsold": "Invenduto",
+    "unsoldBurn": "Brucia",
+    "unsoldTransfer": "Trasferisci al creatore",
+    "inspectorTitle": "Ispettore transazione",
+    "inspectorPreview": "Anteprima pre-firma. Il tuo wallet richiederà una firma per questa chiamata Move.",
+    "inspectorNotDeployed": "Pacchetto Move non ancora distribuito — l'invio è simulato localmente finché NEXT_PUBLIC_PACKAGE_ID non è impostato.",
+    "inspector": {
+      "package": "pacchetto",
+      "module": "modulo",
+      "function": "funzione",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "restituisce",
+      "returnsValue": "ContributionReceipt + moneta di rimborso → mittente"
+    },
+    "cancel": "Annulla",
+    "signSubmit": "Firma e invia",
+    "signing": "Firma in corso…",
+    "confirmed": "Pagamento confermato",
+    "backToProject": "Torna al progetto",
+    "connectFirst": "Connetti un wallet per contribuire.",
+    "txFailed": "Transazione fallita."
+  }
+}

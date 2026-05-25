@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — Tài trợ cho những gì xứng đáng. Trên Sui.",
+    "description": "Nền tảng launchpad gây quỹ có thể lập trình trên Sui. Khởi chạy dự án, đặt tỷ giá, vận hành đợt bán on-chain — mọi tham số, mọi giao dịch, đều on-chain.",
+    "ogImageAlt": "Pandabox — launchpad gây quỹ có thể lập trình cho Sui.",
+    "notFound": {
+      "title": "404 · Không tìm thấy",
+      "description": "Không có tín hiệu trên đường dẫn này."
+    }
+  },
+  "common": {
+    "skipToContent": "Bỏ qua đến nội dung",
+    "language": "Ngôn ngữ"
+  },
+  "nav": {
+    "homeAria": "Trang chủ Pandabox",
+    "primaryAria": "Chính",
+    "mobileAria": "Di động",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu",
+    "links": {
+      "explore": "Khám phá",
+      "create": "Tạo mới",
+      "dashboard": "Bảng điều khiển",
+      "docs": "Tài liệu",
+      "admin": "Quản trị"
+    }
+  },
+  "wallet": {
+    "connect": "Kết nối ví",
+    "pickerTitle": "Kết nối một ví Sui",
+    "pickerDescription": "Chọn một ví để đăng nhập. Chúng tôi không bao giờ giữ quyền lưu ký — khóa của bạn luôn nằm trong ví của bạn.",
+    "noWallets": "Không phát hiện ví Sui nào trong trình duyệt này.",
+    "installSuiWallet": "Cài đặt Sui Wallet →",
+    "walletStandard": "Chuẩn ví Sui",
+    "connectError": "Không thể kết nối.",
+    "fallbackName": "Ví",
+    "balanceLabel": "Số dư",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Sao chép địa chỉ",
+    "copied": "ĐÃ SAO CHÉP",
+    "viewOnSuiscan": "Xem trên Suiscan",
+    "disconnect": "Ngắt kết nối"
+  },
+  "pulse": {
+    "totalRaised": "Tổng số đã huy động trên Pandabox",
+    "mostRecent": "Mới nhất",
+    "flatlinedAria": "Nhịp đập kho bạc — đã ngừng",
+    "flatlinedCaption": "Không có sự kiện thanh toán trên đường dẫn này. Pandabox không thể hiển thị nhịp đập cho một trang không tồn tại."
+  },
+  "notFound": {
+    "eyebrow": "404 · KHÔNG TÌM THẤY ĐƯỜNG DẪN",
+    "rowStatus": "TRẠNG THÁI",
+    "rowStatusValue": "KHÔNG TÌM THẤY",
+    "rowSignal": "TÍN HIỆU",
+    "rowCycle": "CHU KỲ",
+    "headline": "Không có tín hiệu trên đường dẫn này.",
+    "body": "Pandabox không thể tìm thấy nội dung bạn đang tìm kiếm. Có thể URL đã thay đổi giữa các chu kỳ, hoặc trang này chưa từng tồn tại on-chain. Hãy chọn một trong các đường dẫn đang hoạt động bên dưới — tất cả đều đang phát tín hiệu.",
+    "ctaExplore": "Khám phá dự án",
+    "ctaLaunch": "Khởi chạy một dự án",
+    "ctaDocs": "Đọc tài liệu",
+    "backHome": "quay lại pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Đang hoạt động trên Sui {network}",
+      "titleFund": "Tài trợ cho những",
+      "titleWorth": "gì",
+      "titleFunding": "xứng đáng.",
+      "titleOnSui": "Trên Sui",
+      "tagline": "Pandabox là nền tảng gây quỹ có thể lập trình cho Sui. Khởi chạy dự án trong vài phút. Nhận SUI, phát hành token, định nghĩa các khoản chi trả — tất cả on-chain, tất cả minh bạch, tất cả thuộc về bạn.",
+      "ctaLaunch": "Khởi chạy một dự án",
+      "ctaExplore": "Khám phá dự án",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · cuối cùng",
+      "marginSpec": "thông số dự án — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Triển khai ngay",
+      "titleYourProject": "Dự án của bạn,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "trong 3 phút.",
+      "subhead": "Cấu hình các chu kỳ, khoản chi trả và token. Ký một giao dịch Sui. Bạn giữ admin cap.",
+      "ctaLaunch": "Khởi chạy một dự án",
+      "ctaDocs": "Đọc tài liệu",
+      "tileSign": "Ký",
+      "tileSignValue": "1 giao dịch",
+      "tileGas": "Phí gas",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Thiết lập",
+      "tileSetupValue": "6 bước",
+      "tileKeys": "Khóa",
+      "tileKeysValue": "AdminCap thuộc về bạn",
+      "marginLive": "pandabox.sui · đang hoạt động",
+      "marginRevalidate": "làm mới mỗi 60s"
+    },
+    "featured": {
+      "title": "Dự án nổi bật",
+      "subtitle": "Được tuyển chọn thủ công, đang gây quỹ.",
+      "viewAll": "Xem tất cả"
+    }
+  },
+  "footer": {
+    "homeAria": "Trang chủ Pandabox",
+    "blurb": "Nền tảng gây quỹ có thể lập trình cho Sui. Xây dựng on-chain, mở mặc định.",
+    "navigate": "Điều hướng",
+    "ecosystem": "Hệ sinh thái",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Kỹ thuật",
+    "movePackage": "Gói Move",
+    "network": "Mạng lưới",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Bản build Mainnet"
+  },
+  "explore": {
+    "title": "Khám phá",
+    "headline": "Đang được tài trợ ngay bây giờ.",
+    "subtitle": "Mọi đợt bán token đang hoạt động trên Pandabox, đọc trực tiếp từ gói Sui mainnet — không qua indexer trung gian.",
+    "liveCount": "{count} đang hoạt động",
+    "totalCount": "{count} tổng cộng",
+    "cachedHint": "đã cache 60s",
+    "all": "Tất cả",
+    "live": "Đang hoạt động",
+    "ended": "Đã kết thúc",
+    "idle": "không hoạt động",
+    "verified": "đã xác minh",
+    "legacy": "cũ",
+    "legacyHint": "Triển khai trước khi sửa lỗi co giãn 9 chữ số thập phân — các con số không đáng tin cậy.",
+    "filterByCategory": "Lọc theo danh mục",
+    "sortLabel": "Sắp xếp",
+    "searchLabel": "Tìm kiếm",
+    "sort": {
+      "trending": "Thịnh hành",
+      "newest": "Mới nhất",
+      "mostFunded": "Được tài trợ nhiều nhất",
+      "endingSoonest": "Sắp kết thúc nhất"
+    },
+    "searchPlaceholder": "tìm kiếm dự án",
+    "searchAria": "Tìm kiếm dự án",
+    "sortAria": "Sắp xếp dự án",
+    "loadMore": "Tải thêm",
+    "empty": "Chưa có dự án nào phù hợp với các bộ lọc này.",
+    "emptyTitle": "Không có kết quả phù hợp",
+    "resetFilters": "Đặt lại bộ lọc",
+    "byCreator": "bởi {addr}",
+    "endsNow": "kết thúc ",
+    "endedAt": "đã kết thúc ",
+    "unnamed": "Dự án chưa đặt tên",
+    "viewProject": "Xem {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Nghệ thuật",
+      "infra": "Hạ tầng",
+      "dao": "DAO",
+      "research": "Nghiên cứu",
+      "gaming": "Trò chơi",
+      "music": "Âm nhạc",
+      "social": "Xã hội",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Đã huy động",
+      "supporters": "Người ủng hộ"
+    },
+    "hero": {
+      "raised": "Đã huy động",
+      "supporters": "Người ủng hộ",
+      "heldBy": "nắm giữ bởi",
+      "backThis": "Ủng hộ dự án này"
+    },
+    "status": {
+      "live": "đang hoạt động",
+      "paused": "đã tạm dừng",
+      "closed": "đã đóng"
+    }
+  },
+  "pay": {
+    "heading": "Ủng hộ dự án này",
+    "youReceive": "Bạn nhận được",
+    "remainingHint": "Còn lại có thể mint {amount}, phần dư sẽ được hoàn lại tự động.",
+    "memo": "Ghi chú (tùy chọn)",
+    "memoPlaceholder": "được ghi lại on-chain cùng với thanh toán của bạn",
+    "enterAmount": "Nhập số lượng",
+    "payAmount": "Thanh toán {amount} SUI",
+    "shareOfSupply": "Tỷ lệ trong tổng cung",
+    "remainingMintable": "Còn lại có thể mint",
+    "unsold": "Chưa bán",
+    "unsoldBurn": "Đốt",
+    "unsoldTransfer": "Chuyển cho nhà sáng lập",
+    "inspectorTitle": "Trình kiểm tra giao dịch",
+    "inspectorPreview": "Xem trước trước khi ký. Ví của bạn sẽ yêu cầu chữ ký cho lệnh gọi Move này.",
+    "inspectorNotDeployed": "Gói Move chưa được triển khai — việc gửi sẽ được mô phỏng cục bộ cho đến khi NEXT_PUBLIC_PACKAGE_ID được đặt.",
+    "inspector": {
+      "package": "gói",
+      "module": "module",
+      "function": "hàm",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "trả về",
+      "returnsValue": "ContributionReceipt + coin hoàn lại → người gửi"
+    },
+    "cancel": "Hủy",
+    "signSubmit": "Ký & gửi",
+    "signing": "Đang ký…",
+    "confirmed": "Thanh toán đã được xác nhận",
+    "backToProject": "Quay lại dự án",
+    "connectFirst": "Kết nối ví để đóng góp.",
+    "txFailed": "Giao dịch thất bại."
+  }
+}

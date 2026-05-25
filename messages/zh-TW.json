@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — 為值得資助的事注資。在 Sui 上。",
+    "description": "建構於 Sui 的可程式化募資啟動平台。發起專案、設定匯率、執行鏈上銷售 — 每一個參數、每一筆交易,皆在鏈上。",
+    "ogImageAlt": "Pandabox — 建構於 Sui 的可程式化募資啟動平台。",
+    "notFound": {
+      "title": "404 · 找不到頁面",
+      "description": "此路徑沒有訊號。"
+    }
+  },
+  "common": {
+    "skipToContent": "跳至主要內容",
+    "language": "語言"
+  },
+  "nav": {
+    "homeAria": "Pandabox 首頁",
+    "primaryAria": "主選單",
+    "mobileAria": "行動裝置選單",
+    "openMenu": "開啟選單",
+    "closeMenu": "關閉選單",
+    "links": {
+      "explore": "探索",
+      "create": "建立",
+      "dashboard": "儀表板",
+      "docs": "文件",
+      "admin": "管理"
+    }
+  },
+  "wallet": {
+    "connect": "連接錢包",
+    "pickerTitle": "連接 Sui 錢包",
+    "pickerDescription": "選擇一個錢包以登入。我們不託管您的資產 — 您的私鑰始終保存在您的錢包中。",
+    "noWallets": "未在此瀏覽器中偵測到任何 Sui 錢包。",
+    "installSuiWallet": "安裝 Sui Wallet →",
+    "walletStandard": "Sui wallet standard",
+    "connectError": "無法連接。",
+    "fallbackName": "錢包",
+    "balanceLabel": "餘額",
+    "networkMainnet": "主網",
+    "copyAddress": "複製地址",
+    "copied": "已複製",
+    "viewOnSuiscan": "在 Suiscan 上檢視",
+    "disconnect": "中斷連線"
+  },
+  "pulse": {
+    "totalRaised": "Pandabox 累計募得",
+    "mostRecent": "最近一筆",
+    "flatlinedAria": "Treasury Pulse — 已停止",
+    "flatlinedCaption": "此路徑沒有付款事件。Pandabox 無法為不存在的頁面呈現脈動。"
+  },
+  "notFound": {
+    "eyebrow": "404 · 路徑不存在",
+    "rowStatus": "狀態",
+    "rowStatusValue": "找不到",
+    "rowSignal": "訊號",
+    "rowCycle": "週期",
+    "headline": "此路徑沒有訊號。",
+    "body": "Pandabox 找不到您要尋找的頁面。可能是網址在週期之間漂移了,或者這個頁面從未上鏈。請從下方選擇任一個可用路徑 — 每一個都正在傳送訊號。",
+    "ctaExplore": "探索專案",
+    "ctaLaunch": "發起專案",
+    "ctaDocs": "閱讀文件",
+    "backHome": "返回 pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "已上線於 Sui {network}",
+      "titleFund": "為值得",
+      "titleWorth": "資助的事",
+      "titleFunding": "注資。",
+      "titleOnSui": "在 Sui 上",
+      "tagline": "Pandabox 是建構於 Sui 的可程式化募資平台。數分鐘內發起一個專案。接收 SUI、發行代幣、定義分潤 — 全部在鏈上、全部透明、全部屬於您。",
+      "ctaLaunch": "發起專案",
+      "ctaExplore": "探索專案",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · 終章",
+      "marginSpec": "專案規格 — pandabox",
+      "marginYear": "2026 · Sui 主網",
+      "shipIt": "立即發佈",
+      "titleYourProject": "您的專案,",
+      "titleOnchain": "鏈上運行",
+      "titleInMinutes": "三分鐘內完成。",
+      "subhead": "設定週期、分潤與代幣。簽署一筆 Sui 交易。AdminCap 由您持有。",
+      "ctaLaunch": "發起專案",
+      "ctaDocs": "閱讀文件",
+      "tileSign": "簽署",
+      "tileSignValue": "1 筆交易",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "設定",
+      "tileSetupValue": "6 個步驟",
+      "tileKeys": "金鑰",
+      "tileKeysValue": "AdminCap 歸您所有",
+      "marginLive": "pandabox.sui · 已上線",
+      "marginRevalidate": "每 60 秒重新驗證"
+    },
+    "featured": {
+      "title": "精選專案",
+      "subtitle": "精心挑選,正在募資中。",
+      "viewAll": "查看全部"
+    }
+  },
+  "footer": {
+    "homeAria": "Pandabox 首頁",
+    "blurb": "建構於 Sui 的可程式化募資平台。鏈上原生,預設開放。",
+    "navigate": "瀏覽",
+    "ecosystem": "生態系",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "技術資訊",
+    "movePackage": "Move 套件",
+    "network": "網路",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · 主網版本"
+  },
+  "explore": {
+    "title": "探索",
+    "headline": "正在募資中。",
+    "subtitle": "Pandabox 上每一個進行中的代幣銷售,皆直接讀取自 Sui 主網套件 — 中間沒有任何索引器。",
+    "liveCount": "{count} 個進行中",
+    "totalCount": "共 {count} 個",
+    "cachedHint": "快取 60 秒",
+    "all": "全部",
+    "live": "進行中",
+    "ended": "已結束",
+    "idle": "閒置",
+    "verified": "已驗證",
+    "legacy": "舊版",
+    "legacyHint": "部署於 9 位小數縮放修正之前 — 數據不可靠。",
+    "filterByCategory": "依分類篩選",
+    "sortLabel": "排序",
+    "searchLabel": "搜尋",
+    "sort": {
+      "trending": "熱門",
+      "newest": "最新",
+      "mostFunded": "募資最多",
+      "endingSoonest": "即將結束"
+    },
+    "searchPlaceholder": "搜尋專案",
+    "searchAria": "搜尋專案",
+    "sortAria": "排序專案",
+    "loadMore": "載入更多",
+    "empty": "尚無符合篩選條件的專案。",
+    "emptyTitle": "沒有符合的項目",
+    "resetFilters": "重設篩選",
+    "byCreator": "由 {addr} 發起",
+    "endsNow": "結束於 ",
+    "endedAt": "已結束於 ",
+    "unnamed": "未命名專案",
+    "viewProject": "檢視 {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "迷因",
+      "art": "藝術",
+      "infra": "基礎設施",
+      "dao": "DAO",
+      "research": "研究",
+      "gaming": "遊戲",
+      "music": "音樂",
+      "social": "社群",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "已募集",
+      "supporters": "支持者"
+    },
+    "hero": {
+      "raised": "已募集",
+      "supporters": "支持者",
+      "heldBy": "持有者",
+      "backThis": "支持此專案"
+    },
+    "status": {
+      "live": "進行中",
+      "paused": "已暫停",
+      "closed": "已結束"
+    }
+  },
+  "pay": {
+    "heading": "支持此專案",
+    "youReceive": "您將獲得",
+    "remainingHint": "剩餘可鑄造 {amount},超出部分將自動退還。",
+    "memo": "備註(選填)",
+    "memoPlaceholder": "將與付款一同記錄於鏈上",
+    "enterAmount": "請輸入金額",
+    "payAmount": "支付 {amount} SUI",
+    "shareOfSupply": "佔總供應量比例",
+    "remainingMintable": "剩餘可鑄造",
+    "unsold": "未售出",
+    "unsoldBurn": "銷毀",
+    "unsoldTransfer": "轉移給創建者",
+    "inspectorTitle": "交易檢視器",
+    "inspectorPreview": "簽署前預覽。您的錢包將為此 Move 呼叫請求簽章。",
+    "inspectorNotDeployed": "Move 套件尚未部署 — 在設定 NEXT_PUBLIC_PACKAGE_ID 之前,提交將以本機模擬執行。",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + 退款 coin → 發送者"
+    },
+    "cancel": "取消",
+    "signSubmit": "簽署並送出",
+    "signing": "簽署中…",
+    "confirmed": "付款已確認",
+    "backToProject": "返回專案",
+    "connectFirst": "請先連接錢包以進行贊助。",
+    "txFailed": "交易失敗。"
+  }
+}

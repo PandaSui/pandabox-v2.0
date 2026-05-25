@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — Финансируйте то, что достойно финансирования. На Sui.",
+    "description": "Программируемая платформа запуска финансирования на Sui. Запустите проект, задайте курс, проведите ончейн-продажу — каждый параметр, каждая транзакция в блокчейне.",
+    "ogImageAlt": "Pandabox — программируемая платформа запуска финансирования для Sui.",
+    "notFound": {
+      "title": "404 · Страница не найдена",
+      "description": "На этом маршруте нет сигнала."
+    }
+  },
+  "common": {
+    "skipToContent": "Перейти к содержимому",
+    "language": "Язык"
+  },
+  "nav": {
+    "homeAria": "Главная Pandabox",
+    "primaryAria": "Основная",
+    "mobileAria": "Мобильная",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "links": {
+      "explore": "Обзор",
+      "create": "Создать",
+      "dashboard": "Панель",
+      "docs": "Документация",
+      "admin": "Админ"
+    }
+  },
+  "wallet": {
+    "connect": "Подключить кошелёк",
+    "pickerTitle": "Подключите кошелёк Sui",
+    "pickerDescription": "Выберите кошелёк для входа. Мы не храним ваши средства — ваши ключи остаются в вашем кошельке.",
+    "noWallets": "В этом браузере не обнаружено кошельков Sui.",
+    "installSuiWallet": "Установить Sui Wallet →",
+    "walletStandard": "Стандарт кошелька Sui",
+    "connectError": "Не удалось подключиться.",
+    "fallbackName": "Кошелёк",
+    "balanceLabel": "Баланс",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Копировать адрес",
+    "copied": "СКОПИРОВАНО",
+    "viewOnSuiscan": "Посмотреть в Suiscan",
+    "disconnect": "Отключить"
+  },
+  "pulse": {
+    "totalRaised": "Всего собрано на Pandabox",
+    "mostRecent": "Самое последнее",
+    "flatlinedAria": "Пульс казны — прямая линия",
+    "flatlinedCaption": "На этом маршруте нет платёжных событий. Pandabox не может отобразить пульс для несуществующей страницы."
+  },
+  "notFound": {
+    "eyebrow": "404 · МАРШРУТ НЕ НАЙДЕН",
+    "rowStatus": "СТАТУС",
+    "rowStatusValue": "НЕ НАЙДЕНО",
+    "rowSignal": "СИГНАЛ",
+    "rowCycle": "ЦИКЛ",
+    "headline": "На этом маршруте нет сигнала.",
+    "body": "Pandabox не смог найти то, что вы искали. Либо URL сместился между циклами, либо эта страница изначально не существовала в блокчейне. Выберите один из активных маршрутов ниже — все они передают сигнал.",
+    "ctaExplore": "Обзор проектов",
+    "ctaLaunch": "Запустить проект",
+    "ctaDocs": "Читать документацию",
+    "backHome": "назад на pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "В эфире на Sui {network}",
+      "titleFund": "Финансируйте то,",
+      "titleWorth": "что достойно",
+      "titleFunding": "финансирования.",
+      "titleOnSui": "На Sui",
+      "tagline": "Pandabox — это программируемая платформа финансирования для Sui. Запустите проект за считанные минуты. Принимайте SUI, выпускайте токены, задавайте выплаты — всё в блокчейне, прозрачно и принадлежит вам.",
+      "ctaLaunch": "Запустить проект",
+      "ctaExplore": "Обзор проектов",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "№ 04 · финал",
+      "marginSpec": "спецификация проекта — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Запускайте",
+      "titleYourProject": "Ваш проект,",
+      "titleOnchain": "в блокчейне",
+      "titleInMinutes": "за 3 минуты.",
+      "subhead": "Настройте циклы, выплаты и токены. Подпишите одну транзакцию Sui. AdminCap остаётся у вас.",
+      "ctaLaunch": "Запустить проект",
+      "ctaDocs": "Читать документацию",
+      "tileSign": "Подпись",
+      "tileSignValue": "1 транзакция",
+      "tileGas": "Газ",
+      "tileGasValue": "< $0,001",
+      "tileSetup": "Настройка",
+      "tileSetupValue": "6 шагов",
+      "tileKeys": "Ключи",
+      "tileKeysValue": "AdminCap у вас",
+      "marginLive": "pandabox.sui · в эфире",
+      "marginRevalidate": "обновление 60с"
+    },
+    "featured": {
+      "title": "Избранные проекты",
+      "subtitle": "Отобранные вручную, сейчас собирают средства.",
+      "viewAll": "Смотреть все"
+    }
+  },
+  "footer": {
+    "homeAria": "Главная Pandabox",
+    "blurb": "Программируемая платформа финансирования для Sui. Построена в блокчейне, открыта по умолчанию.",
+    "navigate": "Навигация",
+    "ecosystem": "Экосистема",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Технически",
+    "movePackage": "Пакет Move",
+    "network": "Сеть",
+    "commit": "Коммит",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · сборка Mainnet"
+  },
+  "explore": {
+    "title": "Обзор",
+    "headline": "Финансируется прямо сейчас.",
+    "subtitle": "Все активные продажи токенов на Pandabox, считанные напрямую из пакета Sui mainnet — без индексатора-посредника.",
+    "liveCount": "{count} в эфире",
+    "totalCount": "{count} всего",
+    "cachedHint": "кэш 60с",
+    "all": "Все",
+    "live": "В эфире",
+    "ended": "Завершено",
+    "idle": "ожидание",
+    "verified": "проверено",
+    "legacy": "устаревший",
+    "legacyHint": "Развёрнут до исправления масштабирования с 9 знаками — числа ненадёжны.",
+    "filterByCategory": "Фильтр по категории",
+    "sortLabel": "Сортировка",
+    "searchLabel": "Поиск",
+    "sort": {
+      "trending": "В тренде",
+      "newest": "Новые",
+      "mostFunded": "Самые финансируемые",
+      "endingSoonest": "Скоро завершаются"
+    },
+    "searchPlaceholder": "поиск проектов",
+    "searchAria": "Поиск проектов",
+    "sortAria": "Сортировка проектов",
+    "loadMore": "Загрузить ещё",
+    "empty": "Под эти фильтры пока нет проектов.",
+    "emptyTitle": "Ничего не найдено",
+    "resetFilters": "Сбросить фильтры",
+    "byCreator": "от {addr}",
+    "endsNow": "завершается ",
+    "endedAt": "завершён ",
+    "unnamed": "Безымянный проект",
+    "viewProject": "Посмотреть {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Мемы",
+      "art": "Искусство",
+      "infra": "Инфраструктура",
+      "dao": "DAO",
+      "research": "Исследования",
+      "gaming": "Игры",
+      "music": "Музыка",
+      "social": "Социальные",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Собрано",
+      "supporters": "Поддержавших"
+    },
+    "hero": {
+      "raised": "Собрано",
+      "supporters": "Поддержавших",
+      "heldBy": "владельцев",
+      "backThis": "Поддержать проект"
+    },
+    "status": {
+      "live": "в эфире",
+      "paused": "приостановлен",
+      "closed": "закрыт"
+    }
+  },
+  "pay": {
+    "heading": "Поддержать проект",
+    "youReceive": "Вы получаете",
+    "remainingHint": "Доступно к выпуску {amount}, излишек возвращается автоматически.",
+    "memo": "Заметка (необязательно)",
+    "memoPlaceholder": "записывается в блокчейне вместе с вашим платежом",
+    "enterAmount": "Введите сумму",
+    "payAmount": "Оплатить {amount} SUI",
+    "shareOfSupply": "Доля от предложения",
+    "remainingMintable": "Осталось к выпуску",
+    "unsold": "Непроданные",
+    "unsoldBurn": "Сжечь",
+    "unsoldTransfer": "Передать создателю",
+    "inspectorTitle": "Инспектор транзакции",
+    "inspectorPreview": "Предпросмотр перед подписью. Ваш кошелёк запросит подпись для этого вызова Move.",
+    "inspectorNotDeployed": "Пакет Move ещё не развёрнут — отправка симулируется локально, пока не задан NEXT_PUBLIC_PACKAGE_ID.",
+    "inspector": {
+      "package": "пакет",
+      "module": "модуль",
+      "function": "функция",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "возвращает",
+      "returnsValue": "ContributionReceipt + монета возврата → отправителю"
+    },
+    "cancel": "Отмена",
+    "signSubmit": "Подписать и отправить",
+    "signing": "Подписание…",
+    "confirmed": "Платёж подтверждён",
+    "backToProject": "Назад к проекту",
+    "connectFirst": "Подключите кошелёк, чтобы внести вклад.",
+    "txFailed": "Транзакция не выполнена."
+  }
+}

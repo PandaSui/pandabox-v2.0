@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "title": "Pandabox — Danai yang layak didanai. Di Sui.",
+    "description": "Launchpad pendanaan yang dapat diprogram di Sui. Luncurkan proyek, tetapkan tarif, jalankan penjualan on-chain — setiap parameter, setiap transaksi, on-chain.",
+    "ogImageAlt": "Pandabox — launchpad pendanaan yang dapat diprogram untuk Sui.",
+    "notFound": {
+      "title": "404 · Tidak ditemukan",
+      "description": "Tidak ada sinyal di rute ini."
+    }
+  },
+  "common": {
+    "skipToContent": "Lewati ke konten",
+    "language": "Bahasa"
+  },
+  "nav": {
+    "homeAria": "Beranda Pandabox",
+    "primaryAria": "Utama",
+    "mobileAria": "Mobile",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu",
+    "links": {
+      "explore": "Jelajahi",
+      "create": "Buat",
+      "dashboard": "Dasbor",
+      "docs": "Dokumen",
+      "admin": "Admin"
+    }
+  },
+  "wallet": {
+    "connect": "Hubungkan dompet",
+    "pickerTitle": "Hubungkan dompet Sui",
+    "pickerDescription": "Pilih dompet untuk masuk. Kami tidak pernah menyimpan kustodi — kunci Anda tetap di dompet Anda.",
+    "noWallets": "Tidak ada dompet Sui yang terdeteksi di peramban ini.",
+    "installSuiWallet": "Pasang Sui Wallet →",
+    "walletStandard": "Standar dompet Sui",
+    "connectError": "Tidak dapat terhubung.",
+    "fallbackName": "Dompet",
+    "balanceLabel": "Saldo",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Salin alamat",
+    "copied": "TERSALIN",
+    "viewOnSuiscan": "Lihat di Suiscan",
+    "disconnect": "Putuskan"
+  },
+  "pulse": {
+    "totalRaised": "Total terkumpul di seluruh Pandabox",
+    "mostRecent": "Terbaru",
+    "flatlinedAria": "Treasury Pulse — datar",
+    "flatlinedCaption": "Tidak ada peristiwa pembayaran di rute ini. Pandabox tidak dapat menampilkan pulse untuk halaman yang tidak ada."
+  },
+  "notFound": {
+    "eyebrow": "404 · RUTE TIDAK DITEMUKAN",
+    "rowStatus": "STATUS",
+    "rowStatusValue": "TIDAK DITEMUKAN",
+    "rowSignal": "SINYAL",
+    "rowCycle": "SIKLUS",
+    "headline": "Tidak ada sinyal di rute ini.",
+    "body": "Pandabox tidak dapat menemukan apa yang Anda cari. Entah URL bergeser antar siklus, atau halaman ini memang tidak pernah ada on-chain sejak awal. Pilih salah satu rute aktif di bawah ini — semuanya memberikan sinyal.",
+    "ctaExplore": "Jelajahi proyek",
+    "ctaLaunch": "Luncurkan proyek",
+    "ctaDocs": "Baca dokumen",
+    "backHome": "kembali ke pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Aktif di Sui {network}",
+      "titleFund": "Danai yang",
+      "titleWorth": "layak",
+      "titleFunding": "didanai.",
+      "titleOnSui": "Di Sui",
+      "tagline": "Pandabox adalah platform pendanaan yang dapat diprogram untuk Sui. Luncurkan proyek dalam hitungan menit. Terima SUI, terbitkan token, tentukan pembayaran — semuanya on-chain, semuanya transparan, semuanya milik Anda.",
+      "ctaLaunch": "Luncurkan proyek",
+      "ctaExplore": "Jelajahi proyek",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · final",
+      "marginSpec": "spesifikasi proyek — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Luncurkan",
+      "titleYourProject": "Proyek Anda,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "dalam 3 menit.",
+      "subhead": "Konfigurasikan siklus, pembayaran, dan token. Tanda tangani satu transaksi Sui. Anda memegang admin cap.",
+      "ctaLaunch": "Luncurkan proyek",
+      "ctaDocs": "Baca dokumen",
+      "tileSign": "Tanda tangan",
+      "tileSignValue": "1 transaksi",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0,001",
+      "tileSetup": "Pengaturan",
+      "tileSetupValue": "6 langkah",
+      "tileKeys": "Kunci",
+      "tileKeysValue": "AdminCap milik Anda",
+      "marginLive": "pandabox.sui · aktif",
+      "marginRevalidate": "validasi ulang 60d"
+    },
+    "featured": {
+      "title": "Proyek unggulan",
+      "subtitle": "Pilihan tangan, sedang menggalang dana.",
+      "viewAll": "Lihat semua"
+    }
+  },
+  "footer": {
+    "homeAria": "Beranda Pandabox",
+    "blurb": "Platform pendanaan yang dapat diprogram untuk Sui. Dibangun on-chain, terbuka secara default.",
+    "navigate": "Navigasi",
+    "ecosystem": "Ekosistem",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Teknis",
+    "movePackage": "Paket Move",
+    "network": "Jaringan",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Build Mainnet"
+  },
+  "explore": {
+    "title": "Jelajahi",
+    "headline": "Sedang didanai sekarang.",
+    "subtitle": "Setiap penjualan token aktif di Pandabox, dibaca langsung dari paket Sui mainnet — tanpa indexer di tengahnya.",
+    "liveCount": "{count} aktif",
+    "totalCount": "{count} total",
+    "cachedHint": "cache 60d",
+    "all": "Semua",
+    "live": "Aktif",
+    "ended": "Selesai",
+    "idle": "menganggur",
+    "verified": "terverifikasi",
+    "legacy": "lawas",
+    "legacyHint": "Di-deploy sebelum perbaikan penskalaan 9-desimal — angka tidak dapat diandalkan.",
+    "filterByCategory": "Filter berdasarkan kategori",
+    "sortLabel": "Urutkan",
+    "searchLabel": "Cari",
+    "sort": {
+      "trending": "Tren",
+      "newest": "Terbaru",
+      "mostFunded": "Paling banyak didanai",
+      "endingSoonest": "Segera berakhir"
+    },
+    "searchPlaceholder": "cari proyek",
+    "searchAria": "Cari proyek",
+    "sortAria": "Urutkan proyek",
+    "loadMore": "Muat lebih banyak",
+    "empty": "Belum ada proyek yang cocok dengan filter ini.",
+    "emptyTitle": "Tidak ada yang cocok",
+    "resetFilters": "Atur ulang filter",
+    "byCreator": "oleh {addr}",
+    "endsNow": "berakhir ",
+    "endedAt": "berakhir ",
+    "unnamed": "Proyek tanpa nama",
+    "viewProject": "Lihat {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Seni",
+      "infra": "Infra",
+      "dao": "DAO",
+      "research": "Riset",
+      "gaming": "Gaming",
+      "music": "Musik",
+      "social": "Sosial",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Terkumpul",
+      "supporters": "Pendukung"
+    },
+    "hero": {
+      "raised": "Terkumpul",
+      "supporters": "Pendukung",
+      "heldBy": "dipegang oleh",
+      "backThis": "Dukung proyek ini"
+    },
+    "status": {
+      "live": "aktif",
+      "paused": "dijeda",
+      "closed": "ditutup"
+    }
+  },
+  "pay": {
+    "heading": "Dukung proyek ini",
+    "youReceive": "Anda menerima",
+    "remainingHint": "Sisa yang dapat dicetak {amount}, kelebihan dikembalikan secara otomatis.",
+    "memo": "Memo (opsional)",
+    "memoPlaceholder": "dicatat on-chain bersama pembayaran Anda",
+    "enterAmount": "Masukkan jumlah",
+    "payAmount": "Bayar {amount} SUI",
+    "shareOfSupply": "Bagian dari pasokan",
+    "remainingMintable": "Sisa yang dapat dicetak",
+    "unsold": "Tidak terjual",
+    "unsoldBurn": "Bakar",
+    "unsoldTransfer": "Transfer ke kreator",
+    "inspectorTitle": "Inspektur transaksi",
+    "inspectorPreview": "Pratinjau sebelum tanda tangan. Dompet Anda akan meminta tanda tangan untuk panggilan Move ini.",
+    "inspectorNotDeployed": "Paket Move belum di-deploy — pengiriman disimulasikan secara lokal sampai NEXT_PUBLIC_PACKAGE_ID ditetapkan.",
+    "inspector": {
+      "package": "paket",
+      "module": "modul",
+      "function": "fungsi",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "mengembalikan",
+      "returnsValue": "ContributionReceipt + koin refund → pengirim"
+    },
+    "cancel": "Batal",
+    "signSubmit": "Tanda tangan & kirim",
+    "signing": "Menandatangani…",
+    "confirmed": "Pembayaran dikonfirmasi",
+    "backToProject": "Kembali ke proyek",
+    "connectFirst": "Hubungkan dompet untuk berkontribusi.",
+    "txFailed": "Transaksi gagal."
+  }
+}
