@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { Address } from "@/components/identity/address";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -9,56 +12,57 @@ const PACKAGE_ID =
 const COMMIT_HASH = process.env.NEXT_PUBLIC_COMMIT_HASH || "dev";
 
 export function Footer({ className }: { className?: string }) {
+  const t = useTranslations("footer");
+  const tNav = useTranslations("nav.links");
   return (
     <footer className={cn("border-t border-ink/15", className)}>
       <div className="container grid grid-cols-1 gap-10 py-14 md:grid-cols-3">
         <div>
           <Link
             href="/"
-            aria-label="Pandabox home"
+            aria-label={t("homeAria")}
             className="inline-flex items-center gap-2"
           >
             <PandaMark className="h-6 w-6" />
             <span className="font-mono-label">Pandabox</span>
           </Link>
           <p className="mt-3 max-w-xs text-sm text-ink/60">
-            The programmable funding platform for Sui. Built on-chain, open by
-            default.
+            {t("blurb")}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-10">
-          <Column heading="Navigate">
-            <FooterLink href="/explore">Explore</FooterLink>
-            <FooterLink href="/create">Create</FooterLink>
-            <FooterLink href="/dashboard">Dashboard</FooterLink>
-            <FooterLink href="/docs">Docs</FooterLink>
+          <Column heading={t("navigate")}>
+            <FooterLink href="/explore">{tNav("explore")}</FooterLink>
+            <FooterLink href="/create">{tNav("create")}</FooterLink>
+            <FooterLink href="/dashboard">{tNav("dashboard")}</FooterLink>
+            <FooterLink href="/docs">{tNav("docs")}</FooterLink>
           </Column>
-          <Column heading="Ecosystem">
+          <Column heading={t("ecosystem")}>
             <FooterLink href="https://suiscan.xyz" external>
-              Sui Explorer
+              {t("ecoSuiExplorer")}
             </FooterLink>
             <FooterLink href="https://sui.io" external>
-              Sui Network
+              {t("ecoSuiNetwork")}
             </FooterLink>
             <FooterLink href="https://x.com/0xPandaSui" external>
-              Twitter
+              {t("ecoTwitter")}
             </FooterLink>
           </Column>
         </div>
 
-        <Column heading="Technical">
+        <Column heading={t("technical")}>
           <div className="space-y-2 text-sm">
-            <Row label="Move package">
+            <Row label={t("movePackage")}>
               <Address value={PACKAGE_ID} link />
             </Row>
-            <Row label="Network">
+            <Row label={t("network")}>
               <span className="font-mono text-xs">
                 {process.env.NEXT_PUBLIC_SUI_NETWORK || "mainnet"}
               </span>
             </Row>
-            <Row label="Commit">
-              <span className="font-mono text-xs"></span>
+            <Row label={t("commit")}>
+              <span className="font-mono text-xs">{COMMIT_HASH}</span>
             </Row>
           </div>
         </Column>
@@ -66,8 +70,8 @@ export function Footer({ className }: { className?: string }) {
 
       <div className="border-t border-ink/15">
         <div className="container flex items-center justify-between py-4 text-xs text-ink/50">
-          <span className="font-mono-label">© Pandabox</span>
-          <span className="font-mono-label">v2 · Mainnet build</span>
+          <span className="font-mono-label">{t("copyright")}</span>
+          <span className="font-mono-label">{t("buildTag")}</span>
         </div>
       </div>
     </footer>

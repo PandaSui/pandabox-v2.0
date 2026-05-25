@@ -60,5 +60,127 @@
     "ctaLaunch": "Launch a project",
     "ctaDocs": "Read the docs",
     "backHome": "back to pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Live on Sui {network}",
+      "titleFund": "Fund what's",
+      "titleWorth": "worth",
+      "titleFunding": "funding.",
+      "titleOnSui": "On Sui",
+      "tagline": "Pandabox is the programmable funding platform for Sui. Launch a project in minutes. Receive SUI, issue tokens, define payouts — all on-chain, all transparent, all yours.",
+      "ctaLaunch": "Launch a project",
+      "ctaExplore": "Explore projects",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · final",
+      "marginSpec": "project spec — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Ship it",
+      "titleYourProject": "Your project,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "in 3 minutes.",
+      "subhead": "Configure cycles, payouts, and tokens. Sign one Sui transaction. You hold the admin cap.",
+      "ctaLaunch": "Launch a project",
+      "ctaDocs": "Read the docs",
+      "tileSign": "Sign",
+      "tileSignValue": "1 transaction",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Setup",
+      "tileSetupValue": "6 steps",
+      "tileKeys": "Keys",
+      "tileKeysValue": "AdminCap yours",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "revalidates 60s"
+    },
+    "featured": {
+      "title": "Featured projects",
+      "subtitle": "Hand-picked, currently raising.",
+      "viewAll": "View all"
+    }
+  },
+  "footer": {
+    "homeAria": "Pandabox home",
+    "blurb": "The programmable funding platform for Sui. Built on-chain, open by default.",
+    "navigate": "Navigate",
+    "ecosystem": "Ecosystem",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Technical",
+    "movePackage": "Move package",
+    "network": "Network",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Mainnet build"
+  },
+  "explore": {
+    "title": "Explore",
+    "headline": "Funded right now.",
+    "subtitle": "Every active token sale on Pandabox, read directly from the Sui mainnet package — no indexer in between.",
+    "liveCount": "{count} live",
+    "totalCount": "{count} total",
+    "cachedHint": "cached 60s",
+    "all": "All",
+    "live": "Live",
+    "ended": "Ended",
+    "idle": "idle",
+    "verified": "verified",
+    "legacy": "legacy",
+    "legacyHint": "Deployed before 9-decimal scaling fix — numbers are unreliable.",
+    "filterByCategory": "Filter by category",
+    "sortLabel": "Sort",
+    "searchLabel": "Search",
+    "sort": {
+      "trending": "Trending",
+      "newest": "Newest",
+      "mostFunded": "Most funded",
+      "endingSoonest": "Ending soonest"
+    },
+    "searchPlaceholder": "search projects",
+    "searchAria": "Search projects",
+    "sortAria": "Sort projects",
+    "loadMore": "Load more",
+    "empty": "No projects match these filters yet.",
+    "emptyTitle": "Nothing matches",
+    "resetFilters": "Reset filters",
+    "byCreator": "by {addr}",
+    "endsNow": "ends ",
+    "endedAt": "ended ",
+    "unnamed": "Unnamed project",
+    "viewProject": "View {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Art",
+      "infra": "Infra",
+      "dao": "DAO",
+      "research": "Research",
+      "gaming": "Gaming",
+      "music": "Music",
+      "social": "Social",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Raised",
+      "supporters": "Supporters"
+    },
+    "hero": {
+      "raised": "Raised",
+      "supporters": "Supporters",
+      "heldBy": "held by",
+      "backThis": "Back this project"
+    },
+    "status": {
+      "live": "live",
+      "paused": "paused",
+      "closed": "closed"
+    }
   }
 }

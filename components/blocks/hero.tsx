@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
@@ -38,6 +39,7 @@ export type HeroProps = {
 
 export function Hero({ stats, packageId, network }: HeroProps) {
   const scope = useRef<HTMLDivElement>(null);
+  const t = useTranslations("home.hero");
 
   useGSAP(
     () => {
@@ -106,7 +108,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
                 style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
               />
               <MonoLabel className="text-[10px]">
-                Live on Sui {network}
+                {t("live", { network })}
               </MonoLabel>
             </span>
           </div>
@@ -117,16 +119,16 @@ export function Hero({ stats, packageId, network }: HeroProps) {
               "text-5xl sm:text-6xl md:text-7xl xl:text-[6.5rem]",
             )}
           >
-            {renderWords("Fund what's")}{" "}
+            {renderWords(t("titleFund"))}{" "}
             <Marker color="saffron">
               <span data-hero-word className="inline-block opacity-0">
-                worth
+                {t("titleWorth")}
               </span>
             </Marker>{" "}
-            {renderWords("funding.")}
+            {renderWords(t("titleFunding"))}
             <br className="hidden sm:block" />
             <span className="inline-flex items-baseline gap-3">
-              {renderWords("On Sui")}
+              {renderWords(t("titleOnSui"))}
               <SerifPunctuator />
             </span>
           </h1>
@@ -135,9 +137,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
             data-hero-fade
             className="mt-7 max-w-[48ch] text-base text-ink/70 opacity-0 md:text-lg"
           >
-            Pandabox is the programmable funding platform for Sui. Launch a
-            project in minutes. Receive SUI, issue tokens, define payouts — all
-            on-chain, all transparent, all yours.
+            {t("tagline")}
           </p>
 
           <div
@@ -145,13 +145,13 @@ export function Hero({ stats, packageId, network }: HeroProps) {
             className="mt-8 flex flex-wrap items-center gap-3 opacity-0"
           >
             <Link href="/create" className={cn(CTA_BASE, CTA_INK)}>
-              <span>Launch a project</span>
+              <span>{t("ctaLaunch")}</span>
               <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
                 <ArrowDiag size={14} />
               </span>
             </Link>
             <Link href="/explore" className={cn(CTA_BASE, CTA_SECONDARY)}>
-              <span>Explore projects</span>
+              <span>{t("ctaExplore")}</span>
               <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
                 <ArrowDiag size={14} />
               </span>
@@ -165,14 +165,14 @@ export function Hero({ stats, packageId, network }: HeroProps) {
           >
             <span className="inline-flex items-center gap-1.5">
               <span className="block h-1 w-1 rounded-full bg-ink/40" />
-              v1 · pandabox
+              {t("specVersion")}
             </span>
             <span className="text-ink/20">·</span>
-            <span>sui {network}</span>
+            <span>{t("specNetwork", { network })}</span>
             <span className="text-ink/20">·</span>
             <span className="inline-flex items-center gap-2 normal-case tracking-normal">
               <span className="text-[10px] uppercase tracking-[0.14em]">
-                pkg
+                {t("specPkg")}
               </span>
               <Address
                 value={packageId}
