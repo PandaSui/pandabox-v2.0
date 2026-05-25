@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { useWizard } from "@/lib/store/wizard";
@@ -31,6 +31,52 @@ export function StepSaleForm() {
   const tokensPerSui = sale.tokensPerSui ?? "";
   const allocation = sale.allocationTokens ?? "";
 
+  // Bidirectional editing for `tokens per SUI` ↔ `target raise`.
+  // Tracking which side the user touched last lets us decide which value
+  // is authoritative when the other (or `allocation`) changes.
+  const [lastEdited, setLastEdited] = useState<"rate" | "raise">("rate");
+  const [raiseInput, setRaiseInput] = useState<string>(() => {
+    const r = safeBN(tokensPerSui);
+    const a = safeBN(allocation);
+    if (r.isZero() || a.isZero()) return "";
+    return a.dividedBy(r).toFixed(4, BigNumber.ROUND_DOWN);
+  });
+  // Guard the effect against syncing back the value we just wrote.
+  const skipNextSync = useRef(false);
+
+  // When the rate side is authoritative, mirror raise from rate × allocation.
+  useEffect(() => {
+    if (lastEdited !== "rate") return;
+    if (skipNextSync.current) {
+      skipNextSync.current = false;
+      return;
+    }
+    const r = safeBN(tokensPerSui);
+    const a = safeBN(allocation);
+    if (r.isZero() || a.isZero()) {
+      setRaiseInput("");
+      return;
+    }
+    setRaiseInput(a.dividedBy(r).toFixed(4, BigNumber.ROUND_DOWN));
+  }, [tokensPerSui, allocation, lastEdited]);
+
+  // When the raise side is authoritative and allocation changes, recompute
+  // rate so the raise input the user typed stays put.
+  useEffect(() => {
+    if (lastEdited !== "raise") return;
+    const raise = safeBN(raiseInput);
+    const a = safeBN(allocation);
+    if (raise.isZero() || a.isZero()) return;
+    const newRate = a.dividedBy(raise).toFixed(6, BigNumber.ROUND_DOWN);
+    if (newRate !== tokensPerSui) {
+      skipNextSync.current = true;
+      patch({ tokensPerSui: newRate });
+    }
+    // We deliberately omit `tokensPerSui` and `patch` from deps — we only
+    // want to react to allocation changes here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allocation, lastEdited, raiseInput]);
+
   // Live derived figures.
   const baseRateScaled = useMemo(() => {
     const v = safeBN(tokensPerSui);
@@ -41,13 +87,6 @@ export function StepSaleForm() {
     const v = safeBN(allocation);
     return v.multipliedBy(new BigNumber(10).pow(PROJECT_COIN_DECIMALS));
   }, [allocation]);
-
-  const targetSuiRaise = useMemo(() => {
-    const r = safeBN(tokensPerSui);
-    const a = safeBN(allocation);
-    if (r.isZero()) return null;
-    return a.dividedBy(r);
-  }, [tokensPerSui, allocation]);
 
   const now = Date.now();
   const endMs = sale.endTimeMs ?? null;
@@ -63,26 +102,50 @@ export function StepSaleForm() {
         meta="immutable on deploy"
       />
 
-      <StepCard
-        title="Issuance"
-        meta="tokens per 1 SUI"
-      >
-        <Field
-          label="Tokens per SUI"
-          hint={`How many ${ticker} a supporter receives for each 1 SUI contributed.`}
-          error={errors.tokensPerSui}
-        >
-          {(id) => (
-            <TextField
-              id={id}
-              value={tokensPerSui}
-              onChange={(v) =>
-                patch({ tokensPerSui: v.replace(/[^0-9.]/g, "") })
-              }
-              placeholder="100"
-            />
-          )}
-        </Field>
+      <StepCard title="Pricing" meta="tokens ↔ SUI">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Field
+            label="Tokens per SUI"
+            hint={`How many ${ticker} a supporter receives for each 1 SUI.`}
+            error={errors.tokensPerSui}
+          >
+            {(id) => (
+              <TextField
+                id={id}
+                value={tokensPerSui}
+                onChange={(v) => {
+                  setLastEdited("rate");
+                  patch({ tokensPerSui: v.replace(/[^0-9.]/g, "") });
+                }}
+                placeholder="100"
+              />
+            )}
+          </Field>
+          <Field
+            label="Target raise (SUI)"
+            hint="Editing this back-calculates Tokens per SUI."
+          >
+            {(id) => (
+              <TextField
+                id={id}
+                value={raiseInput}
+                onChange={(v) => {
+                  const clean = v.replace(/[^0-9.]/g, "");
+                  setLastEdited("raise");
+                  setRaiseInput(clean);
+                  const raise = safeBN(clean);
+                  const a = safeBN(allocation);
+                  if (raise.isZero() || a.isZero()) return;
+                  skipNextSync.current = true;
+                  patch({
+                    tokensPerSui: a.dividedBy(raise).toFixed(6, BigNumber.ROUND_DOWN),
+                  });
+                }}
+                placeholder="10000"
+              />
+            )}
+          </Field>
+        </div>
         <DerivedRow
           label="base_rate (scaled, on-chain)"
           value={baseRateScaled.isFinite() ? baseRateScaled.toFixed(0) : "—"}
@@ -111,14 +174,6 @@ export function StepSaleForm() {
             label="funding_allocation (raw u64)"
             value={
               allocationScaled.isFinite() ? allocationScaled.toFixed(0) : "—"
-            }
-          />
-          <DerivedRow
-            label="Target raise"
-            value={
-              targetSuiRaise && targetSuiRaise.isFinite()
-                ? `${targetSuiRaise.toFormat(2, BigNumber.ROUND_DOWN)} SUI`
-                : "—"
             }
           />
           <DerivedRow
@@ -279,4 +334,3 @@ function parseErrors(sale: Partial<SaleV>) {
   }
   return out;
 }
-
