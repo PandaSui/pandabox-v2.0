@@ -90,6 +90,7 @@ export function RedeemCreateWizard() {
   const t = useTranslations("redeem.create.hydration");
 
   const [deploy, setDeploy] = useState<DeployState>({ kind: "idle" });
+  const [resetOpen, setResetOpen] = useState(false);
   const stepperLocked = deploy.kind === "submitting" || deploy.kind === "confirming";
 
   if (!hydrated) {
@@ -122,7 +123,11 @@ export function RedeemCreateWizard() {
   return (
     <section className="relative">
       <Container className="py-10 lg:py-14">
-        <StepNav current={step} onChange={(n) => !stepperLocked && setStep(n)} />
+        <StepNav
+          current={step}
+          onChange={(n) => !stepperLocked && setStep(n)}
+          onReset={stepperLocked ? undefined : () => setResetOpen(true)}
+        />
 
         <div className="mt-10">
           {step === 1 && <StepCoin />}
@@ -132,6 +137,16 @@ export function RedeemCreateWizard() {
           {step === 5 && <StepReview deploy={deploy} onDeploy={setDeploy} />}
         </div>
       </Container>
+
+      <ResetConfirmModal
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+        onConfirm={() => {
+          reset();
+          setDeploy({ kind: "idle" });
+          setResetOpen(false);
+        }}
+      />
     </section>
   );
 }
@@ -141,9 +156,11 @@ export function RedeemCreateWizard() {
 function StepNav({
   current,
   onChange,
+  onReset,
 }: {
   current: number;
   onChange: (n: number) => void;
+  onReset?: () => void;
 }) {
   const t = useTranslations("redeem.create.nav");
   return (
@@ -184,7 +201,130 @@ function StepNav({
           </button>
         );
       })}
+      {onReset && (
+        <button
+          type="button"
+          onClick={onReset}
+          className={cn(
+            "ml-auto group relative inline-flex items-center justify-center gap-1.5",
+            "h-8 px-3 border border-ink/25 bg-bone",
+            "font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/70",
+            "shadow-offset-sm transition-all duration-300 ease-atelier",
+            "hover:-translate-x-[1px] hover:-translate-y-[1px] hover:border-poppy hover:text-poppy hover:shadow-offset",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-poppy",
+          )}
+        >
+          <span aria-hidden>↺</span>
+          <span>{t("reset")}</span>
+        </button>
+      )}
     </nav>
+  );
+}
+
+/* ───────────────────────── Reset confirm modal ───────────────────────── */
+
+/**
+ * Wizard-reset confirmation. Surfaced from the stepper's right-aligned
+ * reset button. Wipes the persisted draft + clears any in-flight deploy
+ * state, returning the wizard to step 1 with empty inputs. Destructive
+ * (poppy accent) because the draft can't be recovered after confirm.
+ *
+ * Self-contained: there's no shared modal primitive in the repo yet,
+ * so this owns its own backdrop, escape-key handling, and body-scroll
+ * lock. Promote to `components/primitives/modal.tsx` if a second caller
+ * appears.
+ */
+function ResetConfirmModal({
+  open,
+  onClose,
+  onConfirm,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const t = useTranslations("redeem.create.nav");
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reset-confirm-title"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4"
+    >
+      <button
+        type="button"
+        aria-label={t("resetCancel")}
+        onClick={onClose}
+        className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]"
+      />
+      <div className="relative w-full max-w-md border border-ink bg-bone shadow-offset">
+        <span aria-hidden className="block h-[3px] bg-poppy" />
+        <div className="px-6 py-6">
+          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy">
+            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+            {t("resetEyebrow")}
+          </div>
+          <h2
+            id="reset-confirm-title"
+            className="mt-2 font-display text-[1.5rem] leading-[1.05]"
+          >
+            {t("resetTitle")}
+          </h2>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink/70">
+            {t("resetBody")}
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-ink/10 pt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className={cn(
+                "inline-flex h-10 items-center justify-center px-4",
+                "font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/70",
+                "transition-colors hover:text-ink",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
+              )}
+            >
+              {t("resetCancel")}
+            </button>
+            <button
+              type="button"
+              onClick={onConfirm}
+              autoFocus
+              className={cn(
+                "inline-flex h-10 items-center justify-center gap-2 px-5",
+                "border border-poppy bg-poppy text-bone",
+                "font-mono text-[10.5px] uppercase tracking-[0.16em]",
+                "shadow-offset-sm transition-all duration-300 ease-atelier",
+                "hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-offset",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-poppy",
+              )}
+            >
+              <span aria-hidden>↺</span>
+              <span>{t("resetConfirmAction")}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -271,6 +411,7 @@ function StepCoin() {
   const client = useSuiClient();
   const t = useTranslations("redeem.create.coin");
   const tExisting = useTranslations("redeem.create.existingPool");
+  const tOwner = useTranslations("redeem.create.metadataOwner");
   const [typed, setTyped] = useState(draft.coin.type);
 
   // Live metadata lookup. Re-runs whenever the typed coin type changes.
@@ -295,6 +436,83 @@ function StepCoin() {
     timestampMs: number;
   } | null>(null);
   const [existingChecking, setExistingChecking] = useState(false);
+
+  // Resolve who owns the `CoinMetadata<T>` object. The redeem contract
+  // takes it by `&CoinMetadata<T>` — Sui's object-ownership rules mean
+  // an *owned* metadata object can only appear as a tx input when the
+  // signer is its owner. Most coins call `transfer::public_freeze_object`
+  // on the metadata after mint so anyone can reference it; some don't
+  // (e.g. coins deployed via certain launch tools). If the metadata is
+  // owned by another address, the wallet's dry-run fails with the opaque
+  // "transaction could not be processed" error — so we detect it here
+  // and surface a clear, actionable banner instead of letting the user
+  // walk through four more steps to hit a cryptic wallet failure.
+  type OwnershipState =
+    | { kind: "idle" }
+    | { kind: "checking" }
+    | { kind: "ok"; mode: "frozen" | "shared" | "self" }
+    | { kind: "blocked"; owner: string }
+    | { kind: "blocked-no-wallet" };
+  const [ownership, setOwnership] = useState<OwnershipState>({ kind: "idle" });
+  useEffect(() => {
+    if (!normalized || !metadata?.id) {
+      setOwnership({ kind: "idle" });
+      return;
+    }
+    if (!account?.address) {
+      // We can resolve the owner without a wallet, but until one is
+      // connected we don't know whether "owned by X" means "owned by you"
+      // or "owned by someone else" — surface a soft block that prompts
+      // a connect.
+      setOwnership({ kind: "blocked-no-wallet" });
+      return;
+    }
+    let cancelled = false;
+    setOwnership({ kind: "checking" });
+    client
+      .getObject({ id: metadata.id, options: { showOwner: true } })
+      .then((res) => {
+        if (cancelled) return;
+        const owner = res.data?.owner;
+        if (!owner) {
+          // No owner field — treat as a transient resolution failure
+          // rather than a hard block; the wallet dry-run will be the
+          // ultimate authority if the user proceeds.
+          setOwnership({ kind: "ok", mode: "frozen" });
+          return;
+        }
+        if (owner === "Immutable") {
+          setOwnership({ kind: "ok", mode: "frozen" });
+          return;
+        }
+        if (typeof owner === "object") {
+          if ("Shared" in owner) {
+            setOwnership({ kind: "ok", mode: "shared" });
+            return;
+          }
+          if ("AddressOwner" in owner) {
+            const ownerAddr = owner.AddressOwner;
+            if (ownerAddr === account.address) {
+              setOwnership({ kind: "ok", mode: "self" });
+            } else {
+              setOwnership({ kind: "blocked", owner: ownerAddr });
+            }
+            return;
+          }
+          if ("ObjectOwner" in owner) {
+            setOwnership({ kind: "blocked", owner: owner.ObjectOwner });
+            return;
+          }
+        }
+        setOwnership({ kind: "ok", mode: "frozen" });
+      })
+      .catch(() => {
+        if (!cancelled) setOwnership({ kind: "ok", mode: "frozen" });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [normalized, metadata?.id, account?.address, client]);
   useEffect(() => {
     if (!normalized || !metadata?.id) {
       setExistingPool(null);
@@ -347,9 +565,14 @@ function StepCoin() {
   const resolved =
     !!normalized && !!metadata && metadata.id ? metadata : null;
   // Existing pools for the same coin are allowed by the contract — we no
-  // longer block here, just inform. So the only requirements for Step 1
-  // are a resolved coin type + a known metadata object.
-  const canNext = !!resolved && !!draft.coin.metadataId;
+  // longer block here, just inform. So the requirements for Step 1 are:
+  // a resolved coin type, a known metadata object, AND a metadata object
+  // the connected wallet is actually allowed to reference. The wallet's
+  // dry-run rejects any tx that includes an owned-by-someone-else object
+  // as input, so without this gate the user would silently hit a generic
+  // wallet error at deploy time.
+  const ownershipOk = ownership.kind === "ok";
+  const canNext = !!resolved && !!draft.coin.metadataId && ownershipOk;
 
   return (
     <>
@@ -472,6 +695,64 @@ function StepCoin() {
         <div className="mt-6 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
           <Spinner size={11} className="text-ink/55" />
           {tExisting("checking")}
+        </div>
+      )}
+
+      {resolved && ownership.kind === "checking" && (
+        <div className="mt-6 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
+          <Spinner size={11} className="text-ink/55" />
+          {tOwner("checking")}
+        </div>
+      )}
+
+      {resolved && ownership.kind === "blocked" && (
+        <div className="mt-8 relative overflow-hidden border border-poppy/40 bg-poppy/[0.06]">
+          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-poppy" />
+          <div className="px-5 py-5 md:px-6">
+            <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-poppy">
+              <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+              {tOwner("eyebrow")}
+            </div>
+            <h3 className="mt-2 font-display text-[1.35rem] leading-[1.1]">
+              {tOwner("title")}
+            </h3>
+            <p className="mt-2 max-w-prose text-[13.5px] text-ink/70">
+              {tOwner("body")}
+            </p>
+            <dl className="mt-3 grid grid-cols-1 gap-y-1.5 font-mono text-[11px] text-ink/55 sm:grid-cols-2 sm:gap-x-4">
+              <div className="flex items-center gap-2">
+                <span className="uppercase tracking-[0.14em] text-ink/40">
+                  {tOwner("ownerLabel")}
+                </span>
+                <Address value={ownership.owner} />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="uppercase tracking-[0.14em] text-ink/40">
+                  {tOwner("youLabel")}
+                </span>
+                {account ? (
+                  <Address value={account.address} />
+                ) : (
+                  <span className="font-mono text-ink/45">—</span>
+                )}
+              </div>
+            </dl>
+            <p className="mt-4 max-w-prose font-mono text-[11px] leading-relaxed text-ink/55">
+              {tOwner("hint")}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {resolved && ownership.kind === "blocked-no-wallet" && (
+        <div className="mt-8 border border-sun/40 bg-sun/[0.08] px-5 py-4">
+          <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/85">
+            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-sun" />
+            {tOwner("connectEyebrow")}
+          </div>
+          <p className="mt-2 max-w-prose text-[13.5px] text-ink/70">
+            {tOwner("connectBody")}
+          </p>
         </div>
       )}
 
@@ -1121,20 +1402,23 @@ function StepReview({
         });
         return;
       }
-      const tx = buildCreatePoolTx({
+      const txArgs = {
         coinType: draft.coin.type,
         coinMetadataId: draft.coin.metadataId,
         initialDepositMist: reserveMist,
         priceMistPerToken,
         recipient: draft.recipient.address,
-      });
+      };
 
-      // Pre-flight devInspect — catches Move aborts (e.g. abort 101 for
-      // duplicate pool) and any argument-type errors before the wallet
-      // popups. The wallet's "transaction cannot be processed" message
-      // is too opaque to act on, so we surface specific reasons here.
+      // Pre-flight devInspect — catches Move aborts (e.g. abort 100 for
+      // zero price, 101 for zero-address recipient) and surfaces them as
+      // friendly copy. Build a dedicated Transaction for this: passing
+      // it to devInspect serializes it in kind-only mode and caches the
+      // bytes, after which the wallet's gas-bearing build fails with the
+      // opaque "transaction could not be processed" error.
+      const preflightTx = buildCreatePoolTx(txArgs);
       const preflight = await client.devInspectTransactionBlock({
-        transactionBlock: tx,
+        transactionBlock: preflightTx,
         sender: account.address,
       });
       if (preflight.effects.status.status === "failure") {
@@ -1147,6 +1431,7 @@ function StepReview({
         return;
       }
 
+      const tx = buildCreatePoolTx(txArgs);
       const result = await signAndExecute({ transaction: tx });
       onDeploy({ kind: "confirming", digest: result.digest });
 

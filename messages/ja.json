@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "リセット",
+        "resetEyebrow": "下書きをリセット",
+        "resetTitle": "最初からやり直しますか？",
+        "resetBody": "ウィザードの全項目と保存済みの下書きを消去します。元に戻せません。",
+        "resetCancel": "キャンセル",
+        "resetConfirmAction": "リセット"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "メタデータの所有権を確認しています…",
+        "eyebrow": "このコインではデプロイできません",
+        "title": "このコインのメタデータはあなたのウォレットから参照できません。",
+        "body": "Sui では `CoinMetadata` オブジェクトの所有者だけがトランザクション内で参照できます。このコインのメタデータは別のアドレスが所有しているため、ウォレットのドライランで拒否されます。",
+        "ownerLabel": "メタデータ所有者",
+        "youLabel": "あなたのウォレット",
+        "hint": "コインのデプロイヤーにメタデータを凍結（`0x2::transfer::public_freeze_object`）してもらうか、所有しているウォレットで接続してください。",
+        "connectEyebrow": "続行するにはウォレットを接続してください",
+        "connectBody": "コインのメタデータがあなたのウォレットから参照できるかどうかを確認するため、アドレスが必要です。"
       }
     }
   },

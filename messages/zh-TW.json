@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "重設",
+        "resetEyebrow": "重設草稿",
+        "resetTitle": "從頭開始嗎？",
+        "resetBody": "這會清除精靈中所有欄位以及已儲存的草稿。重設無法復原。",
+        "resetCancel": "取消",
+        "resetConfirmAction": "重設"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "正在檢查元資料所有權…",
+        "eyebrow": "無法使用此代幣部署",
+        "title": "此代幣的元資料無法從你的錢包引用。",
+        "body": "Sui 僅允許 `CoinMetadata` 物件的擁有者在交易中引用它。此代幣的元資料屬於另一個地址，因此錢包的模擬執行會拒絕你嘗試部署的任何池。",
+        "ownerLabel": "元資料擁有者",
+        "youLabel": "你的錢包",
+        "hint": "請部署該代幣的人凍結元資料（`0x2::transfer::public_freeze_object`），或改以擁有它的錢包連線。",
+        "connectEyebrow": "請連接錢包以繼續",
+        "connectBody": "我們需要你的地址，以確認代幣的元資料能否從你的錢包引用。"
       }
     }
   },

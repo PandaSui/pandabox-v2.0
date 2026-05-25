@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Đặt lại",
+        "resetEyebrow": "Đặt lại bản nháp",
+        "resetTitle": "Bắt đầu lại từ đầu?",
+        "resetBody": "Toàn bộ trường trong trình hướng dẫn và bản nháp đã lưu sẽ bị xóa. Không thể hoàn tác.",
+        "resetCancel": "Hủy",
+        "resetConfirmAction": "Đặt lại"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Đang kiểm tra quyền sở hữu metadata…",
+        "eyebrow": "Không thể triển khai với đồng coin này",
+        "title": "Metadata của đồng coin này không thể tham chiếu từ ví của bạn.",
+        "body": "Sui chỉ cho phép chủ sở hữu của đối tượng `CoinMetadata` tham chiếu nó trong giao dịch. Metadata của coin này thuộc về một địa chỉ khác, nên dry-run của ví sẽ từ chối mọi pool bạn cố tạo.",
+        "ownerLabel": "Chủ sở hữu metadata",
+        "youLabel": "Ví của bạn",
+        "hint": "Hãy yêu cầu người triển khai coin đóng băng metadata (`0x2::transfer::public_freeze_object`), hoặc kết nối ví đang sở hữu nó.",
+        "connectEyebrow": "Kết nối ví để tiếp tục",
+        "connectBody": "Chúng tôi cần địa chỉ của bạn để xác nhận metadata của coin có thể tham chiếu từ ví của bạn hay không."
       }
     }
   },

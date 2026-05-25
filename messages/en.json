@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Reset",
+        "resetEyebrow": "Reset draft",
+        "resetTitle": "Start over from scratch?",
+        "resetBody": "This clears every field in the wizard and your saved draft. The reset can't be undone.",
+        "resetCancel": "Cancel",
+        "resetConfirmAction": "Reset"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Checking metadata ownership…",
+        "eyebrow": "Can't deploy with this coin",
+        "title": "This coin's metadata isn't freezable from your wallet.",
+        "body": "Sui only lets the owner of a `CoinMetadata` object reference it in a transaction. This coin's metadata is owned by another address, so the wallet's dry-run will reject any pool you try to deploy with it.",
+        "ownerLabel": "Metadata owner",
+        "youLabel": "Your wallet",
+        "hint": "Ask the coin's deployer to freeze its metadata (`0x2::transfer::public_freeze_object`), or connect with the wallet that owns it.",
+        "connectEyebrow": "Connect a wallet to continue",
+        "connectBody": "We need to know your address before we can confirm whether the coin's metadata is referenceable from your wallet."
       }
     }
   },

@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Reimposta",
+        "resetEyebrow": "Reimposta bozza",
+        "resetTitle": "Ricominciare da zero?",
+        "resetBody": "Verranno cancellati tutti i campi della procedura e la tua bozza salvata. L'operazione non può essere annullata.",
+        "resetCancel": "Annulla",
+        "resetConfirmAction": "Reimposta"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Verifica della proprietà dei metadati…",
+        "eyebrow": "Non puoi distribuire con questa moneta",
+        "title": "I metadati di questa moneta non sono referenziabili dal tuo wallet.",
+        "body": "Sui consente solo al proprietario di un oggetto `CoinMetadata` di farvi riferimento in una transazione. I metadati di questa moneta appartengono a un altro indirizzo, quindi la simulazione del wallet rifiuterà qualsiasi pool tu provi a distribuire.",
+        "ownerLabel": "Proprietario dei metadati",
+        "youLabel": "Il tuo wallet",
+        "hint": "Chiedi a chi ha distribuito la moneta di congelarne i metadati (`0x2::transfer::public_freeze_object`), oppure connettiti con il wallet che li possiede.",
+        "connectEyebrow": "Collega un wallet per continuare",
+        "connectBody": "Ci serve il tuo indirizzo per verificare se i metadati della moneta sono referenziabili dal tuo wallet."
       }
     }
   },

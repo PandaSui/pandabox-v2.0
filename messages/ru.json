@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Сбросить",
+        "resetEyebrow": "Сбросить черновик",
+        "resetTitle": "Начать сначала?",
+        "resetBody": "Это очистит все поля мастера и сохранённый черновик. Сброс нельзя отменить.",
+        "resetCancel": "Отмена",
+        "resetConfirmAction": "Сбросить"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Проверка владельца метаданных…",
+        "eyebrow": "С этой монетой развернуть нельзя",
+        "title": "Метаданные этой монеты недоступны из вашего кошелька.",
+        "body": "Sui позволяет ссылаться на объект `CoinMetadata` в транзакции только его владельцу. Метаданные этой монеты принадлежат другому адресу, поэтому симуляция кошелька отклонит любой пул, который вы попытаетесь развернуть.",
+        "ownerLabel": "Владелец метаданных",
+        "youLabel": "Ваш кошелёк",
+        "hint": "Попросите автора монеты заморозить её метаданные (`0x2::transfer::public_freeze_object`) или подключите кошелёк-владелец.",
+        "connectEyebrow": "Подключите кошелёк, чтобы продолжить",
+        "connectBody": "Нам нужен ваш адрес, чтобы убедиться, что метаданные монеты доступны из вашего кошелька."
       }
     }
   },

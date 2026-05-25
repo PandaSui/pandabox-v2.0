@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Resetuj",
+        "resetEyebrow": "Zresetuj wersję roboczą",
+        "resetTitle": "Zacząć od nowa?",
+        "resetBody": "To wyczyści wszystkie pola kreatora oraz zapisaną wersję roboczą. Tej operacji nie można cofnąć.",
+        "resetCancel": "Anuluj",
+        "resetConfirmAction": "Resetuj"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Sprawdzanie własności metadanych…",
+        "eyebrow": "Nie można uruchomić puli z tą monetą",
+        "title": "Metadane tej monety nie są dostępne z Twojego portfela.",
+        "body": "Sui pozwala odwoływać się do obiektu `CoinMetadata` w transakcji wyłącznie jego właścicielowi. Metadane tej monety należą do innego adresu, więc symulacja portfela odrzuci każdą próbę utworzenia puli.",
+        "ownerLabel": "Właściciel metadanych",
+        "youLabel": "Twój portfel",
+        "hint": "Poproś wdrażającego monetę o zamrożenie jej metadanych (`0x2::transfer::public_freeze_object`) lub połącz portfel, który je posiada.",
+        "connectEyebrow": "Połącz portfel, aby kontynuować",
+        "connectBody": "Potrzebujemy Twojego adresu, aby sprawdzić, czy metadane monety są dostępne z Twojego portfela."
       }
     }
   },

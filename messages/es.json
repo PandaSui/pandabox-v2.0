@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Reiniciar",
+        "resetEyebrow": "Reiniciar borrador",
+        "resetTitle": "¿Empezar de cero?",
+        "resetBody": "Esto borra todos los campos del asistente y tu borrador guardado. El reinicio no se puede deshacer.",
+        "resetCancel": "Cancelar",
+        "resetConfirmAction": "Reiniciar"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Comprobando la propiedad de los metadatos…",
+        "eyebrow": "No se puede desplegar con esta moneda",
+        "title": "Los metadatos de esta moneda no son accesibles desde tu billetera.",
+        "body": "Sui solo permite al propietario de un objeto `CoinMetadata` referenciarlo en una transacción. Los metadatos de esta moneda pertenecen a otra dirección, por lo que la simulación de la billetera rechazará cualquier pool que intentes desplegar.",
+        "ownerLabel": "Propietario de los metadatos",
+        "youLabel": "Tu billetera",
+        "hint": "Pide al desplegador de la moneda que congele sus metadatos (`0x2::transfer::public_freeze_object`), o conéctate con la billetera que los posee.",
+        "connectEyebrow": "Conecta una billetera para continuar",
+        "connectBody": "Necesitamos tu dirección para confirmar si los metadatos de la moneda son referenciables desde tu billetera."
       }
     }
   },

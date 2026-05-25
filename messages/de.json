@@ -488,7 +488,13 @@
         "recipient": "Empfänger",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Schritt {n} von 05"
+        "stepOf": "Schritt {n} von 05",
+        "reset": "Zurücksetzen",
+        "resetEyebrow": "Entwurf zurücksetzen",
+        "resetTitle": "Von vorne anfangen?",
+        "resetBody": "Damit werden alle Felder im Assistenten und der gespeicherte Entwurf gelöscht. Das Zurücksetzen lässt sich nicht rückgängig machen.",
+        "resetCancel": "Abbrechen",
+        "resetConfirmAction": "Zurücksetzen"
       },
       "hydration": {
         "restoring": "Entwurf wird wiederhergestellt"
@@ -606,6 +612,17 @@
         "openPool": "Pool öffnen",
         "viewSuiscan": "Auf Suiscan ansehen",
         "deployAnother": "Weiteren deployen"
+      },
+      "metadataOwner": {
+        "checking": "Eigentum der Metadaten wird geprüft…",
+        "eyebrow": "Bereitstellung mit dieser Münze nicht möglich",
+        "title": "Die Metadaten dieser Münze sind aus deinem Wallet nicht zugreifbar.",
+        "body": "Sui erlaubt nur dem Eigentümer eines `CoinMetadata`-Objekts, es in einer Transaktion zu referenzieren. Die Metadaten dieser Münze gehören einer anderen Adresse, daher würde der Trockenlauf der Wallet jeden Pool ablehnen.",
+        "ownerLabel": "Eigentümer der Metadaten",
+        "youLabel": "Dein Wallet",
+        "hint": "Bitte den Bereitsteller der Münze, deren Metadaten einzufrieren (`0x2::transfer::public_freeze_object`), oder verbinde dich mit der Wallet, die sie besitzt.",
+        "connectEyebrow": "Wallet verbinden, um fortzufahren",
+        "connectBody": "Wir benötigen deine Adresse, um zu prüfen, ob die Metadaten der Münze aus deinem Wallet referenzierbar sind."
       }
     }
   },

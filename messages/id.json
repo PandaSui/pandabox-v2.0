@@ -488,7 +488,13 @@
         "recipient": "Recipient",
         "reserve": "Reserve",
         "deploy": "Deploy",
-        "stepOf": "Step {n} of 05"
+        "stepOf": "Step {n} of 05",
+        "reset": "Atur Ulang",
+        "resetEyebrow": "Atur ulang draf",
+        "resetTitle": "Mulai dari awal?",
+        "resetBody": "Semua isian wizard dan draf tersimpan akan dihapus. Tindakan ini tidak bisa dibatalkan.",
+        "resetCancel": "Batal",
+        "resetConfirmAction": "Atur ulang"
       },
       "hydration": {
         "restoring": "Restoring draft"
@@ -606,6 +612,17 @@
         "openPool": "Open pool",
         "viewSuiscan": "View on Suiscan",
         "deployAnother": "Deploy another"
+      },
+      "metadataOwner": {
+        "checking": "Memeriksa kepemilikan metadata…",
+        "eyebrow": "Tidak bisa men-deploy dengan koin ini",
+        "title": "Metadata koin ini tidak dapat diakses dari dompetmu.",
+        "body": "Sui hanya mengizinkan pemilik objek `CoinMetadata` untuk merujuknya dalam transaksi. Metadata koin ini dimiliki oleh alamat lain, jadi simulasi dompet akan menolak pool apa pun yang kamu coba buat.",
+        "ownerLabel": "Pemilik metadata",
+        "youLabel": "Dompetmu",
+        "hint": "Minta deployer koin untuk membekukan metadatanya (`0x2::transfer::public_freeze_object`), atau hubungkan dompet yang memilikinya.",
+        "connectEyebrow": "Sambungkan dompet untuk melanjutkan",
+        "connectBody": "Kami perlu alamatmu untuk memastikan apakah metadata koin dapat dirujuk dari dompetmu."
       }
     }
   },
