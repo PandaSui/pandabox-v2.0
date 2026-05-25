@@ -1,5 +1,6 @@
 import Image from "next/image";
 import BigNumber from "bignumber.js";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
 import { AccentRule } from "@/components/primitives/accent-rule";
@@ -24,7 +25,7 @@ const SUN_HEX = "#D9C57A";
  *   - Right: 4-cell stat strip (Rate · Reserve · Redeemed · Paid out)
  *   - Below: optional `Paused` warning band when the platform is paused
  */
-export function PoolHero({
+export async function PoolHero({
   data,
   feeBps,
   paused,
@@ -33,6 +34,8 @@ export function PoolHero({
   feeBps: number;
   paused: boolean;
 }) {
+  const t = await getTranslations("redeem.detail.hero");
+  const tShared = await getTranslations("redeem.shared");
   const { pool, metadata, createdEvent } = data;
   const symbol = metadata.symbol;
 
@@ -69,7 +72,7 @@ export function PoolHero({
         {/* ── Identity column ─────────────────────────────────────── */}
         <div className="lg:col-span-7">
           <AccentRule color="sun">
-            <MonoLabel>Redeem pool</MonoLabel>
+            <MonoLabel>{t("eyebrow")}</MonoLabel>
           </AccentRule>
 
           <div className="mt-4 flex flex-wrap items-start gap-5">
@@ -93,11 +96,11 @@ export function PoolHero({
                 <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
                 <span className="inline-flex items-center gap-1.5 border border-ink/20 bg-bone px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/65">
                   <span aria-hidden className="block h-1.5 w-1.5 bg-sun" />
-                  Permanent
+                  {t("permanent")}
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/45">
                   <span aria-hidden className="text-ink/25">·</span>
-                  Deployed <RelativeTime value={createdEvent?.timestampMs ?? pool.createdAtMs} />
+                  {t("deployed")} <RelativeTime value={createdEvent?.timestampMs ?? pool.createdAtMs} />
                 </span>
               </div>
             </div>
@@ -108,18 +111,18 @@ export function PoolHero({
         <div className="lg:col-span-5">
           <div className="grid grid-cols-2 divide-x divide-y divide-ink/15 border border-ink/15 bg-bone sm:grid-cols-4 sm:divide-y-0">
             <Stat
-              label="Rate"
+              label={tShared("rate")}
               valueNode={
                 <span className="font-mono tabular-nums">
                   <span className="text-[15px] text-ink">{rateLabel}</span>
                   <span className="ml-1 text-[10px] uppercase tracking-[0.12em] text-ink/55">
-                    SUI/{symbol}
+                    {t("rateUnit", { symbol })}
                   </span>
                 </span>
               }
             />
             <Stat
-              label="Reserve"
+              label={tShared("reserve")}
               valueNode={
                 <SuiAmount
                   mist={pool.suiReserveMist}
@@ -134,11 +137,11 @@ export function PoolHero({
               }
             />
             <Stat
-              label="Redeemed"
+              label={tShared("redeemed")}
               value={`${redeemedFormatted} ${symbol}`}
             />
             <Stat
-              label="Paid out"
+              label={tShared("paidOut")}
               valueNode={
                 <SuiAmount
                   mist={pool.totalSuiPaidOutMist}
@@ -151,8 +154,8 @@ export function PoolHero({
             />
           </div>
           <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-            <span>{(feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2)}% platform fee on every redeem</span>
-            <span>Live · Sui mainnet</span>
+            <span>{t("feeNote", { fee: (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2) })}</span>
+            <span>{t("live")}</span>
           </div>
         </div>
       </Container>
@@ -161,10 +164,10 @@ export function PoolHero({
         <div className="relative border-t border-poppy/35 bg-poppy/[0.08]">
           <Container className="flex flex-wrap items-center gap-3 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-poppy md:py-3.5">
             <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
-            <span className="font-semibold">Platform paused</span>
+            <span className="font-semibold">{t("pausedTitle")}</span>
             <span aria-hidden className="text-poppy/40">·</span>
             <span className="normal-case tracking-normal text-poppy/85">
-              Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.
+              {t("pausedBody")}
             </span>
           </Container>
         </div>

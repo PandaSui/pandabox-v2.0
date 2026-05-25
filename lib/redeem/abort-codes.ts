@@ -12,16 +12,22 @@
 type AbortInfo = {
   /** Stable code → short copy. Plain English, no jargon. */
   message: string;
-  /** Optional follow-up hint that maps to a UI action ("open existing pool"). */
-  hint?: string;
 };
 
 const ABORTS: Record<string, Record<number, AbortInfo>> = {
   pool: {
+    // Confirmed by devInspect against mainnet (`fe5d…f4bd`):
+    //   100 @ instruction 17 in create_pool → asserts `price_mist_per_token > 0`.
+    //   101 @ instruction 32 in create_pool → asserts `recipient != @0x0`.
+    // The contract does *not* enforce one-pool-per-coin-type; multiple
+    // pools for the same `T` are accepted by the Move bytecode.
+    100: {
+      message:
+        "Exchange rate must be greater than zero. The contract rejects a pool with a zero `price_mist_per_token`.",
+    },
     101: {
       message:
-        "A redeem pool already exists for this coin type. Each coin can have only one pool.",
-      hint: "open-existing",
+        "Recipient cannot be the Sui zero address. Pick a non-zero burn address (e.g. `0x…dead`) or a real treasury / multisig.",
     },
   },
   platform: {
@@ -45,7 +51,6 @@ export function parseRedeemAbort(error: string): {
   function: string;
   code: number;
   message: string;
-  hint?: string;
 } | null {
   if (!error) return null;
   // Match the module identifier, function name (optional), and code.
@@ -71,7 +76,8 @@ export function parseRedeemAbort(error: string): {
     module: moduleName,
     function: funcName,
     code,
-    message: info?.message ?? `Contract aborted with code ${code} in ${moduleName}::${funcName}.`,
-    hint: info?.hint,
+    message:
+      info?.message ??
+      `Contract aborted with code ${code} in ${moduleName}::${funcName}.`,
   };
 }

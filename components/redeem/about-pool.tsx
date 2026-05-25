@@ -1,19 +1,15 @@
+import { getTranslations } from "next-intl/server";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import type { HydratedPool } from "@/lib/redeem/discovery";
 
 /**
  * "About this pool" panel — the trust copy holders read before signing.
- * Three short blocks:
- *
- *   1. What the pool does (one sentence, mode-aware: burn vs buyback).
- *   2. Permanence callout (the contract-level invariant — no setter on
- *      `price_mist_per_token` or `recipient`).
- *   3. Fee disclosure (the platform takes a fixed bps from gross SUI).
- *
- * Plain prose, hairline-bordered. Sits in the center column below the
- * hero and above the activity feed.
+ * Three short blocks: how it works (mode-aware), permanence, fee. Plain
+ * prose, hairline-bordered. Translated copy comes from next-intl; the
+ * `<code>` and `<strong>` tags inside the long strings are rendered via
+ * `t.rich` so they pick up the right styles in every locale.
  */
-export function AboutPool({
+export async function AboutPool({
   data,
   feeBps,
 }: {
@@ -24,42 +20,47 @@ export function AboutPool({
   const symbol = metadata.symbol;
   const feePct = (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2);
 
-  const summary =
-    pool.recipientMode === "burn"
-      ? `When a holder redeems, their ${symbol} is routed to a burn address — the supply drops by exactly that amount. The pool's SUI reserve pays out the corresponding value at the fixed exchange rate.`
-      : `When a holder redeems, their ${symbol} is routed to the project's recipient address for a buyback — circulating supply shrinks for the project, and the holder receives SUI at the fixed rate from the pool's reserve.`;
+  const t = await getTranslations("redeem.detail.about");
+
+  const summaryKey =
+    pool.recipientMode === "burn" ? "burnSummary" : "buybackSummary";
 
   return (
     <section className="border border-ink/15 bg-bone">
       <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
-        <MonoLabel className="text-[10px]">About this pool</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
         <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
-          permanent terms
+          {t("permanentTerms")}
         </span>
       </header>
 
       <div className="space-y-5 px-5 py-5">
-        <Block heading="How it works">
-          <p className="text-[14px] leading-relaxed text-ink/75">{summary}</p>
-        </Block>
-
-        <Block heading="Permanence">
+        <Block heading={t("howHeading")}>
           <p className="text-[14px] leading-relaxed text-ink/75">
-            The exchange rate ({" "}
-            <code className="font-mono text-[12.5px] text-ink">price_mist_per_token</code>{" "}
-            ) and the recipient address were locked at deploy time. The
-            contract has no setter for either — no admin can change them, no
-            governance can override them. Only the depth of the SUI reserve
-            changes as people redeem and deposit.
+            {t(summaryKey, { symbol })}
           </p>
         </Block>
 
-        <Block heading="Fee">
+        <Block heading={t("permanenceHeading")}>
           <p className="text-[14px] leading-relaxed text-ink/75">
-            Pandabox takes a{" "}
-            <span className="font-mono font-semibold text-ink">{feePct}%</span>{" "}
-            platform fee from the gross SUI on every redeem. The net SUI
-            shown in the redeem panel already accounts for it.
+            {t.rich("permanenceBody", {
+              code: (chunks) => (
+                <code className="font-mono text-[12.5px] text-ink">{chunks}</code>
+              ),
+            })}
+          </p>
+        </Block>
+
+        <Block heading={t("feeHeading")}>
+          <p className="text-[14px] leading-relaxed text-ink/75">
+            {t.rich("feeBody", {
+              fee: feePct,
+              strong: (chunks) => (
+                <strong className="font-mono font-semibold text-ink">
+                  {chunks}
+                </strong>
+              ),
+            })}
           </p>
         </Block>
       </div>

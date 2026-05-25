@@ -356,7 +356,258 @@
     "howStep2Title": "Пополнение",
     "howStep2Body": "Любой может добавить SUI в резерв — обычно это делает разработчик по мере выкупов. Условия не меняются; меняется только глубина.",
     "howStep3Title": "Обмен",
-    "howStep3Body": "Держатели сжигают или передают монеты через пул и получают SUI по фиксированному курсу за вычетом комиссии — всё одной подписанной транзакцией."
+    "howStep3Body": "Держатели сжигают или передают монеты через пул и получают SUI по фиксированному курсу за вычетом комиссии — всё одной подписанной транзакцией.",
+    "shared": {
+      "rate": "Rate",
+      "reserve": "Reserve",
+      "redeemed": "Redeemed",
+      "paidOut": "Paid out",
+      "permanent": "Permanent",
+      "paused": "Paused",
+      "live": "Live",
+      "empty": "Empty",
+      "open": "Open",
+      "sui": "SUI",
+      "burn": "Burn",
+      "buyback": "Buyback",
+      "feeSuffix": "platform fee on every redeem",
+      "liveMainnet": "Live · Sui mainnet"
+    },
+    "detail": {
+      "hero": {
+        "eyebrow": "Redeem pool",
+        "permanent": "Permanent",
+        "deployed": "Deployed",
+        "rateUnit": "SUI/{symbol}",
+        "feeNote": "{fee}% platform fee on every redeem",
+        "live": "Live · Sui mainnet",
+        "pausedTitle": "Platform paused",
+        "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged."
+      },
+      "meta": {
+        "title": "Pool details",
+        "poolId": "Pool ID",
+        "coinType": "Coin type",
+        "recipient": "Recipient",
+        "creator": "Creator",
+        "platform": "Platform",
+        "viewSuiscan": "View pool on Suiscan"
+      },
+      "about": {
+        "title": "About this pool",
+        "permanentTerms": "permanent terms",
+        "howHeading": "How it works",
+        "permanenceHeading": "Permanence",
+        "feeHeading": "Fee",
+        "burnSummary": "When a holder redeems, their {symbol} is routed to a burn address — the supply drops by exactly that amount. The pool's SUI reserve pays out the corresponding value at the fixed exchange rate.",
+        "buybackSummary": "When a holder redeems, their {symbol} is routed to the project's recipient address for a buyback — circulating supply shrinks for the project, and the holder receives SUI at the fixed rate from the pool's reserve.",
+        "permanenceBody": "The exchange rate (<code>price_mist_per_token</code>) and the recipient address were locked at deploy time. The contract has no setter for either — no admin can change them, no governance can override them. Only the depth of the SUI reserve changes as people redeem and deposit.",
+        "feeBody": "Pandabox takes a <strong>{fee}%</strong> platform fee from the gross SUI on every redeem. The net SUI shown in the redeem panel already accounts for it."
+      },
+      "activity": {
+        "title": "Activity",
+        "noEventsYet": "no events yet",
+        "recentNewestFirst": "{count} recent · newest first",
+        "listening": "Listening for events",
+        "beTheFirst": "No redeems or deposits on this pool yet. Be the first.",
+        "kindRedeem": "Redeem",
+        "kindDeposit": "Deposit",
+        "by": "by",
+        "feeShort": "fee {value}",
+        "addReserve": "+ reserve"
+      },
+      "redeemPanel": {
+        "title": "Redeem this pool",
+        "yourBalance": "Your balance",
+        "amount": "Amount",
+        "max": "MAX",
+        "youSend": "You send",
+        "grossSui": "Gross SUI",
+        "platformFee": "Platform fee",
+        "youReceive": "You receive",
+        "feeDisclosure": "{fee}% platform fee · taken from gross SUI · permanent terms",
+        "signInWallet": "Sign in wallet…",
+        "confirming": "Confirming on chain…",
+        "redeemAction": "Redeem {amount} {symbol}",
+        "enterAmount": "Enter an amount",
+        "successEyebrow": "Redeem signed",
+        "successHeadline": "You received",
+        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
+        "successTx": "tx",
+        "successView": "view on suiscan",
+        "successAgain": "Redeem again",
+        "amountAria": "Amount of {symbol} to redeem",
+        "validation": {
+          "paused": "Platform is paused",
+          "empty": "Pool reserve is empty",
+          "noBalance": "You hold no {symbol}",
+          "exceedsBalance": "Amount exceeds your balance",
+          "exceedsReserve": "Pool reserve too low for this amount"
+        }
+      },
+      "depositPanel": {
+        "title": "Top up reserve",
+        "anyoneCanDeposit": "anyone can deposit",
+        "body": "Add more SUI to the pool's reserve so it can honour additional redeems. The pool's exchange rate and recipient don't change — only the depth.",
+        "yourSuiBalance": "Your SUI balance",
+        "amountAria": "Amount of SUI to deposit",
+        "signInWallet": "Sign in wallet…",
+        "confirming": "Confirming…",
+        "depositAction": "Deposit {amount} SUI",
+        "enterAmount": "Enter an amount",
+        "successEyebrow": "Deposit signed",
+        "successBody": "<amount/> added to the reserve.",
+        "successAgain": "Deposit again →",
+        "validation": {
+          "exceedsBalance": "Amount exceeds your SUI balance"
+        }
+      },
+      "notFound": {
+        "eyebrow": "404 · Redeem pool",
+        "headline": "No pool at that address.",
+        "body": "Either the object ID doesn't exist, or it isn't a Pandabox redeem pool. Double-check the address — Sui object IDs are 32 bytes (64 hex). The discovery surface only lists known-good pools.",
+        "ctaBack": "Back to redeem",
+        "ctaTools": "Onchain tools"
+      }
+    },
+    "create": {
+      "page": {
+        "metaTitle": "Deploy a redeem pool — Pandabox",
+        "metaDescription": "Stand up a permanent on-chain redeem pool. Pick a coin, fix the rate, choose burn or buyback, fund the reserve, sign one transaction.",
+        "eyebrow": "Deploy a redeem pool",
+        "headline": "Five steps. One signed transaction. No takebacks.",
+        "body": "You'll pick the coin, set the exchange rate, choose where redeemed coins are routed, and seed the reserve. The contract shares the resulting <code>RedeemPool&lt;T&gt;</code> object — and from that moment, its rate and recipient are locked on-chain forever.",
+        "traitPermanent": "Permanent terms",
+        "traitFee": "{fee}% platform fee",
+        "traitOneTx": "One tx · sub-cent gas"
+      },
+      "nav": {
+        "aria": "Wizard steps",
+        "coin": "Coin",
+        "rate": "Rate",
+        "recipient": "Recipient",
+        "reserve": "Reserve",
+        "deploy": "Deploy",
+        "stepOf": "Step {n} of 05"
+      },
+      "hydration": {
+        "restoring": "Restoring draft"
+      },
+      "actions": {
+        "back": "Back",
+        "continue": "Continue",
+        "deployPool": "Deploy pool",
+        "signInWallet": "Sign in wallet…",
+        "confirming": "Confirming on chain…"
+      },
+      "coin": {
+        "title": "Pick the coin you want to redeem against.",
+        "body": "Paste its fully-qualified type, or pick from the coins you hold. We'll resolve its on-chain metadata and pin the decimals so the wizard math stays exact.",
+        "fieldLabel": "Coin type",
+        "fieldHint": "Format: 0x⟨package⟩::⟨module⟩::⟨TYPE⟩",
+        "fromWallet": "From your wallet",
+        "resolution": "Resolution",
+        "resolving": "Resolving on-chain…",
+        "resolved": "Resolved",
+        "errorMeta": "Could not resolve coin metadata.",
+        "errorNoMetadata": "No CoinMetadata published for this type.",
+        "awaiting": "Awaiting coin type",
+        "decimals": "{n} decimals"
+      },
+      "existingPool": {
+        "eyebrow": "A pool for this coin already exists",
+        "title": "This coin already has a redeem pool live on-chain.",
+        "body": "Multiple pools per coin type are allowed by the contract — you can still deploy your own with a different rate or recipient. Open the existing pool first if you just want to redeem against it.",
+        "pool": "pool",
+        "by": "by",
+        "openExisting": "Open the existing pool",
+        "continueAnyway": "Deploy mine anyway",
+        "pickAnother": "Pick a different coin",
+        "checking": "Checking for existing pool…"
+      },
+      "rate": {
+        "title": "Set the exchange rate.",
+        "body": "How much SUI does one whole {symbol} redeem for? Once you deploy, the contract has no setter for this value — neither you nor a platform admin can change it.",
+        "fieldLabel": "Rate · SUI per 1 {symbol}",
+        "fieldHint": "Whole SUI per whole token. Example: 0.001 means 1,000 tokens redeem for 1 SUI.",
+        "rateUnit": "SUI / {symbol}",
+        "validationTooSmall": "Rate too small. With {decimals} decimals, the contract needs at least 1 mist per base unit (≈ {minimum} SUI per token).",
+        "permanentNote": "Permanent — the contract has no setter for <code>price_mist_per_token</code>.",
+        "calculator": "Calculator",
+        "calcOneToken": "1 {symbol} →",
+        "calcOneSui": "1 SUI →",
+        "calcRedeeming": "Redeeming 1,000,000",
+        "calcRaw": "price_mist_per_token",
+        "calcResult": "≈ {amount} SUI"
+      },
+      "recipient": {
+        "title": "Where do redeemed coins go?",
+        "body": "Pick where the contract routes the project coins users redeem. This is permanent — pick carefully.",
+        "burn": {
+          "title": "Burn",
+          "tag": "supply-shrinking",
+          "body": "Redeemed coins go to a known dead address (<code>0x…dead</code>). No private key holds it, so the coins are effectively destroyed — circulating supply decreases by exactly the redeemed amount.",
+          "footer": "recipient → <code>0x00…dead</code>"
+        },
+        "buyback": {
+          "title": "Buyback",
+          "tag": "back-to-treasury",
+          "body": "Redeemed coins flow to an address you control — typically your project's treasury or a multisig. The coins can be reused, re-distributed, or burned at your discretion later.",
+          "footerLabel": "recipient →",
+          "footerPlaceholder": "your treasury"
+        },
+        "addressLabel": "Buyback recipient address",
+        "addressHint": "32-byte Sui address (64 hex chars after `0x`). Typically a multisig or treasury you control.",
+        "addressInvalid": "Not a valid Sui address.",
+        "permanentNote": "Permanent — the contract has no setter for <code>recipient</code>. Coins routed here cannot be recovered."
+      },
+      "reserve": {
+        "title": "Seed the initial reserve.",
+        "body": "The pool needs SUI on hand to pay out redeems. Anyone can deposit more later — this is just the launch depth.",
+        "fieldLabel": "Initial SUI",
+        "fieldHint": "Will be split from gas at deploy time.",
+        "yourWallet": "Your wallet",
+        "validationOverdraft": "Amount exceeds your SUI balance",
+        "gasWarning": "Heads up — that leaves less than 0.1 SUI for gas. Deploy may still succeed; budget accordingly.",
+        "capacityTitle": "Capacity preview",
+        "depthLabel": "Reserve depth",
+        "supportsLabel": "Supports up to",
+        "capacityNote": "Capacity is an upper bound at the current rate. Each redeem settles at exactly the fixed rate; the reserve drops by the corresponding SUI plus the platform fee.",
+        "amountAria": "Initial reserve in SUI"
+      },
+      "review": {
+        "title": "Review and deploy.",
+        "body": "One signed transaction calls pool::create_pool, splits the SUI from gas, and shares the new pool object. After this, the terms are locked on-chain.",
+        "summary": "Summary",
+        "summaryMeta": "pool::create_pool",
+        "fieldCoin": "Coin",
+        "fieldCoinType": "Coin type",
+        "fieldDecimals": "Decimals",
+        "fieldRate": "Rate",
+        "fieldPriceRaw": "price_mist_per_token",
+        "fieldRecipientMode": "Recipient mode",
+        "fieldRecipient": "Recipient",
+        "fieldInitialReserve": "Initial reserve",
+        "permanentEyebrow": "Permanent",
+        "permanentHeadline": "Once this signs, the terms are locked.",
+        "permanentItem1": "<code>price_mist_per_token</code> cannot be changed.",
+        "permanentItem2": "<code>recipient</code> cannot be changed.",
+        "permanentItem3": "No admin override. No platform reversal.",
+        "permanentItem4": "Only the SUI reserve depth changes as people redeem and deposit."
+      },
+      "success": {
+        "eyebrow": "Pool deployed",
+        "headline": "Your redeem pool is live on-chain.",
+        "body": "The contract has shared a new <code>RedeemPool&lt;T&gt;</code> object. Its rate and recipient are now locked. Anyone can redeem against it; anyone can deposit more SUI into the reserve.",
+        "poolIdLabel": "Pool ID",
+        "transactionLabel": "Transaction",
+        "indexing": "Indexing…",
+        "indexingPoolId": "Indexing pool id…",
+        "openPool": "Open pool",
+        "viewSuiscan": "View on Suiscan",
+        "deployAnother": "Deploy another"
+      }
+    }
   },
   "footer": {
     "homeAria": "Главная Pandabox",

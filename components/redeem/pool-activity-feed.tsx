@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { Address } from "@/components/identity/address";
 import { RelativeTime } from "@/components/identity/relative-time";
@@ -16,7 +17,7 @@ import type { PoolActivity } from "@/lib/redeem/pool-activity";
  * Empty state acknowledges the pool exists but has no activity yet,
  * rather than reading as a broken fetch.
  */
-export function PoolActivityFeed({
+export async function PoolActivityFeed({
   items,
   symbol,
   coinDecimals,
@@ -25,25 +26,24 @@ export function PoolActivityFeed({
   symbol: string;
   coinDecimals: number;
 }) {
+  const t = await getTranslations("redeem.detail.activity");
   return (
     <section className="border border-ink/15 bg-bone">
       <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
-        <MonoLabel className="text-[10px]">Activity</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
         <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
           {items.length === 0
-            ? "no events yet"
-            : `${items.length} recent · newest first`}
+            ? t("noEventsYet")
+            : t("recentNewestFirst", { count: items.length })}
         </span>
       </header>
 
       {items.length === 0 ? (
         <div className="px-5 py-10 text-center">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/45">
-            Listening for events
+            {t("listening")}
           </p>
-          <p className="mt-2 text-[13px] text-ink/55">
-            No redeems or deposits on this pool yet. Be the first.
-          </p>
+          <p className="mt-2 text-[13px] text-ink/55">{t("beTheFirst")}</p>
         </div>
       ) : (
         <ul className="divide-y divide-ink/10">
@@ -52,9 +52,15 @@ export function PoolActivityFeed({
               key={`${ev.txDigest}-${ev.kind}`}
               className="grid grid-cols-12 items-center gap-3 px-5 py-3 transition-colors hover:bg-ink/[0.015]"
             >
-              <KindCell ev={ev} />
-              <ActorCell ev={ev} />
-              <AmountsCell ev={ev} symbol={symbol} coinDecimals={coinDecimals} />
+              <KindCell ev={ev} redeemLabel={t("kindRedeem")} depositLabel={t("kindDeposit")} />
+              <ActorCell ev={ev} byLabel={t("by")} />
+              <AmountsCell
+                ev={ev}
+                symbol={symbol}
+                coinDecimals={coinDecimals}
+                feeLabel={t("feeShort", { value: "" })}
+                addReserveLabel={t("addReserve")}
+              />
               <MetaCell ev={ev} />
             </li>
           ))}
@@ -64,7 +70,15 @@ export function PoolActivityFeed({
   );
 }
 
-function KindCell({ ev }: { ev: PoolActivity }) {
+function KindCell({
+  ev,
+  redeemLabel,
+  depositLabel,
+}: {
+  ev: PoolActivity;
+  redeemLabel: string;
+  depositLabel: string;
+}) {
   const isRedeem = ev.kind === "redeemed";
   return (
     <div className="col-span-3 sm:col-span-2">
@@ -76,22 +90,19 @@ function KindCell({ ev }: { ev: PoolActivity }) {
       >
         <span
           aria-hidden
-          className={cn(
-            "block h-1.5 w-1.5",
-            isRedeem ? "bg-poppy" : "bg-jade",
-          )}
+          className={cn("block h-1.5 w-1.5", isRedeem ? "bg-poppy" : "bg-jade")}
         />
-        {isRedeem ? "Redeem" : "Deposit"}
+        {isRedeem ? redeemLabel : depositLabel}
       </span>
     </div>
   );
 }
 
-function ActorCell({ ev }: { ev: PoolActivity }) {
+function ActorCell({ ev, byLabel }: { ev: PoolActivity; byLabel: string }) {
   const actor = ev.kind === "redeemed" ? ev.redeemer : ev.depositor;
   return (
     <div className="col-span-9 min-w-0 font-mono text-[11.5px] text-ink/65 sm:col-span-3">
-      <span className="mr-1 uppercase tracking-[0.14em] text-ink/40">by</span>
+      <span className="mr-1 uppercase tracking-[0.14em] text-ink/40">{byLabel}</span>
       <Address value={actor} className="text-ink/85" copyable={false} />
     </div>
   );
@@ -101,12 +112,21 @@ function AmountsCell({
   ev,
   symbol,
   coinDecimals,
+  feeLabel,
+  addReserveLabel,
 }: {
   ev: PoolActivity;
   symbol: string;
   coinDecimals: number;
+  feeLabel: string;
+  addReserveLabel: string;
 }) {
   if (ev.kind === "redeemed") {
+    const feeValue = formatAmount(ev.feeMist, {
+      decimals: 9,
+      compact: true,
+      maxFractionDigits: 4,
+    });
     return (
       <div className="col-span-7 sm:col-span-5">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-[12px] tabular-nums">
@@ -129,7 +149,7 @@ function AmountsCell({
             className="text-ink"
           />
           <span className="font-mono text-[10px] text-ink/40">
-            (fee {formatAmount(ev.feeMist, { decimals: 9, compact: true, maxFractionDigits: 4 })})
+            ({feeLabel.trim()} {feeValue})
           </span>
         </div>
       </div>
@@ -139,7 +159,7 @@ function AmountsCell({
     <div className="col-span-7 sm:col-span-5">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-[12px] tabular-nums">
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-          + reserve
+          {addReserveLabel}
         </span>
         <SuiAmount
           mist={ev.amountMist}

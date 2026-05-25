@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -67,6 +68,8 @@ export function RedeemPanel({
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
   const router = useRouter();
+  const t = useTranslations("redeem.detail.redeemPanel");
+  const tShared = useTranslations("redeem.shared");
 
   const [amount, setAmount] = useState("");
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
@@ -140,14 +143,14 @@ export function RedeemPanel({
   /* ── Validation ─────────────────────────────────────────────── */
 
   const validation = useMemo(() => {
-    if (paused) return "Platform is paused";
-    if (pool.suiReserveMist === 0n) return "Pool reserve is empty";
+    if (paused) return t("validation.paused");
+    if (pool.suiReserveMist === 0n) return t("validation.empty");
     if (!account) return null;
     if (coinsFetching && userBalance === 0n) return null;
-    if (userBalance === 0n) return `You hold no ${symbol}`;
+    if (userBalance === 0n) return t("validation.noBalance", { symbol });
     if (amountBase === 0n) return null;
-    if (amountBase > userBalance) return "Amount exceeds your balance";
-    if (amountBase > maxByReserve) return "Pool reserve too low for this amount";
+    if (amountBase > userBalance) return t("validation.exceedsBalance");
+    if (amountBase > maxByReserve) return t("validation.exceedsReserve");
     return null;
   }, [
     paused,
@@ -158,6 +161,7 @@ export function RedeemPanel({
     symbol,
     amountBase,
     maxByReserve,
+    t,
   ]);
 
   const submittable = !!account && !validation && amountBase > 0n;
@@ -182,6 +186,9 @@ export function RedeemPanel({
         });
         return;
       }
+      /* eslint-disable @typescript-eslint/no-unused-vars */ // keep tShared in scope for future label needs
+      void tShared;
+      /* eslint-enable @typescript-eslint/no-unused-vars */
       const tx = buildRedeemTx({
         coinType: pool.coinType,
         poolId: pool.objectId,
@@ -237,8 +244,14 @@ export function RedeemPanel({
         <span aria-hidden className="block h-[2px] bg-sun" />
 
         <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
-          <MonoLabel className="text-[10px]">Redeem this pool</MonoLabel>
-          <PanelStatusPill paused={paused} reserve={pool.suiReserveMist} />
+          <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
+          <PanelStatusPill
+            paused={paused}
+            reserve={pool.suiReserveMist}
+            pausedLabel={tShared("paused")}
+            emptyLabel={tShared("empty")}
+            openLabel={tShared("open")}
+          />
         </header>
 
         {state.kind === "success" ? (
@@ -249,12 +262,19 @@ export function RedeemPanel({
             symbol={symbol}
             decimals={pool.coinDecimals}
             onReset={resetForm}
+            labels={{
+              eyebrow: t("successEyebrow"),
+              headline: t("successHeadline"),
+              tx: t("successTx"),
+              view: t("successView"),
+              again: t("successAgain"),
+            }}
           />
         ) : (
           <div className="space-y-5 px-5 pb-5 pt-5">
             {/* Balance row + MAX */}
             <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-              <span>Your balance</span>
+              <span>{t("yourBalance")}</span>
               <span className="inline-flex items-center gap-2 text-ink">
                 {coinsFetching && account && (
                   <Spinner size={11} className="text-ink/40" label="Loading balance" />
@@ -289,15 +309,23 @@ export function RedeemPanel({
                 );
               }}
               maxDisabled={!account || maxRedeemable === 0n || isPanelBusy}
+              amountLabel={t("amount")}
+              maxLabel={t("max")}
+              ariaLabel={t("amountAria", { symbol })}
             />
 
             {/* Quote */}
             <Quote
               quote={quote}
-              feeBps={feeBps}
               amountBase={amountBase}
               symbol={symbol}
               decimals={pool.coinDecimals}
+              labels={{
+                youSend: t("youSend"),
+                grossSui: t("grossSui"),
+                fee: t("platformFee"),
+                youReceive: t("youReceive"),
+              }}
             />
 
             {validation && (
@@ -324,24 +352,25 @@ export function RedeemPanel({
                   <>
                     <Spinner size={14} className="text-bone" />
                     <span>
-                      {state.kind === "submitting" ? "Sign in wallet…" : "Confirming on chain…"}
+                      {state.kind === "submitting" ? t("signInWallet") : t("confirming")}
                     </span>
                   </>
                 ) : submittable ? (
                   <>
                     <span>
-                      Redeem{" "}
-                      {formatAmount(amountBase, {
-                        decimals: pool.coinDecimals,
-                        compact: true,
-                        maxFractionDigits: 2,
-                      })}{" "}
-                      {symbol}
+                      {t("redeemAction", {
+                        amount: formatAmount(amountBase, {
+                          decimals: pool.coinDecimals,
+                          compact: true,
+                          maxFractionDigits: 2,
+                        }),
+                        symbol,
+                      })}
                     </span>
                     <ArrowDiag size={12} />
                   </>
                 ) : (
-                  <span>{validation ?? "Enter an amount"}</span>
+                  <span>{validation ?? t("enterAmount")}</span>
                 )}
               </button>
             ) : (
@@ -350,7 +379,7 @@ export function RedeemPanel({
 
             {/* Footer: fee disclosure */}
             <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/40">
-              {(feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2)}% platform fee · taken from gross SUI · permanent terms
+              {t("feeDisclosure", { fee: (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2) })}
             </p>
           </div>
         )}
@@ -364,17 +393,23 @@ export function RedeemPanel({
 function PanelStatusPill({
   paused,
   reserve,
+  pausedLabel,
+  emptyLabel,
+  openLabel,
 }: {
   paused: boolean;
   reserve: bigint;
+  pausedLabel: string;
+  emptyLabel: string;
+  openLabel: string;
 }) {
   if (paused) {
-    return <SmallPill label="Paused" tone="poppy" />;
+    return <SmallPill label={pausedLabel} tone="poppy" />;
   }
   if (reserve === 0n) {
-    return <SmallPill label="Empty" tone="poppy" />;
+    return <SmallPill label={emptyLabel} tone="poppy" />;
   }
-  return <SmallPill label="Open" tone="jade" pulsing />;
+  return <SmallPill label={openLabel} tone="jade" pulsing />;
 }
 
 function SmallPill({
@@ -417,6 +452,9 @@ function AmountField({
   maxDisabled,
   symbol,
   disabled,
+  amountLabel,
+  maxLabel,
+  ariaLabel,
 }: {
   value: string;
   onChange: (next: string) => void;
@@ -424,18 +462,21 @@ function AmountField({
   maxDisabled: boolean;
   symbol: string;
   disabled: boolean;
+  amountLabel: string;
+  maxLabel: string;
+  ariaLabel: string;
 }) {
   return (
     <div>
       <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-        <span>Amount</span>
+        <span>{amountLabel}</span>
         <button
           type="button"
           onClick={onMax}
           disabled={maxDisabled}
           className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55 underline-offset-2 transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-ink/55"
         >
-          MAX
+          {maxLabel}
         </button>
       </div>
       <div
@@ -453,7 +494,7 @@ function AmountField({
           placeholder="0.00"
           disabled={disabled}
           className="h-14 w-full bg-transparent font-mono text-2xl tabular-nums text-ink outline-none placeholder:text-ink/30"
-          aria-label={`Amount of ${symbol} to redeem`}
+          aria-label={ariaLabel}
         />
         <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">
           {symbol}
@@ -468,17 +509,23 @@ function Quote({
   amountBase,
   symbol,
   decimals,
+  labels,
 }: {
   quote: { suiGrossMist: bigint; feeMist: bigint; suiOutMist: bigint; clamped: boolean };
-  feeBps: number;
   amountBase: bigint;
   symbol: string;
   decimals: number;
+  labels: {
+    youSend: string;
+    grossSui: string;
+    fee: string;
+    youReceive: string;
+  };
 }) {
   const isZero = amountBase === 0n;
   return (
     <div className="space-y-2 border-t border-ink/15 pt-4">
-      <QuoteRow label="You send">
+      <QuoteRow label={labels.youSend}>
         <span
           className={cn(
             "font-mono tabular-nums",
@@ -495,7 +542,7 @@ function Quote({
           </span>
         </span>
       </QuoteRow>
-      <QuoteRow label="Gross SUI">
+      <QuoteRow label={labels.grossSui}>
         <SuiAmount
           mist={quote.suiGrossMist}
           maxFractionDigits={6}
@@ -506,7 +553,7 @@ function Quote({
           )}
         />
       </QuoteRow>
-      <QuoteRow label="Platform fee">
+      <QuoteRow label={labels.fee}>
         <SuiAmount
           mist={quote.feeMist}
           maxFractionDigits={6}
@@ -518,7 +565,7 @@ function Quote({
         />
       </QuoteRow>
       <div className="mt-1 border-t border-ink/10 pt-3">
-        <QuoteRow label="You receive" emphasis>
+        <QuoteRow label={labels.youReceive} emphasis>
           <SuiAmount
             mist={quote.suiOutMist}
             maxFractionDigits={6}
@@ -565,6 +612,7 @@ function SuccessView({
   symbol,
   decimals,
   onReset,
+  labels,
 }: {
   digest: string;
   suiOutMist: bigint;
@@ -572,15 +620,23 @@ function SuccessView({
   symbol: string;
   decimals: number;
   onReset: () => void;
+  labels: {
+    eyebrow: string;
+    headline: string;
+    tx: string;
+    view: string;
+    again: string;
+  };
 }) {
+  const t = useTranslations("redeem.detail.redeemPanel");
   return (
     <div className="px-5 py-6">
       <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-jade">
         <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
-        Redeem signed
+        {labels.eyebrow}
       </div>
       <h3 className="mt-3 font-display text-[1.5rem] leading-[1.1]">
-        You received{" "}
+        {labels.headline}{" "}
         <SuiAmount
           mist={suiOutMist}
           maxFractionDigits={6}
@@ -589,19 +645,21 @@ function SuccessView({
         />
       </h3>
       <p className="mt-2 text-[13.5px] text-ink/65">
-        Burned{" "}
-        <span className="font-mono tabular-nums text-ink">
-          {formatAmount(coinIn, {
-            decimals,
-            compact: true,
-            maxFractionDigits: 4,
-          })}{" "}
-          {symbol}
-        </span>{" "}
-        from your wallet at the pool's fixed rate.
+        {t.rich("successBody", {
+          amount: () => (
+            <span className="font-mono tabular-nums text-ink">
+              {formatAmount(coinIn, {
+                decimals,
+                compact: true,
+                maxFractionDigits: 4,
+              })}{" "}
+              {symbol}
+            </span>
+          ),
+        })}
       </p>
       <div className="mt-5 flex flex-wrap items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-        <span>tx</span>
+        <span>{labels.tx}</span>
         <TxHash value={digest} copyable />
         <a
           href={explorerUrl("tx", digest)}
@@ -609,7 +667,7 @@ function SuccessView({
           rel="noreferrer"
           className="group inline-flex items-center gap-1 text-ink/55 transition-colors hover:text-ink"
         >
-          <span>view on suiscan</span>
+          <span>{labels.view}</span>
           <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[1px]">↗</span>
         </a>
       </div>
@@ -618,7 +676,7 @@ function SuccessView({
         onClick={onReset}
         className={cn(CTA_BASE, "mt-6 bg-bone text-ink")}
       >
-        <span>Redeem again</span>
+        <span>{labels.again}</span>
         <ArrowDiag size={12} />
       </button>
     </div>

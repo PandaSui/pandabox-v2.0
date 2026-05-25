@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -39,12 +40,13 @@ import { formatAmount } from "@/lib/amount";
 
 /* ───────────────────────── Constants ───────────────────────── */
 
+/** Stable keys — translation labels resolved at render time via `nav.<key>`. */
 const STEPS = [
-  { key: "coin", label: "Coin" },
-  { key: "rate", label: "Rate" },
-  { key: "recipient", label: "Recipient" },
-  { key: "reserve", label: "Reserve" },
-  { key: "review", label: "Deploy" },
+  { key: "coin" },
+  { key: "rate" },
+  { key: "recipient" },
+  { key: "reserve" },
+  { key: "deploy" },
 ] as const;
 
 const CTA_PRIMARY =
@@ -85,6 +87,8 @@ export function RedeemCreateWizard() {
   const setStep = useRedeemWizard((s) => s.setStep);
   const reset = useRedeemWizard((s) => s.reset);
 
+  const t = useTranslations("redeem.create.hydration");
+
   const [deploy, setDeploy] = useState<DeployState>({ kind: "idle" });
   const stepperLocked = deploy.kind === "submitting" || deploy.kind === "confirming";
 
@@ -92,9 +96,9 @@ export function RedeemCreateWizard() {
     return (
       <section>
         <Container className="flex min-h-[60vh] flex-col items-center justify-center gap-3 py-20">
-          <Spinner size={22} className="text-ink/55" label="Loading draft" />
+          <Spinner size={22} className="text-ink/55" label={t("restoring")} />
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45">
-            Restoring draft
+            {t("restoring")}
           </p>
         </Container>
       </section>
@@ -141,9 +145,10 @@ function StepNav({
   current: number;
   onChange: (n: number) => void;
 }) {
+  const t = useTranslations("redeem.create.nav");
   return (
     <nav
-      aria-label="Wizard steps"
+      aria-label={t("aria")}
       className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-ink/10 pb-5"
     >
       {STEPS.map((s, i) => {
@@ -174,7 +179,7 @@ function StepNav({
                 active && "border-b-[1.5px] border-sun pb-0.5",
               )}
             >
-              {s.label}
+              {t(s.key)}
             </span>
           </button>
         );
@@ -192,13 +197,14 @@ function StepHeader({
 }: {
   n: number;
   title: string;
-  body?: string;
+  body?: React.ReactNode;
 }) {
+  const t = useTranslations("redeem.create.nav");
   return (
     <header className="mb-8 border-b border-ink/15 pb-6">
       <AccentRule color="sun">
         <MonoLabel className="text-[10px]">
-          Step {String(n).padStart(2, "0")} of 05
+          {t("stepOf", { n: String(n).padStart(2, "0") })}
         </MonoLabel>
       </AccentRule>
       <h2 className="mt-3 font-display text-[clamp(1.875rem,3vw,2.75rem)] leading-[1.05] tracking-tight">
@@ -213,7 +219,7 @@ function StepHeader({
 
 function StepFooter({
   canNext,
-  nextLabel = "Continue",
+  nextLabel,
   onBack,
   onNext,
   hideBack,
@@ -224,6 +230,7 @@ function StepFooter({
   onNext?: () => void;
   hideBack?: boolean;
 }) {
+  const t = useTranslations("redeem.create.actions");
   return (
     <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-6">
       {hideBack ? (
@@ -231,7 +238,7 @@ function StepFooter({
       ) : (
         <button type="button" onClick={onBack} className={CTA_SECONDARY}>
           <span aria-hidden>←</span>
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
       )}
       <button
@@ -240,7 +247,7 @@ function StepFooter({
         disabled={!canNext}
         className={CTA_PRIMARY}
       >
-        <span>{nextLabel}</span>
+        <span>{nextLabel ?? t("continue")}</span>
         <ArrowDiag size={11} />
       </button>
     </div>
@@ -262,6 +269,8 @@ function StepCoin() {
   const goNext = useRedeemWizard((s) => s.goNext);
   const account = useCurrentAccount();
   const client = useSuiClient();
+  const t = useTranslations("redeem.create.coin");
+  const tExisting = useTranslations("redeem.create.existingPool");
   const [typed, setTyped] = useState(draft.coin.type);
 
   // Live metadata lookup. Re-runs whenever the typed coin type changes.
@@ -337,24 +346,19 @@ function StepCoin() {
 
   const resolved =
     !!normalized && !!metadata && metadata.id ? metadata : null;
-  const canNext =
-    !!resolved && !!draft.coin.metadataId && !existingPool && !existingChecking;
+  // Existing pools for the same coin are allowed by the contract — we no
+  // longer block here, just inform. So the only requirements for Step 1
+  // are a resolved coin type + a known metadata object.
+  const canNext = !!resolved && !!draft.coin.metadataId;
 
   return (
     <>
-      <StepHeader
-        n={1}
-        title="Pick the coin you want to redeem against."
-        body="Paste its fully-qualified type, or pick from the coins you hold. We'll resolve its on-chain metadata and pin the decimals so the wizard math stays exact."
-      />
+      <StepHeader n={1} title={t("title")} body={t("body")} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: input */}
         <div className="space-y-5">
-          <Field
-            label="Coin type"
-            hint="Format: 0x<package>::<module>::<TYPE>"
-          >
+          <Field label={t("fieldLabel")} hint={t("fieldHint")}>
             {(id) => (
               <TextField
                 id={id}
@@ -370,7 +374,7 @@ function StepCoin() {
           {account && heldTypes.length > 0 && (
             <div>
               <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45">
-                From your wallet
+                {t("fromWallet")}
               </span>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {heldTypes.map((b) => (
@@ -400,9 +404,9 @@ function StepCoin() {
           isFetching={!!normalized && isFetching}
           error={
             error
-              ? "Could not resolve coin metadata."
+              ? t("errorMeta")
               : normalized && metadata === null
-                ? "No CoinMetadata published for this type."
+                ? t("errorNoMetadata")
                 : null
           }
           metadata={resolved}
@@ -410,67 +414,54 @@ function StepCoin() {
         />
       </div>
 
-      {/* Existing-pool banner — the contract enforces one pool per coin
-          type, so we surface this *before* the user fills out the rest of
-          the form. Bone surface, sun spine, two crisp affordances: open
-          the existing pool, or pick a different coin. */}
+      {/* Existing-pool banner — informational, not blocking. The contract
+          permits multiple pools per coin type, so a dev who wants to ship
+          their own (different rate / recipient) can. The banner gives
+          them a one-tap path to the existing pool if redeeming was what
+          they actually wanted, and a dismiss for the rest. */}
       {existingPool && (
-        <div className="mt-8 relative overflow-hidden border border-ink bg-bone shadow-offset-sm">
+        <div className="mt-8 relative overflow-hidden border border-sun/40 bg-sun/[0.08]">
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-sun" />
-          <div className="px-5 py-5 md:px-6 md:py-6">
-            <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-sun">
-              <span
-                aria-hidden
-                className="block h-1.5 w-1.5 rounded-full bg-sun"
-                style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
-              />
-              Pool already exists
+          <div className="px-5 py-5 md:px-6">
+            <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/85">
+              <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-sun" />
+              {tExisting("eyebrow")}
             </div>
-            <h3 className="mt-2 font-display text-[1.5rem] leading-[1.1] md:text-[1.75rem]">
-              This coin has a redeem pool live on-chain.
+            <h3 className="mt-2 font-display text-[1.35rem] leading-[1.1]">
+              {tExisting("title")}
             </h3>
-            <p className="mt-2 max-w-prose text-[14px] text-ink/65">
-              The Redeem contract enforces a single pool per coin type
-              <span aria-hidden> — </span>
-              you can't deploy another one for this coin. Open the
-              existing pool to redeem against it, or pick a different
-              coin to deploy.
+            <p className="mt-2 max-w-prose text-[13.5px] text-ink/70">
+              {tExisting("body")}
             </p>
-            <dl className="mt-4 grid grid-cols-1 gap-y-1.5 font-mono text-[11px] text-ink/55 sm:grid-cols-2 sm:gap-x-4">
+            <dl className="mt-3 grid grid-cols-1 gap-y-1.5 font-mono text-[11px] text-ink/55 sm:grid-cols-2 sm:gap-x-4">
               <div className="flex items-center gap-2">
-                <span className="uppercase tracking-[0.14em] text-ink/40">pool</span>
+                <span className="uppercase tracking-[0.14em] text-ink/40">
+                  {tExisting("pool")}
+                </span>
                 <Address value={existingPool.poolId} />
               </div>
               <div className="flex items-center gap-2">
-                <span className="uppercase tracking-[0.14em] text-ink/40">by</span>
+                <span className="uppercase tracking-[0.14em] text-ink/40">
+                  {tExisting("by")}
+                </span>
                 <Address value={existingPool.creator} />
               </div>
             </dl>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               <Link
                 href={`/redeem/${existingPool.poolId}`}
-                className={CTA_PRIMARY}
+                className={CTA_SECONDARY}
               >
-                <span>Open the existing pool</span>
+                <span>{tExisting("openExisting")}</span>
                 <ArrowDiag size={11} />
               </Link>
               <button
                 type="button"
-                onClick={() => {
-                  setTyped("");
-                  patchCoin({
-                    type: "",
-                    metadataId: "",
-                    name: "",
-                    symbol: "",
-                    decimals: 9,
-                    iconUrl: null,
-                  });
-                  setExistingPool(null);
-                }}
-                className={CTA_SECONDARY}
+                onClick={() => setExistingPool(null)}
+                className="inline-flex h-12 items-center gap-2 px-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
               >
-                <span>Pick a different coin</span>
+                <span>{tExisting("continueAnyway")}</span>
+                <span aria-hidden>↓</span>
               </button>
             </div>
           </div>
@@ -480,7 +471,7 @@ function StepCoin() {
       {existingChecking && !existingPool && resolved && (
         <div className="mt-6 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
           <Spinner size={11} className="text-ink/55" />
-          Checking for existing pool…
+          {tExisting("checking")}
         </div>
       )}
 
@@ -511,10 +502,11 @@ function ResolutionPanel({
     | null;
   iconUrl: string | null;
 }) {
+  const t = useTranslations("redeem.create.coin");
   return (
     <aside className="border border-ink/15 bg-bone">
       <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
-        <MonoLabel className="text-[10px]">Resolution</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("resolution")}</MonoLabel>
         <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
           0x2::coin::CoinMetadata
         </span>
@@ -523,7 +515,7 @@ function ResolutionPanel({
         {isFetching ? (
           <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">
             <Spinner size={12} className="text-ink/55" />
-            Resolving on-chain…
+            {t("resolving")}
           </div>
         ) : error ? (
           <p className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-poppy">
@@ -554,17 +546,17 @@ function ResolutionPanel({
                   {metadata.symbol || "?"}
                 </span>
                 <span aria-hidden className="mx-1.5 text-ink/25">·</span>
-                <span>{metadata.decimals ?? "?"} decimals</span>
+                <span>{t("decimals", { n: metadata.decimals ?? "?" })}</span>
               </div>
               <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-jade">
                 <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
-                Resolved
+                {t("resolved")}
               </div>
             </div>
           </div>
         ) : (
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/40">
-            Awaiting coin type
+            {t("awaiting")}
           </p>
         )}
       </div>
@@ -590,6 +582,7 @@ function StepRate() {
   const setRate = useRedeemWizard((s) => s.setRate);
   const goNext = useRedeemWizard((s) => s.goNext);
   const goPrev = useRedeemWizard((s) => s.goPrev);
+  const t = useTranslations("redeem.create.rate");
 
   const symbol = draft.coin.symbol || "TOKEN";
   const decimals = draft.coin.decimals || 9;
@@ -623,31 +616,29 @@ function StepRate() {
   }, [decimals, priceMistPerToken]);
 
   // Validation — rate must round to ≥ 1 mist/base-unit, otherwise the
-  // contract would treat the pool as a freebie. Also flag the special
-  // case where the user picked an unreasonably small fractional rate.
+  // contract would treat the pool as a freebie.
   const validation =
     rateBn.lte(0)
       ? null
       : priceMistPerToken === 0n
-        ? `Rate too small. With ${decimals} decimals, the contract needs at least 1 mist per base unit (≈ ${new BigNumber(10).pow(decimals - 9).toFixed(decimals - 9)} SUI per token).`
+        ? t("validationTooSmall", {
+            decimals,
+            minimum: new BigNumber(10).pow(decimals - 9).toFixed(decimals - 9),
+          })
         : null;
 
   const canNext = priceMistPerToken > 0n && !validation;
 
   return (
     <>
-      <StepHeader
-        n={2}
-        title="Set the exchange rate."
-        body={`How much SUI does one whole ${symbol} redeem for? Once you deploy, the contract has no setter for this value — neither you nor a platform admin can change it.`}
-      />
+      <StepHeader n={2} title={t("title")} body={t("body", { symbol })} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: input + permanent warning */}
         <div className="space-y-5">
           <Field
-            label={`Rate · SUI per 1 ${symbol}`}
-            hint="Whole SUI per whole token. Example: 0.001 means 1,000 tokens redeem for 1 SUI."
+            label={t("fieldLabel", { symbol })}
+            hint={t("fieldHint")}
           >
             {(id) => (
               <div
@@ -664,10 +655,10 @@ function StepRate() {
                   onChange={(e) => setRate(sanitizeDecimal(e.target.value))}
                   placeholder="0.001"
                   className="h-14 flex-1 bg-transparent px-3 font-mono text-2xl tabular-nums text-ink outline-none placeholder:text-ink/30"
-                  aria-label={`SUI per ${symbol}`}
+                  aria-label={t("fieldLabel", { symbol })}
                 />
                 <span className="pr-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">
-                  SUI / {symbol}
+                  {t("rateUnit", { symbol })}
                 </span>
               </div>
             )}
@@ -680,26 +671,24 @@ function StepRate() {
           )}
 
           <p className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-poppy">
-            <span className="font-semibold">Permanent</span>
-            <span className="normal-case tracking-normal">
-              {" "}— the contract has no setter for{" "}
-              <code className="font-mono">price_mist_per_token</code>.
-            </span>
+            {t.rich("permanentNote", {
+              code: (chunks) => <code className="font-mono">{chunks}</code>,
+            })}
           </p>
         </div>
 
         {/* Right: calculator */}
         <aside className="border border-ink/15 bg-bone">
           <header className="border-b border-ink/15 px-5 py-3.5">
-            <MonoLabel className="text-[10px]">Calculator</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("calculator")}</MonoLabel>
           </header>
           <dl className="divide-y divide-ink/10 px-5 py-2">
-            <Row label={`1 ${symbol} →`}>
+            <Row label={t("calcOneToken", { symbol })}>
               <span className="font-mono tabular-nums">
                 {rateBn.gt(0) ? rateBn.toFixed(Math.min(8, 6)) : "0.000"} SUI
               </span>
             </Row>
-            <Row label="1 SUI →">
+            <Row label={t("calcOneSui")}>
               <span className="font-mono tabular-nums">
                 {tokensPerSui.gt(0)
                   ? new BigNumber(tokensPerSui).toFormat(2, BigNumber.ROUND_DOWN)
@@ -707,13 +696,18 @@ function StepRate() {
                 {symbol}
               </span>
             </Row>
-            <Row label="Redeeming 1,000,000">
+            <Row label={t("calcRedeeming")}>
               <span className="font-mono tabular-nums">
-                ≈ {formatAmount(sampleSuiMist, { decimals: 9, compact: false, maxFractionDigits: 4 })}{" "}
-                SUI
+                {t("calcResult", {
+                  amount: formatAmount(sampleSuiMist, {
+                    decimals: 9,
+                    compact: false,
+                    maxFractionDigits: 4,
+                  }),
+                })}
               </span>
             </Row>
-            <Row label="price_mist_per_token">
+            <Row label={t("calcRaw")}>
               <span className="font-mono text-[12px]">
                 {priceMistPerToken.toString()}
               </span>
@@ -750,6 +744,7 @@ function StepRecipient() {
   const patchRecipient = useRedeemWizard((s) => s.patchRecipient);
   const goNext = useRedeemWizard((s) => s.goNext);
   const goPrev = useRedeemWizard((s) => s.goPrev);
+  const t = useTranslations("redeem.create.recipient");
 
   const mode = draft.recipient.mode;
   const setMode = (m: RecipientMode) => {
@@ -775,23 +770,24 @@ function StepRecipient() {
 
   return (
     <>
-      <StepHeader
-        n={3}
-        title="Where do redeemed coins go?"
-        body="Pick where the contract routes the project coins users redeem. This is permanent — pick carefully."
-      />
+      <StepHeader n={3} title={t("title")} body={t("body")} />
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <ModeCard
           active={mode === "burn"}
           accent="poppy"
-          title="Burn"
-          tag="supply-shrinking"
-          body="Redeemed coins go to the Sui zero address. No private key holds that account, so the coins are effectively destroyed. Circulating supply decreases by exactly the redeemed amount."
+          title={t("burn.title")}
+          tag={t("burn.tag")}
+          body={t.rich("burn.body", {
+            code: (chunks) => (
+              <code className="font-mono text-[12.5px] text-ink">{chunks}</code>
+            ),
+          })}
           footer={
             <span className="font-mono text-[10.5px] text-ink/55">
-              recipient →{" "}
-              <code className="text-ink">0x00…0000</code>
+              {t.rich("burn.footer", {
+                code: (chunks) => <code className="text-ink">{chunks}</code>,
+              })}
             </span>
           }
           onClick={() => setMode("burn")}
@@ -799,16 +795,16 @@ function StepRecipient() {
         <ModeCard
           active={mode === "buyback"}
           accent="jade"
-          title="Buyback"
-          tag="back-to-treasury"
-          body="Redeemed coins flow to an address you control — typically your project's treasury or a multisig. The coins can be reused, re-distributed, or burned at your discretion later."
+          title={t("buyback.title")}
+          tag={t("buyback.tag")}
+          body={t("buyback.body")}
           footer={
             <span className="font-mono text-[10.5px] text-ink/55">
-              recipient →{" "}
+              {t("buyback.footerLabel")}{" "}
               <code className="text-ink">
                 {mode === "buyback" && addressValid
                   ? shortAddr(draft.recipient.address)
-                  : "your treasury"}
+                  : t("buyback.footerPlaceholder")}
               </code>
             </span>
           }
@@ -819,11 +815,11 @@ function StepRecipient() {
       {mode === "buyback" && (
         <div className="mt-8">
           <Field
-            label="Buyback recipient address"
-            hint="32-byte Sui address (64 hex chars after `0x`). Typically a multisig or treasury you control."
+            label={t("addressLabel")}
+            hint={t("addressHint")}
             error={
               draft.recipient.address && !addressValid
-                ? "Not a valid Sui address."
+                ? t("addressInvalid")
                 : undefined
             }
           >
@@ -842,12 +838,9 @@ function StepRecipient() {
 
       {mode === "burn" && (
         <p className="mt-6 border border-poppy/40 bg-poppy/[0.06] px-3 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-poppy">
-          <span className="font-semibold">Permanent</span>
-          <span className="normal-case tracking-normal">
-            {" "}— the contract has no setter for{" "}
-            <code className="font-mono">recipient</code>. Coins routed here
-            cannot be recovered.
-          </span>
+          {t.rich("permanentNote", {
+            code: (chunks) => <code className="font-mono">{chunks}</code>,
+          })}
         </p>
       )}
 
@@ -873,7 +866,7 @@ function ModeCard({
   accent: "poppy" | "jade";
   title: string;
   tag: string;
-  body: string;
+  body: React.ReactNode;
   footer: React.ReactNode;
   onClick: () => void;
 }) {
@@ -932,6 +925,7 @@ function StepReserve() {
   const goNext = useRedeemWizard((s) => s.goNext);
   const goPrev = useRedeemWizard((s) => s.goPrev);
   const account = useCurrentAccount();
+  const t = useTranslations("redeem.create.reserve");
 
   const { data: balance } = useSuiClientQuery(
     "getBalance",
@@ -969,22 +963,16 @@ function StepReserve() {
   const overdraft = reserveMist > spendableMist;
   const tightOnGas = !overdraft && reserveMist > reservesGas;
 
-  const validation = overdraft
-    ? "Amount exceeds your SUI balance"
-    : null;
+  const validation = overdraft ? t("validationOverdraft") : null;
   const canNext = reserveMist > 0n && !validation;
 
   return (
     <>
-      <StepHeader
-        n={4}
-        title="Seed the initial reserve."
-        body="The pool needs SUI on hand to pay out redeems. Anyone can deposit more later — this is just the launch depth."
-      />
+      <StepHeader n={4} title={t("title")} body={t("body")} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
-          <Field label="Initial SUI" hint="Will be split from gas at deploy time.">
+          <Field label={t("fieldLabel")} hint={t("fieldHint")}>
             {(id) => (
               <div
                 className={cn(
@@ -1000,7 +988,7 @@ function StepReserve() {
                   onChange={(e) => setInitialReserve(sanitizeDecimal(e.target.value))}
                   placeholder="0.50"
                   className="h-14 flex-1 bg-transparent px-3 font-mono text-2xl tabular-nums text-ink outline-none placeholder:text-ink/30"
-                  aria-label="Initial reserve in SUI"
+                  aria-label={t("amountAria")}
                 />
                 <span className="pr-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">
                   SUI
@@ -1010,7 +998,7 @@ function StepReserve() {
           </Field>
 
           <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/55">
-            <span>Your wallet</span>
+            <span>{t("yourWallet")}</span>
             <span className="text-ink">
               {account
                 ? `${formatAmount(spendableMist, { decimals: 9, compact: true, maxFractionDigits: 4 })} SUI`
@@ -1025,21 +1013,17 @@ function StepReserve() {
           )}
           {tightOnGas && (
             <p className="border border-sun/40 bg-sun/[0.10] px-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/80">
-              <span className="font-semibold">Heads up</span>
-              <span className="normal-case tracking-normal">
-                {" "}— that leaves less than 0.1 SUI for gas. Deploy may still
-                succeed; budget accordingly.
-              </span>
+              {t("gasWarning")}
             </p>
           )}
         </div>
 
         <aside className="border border-ink/15 bg-bone">
           <header className="border-b border-ink/15 px-5 py-3.5">
-            <MonoLabel className="text-[10px]">Capacity preview</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("capacityTitle")}</MonoLabel>
           </header>
           <dl className="divide-y divide-ink/10 px-5 py-2">
-            <Row label="Reserve depth">
+            <Row label={t("depthLabel")}>
               <span className="font-mono tabular-nums">
                 {reserveMist > 0n
                   ? formatAmount(reserveMist, { decimals: 9, maxFractionDigits: 4 }) +
@@ -1047,7 +1031,7 @@ function StepReserve() {
                   : "—"}
               </span>
             </Row>
-            <Row label={`Supports up to`}>
+            <Row label={t("supportsLabel")}>
               <span className="font-mono tabular-nums">
                 {tokensSupported.gt(0)
                   ? new BigNumber(tokensSupported).toFormat(2, BigNumber.ROUND_DOWN) +
@@ -1058,9 +1042,7 @@ function StepReserve() {
             </Row>
           </dl>
           <p className="border-t border-ink/10 px-5 py-3 text-[12px] leading-snug text-ink/55">
-            Capacity is an upper bound at the current rate. Each redeem
-            settles at exactly the fixed rate; the reserve drops by the
-            corresponding SUI plus the platform fee.
+            {t("capacityNote")}
           </p>
         </aside>
       </div>
@@ -1094,6 +1076,8 @@ function StepReview({
   const account = useCurrentAccount();
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const t = useTranslations("redeem.create.review");
+  const tActions = useTranslations("redeem.create.actions");
 
   const symbol = draft.coin.symbol || "TOKEN";
   const decimals = draft.coin.decimals || 9;
@@ -1193,60 +1177,61 @@ function StepReview({
     }
   };
 
+  const tRecipient = (m: "burn" | "buyback") =>
+    m === "burn" ? "Burn" : "Buyback";
+
+  const renderRecipientMode = (m: "burn" | "buyback") => tRecipient(m);
+
   return (
     <>
-      <StepHeader
-        n={5}
-        title="Review and deploy."
-        body="One signed transaction calls pool::create_pool, splits the SUI from gas, and shares the new pool object. After this, the terms are locked on-chain."
-      />
+      <StepHeader n={5} title={t("title")} body={t("body")} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: summary */}
         <section className="border border-ink/15 bg-bone">
           <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3.5">
-            <MonoLabel className="text-[10px]">Summary</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("summary")}</MonoLabel>
             <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
-              pool::create_pool
+              {t("summaryMeta")}
             </span>
           </header>
           <dl className="divide-y divide-ink/10 px-5 py-2">
-            <Row label="Coin">
+            <Row label={t("fieldCoin")}>
               <span className="font-mono text-[12.5px] text-ink">
                 {draft.coin.name || "—"} ·{" "}
                 <span className="text-ink/65">{symbol}</span>
               </span>
             </Row>
-            <Row label="Coin type">
+            <Row label={t("fieldCoinType")}>
               <code className="font-mono text-[11.5px] break-all">{draft.coin.type}</code>
             </Row>
-            <Row label="Decimals">
+            <Row label={t("fieldDecimals")}>
               <span className="font-mono tabular-nums text-[12.5px]">{decimals}</span>
             </Row>
-            <Row label="Rate">
+            <Row label={t("fieldRate")}>
               <span className="font-mono tabular-nums text-[12.5px]">
                 1 {symbol} ≈ {rateBn.toFixed(Math.min(6, 6))} SUI
               </span>
             </Row>
-            <Row label="price_mist_per_token">
+            <Row label={t("fieldPriceRaw")}>
               <code className="font-mono text-[11.5px]">
                 {priceMistPerToken.toString()}
               </code>
             </Row>
-            <Row label="Recipient mode">
+            <Row label={t("fieldRecipientMode")}>
               <span
                 className={cn(
                   "font-mono text-[11px] uppercase tracking-[0.16em]",
                   draft.recipient.mode === "burn" ? "text-poppy" : "text-jade",
                 )}
               >
-                {draft.recipient.mode === "burn" ? "Burn" : "Buyback"}
+                {renderRecipientMode(draft.recipient.mode)}
               </span>
             </Row>
-            <Row label="Recipient">
+            <Row label={t("fieldRecipient")}>
               <Address value={draft.recipient.address} />
             </Row>
-            <Row label="Initial reserve">
+            <Row label={t("fieldInitialReserve")}>
               <span className="font-mono tabular-nums text-[12.5px]">
                 {formatAmount(reserveMist, { decimals: 9, maxFractionDigits: 4 })} SUI
               </span>
@@ -1258,26 +1243,28 @@ function StepReview({
         <aside className="border border-poppy bg-poppy/[0.08] p-5">
           <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy">
             <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
-            Permanent
+            {t("permanentEyebrow")}
           </div>
           <h3 className="mt-2 font-display text-[1.5rem] leading-[1.05] text-ink">
-            Once this signs, the terms are locked.
+            {t("permanentHeadline")}
           </h3>
           <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-ink/75">
             <li>
-              <span className="font-mono text-[12px] text-ink">
-                price_mist_per_token
-              </span>{" "}
-              cannot be changed.
+              {t.rich("permanentItem1", {
+                code: (chunks) => (
+                  <span className="font-mono text-[12px] text-ink">{chunks}</span>
+                ),
+              })}
             </li>
             <li>
-              <span className="font-mono text-[12px] text-ink">recipient</span>{" "}
-              cannot be changed.
+              {t.rich("permanentItem2", {
+                code: (chunks) => (
+                  <span className="font-mono text-[12px] text-ink">{chunks}</span>
+                ),
+              })}
             </li>
-            <li>No admin override. No platform reversal.</li>
-            <li>
-              Only the SUI reserve depth changes as people redeem and deposit.
-            </li>
+            <li>{t("permanentItem3")}</li>
+            <li>{t("permanentItem4")}</li>
           </ul>
         </aside>
       </div>
@@ -1286,7 +1273,7 @@ function StepReview({
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-6">
         <button type="button" onClick={() => goPrev()} className={CTA_SECONDARY} disabled={isBusy}>
           <span aria-hidden>←</span>
-          <span>Back</span>
+          <span>{tActions("back")}</span>
         </button>
 
         {account ? (
@@ -1301,13 +1288,13 @@ function StepReview({
                 <Spinner size={14} className="text-bone" />
                 <span>
                   {deploy.kind === "submitting"
-                    ? "Sign in wallet…"
-                    : "Confirming on chain…"}
+                    ? tActions("signInWallet")
+                    : tActions("confirming")}
                 </span>
               </>
             ) : (
               <>
-                <span>Deploy pool</span>
+                <span>{tActions("deployPool")}</span>
                 <ArrowDiag size={12} />
               </>
             )}
@@ -1338,16 +1325,16 @@ function DeploySuccess({
   onAnother: () => void;
 }) {
   const router = useRouter();
+  const t = useTranslations("redeem.create.success");
 
-  // Auto-route after a beat so the user doesn't have to click — gives
-  // them a moment to read the success state and copy the tx hash if
-  // they want to.
+  // Auto-route after a beat so the user doesn't have to click — gives them
+  // time to read the success state and copy the tx hash if they want to.
   useEffect(() => {
     if (!poolId || poolId === "0xSIMULATED") return;
-    const t = setTimeout(() => {
+    const timeout = setTimeout(() => {
       router.push(`/redeem/${poolId}`);
     }, 4000);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timeout);
   }, [poolId, router]);
 
   return (
@@ -1362,28 +1349,30 @@ function DeploySuccess({
                 className="block h-1.5 w-1.5 rounded-full bg-jade"
                 style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
               />
-              Pool deployed
+              {t("eyebrow")}
             </div>
             <h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] leading-[1.02]">
-              Your redeem pool is live on-chain.
+              {t("headline")}
             </h2>
             <p className="mt-3 max-w-prose text-pretty text-[15px] text-ink/65">
-              The contract has shared a new <code className="font-mono text-[13px]">RedeemPool&lt;T&gt;</code>{" "}
-              object. Its rate and recipient are now locked. Anyone can
-              redeem against it; anyone can deposit more SUI into the reserve.
+              {t.rich("body", {
+                code: (chunks) => (
+                  <code className="font-mono text-[13px]">{chunks}</code>
+                ),
+              })}
             </p>
 
             <dl className="mt-7 divide-y divide-ink/10 border-y border-ink/15">
-              <Row label="Pool ID">
+              <Row label={t("poolIdLabel")}>
                 {poolId ? (
                   <Address value={poolId} />
                 ) : (
                   <span className="font-mono text-[11px] text-ink/45">
-                    Indexing…
+                    {t("indexing")}
                   </span>
                 )}
               </Row>
-              <Row label="Transaction">
+              <Row label={t("transactionLabel")}>
                 <TxHash value={digest} copyable />
               </Row>
             </dl>
@@ -1391,13 +1380,13 @@ function DeploySuccess({
             <div className="mt-7 flex flex-wrap items-center gap-3">
               {poolId && poolId !== "0xSIMULATED" ? (
                 <Link href={`/redeem/${poolId}`} className={CTA_PRIMARY}>
-                  <span>Open pool</span>
+                  <span>{t("openPool")}</span>
                   <ArrowDiag size={12} />
                 </Link>
               ) : (
                 <span className="inline-flex h-12 items-center gap-2 border border-ink/25 px-5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/45">
                   <Spinner size={12} className="text-ink/45" />
-                  Indexing pool id…
+                  {t("indexingPoolId")}
                 </span>
               )}
               <a
@@ -1406,11 +1395,11 @@ function DeploySuccess({
                 rel="noreferrer"
                 className={CTA_SECONDARY}
               >
-                <span>View on Suiscan</span>
+                <span>{t("viewSuiscan")}</span>
                 <span aria-hidden>↗</span>
               </a>
               <button type="button" onClick={onAnother} className={cn(CTA_SECONDARY, "ml-auto")}>
-                <span>Deploy another</span>
+                <span>{t("deployAnother")}</span>
               </button>
             </div>
           </div>

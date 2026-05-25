@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -49,12 +50,12 @@ const CTA_BASE =
  * wallet can deposit; we don't gate on "are you the creator".
  */
 export function DepositPanel({ data }: { data: HydratedPool }) {
-  const { pool, metadata } = data;
-  const symbol = metadata.symbol;
+  const { pool } = data;
   const account = useCurrentAccount();
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
   const router = useRouter();
+  const t = useTranslations("redeem.detail.depositPanel");
 
   const [amount, setAmount] = useState("");
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
@@ -83,9 +84,9 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
   const validation = useMemo(() => {
     if (!account) return null;
     if (amountMist === 0n) return null;
-    if (amountMist > spendableMist) return "Amount exceeds your SUI balance";
+    if (amountMist > spendableMist) return t("validation.exceedsBalance");
     return null;
-  }, [account, amountMist, spendableMist]);
+  }, [account, amountMist, spendableMist, t]);
 
   const submittable = !!account && !validation && amountMist > 0n;
   const isPanelBusy = state.kind === "submitting" || state.kind === "confirming";
@@ -130,33 +131,32 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
   return (
     <section className="border border-ink/15 bg-bone">
       <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
-        <MonoLabel className="text-[10px]">Top up reserve</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
         <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
-          anyone can deposit
+          {t("anyoneCanDeposit")}
         </span>
       </header>
 
       <div className="space-y-4 px-5 py-5">
-        <p className="text-[13.5px] leading-relaxed text-ink/65">
-          Add more SUI to the pool's reserve so it can honour additional
-          redeems. The pool's exchange rate and recipient don't change —
-          only the depth.
-        </p>
+        <p className="text-[13.5px] leading-relaxed text-ink/65">{t("body")}</p>
 
         {state.kind === "success" ? (
           <div className="border border-jade/40 bg-jade/[0.06] px-4 py-3">
             <div className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-jade">
               <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
-              Deposit signed
+              {t("successEyebrow")}
             </div>
             <p className="mt-2 text-[13px]">
-              <SuiAmount
-                mist={state.amountMist}
-                maxFractionDigits={4}
-                glyphSize={11}
-                className="text-ink"
-              />{" "}
-              added to the reserve.
+              {t.rich("successBody", {
+                amount: () => (
+                  <SuiAmount
+                    mist={state.amountMist}
+                    maxFractionDigits={4}
+                    glyphSize={11}
+                    className="text-ink"
+                  />
+                ),
+              })}
             </p>
             <button
               type="button"
@@ -166,13 +166,13 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
               }}
               className="mt-3 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55 transition-colors hover:text-ink"
             >
-              Deposit again →
+              {t("successAgain")}
             </button>
           </div>
         ) : (
           <>
             <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-              <span>Your SUI balance</span>
+              <span>{t("yourSuiBalance")}</span>
               <span className="text-ink">
                 {account
                   ? formatAmount(spendableMist, {
@@ -201,7 +201,7 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
                 placeholder="0.00"
                 disabled={isPanelBusy}
                 className="h-12 w-full bg-transparent font-mono text-xl tabular-nums text-ink outline-none placeholder:text-ink/30"
-                aria-label="Amount of SUI to deposit"
+                aria-label={t("amountAria")}
               />
               <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">
                 SUI
@@ -231,18 +231,24 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
                   <>
                     <Spinner size={13} className="text-ink/70" />
                     <span>
-                      {state.kind === "submitting" ? "Sign in wallet…" : "Confirming…"}
+                      {state.kind === "submitting" ? t("signInWallet") : t("confirming")}
                     </span>
                   </>
                 ) : submittable ? (
                   <>
                     <span>
-                      Deposit {formatAmount(amountMist, { decimals: 9, compact: true, maxFractionDigits: 4 })} SUI
+                      {t("depositAction", {
+                        amount: formatAmount(amountMist, {
+                          decimals: 9,
+                          compact: true,
+                          maxFractionDigits: 4,
+                        }),
+                      })}
                     </span>
                     <ArrowDiag size={11} />
                   </>
                 ) : (
-                  <span>{validation ?? "Enter an amount"}</span>
+                  <span>{validation ?? t("enterAmount")}</span>
                 )}
               </button>
             ) : (

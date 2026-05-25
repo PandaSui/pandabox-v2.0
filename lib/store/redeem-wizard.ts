@@ -22,9 +22,19 @@ export const REDEEM_DRAFT_KEY = "pandabox:redeem-draft:v1";
 
 export type RecipientMode = "burn" | "buyback";
 
-/** The canonical Sui "burn" destination — the zero address, no private key. */
+/**
+ * Default burn destination for the redeem wizard's "Burn" mode.
+ *
+ * IMPORTANT — this is *not* the Sui zero address. The redeem contract
+ * explicitly rejects `0x000…0000` as a recipient (abort code 101 in
+ * `pool::create_pool`) to prevent devs from accidentally locking funds
+ * in a way that's irreversibly unrecoverable AND looks like a config
+ * mistake. Instead we use the DeFi-standard `0x…dead` pattern: still
+ * unowned (no private key), still unambiguously a burn intent, but
+ * acceptable to the contract.
+ */
 export const SUI_BURN_ADDRESS =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
+  "0x000000000000000000000000000000000000000000000000000000000000dead";
 
 export type RedeemDraft = {
   step: number;

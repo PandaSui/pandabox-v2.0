@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Address } from "@/components/identity/address";
 import { CoinType } from "@/components/identity/coin-type";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -12,35 +13,33 @@ import { RecipientBadge } from "./recipient-badge";
  * the coin type, the creator, and the recipient. Every row is one tap
  * away from Suiscan; copy-to-clipboard is handled by the identity
  * primitives.
- *
- * Hairlines top-and-bottom only — the dense vertical list of mono rows
- * reads as one columnar block.
  */
-export function PoolMetaPanel({ data }: { data: HydratedPool }) {
+export async function PoolMetaPanel({ data }: { data: HydratedPool }) {
   const { pool } = data;
+  const t = await getTranslations("redeem.detail.meta");
   return (
     <aside className="border-y border-ink/15 bg-bone">
       <header className="border-b border-ink/15 px-5 py-3.5">
-        <MonoLabel className="text-[10px]">Pool details</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
       </header>
 
       <dl className="divide-y divide-ink/10 px-5 py-2">
-        <Row label="Pool ID">
+        <Row label={t("poolId")}>
           <Address value={pool.objectId} />
         </Row>
-        <Row label="Coin type">
+        <Row label={t("coinType")}>
           <CoinType value={pool.coinType} />
         </Row>
-        <Row label="Recipient">
+        <Row label={t("recipient")}>
           <div className="flex flex-col items-start gap-1.5">
             <RecipientBadge mode={pool.recipientMode} size="sm" />
             <Address value={pool.recipient} />
           </div>
         </Row>
-        <Row label="Creator">
+        <Row label={t("creator")}>
           <Address value={pool.creator} />
         </Row>
-        <Row label="Platform">
+        <Row label={t("platform")}>
           <Address value={REDEEM_PLATFORM_ID} />
         </Row>
       </dl>
@@ -52,7 +51,7 @@ export function PoolMetaPanel({ data }: { data: HydratedPool }) {
           rel="noreferrer"
           className="group inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
         >
-          <span>View pool on Suiscan</span>
+          <span>{t("viewSuiscan")}</span>
           <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[2px]">
             ↗
           </span>
