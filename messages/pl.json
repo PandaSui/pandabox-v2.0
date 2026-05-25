@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Wykup & Zwroty",
-        "tagline": "Postaw stały pool wykupu lub zwrotu — wybierz tryb przy wdrożeniu, zasil ze skarbu i pozwól holderom wypłacać na zasadach, których nigdy nie będziesz mógł cofnąć.",
+        "tagline": "Project managerowie konfigurują wykupy lub zwroty coinów swojego projektu. Wdrożenie jest trwałe — bez cofnięcia, bez admin override.",
         "description": "Dwa tryby, jeden kontrakt. Project managerowie mogą prowadzić pool wykupu, który kupuje tokeny po cenie floor określonej przez projekt, albo pool zwrotów, który oddaje SUI supporterom po cenie, którą zapłacili. To, co wybierzesz, jest trwałe — gdy pool jest aktywny, warunki są zablokowane on-chain. Bez admin override. To gwarancja zaufania, którą widzą holderzy.",
         "cap1": "Dwa tryby — wykup po floor lub zwrot po cenie pierwotnej",
         "cap2": "Trwałe · po wdrożeniu warunków nie da się zmienić",

@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Rückkäufe & Rückerstattungen",
-        "tagline": "Richte einen permanenten Rückkauf- oder Rückerstattungs-Pool ein — wähle den Modus beim Deploy, finanziere ihn aus deiner Treasury und lass Holder zu Regeln cashen, die du nie wieder umkehren kannst.",
+        "tagline": "Projektmanager richten Rückkäufe oder Rückerstattungen der Coins ihres Projekts ein. Der Deploy ist permanent — keine Umkehr, kein Admin-Override.",
         "description": "Zwei Modi, ein Contract. Projektmanager können einen Rückkauf-Pool fahren, der Tokens zu einem projektdefinierten Floor kauft, oder einen Rückerstattungs-Pool, der SUI zum ursprünglich gezahlten Kurs an Supporter zurückgibt. Was du wählst, ist permanent — sobald der Pool live ist, sind die Bedingungen on-chain festgeschrieben. Keine Admin-Override. Das ist die Vertrauensgarantie, die Holder sehen.",
         "cap1": "Zwei Modi — Rückkauf zum Floor oder Rückerstattung zum Originalkurs",
         "cap2": "Permanent · nach dem Deploy können die Bedingungen nicht mehr geändert werden",

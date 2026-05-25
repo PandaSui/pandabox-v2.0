@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Buybacks & Refunds",
-        "tagline": "Stand up a permanent buyback or refund pool — pick the mode at deploy, fund it from your treasury, and let holders cash out on rules you can never reverse.",
+        "tagline": "Project managers set up buybacks or refunds of their project's coins. The deployment is permanent — no reversal, no admin override.",
         "description": "Two modes, one contract. Project managers can run a buyback pool that purchases tokens at a project-defined floor, or a refund pool that returns SUI to supporters at the rate they paid. Whichever you pick is permanent — once the pool is live, the terms are locked on-chain. No admin override. That's the trust guarantee holders see.",
         "cap1": "Two modes — buyback at floor, or refund at original rate",
         "cap2": "Permanent · once deployed, terms cannot be changed",

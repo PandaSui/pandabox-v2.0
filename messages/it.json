@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Buyback & Rimborsi",
-        "tagline": "Allestisci un pool permanente di buyback o rimborso — scegli la modalità al deploy, finanzialo dalla tua treasury e lascia che gli holder incassino su regole che non potrai mai invertire.",
+        "tagline": "I project manager configurano buyback o rimborsi dei coin del loro progetto. Il deploy è permanente — nessuna inversione, nessun admin override.",
         "description": "Due modalità, un contratto. I project manager possono gestire un pool di buyback che acquista token a un floor definito dal progetto, o un pool di rimborso che restituisce SUI ai supporter al tasso che hanno pagato. Quello che scegli è permanente — una volta che il pool è live, i termini sono bloccati on-chain. Nessun override admin. Questa è la garanzia di fiducia che gli holder vedono.",
         "cap1": "Due modalità — buyback al floor o rimborso al tasso originale",
         "cap2": "Permanente · dopo il deploy, i termini non possono essere cambiati",

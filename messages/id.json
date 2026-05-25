@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Buyback & Refund",
-        "tagline": "Dirikan pool buyback atau refund permanen — pilih modenya saat deploy, danai dari treasury, lalu biarkan holder mencairkan dengan aturan yang tak akan pernah bisa kamu balikkan.",
+        "tagline": "Project manager menyiapkan buyback atau refund coin proyek mereka. Deployment-nya permanen — tanpa pembalikan, tanpa admin override.",
         "description": "Dua mode, satu kontrak. Project manager bisa menjalankan buyback pool yang membeli token pada floor yang ditentukan proyek, atau refund pool yang mengembalikan SUI ke supporter pada tarif yang mereka bayarkan. Mode yang kamu pilih bersifat permanen — begitu pool live, syaratnya terkunci on-chain. Tidak ada override admin. Itu jaminan kepercayaan yang dilihat holder.",
         "cap1": "Dua mode — buyback di floor, atau refund pada tarif asli",
         "cap2": "Permanen · setelah deploy, syarat tak bisa diubah",

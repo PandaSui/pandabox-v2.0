@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Mua lại & Hoàn trả",
-        "tagline": "Dựng một bể mua lại hoặc hoàn trả vĩnh viễn — chọn chế độ khi deploy, nạp từ treasury, và để holder rút theo các quy tắc bạn không bao giờ có thể đảo ngược.",
+        "tagline": "Project manager thiết lập việc mua lại hoặc hoàn trả coin của dự án. Việc deploy là vĩnh viễn — không thể đảo ngược, không có admin override.",
         "description": "Hai chế độ, một hợp đồng. Project manager có thể chạy bể mua lại để mua token tại mức floor do dự án định, hoặc bể hoàn trả để trả lại SUI cho supporter theo đúng tỷ giá họ đã trả. Chọn cái nào cũng vĩnh viễn — khi bể đã chạy, các điều khoản bị khoá on-chain. Không có override của admin. Đó là sự bảo đảm về niềm tin mà holder nhìn thấy.",
         "cap1": "Hai chế độ — mua lại tại floor, hoặc hoàn trả theo tỷ giá gốc",
         "cap2": "Vĩnh viễn · sau khi deploy, điều khoản không thể thay đổi",

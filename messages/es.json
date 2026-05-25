@@ -304,7 +304,7 @@
       },
       "redeem": {
         "name": "Redeem · Recompras y Reembolsos",
-        "tagline": "Monta un pool permanente de recompra o reembolso — elige el modo al desplegar, fináncialo desde tu tesorería y deja que los holders cobren con reglas que nunca podrás revertir.",
+        "tagline": "Los project managers configuran recompras o reembolsos de los coins de su proyecto. El despliegue es permanente — sin reversa, sin override de admin.",
         "description": "Dos modos, un contrato. Los project managers pueden operar un pool de recompra que compra tokens a un floor definido por el proyecto, o un pool de reembolso que devuelve SUI a los supporters al precio que pagaron. Lo que elijas es permanente — una vez en marcha, los términos quedan bloqueados on-chain. Sin override de admin. Esa es la garantía de confianza que ven los holders.",
         "cap1": "Dos modos — recompra al floor o reembolso al precio original",
         "cap2": "Permanente · tras el despliegue, los términos no pueden cambiarse",
