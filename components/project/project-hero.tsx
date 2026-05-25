@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
@@ -19,7 +20,8 @@ const ACCENT_TEXT: Record<Accent, string> = {
   plum: "text-plum",
 };
 
-export function ProjectHero({ project }: { project: ProjectDTO }) {
+export async function ProjectHero({ project }: { project: ProjectDTO }) {
+  const t = await getTranslations("project.hero");
   return (
     <section className="border-b border-ink/15">
       <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-2 lg:py-16">
@@ -44,12 +46,12 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
               <span className="font-mono text-xs">{project.ticker}</span>
             </Diecut>
             <span className="text-ink/30">·</span>
-            <span className="text-xs text-ink/50">held by</span>
+            <span className="text-xs text-ink/50">{t("heldBy")}</span>
             <Address value={project.creator} link />
           </div>
 
           <div className="mt-8 grid grid-cols-2 border border-ink/15">
-            <StatCell label="Raised" emphasis>
+            <StatCell label={t("raised")} emphasis>
               <Marker color="saffron">
                 <SuiAmount
                   mist={BigInt(project.raisedMist)}
@@ -60,7 +62,7 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
                 />
               </Marker>
             </StatCell>
-            <StatCell label="Supporters" border>
+            <StatCell label={t("supporters")} border>
               <span className="font-mono tabular-nums text-xl md:text-2xl">
                 {project.supporters.toLocaleString()}
               </span>
@@ -79,7 +81,7 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
               )}
             >
-              <span>Back this project</span>
+              <span>{t("backThis")}</span>
               <ArrowDiag
                 size={14}
                 className="transition-transform duration-300 group-hover:translate-x-[2px]"

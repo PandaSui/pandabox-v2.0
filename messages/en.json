@@ -182,5 +182,38 @@
       "paused": "paused",
       "closed": "closed"
     }
+  },
+  "pay": {
+    "heading": "Back this project",
+    "youReceive": "You receive",
+    "remainingHint": "Remaining mintable {amount}, excess refunded automatically.",
+    "memo": "Memo (optional)",
+    "memoPlaceholder": "recorded on-chain with your payment",
+    "enterAmount": "Enter an amount",
+    "payAmount": "Pay {amount} SUI",
+    "shareOfSupply": "Share of supply",
+    "remainingMintable": "Remaining mintable",
+    "unsold": "Unsold",
+    "unsoldBurn": "Burn",
+    "unsoldTransfer": "Transfer to creator",
+    "inspectorTitle": "Transaction inspector",
+    "inspectorPreview": "Pre-sign preview. Your wallet will request a signature for this Move call.",
+    "inspectorNotDeployed": "Move package not deployed yet — submission is simulated locally until NEXT_PUBLIC_PACKAGE_ID is set.",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + refund coin → sender"
+    },
+    "cancel": "Cancel",
+    "signSubmit": "Sign & submit",
+    "signing": "Signing…",
+    "confirmed": "Payment confirmed",
+    "backToProject": "Back to project",
+    "connectFirst": "Connect a wallet to contribute.",
+    "txFailed": "Transaction failed."
   }
 }
