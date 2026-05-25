@@ -7,7 +7,6 @@ import { Marker } from "@/components/primitives/marker";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import { SuiAmount } from "@/components/identity/sui-amount";
-import { CycleClock } from "@/components/cycles/cycle-clock";
 import type { Accent } from "@/types/pandabox";
 import type { ProjectDTO } from "@/lib/api/project-dto";
 
@@ -49,7 +48,7 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
             <Address value={project.creator} link />
           </div>
 
-          <div className="mt-8 grid grid-cols-2 border border-ink/15 md:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 border border-ink/15">
             <StatCell label="Raised" emphasis>
               <Marker color="saffron">
                 <SuiAmount
@@ -65,17 +64,6 @@ export function ProjectHero({ project }: { project: ProjectDTO }) {
               <span className="font-mono tabular-nums text-xl md:text-2xl">
                 {project.supporters.toLocaleString()}
               </span>
-            </StatCell>
-            <StatCell label="Cycle" border>
-              <span className="font-mono tabular-nums text-xl md:text-2xl">
-                Nº{project.cycleNumber}
-              </span>
-            </StatCell>
-            <StatCell label="Time left" border>
-              <CycleClock
-                cycleEnd={project.cycleEnd}
-                className="text-xl md:text-2xl"
-              />
             </StatCell>
           </div>
 

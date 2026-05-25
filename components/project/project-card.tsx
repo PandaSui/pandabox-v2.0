@@ -97,7 +97,7 @@ export function ProjectCard({
         <p className="line-clamp-2 text-sm text-ink/70">{project.tagline}</p>
       </div>
 
-      <div className="grid grid-cols-3 border-t border-ink/15">
+      <div className="grid grid-cols-2 border-t border-ink/15">
         <Cell label="Raised">
           <SuiAmount
             mist={BigInt(project.raisedMist)}
@@ -110,11 +110,6 @@ export function ProjectCard({
         <Cell label="Supporters" border>
           <span className="font-mono tabular-nums text-sm">
             {compactInt(project.supporters)}
-          </span>
-        </Cell>
-        <Cell label="Cycle" border>
-          <span className="font-mono tabular-nums text-sm">
-            Nº{project.cycleNumber}
           </span>
         </Cell>
       </div>

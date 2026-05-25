@@ -67,9 +67,6 @@ export function ProjectRow({
           <span className="font-mono text-[10px] text-ink/40">
             {project.ticker}
           </span>
-          <span className="ml-auto font-mono text-[10px] text-ink/40">
-            Nº{project.cycleNumber}
-          </span>
         </div>
         <h3 className="mt-1 truncate text-base leading-tight">{project.name}</h3>
         <p className="mt-0.5 truncate text-xs text-ink/60">{project.tagline}</p>
