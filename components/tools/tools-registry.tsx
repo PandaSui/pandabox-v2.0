@@ -35,8 +35,9 @@ export const TOOLS_META: readonly ToolMeta[] = [
   {
     slug: "redeem",
     accent: "sun",
-    status: "soon",
-    moveCall: "pandabox::redeem::buyback",
+    status: "available",
+    href: "/redeem",
+    moveCall: "redeem::pool::create_pool",
     Glyph: GlyphRedeem,
     Diagram: RedeemDiagram,
   },

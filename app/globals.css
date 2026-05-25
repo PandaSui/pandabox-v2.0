@@ -437,6 +437,53 @@
   }
 }
 
+/* Hairline ring spinner — used by <Spinner> and skeleton cells. The
+   reduced-motion fallback freezes the arc rather than removing it so the
+   "in flight" affordance is still legible. */
+@keyframes pandasui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinner {
+  animation: pandasui-spin 0.85s linear infinite;
+  transform-origin: 50% 50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+/* Skeleton "shimmer" used in loading states. A faint sweep moves across
+   muted ink/[0.07] blocks at a slow tempo so the page reads as "still
+   loading" without being noisy. */
+@keyframes pandasui-skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.skeleton-block {
+  background-color: rgba(22, 19, 16, 0.07);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(22, 19, 16, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: pandasui-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block {
+    animation: none;
+  }
+}
+
 .stat-glyph .flame-body {
   transform-box: fill-box;
   transform-origin: 50% 100%;

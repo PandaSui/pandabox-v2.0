@@ -6,3 +6,6 @@
 
 export * from "./reader";
 export * from "./events";
+export * from "./coin-metadata";
+export * from "./discovery";
+export * from "./pool-activity";

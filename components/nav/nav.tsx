@@ -46,7 +46,7 @@ const LINKS: readonly NavLink[] = [
     activeMatch: ["/redeem", "/airdrop"],
     children: [
       { href: "/airdrop", labelKey: "airdrop", status: "soon" },
-      { href: "/redeem", labelKey: "redeem", status: "soon" },
+      { href: "/redeem", labelKey: "redeem", status: "live" },
     ],
   },
   { href: "/dashboard", labelKey: "dashboard", bar: "bg-jade" },

@@ -20,6 +20,13 @@ import type { RedeemPlatformState, RedeemPoolState } from "./types";
  * `lib/platform.ts` for the launchpad — `unstable_cache` wraps each fetch
  * so RSC pages can pull live state without hammering the fullnode, and
  * falls back to `null` on any RPC hiccup (the UI handles the empty case).
+ *
+ * Cache-safety note: `unstable_cache` JSON-serializes its return value to
+ * disk, and `JSON.stringify` throws on `bigint`. We therefore store a
+ * "wire" shape (u64 fields as decimal strings) inside the cache and lift
+ * back to `bigint` at the exported boundary. UI never sees the wire
+ * type — the public reader returns the same `RedeemPlatformState` /
+ * `RedeemPoolState` shapes as before.
  */
 
 let _client: SuiJsonRpcClient | null = null;
@@ -32,6 +39,54 @@ function client(): SuiJsonRpcClient {
     });
   }
   return _client;
+}
+
+/* ─────────────────────────── Wire ↔ runtime ─────────────────────────── */
+
+type WirePlatform = Omit<RedeemPlatformState, "feeTreasuryMist"> & {
+  feeTreasuryMist: string;
+};
+
+type WirePool = Omit<
+  RedeemPoolState,
+  | "priceMistPerToken"
+  | "suiReserveMist"
+  | "totalSuiDepositedMist"
+  | "totalSuiPaidOutMist"
+  | "totalCoinRedeemed"
+> & {
+  priceMistPerToken: string;
+  suiReserveMist: string;
+  totalSuiDepositedMist: string;
+  totalSuiPaidOutMist: string;
+  totalCoinRedeemed: string;
+};
+
+function platformToWire(s: RedeemPlatformState): WirePlatform {
+  return { ...s, feeTreasuryMist: s.feeTreasuryMist.toString() };
+}
+function platformFromWire(w: WirePlatform): RedeemPlatformState {
+  return { ...w, feeTreasuryMist: BigInt(w.feeTreasuryMist) };
+}
+function poolToWire(s: RedeemPoolState): WirePool {
+  return {
+    ...s,
+    priceMistPerToken: s.priceMistPerToken.toString(),
+    suiReserveMist: s.suiReserveMist.toString(),
+    totalSuiDepositedMist: s.totalSuiDepositedMist.toString(),
+    totalSuiPaidOutMist: s.totalSuiPaidOutMist.toString(),
+    totalCoinRedeemed: s.totalCoinRedeemed.toString(),
+  };
+}
+function poolFromWire(w: WirePool): RedeemPoolState {
+  return {
+    ...w,
+    priceMistPerToken: BigInt(w.priceMistPerToken),
+    suiReserveMist: BigInt(w.suiReserveMist),
+    totalSuiDepositedMist: BigInt(w.totalSuiDepositedMist),
+    totalSuiPaidOutMist: BigInt(w.totalSuiPaidOutMist),
+    totalCoinRedeemed: BigInt(w.totalCoinRedeemed),
+  };
 }
 
 /* ─────────────────────────── Platform ─────────────────────────── */
@@ -50,14 +105,11 @@ async function fetchRedeemPlatform(): Promise<RedeemPlatformState | null> {
   );
 }
 
-/**
- * Live `RedeemPlatform` state — fee_bps, treasury address, fee balance,
- * paused flag, total pool count. Cached for 60s.
- */
-export const getRedeemPlatform = unstable_cache(
-  async (): Promise<RedeemPlatformState | null> => {
+const _platformWireCached = unstable_cache(
+  async (): Promise<WirePlatform | null> => {
     try {
-      return await fetchRedeemPlatform();
+      const state = await fetchRedeemPlatform();
+      return state ? platformToWire(state) : null;
     } catch (err) {
       console.error("[redeem] getRedeemPlatform failed:", err);
       return null;
@@ -66,6 +118,15 @@ export const getRedeemPlatform = unstable_cache(
   ["redeem:platform"],
   { revalidate: 60, tags: ["redeem-platform"] },
 );
+
+/**
+ * Live `RedeemPlatform` state — fee_bps, treasury address, fee balance,
+ * paused flag, total pool count. Cached for 60s.
+ */
+export async function getRedeemPlatform(): Promise<RedeemPlatformState | null> {
+  const wire = await _platformWireCached();
+  return wire ? platformFromWire(wire) : null;
+}
 
 /* ─────────────────────────── Pool ─────────────────────────── */
 
@@ -88,6 +149,23 @@ async function fetchRedeemPool(
   });
 }
 
+const _poolWireCached = unstable_cache(
+  async (
+    poolId: string,
+    platformTreasuryAddress?: string,
+  ): Promise<WirePool | null> => {
+    try {
+      const state = await fetchRedeemPool(poolId, platformTreasuryAddress);
+      return state ? poolToWire(state) : null;
+    } catch (err) {
+      console.error(`[redeem] getRedeemPool(${poolId}) failed:`, err);
+      return null;
+    }
+  },
+  ["redeem:pool"],
+  { revalidate: 30, tags: ["redeem-pool"] },
+);
+
 /**
  * Live `RedeemPool<T>` state for a specific pool ID. Cached per-id for
  * 30s — pools change state on every redeem so we keep this shorter than
@@ -98,21 +176,13 @@ async function fetchRedeemPool(
  * `recipientMode` can be classified correctly. Pass `undefined` to fall
  * back to the "buyback" default for any non-burn recipient.
  */
-export const getRedeemPool = unstable_cache(
-  async (
-    poolId: string,
-    platformTreasuryAddress?: string,
-  ): Promise<RedeemPoolState | null> => {
-    try {
-      return await fetchRedeemPool(poolId, platformTreasuryAddress);
-    } catch (err) {
-      console.error(`[redeem] getRedeemPool(${poolId}) failed:`, err);
-      return null;
-    }
-  },
-  ["redeem:pool"],
-  { revalidate: 30, tags: ["redeem-pool"] },
-);
+export async function getRedeemPool(
+  poolId: string,
+  platformTreasuryAddress?: string,
+): Promise<RedeemPoolState | null> {
+  const wire = await _poolWireCached(poolId, platformTreasuryAddress);
+  return wire ? poolFromWire(wire) : null;
+}
 
 /**
  * Multi-pool fetch. Used by the discovery surface to hydrate the cards

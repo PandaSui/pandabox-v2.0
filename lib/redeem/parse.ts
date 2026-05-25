@@ -80,17 +80,42 @@ export function extractCoinTypeFromObjectType(
 }
 
 /**
- * `type_name::TypeName` round-trips as `{ name: "0xabc::fomo::FOMO" }`
- * inside event payloads.
+ * `type_name::TypeName` round-trips as `{ name: "abc::fomo::FOMO" }` inside
+ * event payloads — Sui strips the `0x` prefix from the package address in
+ * the TypeName encoding. Downstream callers (CoinMetadata lookup, Move call
+ * type args) require the canonical `0x…::module::Type` form, so we add the
+ * prefix back here once and never have to think about it again.
  */
 export function coinTypeFromEvent(value: unknown): string {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const n = (value as { name?: unknown }).name;
-    if (typeof n === "string") return n;
-  }
-  return "";
+  const raw =
+    typeof value === "string"
+      ? value
+      : value && typeof value === "object"
+        ? (() => {
+            const n = (value as { name?: unknown }).name;
+            return typeof n === "string" ? n : "";
+          })()
+        : "";
+  return normalizeCoinType(raw);
+}
+
+/**
+ * Canonical `0xabc::module::Type` shape. Adds the `0x` prefix when the
+ * package address is missing it, leaves the input untouched if it already
+ * has one, returns empty string for unrecognizable input.
+ */
+export function normalizeCoinType(raw: string): string {
+  const v = raw.trim();
+  if (!v) return "";
+  if (v.startsWith("0x")) return v;
+  // The shape must be `<addr>::<module>::<Type>`. Only prepend `0x` when
+  // the first segment looks like a hex package address (no letters past f,
+  // typical length is 64 chars but anything ≥ 1 hex char counts on Sui).
+  const firstSep = v.indexOf("::");
+  if (firstSep <= 0) return v;
+  const addr = v.slice(0, firstSep);
+  if (/^[0-9a-fA-F]+$/.test(addr)) return `0x${v}`;
+  return v;
 }
 
 /* ─────────────────────────── Object → state parsers ─────────────────────────── */
