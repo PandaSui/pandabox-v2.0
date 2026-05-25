@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useCurrentWallet,
@@ -35,6 +36,7 @@ function formatTokenBalance(raw: string | undefined, decimals = 9) {
 const formatSui = formatTokenBalance;
 
 export function ConnectWallet() {
+  const t = useTranslations("wallet");
   const account = useCurrentAccount();
   const { currentWallet } = useCurrentWallet();
   const wallets = useWallets();
@@ -107,7 +109,7 @@ export function ConnectWallet() {
       { wallet },
       {
         onSuccess: () => setPickerOpen(false),
-        onError: (e) => setConnectError(e.message ?? "Could not connect."),
+        onError: (e) => setConnectError(e.message ?? t("connectError")),
       },
     );
   }
@@ -121,23 +123,22 @@ export function ConnectWallet() {
           trailing={<ArrowDiag size={12} />}
           onClick={() => setPickerOpen(true)}
         >
-          Connect wallet
+          {t("connect")}
         </Button>
 
         <Modal
           open={pickerOpen}
           onClose={() => setPickerOpen(false)}
-          title="Connect a Sui wallet"
+          title={t("pickerTitle")}
         >
           <div className="flex flex-col gap-3">
             <p className="text-sm text-ink/60 leading-relaxed">
-              Pick a wallet to sign in. We never hold custody — your keys stay
-              in your wallet.
+              {t("pickerDescription")}
             </p>
 
             {wallets.length === 0 ? (
               <div className="border border-dashed border-ink/25 rounded-lg p-5 text-sm text-ink/65">
-                No Sui wallets detected in this browser.
+                {t("noWallets")}
                 <div className="mt-3">
                   <a
                     href="https://suiwallet.com"
@@ -145,7 +146,7 @@ export function ConnectWallet() {
                     rel="noreferrer"
                     className="font-mono-label text-xs underline underline-offset-4"
                   >
-                    Install Sui Wallet →
+                    {t("installSuiWallet")}
                   </a>
                 </div>
               </div>
@@ -175,7 +176,7 @@ export function ConnectWallet() {
                         {w.name}
                       </div>
                       <div className="font-mono-label text-[10px] opacity-60 mt-1">
-                        {w.version ? `v${w.version}` : "Sui wallet standard"}
+                        {w.version ? `v${w.version}` : t("walletStandard")}
                       </div>
                     </div>
                     <ArrowDiag
@@ -245,7 +246,7 @@ export function ConnectWallet() {
             )}
             <div className="flex-1 min-w-0">
               <div className="font-display text-lg leading-none">
-                {currentWallet?.name ?? "Wallet"}
+                {currentWallet?.name ?? t("fallbackName")}
               </div>
               <div className="font-mono-label text-[10px] text-ink/50 mt-1 truncate">
                 {account.address}
@@ -256,10 +257,10 @@ export function ConnectWallet() {
           <div className="px-4 py-3 border-b border-ink/10">
             <div className="flex items-center justify-between mb-2">
               <span className="font-mono-label text-[10px] text-ink/50">
-                Balance
+                {t("balanceLabel")}
               </span>
               <span className="font-mono-label text-[10px] text-ink/40">
-                Mainnet
+                {t("networkMainnet")}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -288,9 +289,9 @@ export function ConnectWallet() {
               className="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-ink hover:text-bone transition-colors"
               role="menuitem"
             >
-              <span>Copy address</span>
+              <span>{t("copyAddress")}</span>
               <span className="font-mono-label text-[10px] opacity-60">
-                {copied ? "COPIED" : "⌘C"}
+                {copied ? t("copied") : "⌘C"}
               </span>
             </button>
             <a
@@ -300,7 +301,7 @@ export function ConnectWallet() {
               className="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-ink hover:text-bone transition-colors"
               role="menuitem"
             >
-              <span>View on Suiscan</span>
+              <span>{t("viewOnSuiscan")}</span>
               <ArrowDiag size={12} />
             </a>
             <button
@@ -311,7 +312,7 @@ export function ConnectWallet() {
               className="flex items-center justify-between px-4 py-2.5 text-sm text-poppy hover:bg-poppy hover:text-bone transition-colors"
               role="menuitem"
             >
-              <span>Disconnect</span>
+              <span>{t("disconnect")}</span>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
                   d="M5 2H2v8h3M8 4l3 2-3 2M11 6H5"

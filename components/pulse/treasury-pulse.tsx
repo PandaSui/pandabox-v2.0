@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { SuiGlyph } from "@/components/identity/sui-glyph";
 import { Address } from "@/components/identity/address";
@@ -129,18 +130,7 @@ export function TreasuryPulse({
         </svg>
       </div>
 
-      {variant === "hero" && (
-        <div className="mt-6 flex items-baseline justify-between border-t border-ink/15 pt-4">
-          <div>
-            <MonoLabel>Total raised across Pandabox</MonoLabel>
-            <div className="mt-2 flex items-baseline gap-2 text-3xl">
-              <SuiGlyph size={14} className="text-ink/60" />
-              <PulseCounter mist={tvlMist} />
-            </div>
-          </div>
-          {events[0] && <RecentRow event={events[0]} />}
-        </div>
-      )}
+      {variant === "hero" && <HeroFooter tvlMist={tvlMist} event={events[0]} />}
     </div>
   );
 }
@@ -237,10 +227,32 @@ function PeakLayer({
   );
 }
 
-function RecentRow({ event }: { event: PulseEventDTO }) {
+function HeroFooter({
+  tvlMist,
+  event,
+}: {
+  tvlMist: bigint;
+  event: PulseEventDTO | undefined;
+}) {
+  const t = useTranslations("pulse");
+  return (
+    <div className="mt-6 flex items-baseline justify-between border-t border-ink/15 pt-4">
+      <div>
+        <MonoLabel>{t("totalRaised")}</MonoLabel>
+        <div className="mt-2 flex items-baseline gap-2 text-3xl">
+          <SuiGlyph size={14} className="text-ink/60" />
+          <PulseCounter mist={tvlMist} />
+        </div>
+      </div>
+      {event && <RecentRow event={event} label={t("mostRecent")} />}
+    </div>
+  );
+}
+
+function RecentRow({ event, label }: { event: PulseEventDTO; label: string }) {
   return (
     <div className="text-right text-sm">
-      <MonoLabel>Most recent</MonoLabel>
+      <MonoLabel>{label}</MonoLabel>
       <div className="mt-1 flex items-center justify-end gap-2 font-mono tabular-nums text-ink/80">
         <span style={{ color: ACCENT_HEX[event.projectAccent] }}>●</span>
         <span>{event.projectName}</span>

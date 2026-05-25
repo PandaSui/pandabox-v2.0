@@ -1,1 +1,64 @@
-{}
+{
+  "metadata": {
+    "title": "Pandabox — Fund what's worth funding. On Sui.",
+    "description": "A programmable funding launchpad on Sui. Launch a project, set the rate, run an on-chain sale — every parameter, every transaction, on-chain.",
+    "ogImageAlt": "Pandabox — programmable funding launchpad for Sui.",
+    "notFound": {
+      "title": "404 · Not found",
+      "description": "No signal on this route."
+    }
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "language": "Language"
+  },
+  "nav": {
+    "homeAria": "Pandabox home",
+    "primaryAria": "Primary",
+    "mobileAria": "Mobile",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "links": {
+      "explore": "Explore",
+      "create": "Create",
+      "dashboard": "Dashboard",
+      "docs": "Docs",
+      "admin": "Admin"
+    }
+  },
+  "wallet": {
+    "connect": "Connect wallet",
+    "pickerTitle": "Connect a Sui wallet",
+    "pickerDescription": "Pick a wallet to sign in. We never hold custody — your keys stay in your wallet.",
+    "noWallets": "No Sui wallets detected in this browser.",
+    "installSuiWallet": "Install Sui Wallet →",
+    "walletStandard": "Sui wallet standard",
+    "connectError": "Could not connect.",
+    "fallbackName": "Wallet",
+    "balanceLabel": "Balance",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Copy address",
+    "copied": "COPIED",
+    "viewOnSuiscan": "View on Suiscan",
+    "disconnect": "Disconnect"
+  },
+  "pulse": {
+    "totalRaised": "Total raised across Pandabox",
+    "mostRecent": "Most recent",
+    "flatlinedAria": "Treasury Pulse — flatlined",
+    "flatlinedCaption": "No payment events on this route. Pandabox cannot render a pulse for a page that does not exist."
+  },
+  "notFound": {
+    "eyebrow": "404 · ROUTE NOT FOUND",
+    "rowStatus": "STATUS",
+    "rowStatusValue": "NOT FOUND",
+    "rowSignal": "SIGNAL",
+    "rowCycle": "CYCLE",
+    "headline": "No signal on this route.",
+    "body": "Pandabox couldn't find what you were looking for. Either the URL drifted between cycles, or this page was never on-chain to begin with. Pick one of the live routes below — they're all paying out signal.",
+    "ctaExplore": "Explore projects",
+    "ctaLaunch": "Launch a project",
+    "ctaDocs": "Read the docs",
+    "backHome": "back to pandabox.money"
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@pandasui/ui/lib";
@@ -24,6 +24,7 @@ export function LocaleSwitcher({
   const locale = useLocale() as Locale;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("common");
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value;
@@ -43,9 +44,9 @@ export function LocaleSwitcher({
         className,
       )}
     >
-      <span className="sr-only">Language</span>
+      <span className="sr-only">{t("language")}</span>
       <select
-        aria-label="Language"
+        aria-label={t("language")}
         value={locale}
         onChange={onChange}
         disabled={isPending}

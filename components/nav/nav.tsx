@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { PandaMark } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { TreasuryPulse } from "@/components/pulse";
@@ -15,11 +16,11 @@ import { cn } from "@pandasui/ui/lib";
 // Discovery is saffron (default active), creation is poppy (inflow), the
 // supporter dashboard is jade (community), docs is sky (methodical).
 const LINKS = [
-  { href: "/explore", label: "Explore", bar: "bg-saffron" },
-  { href: "/create", label: "Create", bar: "bg-poppy" },
-  { href: "/dashboard", label: "Dashboard", bar: "bg-jade" },
-  { href: "/docs", label: "Docs", bar: "bg-sky" },
-];
+  { href: "/explore", labelKey: "explore", bar: "bg-saffron" },
+  { href: "/create", labelKey: "create", bar: "bg-poppy" },
+  { href: "/dashboard", labelKey: "dashboard", bar: "bg-jade" },
+  { href: "/docs", labelKey: "docs", bar: "bg-sky" },
+] as const;
 
 function useIsActive() {
   const pathname = usePathname() ?? "";
@@ -141,18 +142,19 @@ function NavInner({
   onToggleMobile: () => void;
 }) {
   const isActive = useIsActive();
+  const t = useTranslations("nav");
   return (
     <div className="container flex h-16 items-center justify-between gap-3 md:gap-6">
       <Link
         href="/"
-        aria-label="Pandabox home"
+        aria-label={t("homeAria")}
         className="inline-flex shrink-0 items-center gap-2"
       >
         <PandaMark className="h-7 w-7" />
         <span className="font-mono-label">Pandabox</span>
       </Link>
 
-      <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
+      <nav aria-label={t("primaryAria")} className="hidden items-center gap-1 md:flex">
         {LINKS.map((l) => {
           const active = isActive(l.href);
           return (
@@ -165,7 +167,7 @@ function NavInner({
                 active ? "text-ink" : "text-ink/70 hover:text-ink",
               )}
             >
-              {l.label}
+              {t(`links.${l.labelKey}`)}
               <span
                 aria-hidden
                 className={cn(
@@ -192,7 +194,7 @@ function NavInner({
         </div>
         <button
           type="button"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
           aria-expanded={mobileOpen}
           onClick={onToggleMobile}
           className="inline-flex h-10 w-10 items-center justify-center border border-ink/25 text-ink transition-colors hover:bg-ink/5 md:hidden"
@@ -206,6 +208,7 @@ function NavInner({
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const isActive = useIsActive();
+  const t = useTranslations("nav");
   return (
     <div
       className={cn(
@@ -231,7 +234,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
         <div className="container flex h-16 items-center justify-between">
           <Link
             href="/"
-            aria-label="Pandabox home"
+            aria-label={t("homeAria")}
             onClick={onClose}
             className="inline-flex items-center gap-2"
           >
@@ -240,14 +243,14 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           </Link>
           <button
             type="button"
-            aria-label="Close menu"
+            aria-label={t("closeMenu")}
             onClick={onClose}
             className="inline-flex h-10 w-10 items-center justify-center border border-ink/25 text-ink hover:bg-ink/5"
           >
             <CloseGlyph />
           </button>
         </div>
-        <nav aria-label="Mobile" className="container flex flex-col pb-6 pt-2">
+        <nav aria-label={t("mobileAria")} className="container flex flex-col pb-6 pt-2">
           {LINKS.map((l) => {
             const active = isActive(l.href);
             return (
@@ -269,7 +272,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
                     active ? "scale-y-100" : "scale-y-0",
                   )}
                 />
-                {l.label}
+                {t(`links.${l.labelKey}`)}
               </Link>
             );
           })}
