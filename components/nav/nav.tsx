@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { PandaMark } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { TreasuryPulse } from "@/components/pulse";
+import { LocaleSwitcher } from "@/components/i18n/locale-switcher";
 import { AdminNavLink } from "./admin-nav-link";
 import { cn } from "@pandasui/ui/lib";
 
@@ -185,6 +186,7 @@ function NavInner({
             <TreasuryPulse variant="compact" />
           </div>
         )}
+        <LocaleSwitcher variant="desktop" className="hidden md:inline-flex" />
         <div className="hidden md:block">
           <ConnectWallet />
         </div>
@@ -275,6 +277,9 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
             <AdminNavLink />
           </div>
           <div className="mt-4">
+            <LocaleSwitcher variant="mobile" />
+          </div>
+          <div className="mt-3">
             <ConnectWallet />
           </div>
         </nav>
