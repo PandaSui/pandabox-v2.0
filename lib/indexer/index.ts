@@ -1,6 +1,5 @@
 import type {
   Category,
-  Cycle,
   GlobalStats,
   Holder,
   Payment,
@@ -9,13 +8,12 @@ import type {
 } from "@/types/pandabox";
 import { MOCK_NOW, PROJECTS, PROJECT_BY_ID } from "./fixtures";
 import {
-  generateCycles,
   generateGlobalRecentPayments,
   generateHolders,
   generatePayments,
 } from "./generators";
 
-export type { Category, Cycle, GlobalStats, Holder, Payment, Project, SortKey };
+export type { Category, GlobalStats, Holder, Payment, Project, SortKey };
 
 export type ListProjectsOpts = {
   sort?: SortKey;
@@ -41,11 +39,15 @@ function sortProjects(items: Project[], sort: SortKey): Project[] {
       );
       break;
     case "ending-soonest":
-      copy.sort((a, b) => a.cycleEnd - b.cycleEnd);
+      copy.sort((a, b) => {
+        const aEnd = a.endTimeMs ?? Number.POSITIVE_INFINITY;
+        const bEnd = b.endTimeMs ?? Number.POSITIVE_INFINITY;
+        return aEnd - bEnd;
+      });
       break;
     case "trending":
     default: {
-      // simple heuristic: supporters + raised, weighted by cycle freshness
+      // simple heuristic: supporters + raised, weighted by sale freshness
       const score = (p: Project) => {
         const ageDays = Math.max(1, (MOCK_NOW - p.deployedAt) / 86400000);
         const raisedSui = Number(p.raisedMist / 1_000_000_000n);
@@ -86,12 +88,6 @@ export async function getProject(id: string): Promise<Project | null> {
   return PROJECT_BY_ID.get(id) ?? null;
 }
 
-export async function getCycles(projectId: string): Promise<Cycle[]> {
-  const p = PROJECT_BY_ID.get(projectId);
-  if (!p) return [];
-  return generateCycles(p);
-}
-
 export async function getActivity(
   projectId: string,
   opts: { limit?: number; cursor?: string } = {},
@@ -126,11 +122,11 @@ export async function getGlobalStats(): Promise<GlobalStats> {
   const live = PROJECTS.filter((p) => p.status === "live");
   const tvlMist = live.reduce((acc, p) => acc + p.raisedMist, 0n);
   const supporterCount = live.reduce((acc, p) => acc + p.supporters, 0);
-  const durations = live.map(
-    (p) => (p.cycleEnd - p.cycleStart) / 86400000,
-  );
+  const durations = live
+    .filter((p) => p.endTimeMs !== null)
+    .map((p) => ((p.endTimeMs as number) - p.deployedAt) / 86400000);
   durations.sort((a, b) => a - b);
-  const medianCycleDays =
+  const medianSaleDays =
     durations.length === 0
       ? 0
       : durations[Math.floor(durations.length / 2)];
@@ -139,7 +135,7 @@ export async function getGlobalStats(): Promise<GlobalStats> {
     tvlMist,
     projectCount: live.length,
     supporterCount,
-    medianCycleDays,
+    medianSaleDays,
     delta7d: {
       tvlPct: 4.2,
       projectsPct: 1.8,

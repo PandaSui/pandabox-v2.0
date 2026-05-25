@@ -57,33 +57,8 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
 
   // Token preview: amount × weight.
   const tokensRaw = useMemo(() => {
-    return (amountMist * BigInt(project.params.weight)) / 1_000_000_000n;
-  }, [amountMist, project.params.weight]);
-
-  // Cash-out preview (heuristic): your share of treasury, less cash-out tax.
-  const cashOutSui = useMemo(() => {
-    if (suiAmount.isZero()) return new BigNumber(0);
-    // After your payment, share = your tokens / (existing supply + your tokens).
-    // Treasury after your payment ≈ raised + your amount.
-    const raisedSui = new BigNumber(project.raisedMist).dividedBy(1e9);
-    const newTreasury = raisedSui.plus(suiAmount);
-    // Total supply ≈ raised × weight + your tokens.
-    const totalSupply = new BigNumber(project.raisedMist)
-      .multipliedBy(project.params.weight)
-      .dividedBy(1e9)
-      .plus(new BigNumber(tokensRaw.toString()));
-    if (totalSupply.isZero()) return new BigNumber(0);
-    const share = new BigNumber(tokensRaw.toString()).dividedBy(totalSupply);
-    const gross = newTreasury.multipliedBy(share);
-    const tax = new BigNumber(project.params.cashOutTax).dividedBy(100);
-    return gross.multipliedBy(new BigNumber(1).minus(tax));
-  }, [
-    suiAmount,
-    tokensRaw,
-    project.raisedMist,
-    project.params.weight,
-    project.params.cashOutTax,
-  ]);
+    return (amountMist * BigInt(project.weight)) / 1_000_000_000n;
+  }, [amountMist, project.weight]);
 
   const isValid = amountMist > 0n;
 
@@ -123,7 +98,7 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
           className="mt-5"
         />
 
-        <div className="mt-5 grid grid-cols-2 gap-3 border-t border-ink/15 pt-4 text-xs">
+        <div className="mt-5 border-t border-ink/15 pt-4 text-xs">
           <Preview label="You receive">
             <TokenAmount
               raw={tokensRaw}
@@ -132,11 +107,6 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
               compact
               className="text-sm"
             />
-          </Preview>
-          <Preview label="Cash out today">
-            <span className="inline-flex items-baseline gap-1 text-sm">
-              ≈ <SuiAmount mist={BigInt(cashOutSui.multipliedBy(1e9).integerValue().toFixed(0))} maxFractionDigits={2} />
-            </span>
           </Preview>
         </div>
 
@@ -188,11 +158,7 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
           )}
         </div>
 
-        <div className="mt-4 grid grid-cols-3 border-t border-ink/15 pt-3 text-center">
-          <ParamCell label="Reserved" value={`${project.params.reservedRate}%`} />
-          <ParamCell label="Cash-out tax" value={`${project.params.cashOutTax}%`} border />
-          <ParamCell label="Issuance ↓" value={`${project.params.issuanceReduction}%`} border />
-        </div>
+        {/* ParamCell row is rebuilt in stage 4 (share of supply / remaining mintable / unsold). */}
       </div>
 
       <Modal
@@ -263,19 +229,8 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
                     if (!account) {
                       throw new Error("Connect a wallet to contribute.");
                     }
-                    // ProjectDTO doesn't yet carry the coin type T. Until the
-                    // DTO migration lands, we can't safely build a contribute
-                    // tx — surface a clear error instead of submitting a
-                    // malformed call against the contract.
-                    const coinType = (project as { coinType?: string }).coinType;
-                    if (!coinType) {
-                      throw new Error(
-                        "Contribute panel disabled until ProjectDTO carries the coin type. " +
-                          "See `lib/api/project-dto.ts` migration TODO.",
-                      );
-                    }
                     const tx = buildContributeTx({
-                      coinType,
+                      coinType: project.coinType,
                       projectId: project.id,
                       amountMist,
                       sender: account.address,

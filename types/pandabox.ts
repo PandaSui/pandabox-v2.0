@@ -16,6 +16,8 @@ export type SortKey = "trending" | "newest" | "most-funded" | "ending-soonest";
 
 export type ProjectStatus = "live" | "paused" | "closed";
 
+export type UnsoldAction = "burn" | "transfer_to_creator";
+
 export type NftTier = {
   id: string;
   name: string;
@@ -24,21 +26,6 @@ export type NftTier = {
   minted: number;
   image: string;
   perks: string;
-};
-
-export type CycleParams = {
-  weight: bigint;
-  reservedRate: number;
-  cashOutTax: number;
-  issuanceReduction: number;
-  payoutLimitMist: bigint;
-  ballotDelayHours: number;
-};
-
-export type QueuedReconfiguration = {
-  takesEffectAt: number;
-  summary: string;
-  params: Partial<CycleParams>;
 };
 
 export type Project = {
@@ -57,31 +44,23 @@ export type Project = {
   deployedAt: number;
   raisedMist: bigint;
   supporters: number;
-  cycleNumber: number;
-  cycleStart: number;
-  cycleEnd: number;
-  params: CycleParams;
+  /** Fully-qualified Move coin type — needed by PayPanel to build contribute<T>. */
+  coinType: string;
+  /** Contract base_rate (already scaled by 10^9). tokens = mist × weight / 1e9. */
+  weight: bigint;
+  /** funding_allocation: total raw tokens (with 9 decimals) the sale can mint. */
+  allocationTokens: bigint;
+  /** Raw tokens already minted. mock layer always 0. */
+  alreadyMinted: bigint;
+  unsoldAction: UnsoldAction;
+  /** Unix ms or null (no time cap, admin-closed only). */
+  endTimeMs: number | null;
   tiers: NftTier[];
-  queuedReconfiguration: QueuedReconfiguration | null;
   socials: {
     twitter?: string;
     website?: string;
     discord?: string;
   };
-};
-
-export type CycleStatus = "past" | "current" | "upcoming";
-
-export type Cycle = {
-  projectId: string;
-  number: number;
-  start: number;
-  end: number;
-  raisedMist: bigint;
-  payoutsMist: bigint;
-  reservedTokensRaw: bigint;
-  status: CycleStatus;
-  params: CycleParams;
 };
 
 export type Payment = {
@@ -107,7 +86,7 @@ export type GlobalStats = {
   tvlMist: bigint;
   projectCount: number;
   supporterCount: number;
-  medianCycleDays: number;
+  medianSaleDays: number;
   delta7d: {
     tvlPct: number;
     projectsPct: number;

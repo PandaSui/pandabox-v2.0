@@ -1,4 +1,4 @@
-import type { Accent, Category, Project } from "@/types/pandabox";
+import type { Accent, Category, Project, UnsoldAction } from "@/types/pandabox";
 
 const MIST = 1_000_000_000n;
 const DAY = 86400 * 1000;
@@ -7,6 +7,9 @@ const DAY = 86400 * 1000;
 // In a real indexer this isn't needed; for mocks it keeps hydration clean.
 export const MOCK_NOW = 1747353600000; // 2025-05-16 00:00:00 UTC
 
+// 100 亿 × 10^9 decimals — fixed by contract.
+const TOTAL_SUPPLY_RAW = 10_000_000_000n * 1_000_000_000n;
+
 type Seed = Omit<
   Project,
   | "id"
@@ -14,16 +17,14 @@ type Seed = Omit<
   | "adminCapId"
   | "creator"
   | "deployedAt"
-  | "cycleStart"
-  | "cycleEnd"
   | "tiers"
-  | "queuedReconfiguration"
+  | "endTimeMs"
+  | "alreadyMinted"
 > & {
   daysSinceDeploy: number;
-  cycleProgress: number;
-  cycleDurationDays: number;
+  /** null = no time cap (admin-closed only). */
+  endInDays: number | null;
   hasTiers: boolean;
-  queued?: { inDays: number; summary: string };
 };
 
 const SEEDS: Seed[] = [
@@ -39,19 +40,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 14_240n * MIST,
     supporters: 612,
-    cycleNumber: 7,
-    params: {
-      weight: 1_000_000n,
-      reservedRate: 8,
-      cashOutTax: 12,
-      issuanceReduction: 3,
-      payoutLimitMist: 9_000n * MIST,
-      ballotDelayHours: 72,
-    },
+    coinType: "0xa5fd521610eaba7a65601f79fe5b898a7eef83f94cf2019900df6c512df5e5c1::oono::OONO",
+    weight: 1_000_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "atelierono", website: "ono.art" },
     daysSinceDeploy: 92,
-    cycleProgress: 0.62,
-    cycleDurationDays: 14,
+    endInDays: 21,
     hasTiers: true,
   },
   {
@@ -66,24 +61,14 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 38_180n * MIST,
     supporters: 1_142,
-    cycleNumber: 12,
-    params: {
-      weight: 750_000n,
-      reservedRate: 15,
-      cashOutTax: 25,
-      issuanceReduction: 5,
-      payoutLimitMist: 24_000n * MIST,
-      ballotDelayHours: 168,
-    },
+    coinType: "0xc9523f683256502be15ec4979098d510f67b6d3f0df02eebf124515014433270::idx::IDX",
+    weight: 750_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "transfer_to_creator",
     socials: { twitter: "suiidxcommons", website: "idx.commons" },
     daysSinceDeploy: 168,
-    cycleProgress: 0.31,
-    cycleDurationDays: 14,
+    endInDays: 45,
     hasTiers: false,
-    queued: {
-      inDays: 6,
-      summary: "Raise reserved rate to 18%, extend ballot delay to 10d.",
-    },
   },
   {
     name: "Council of Bamboo",
@@ -97,19 +82,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 9_840n * MIST,
     supporters: 387,
-    cycleNumber: 4,
-    params: {
-      weight: 1_200_000n,
-      reservedRate: 20,
-      cashOutTax: 8,
-      issuanceReduction: 2,
-      payoutLimitMist: 6_000n * MIST,
-      ballotDelayHours: 96,
-    },
+    coinType: "0x12b843d5322953a53c689975664a22e9ba5db52876a7d89c4b79dfc51babe774::bamboo::BAMBOO",
+    weight: 1_200_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "councilbamboo", website: "bamboo.dao" },
     daysSinceDeploy: 56,
-    cycleProgress: 0.88,
-    cycleDurationDays: 14,
+    endInDays: 14,
     hasTiers: false,
   },
   {
@@ -124,19 +103,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 6_220n * MIST,
     supporters: 248,
-    cycleNumber: 9,
-    params: {
-      weight: 900_000n,
-      reservedRate: 5,
-      cashOutTax: 18,
-      issuanceReduction: 7,
-      payoutLimitMist: 4_500n * MIST,
-      ballotDelayHours: 48,
-    },
+    coinType: "0xd0e9f86a01fe71e0db8e6b6c4abf72153a14b6f9c8e1e6cf91b1234567890abcd::heron::HERON",
+    weight: 900_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "heronresearch", website: "heron.report" },
     daysSinceDeploy: 124,
-    cycleProgress: 0.45,
-    cycleDurationDays: 14,
+    endInDays: null,
     hasTiers: true,
   },
   {
@@ -151,19 +124,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 22_500n * MIST,
     supporters: 884,
-    cycleNumber: 3,
-    params: {
-      weight: 800_000n,
-      reservedRate: 12,
-      cashOutTax: 30,
-      issuanceReduction: 4,
-      payoutLimitMist: 15_000n * MIST,
-      ballotDelayHours: 168,
-    },
+    coinType: "0x1111111111111111111111111111111111111111111111111111111111111111::mari::MARI",
+    weight: 800_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "transfer_to_creator",
     socials: { twitter: "marigoldstudios", website: "marigold.gg" },
     daysSinceDeploy: 42,
-    cycleProgress: 0.74,
-    cycleDurationDays: 14,
+    endInDays: 30,
     hasTiers: true,
   },
   {
@@ -178,19 +145,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 4_120n * MIST,
     supporters: 196,
-    cycleNumber: 11,
-    params: {
-      weight: 1_500_000n,
-      reservedRate: 25,
-      cashOutTax: 15,
-      issuanceReduction: 6,
-      payoutLimitMist: 3_000n * MIST,
-      ballotDelayHours: 72,
-    },
+    coinType: "0x2222222222222222222222222222222222222222222222222222222222222222::plum::PLUM",
+    weight: 1_500_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "plumrecords", website: "plum.fm" },
     daysSinceDeploy: 154,
-    cycleProgress: 0.18,
-    cycleDurationDays: 14,
+    endInDays: 60,
     hasTiers: false,
   },
   {
@@ -205,19 +166,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 17_900n * MIST,
     supporters: 1_021,
-    cycleNumber: 6,
-    params: {
-      weight: 600_000n,
-      reservedRate: 18,
-      cashOutTax: 22,
-      issuanceReduction: 5,
-      payoutLimitMist: 12_000n * MIST,
-      ballotDelayHours: 96,
-    },
+    coinType: "0x3333333333333333333333333333333333333333333333333333333333333333::ltrn::LTRN",
+    weight: 600_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "lanternsapp", website: "lanterns.social" },
     daysSinceDeploy: 84,
-    cycleProgress: 0.55,
-    cycleDurationDays: 14,
+    endInDays: 12,
     hasTiers: false,
   },
   {
@@ -232,24 +187,14 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 51_300n * MIST,
     supporters: 421,
-    cycleNumber: 5,
-    params: {
-      weight: 500_000n,
-      reservedRate: 10,
-      cashOutTax: 35,
-      issuanceReduction: 8,
-      payoutLimitMist: 36_000n * MIST,
-      ballotDelayHours: 240,
-    },
+    coinType: "0x4444444444444444444444444444444444444444444444444444444444444444::est::EST",
+    weight: 500_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "transfer_to_creator",
     socials: { twitter: "estuaryrwa", website: "estuary.eco" },
     daysSinceDeploy: 70,
-    cycleProgress: 0.92,
-    cycleDurationDays: 14,
+    endInDays: 7,
     hasTiers: true,
-    queued: {
-      inDays: 2,
-      summary: "Lower cash-out tax to 30%, raise payout limit to 42K SUI.",
-    },
   },
   {
     name: "Saffron Books",
@@ -263,19 +208,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 7_640n * MIST,
     supporters: 312,
-    cycleNumber: 8,
-    params: {
-      weight: 1_100_000n,
-      reservedRate: 12,
-      cashOutTax: 10,
-      issuanceReduction: 4,
-      payoutLimitMist: 5_500n * MIST,
-      ballotDelayHours: 72,
-    },
+    coinType: "0x5555555555555555555555555555555555555555555555555555555555555555::sfbk::SFBK",
+    weight: 1_100_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "saffronbooks", website: "saffronbooks.press" },
     daysSinceDeploy: 112,
-    cycleProgress: 0.4,
-    cycleDurationDays: 14,
+    endInDays: 35,
     hasTiers: true,
   },
   {
@@ -290,19 +229,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 12_440n * MIST,
     supporters: 540,
-    cycleNumber: 10,
-    params: {
-      weight: 700_000n,
-      reservedRate: 14,
-      cashOutTax: 20,
-      issuanceReduction: 5,
-      payoutLimitMist: 8_500n * MIST,
-      ballotDelayHours: 96,
-    },
+    coinType: "0x6666666666666666666666666666666666666666666666666666666666666666::pop::POP",
+    weight: 700_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "poppycdn", website: "poppy.cdn" },
     daysSinceDeploy: 140,
-    cycleProgress: 0.28,
-    cycleDurationDays: 14,
+    endInDays: 90,
     hasTiers: false,
   },
   {
@@ -317,19 +250,13 @@ const SEEDS: Seed[] = [
     status: "live",
     raisedMist: 28_900n * MIST,
     supporters: 712,
-    cycleNumber: 14,
-    params: {
-      weight: 950_000n,
-      reservedRate: 16,
-      cashOutTax: 14,
-      issuanceReduction: 3,
-      payoutLimitMist: 20_000n * MIST,
-      ballotDelayHours: 168,
-    },
+    coinType: "0x7777777777777777777777777777777777777777777777777777777777777777::sun::SUN",
+    weight: 950_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "transfer_to_creator",
     socials: { twitter: "sundialdao", website: "sundial.dao" },
     daysSinceDeploy: 196,
-    cycleProgress: 0.66,
-    cycleDurationDays: 14,
+    endInDays: 50,
     hasTiers: false,
   },
   {
@@ -344,19 +271,13 @@ const SEEDS: Seed[] = [
     status: "closed",
     raisedMist: 3_280n * MIST,
     supporters: 122,
-    cycleNumber: 6,
-    params: {
-      weight: 800_000n,
-      reservedRate: 10,
-      cashOutTax: 0,
-      issuanceReduction: 0,
-      payoutLimitMist: 0n,
-      ballotDelayHours: 0,
-    },
+    coinType: "0x8888888888888888888888888888888888888888888888888888888888888888::arch::ARCH",
+    weight: 800_000n,
+    allocationTokens: TOTAL_SUPPLY_RAW,
+    unsoldAction: "burn",
     socials: { twitter: "heronarchive" },
     daysSinceDeploy: 320,
-    cycleProgress: 1,
-    cycleDurationDays: 30,
+    endInDays: -10,
     hasTiers: false,
   },
 ];
@@ -463,27 +384,18 @@ function tiersFor(seed: Seed): Project["tiers"] {
 }
 
 export const PROJECTS: Project[] = SEEDS.map((s) => {
-  const cycleLen = s.cycleDurationDays * DAY;
-  const elapsed = Math.round(cycleLen * s.cycleProgress);
-  const cycleStart = MOCK_NOW - elapsed;
-  const cycleEnd = cycleStart + cycleLen;
   const deployedAt = MOCK_NOW - s.daysSinceDeploy * DAY;
+  const endTimeMs = s.endInDays === null ? null : MOCK_NOW + s.endInDays * DAY;
+  // Mock: minted tokens are derived from raised SUI × weight (matches the
+  // contract's fixed-price formula). Real indexer reads this from chain.
+  const alreadyMinted = (s.raisedMist * s.weight) / MIST;
   return {
     id: pseudoId(s.name, "project"),
     packageId: pseudoId(s.name, "package"),
     adminCapId: pseudoId(s.name + "-cap", "cap"),
     creator: pseudoId(s.name + "-creator", "addr"),
     deployedAt,
-    cycleStart,
-    cycleEnd,
     tiers: tiersFor(s),
-    queuedReconfiguration: s.queued
-      ? {
-          takesEffectAt: MOCK_NOW + s.queued.inDays * DAY,
-          summary: s.queued.summary,
-          params: {},
-        }
-      : null,
     name: s.name,
     ticker: s.ticker,
     tagline: s.tagline,
@@ -494,8 +406,12 @@ export const PROJECTS: Project[] = SEEDS.map((s) => {
     status: s.status,
     raisedMist: s.raisedMist,
     supporters: s.supporters,
-    cycleNumber: s.cycleNumber,
-    params: s.params,
+    coinType: s.coinType,
+    weight: s.weight,
+    allocationTokens: s.allocationTokens,
+    alreadyMinted,
+    unsoldAction: s.unsoldAction as UnsoldAction,
+    endTimeMs,
     socials: s.socials,
   };
 });

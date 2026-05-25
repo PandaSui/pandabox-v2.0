@@ -10,7 +10,6 @@ export type SupportEntryDTO = {
   project: ProjectDTO;
   balanceRaw: string;
   pctSupply: number;
-  cashOutMist: string;
   lastPayment: PaymentDTO | null;
 };
 
@@ -25,7 +24,6 @@ export function toSupportEntryDTO(e: SupportEntry): SupportEntryDTO {
     project: toProjectDTO(e.project),
     balanceRaw: e.balanceRaw.toString(),
     pctSupply: e.pctSupply,
-    cashOutMist: e.cashOutMist.toString(),
     lastPayment: e.lastPayment ? toPaymentDTO(e.lastPayment) : null,
   };
 }

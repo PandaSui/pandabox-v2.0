@@ -32,7 +32,7 @@ function freshEvent(): Payment | null {
         : 30 + Math.random() * 150;
 
   const amount = BigInt(Math.round(sui * 1_000_000_000));
-  const tokens = (amount * p.params.weight) / MIST;
+  const tokens = (amount * p.weight) / MIST;
 
   return {
     txHash: hex(32),
