@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { fontDisplay, fontSans, fontMono } from "./fonts";
 import { Providers } from "./providers";
 import { PageTransition } from "@/components/motion";
@@ -89,14 +91,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}
     >
       <body className="antialiased">
@@ -106,9 +110,11 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Providers>
-          <PageTransition>{children}</PageTransition>
-        </Providers>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <Providers>
+            <PageTransition>{children}</PageTransition>
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
