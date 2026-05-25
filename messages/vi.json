@@ -25,6 +25,14 @@
       "dashboard": "Bảng điều khiển",
       "docs": "Tài liệu",
       "admin": "Quản trị"
+    },
+    "tools": {
+      "menuAria": "Menu công cụ",
+      "airdrop": "Công cụ Airdrop",
+      "redeem": "Redeem & Mua lại",
+      "viewAll": "Xem tất cả công cụ",
+      "statusLive": "Đang chạy",
+      "statusSoon": "Sắp tới"
     }
   },
   "wallet": {

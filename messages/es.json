@@ -25,6 +25,14 @@
       "dashboard": "Panel",
       "docs": "Documentación",
       "admin": "Admin"
+    },
+    "tools": {
+      "menuAria": "Menú de herramientas",
+      "airdrop": "Herramienta de Airdrop",
+      "redeem": "Redeem y Recompra",
+      "viewAll": "Ver todas las herramientas",
+      "statusLive": "Activa",
+      "statusSoon": "Pronto"
     }
   },
   "wallet": {

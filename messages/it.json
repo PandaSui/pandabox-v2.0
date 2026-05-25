@@ -25,6 +25,14 @@
       "dashboard": "Dashboard",
       "docs": "Documenti",
       "admin": "Admin"
+    },
+    "tools": {
+      "menuAria": "Menu strumenti",
+      "airdrop": "Strumento Airdrop",
+      "redeem": "Redeem & Buyback",
+      "viewAll": "Vedi tutti gli strumenti",
+      "statusLive": "Live",
+      "statusSoon": "Presto"
     }
   },
   "wallet": {

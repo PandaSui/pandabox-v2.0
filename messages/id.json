@@ -25,6 +25,14 @@
       "dashboard": "Dasbor",
       "docs": "Dokumen",
       "admin": "Admin"
+    },
+    "tools": {
+      "menuAria": "Menu alat",
+      "airdrop": "Alat Airdrop",
+      "redeem": "Redeem & Buyback",
+      "viewAll": "Lihat semua alat",
+      "statusLive": "Aktif",
+      "statusSoon": "Segera"
     }
   },
   "wallet": {

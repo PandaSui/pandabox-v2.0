@@ -25,6 +25,14 @@
       "dashboard": "대시보드",
       "docs": "문서",
       "admin": "관리자"
+    },
+    "tools": {
+      "menuAria": "도구 메뉴",
+      "airdrop": "에어드랍 도구",
+      "redeem": "Redeem & 바이백",
+      "viewAll": "모든 도구 보기",
+      "statusLive": "가동 중",
+      "statusSoon": "곧"
     }
   },
   "wallet": {

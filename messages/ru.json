@@ -25,6 +25,14 @@
       "dashboard": "Панель",
       "docs": "Документация",
       "admin": "Админ"
+    },
+    "tools": {
+      "menuAria": "Меню инструментов",
+      "airdrop": "Инструмент Airdrop",
+      "redeem": "Redeem и выкуп",
+      "viewAll": "Все инструменты",
+      "statusLive": "Активно",
+      "statusSoon": "Скоро"
     }
   },
   "wallet": {

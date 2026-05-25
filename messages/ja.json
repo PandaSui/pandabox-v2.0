@@ -25,6 +25,14 @@
       "dashboard": "ダッシュボード",
       "docs": "ドキュメント",
       "admin": "管理"
+    },
+    "tools": {
+      "menuAria": "ツールメニュー",
+      "airdrop": "エアドロップツール",
+      "redeem": "Redeem & 買い戻し",
+      "viewAll": "すべてのツールを見る",
+      "statusLive": "稼働中",
+      "statusSoon": "近日"
     }
   },
   "wallet": {

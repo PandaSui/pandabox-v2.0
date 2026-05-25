@@ -25,6 +25,14 @@
       "dashboard": "控制台",
       "docs": "文档",
       "admin": "管理"
+    },
+    "tools": {
+      "menuAria": "工具菜单",
+      "airdrop": "空投工具",
+      "redeem": "Redeem 与回购",
+      "viewAll": "查看全部工具",
+      "statusLive": "已上线",
+      "statusSoon": "即将"
     }
   },
   "wallet": {
