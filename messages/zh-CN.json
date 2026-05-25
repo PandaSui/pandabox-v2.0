@@ -8,45 +8,54 @@
       "description": "此路径没有信号。"
     }
   },
-  "common": { "skipToContent": "跳到主要内容", "language": "语言" },
+  "common": {
+    "skipToContent": "跳到主要内容",
+    "language": "语言"
+  },
   "nav": {
     "homeAria": "Pandabox 首页",
     "primaryAria": "主导航",
     "mobileAria": "移动端导航",
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
-    "links": { "explore": "探索", "create": "创建", "dashboard": "控制台", "docs": "文档", "admin": "管理" }
+    "links": {
+      "explore": "探索",
+      "create": "创建",
+      "dashboard": "控制台",
+      "docs": "文档",
+      "admin": "管理"
+    }
   },
   "wallet": {
     "connect": "连接钱包",
     "pickerTitle": "连接 Sui 钱包",
-    "pickerDescription": "选择一个钱包登录。我们从不托管资产 —— 私钥始终留在你的钱包中。",
-    "noWallets": "此浏览器中未检测到 Sui 钱包。",
+    "pickerDescription": "选择一个钱包登录。我们不托管你的资产 —— 私钥始终留在你的钱包中。",
+    "noWallets": "当前浏览器未检测到 Sui 钱包。",
     "installSuiWallet": "安装 Sui Wallet →",
     "walletStandard": "Sui 钱包标准",
     "connectError": "无法连接。",
     "fallbackName": "钱包",
     "balanceLabel": "余额",
-    "networkMainnet": "主网",
+    "networkMainnet": "Mainnet",
     "copyAddress": "复制地址",
     "copied": "已复制",
-    "viewOnSuiscan": "在 Suiscan 查看",
+    "viewOnSuiscan": "在 Suiscan 中查看",
     "disconnect": "断开连接"
   },
   "pulse": {
-    "totalRaised": "Pandabox 累计募集总额",
-    "mostRecent": "最近一次",
-    "flatlinedAria": "资金脉搏 —— 已静止",
-    "flatlinedCaption": "此路径没有支付事件。Pandabox 无法为不存在的页面呈现脉搏。"
+    "totalRaised": "Pandabox 全平台募集总额",
+    "mostRecent": "最近",
+    "flatlinedAria": "Treasury Pulse —— 心电图归零",
+    "flatlinedCaption": "此路径没有支付事件。Pandabox 无法为不存在的页面渲染心跳。"
   },
   "notFound": {
-    "eyebrow": "404 · 路径未找到",
+    "eyebrow": "404 · 未找到路径",
     "rowStatus": "状态",
     "rowStatusValue": "未找到",
     "rowSignal": "信号",
     "rowCycle": "周期",
     "headline": "此路径没有信号。",
-    "body": "Pandabox 找不到你要找的内容。可能 URL 在不同周期之间发生了偏移，或这个页面从未上链。请从下方任一活跃路径进入 —— 它们都正在输出信号。",
+    "body": "Pandabox 没有找到你要的内容。要么 URL 在不同周期间发生了漂移，要么这个页面从未上链过。请选择下方任一可用路径 —— 它们都在持续输出信号。",
     "ctaExplore": "探索项目",
     "ctaLaunch": "发布项目",
     "ctaDocs": "阅读文档",
@@ -54,12 +63,12 @@
   },
   "home": {
     "hero": {
-      "live": "已上线 Sui {network}",
+      "live": "在 Sui {network} 上运行",
       "titleFund": "资助",
-      "titleWorth": "值得资助",
-      "titleFunding": "的项目。",
+      "titleWorth": "值得",
+      "titleFunding": "资助的项目。",
       "titleOnSui": "在 Sui 上",
-      "tagline": "Pandabox 是 Sui 上的可编程募资平台。几分钟内发布项目，接收 SUI、发行代币、定义支付规则 —— 全部上链、全部透明、全部归你。",
+      "tagline": "Pandabox 是面向 Sui 的可编程募资平台。几分钟内启动项目。接收 SUI、发行代币、定义分配 —— 全部上链、全部透明、全部归你所有。",
       "ctaLaunch": "发布项目",
       "ctaExplore": "探索项目",
       "specVersion": "v1 · pandabox",
@@ -67,14 +76,14 @@
       "specPkg": "pkg"
     },
     "finalCta": {
-      "marginTop": "Nº 04 · 终章",
-      "marginSpec": "项目规格 —— pandabox",
-      "marginYear": "2026 · Sui 主网",
-      "shipIt": "上线吧",
+      "marginTop": "Nº 04 · final",
+      "marginSpec": "project spec — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "发布",
       "titleYourProject": "你的项目，",
       "titleOnchain": "上链",
       "titleInMinutes": "只需 3 分钟。",
-      "subhead": "配置周期、支付规则与代币。在 Sui 上签署一笔交易。AdminCap 始终在你手中。",
+      "subhead": "配置周期、分配和代币。签署一笔 Sui 交易。管理权（admin cap）由你掌控。",
       "ctaLaunch": "发布项目",
       "ctaDocs": "阅读文档",
       "tileSign": "签名",
@@ -82,17 +91,157 @@
       "tileGas": "Gas",
       "tileGasValue": "< $0.001",
       "tileSetup": "设置",
-      "tileSetupValue": "6 步",
+      "tileSetupValue": "6 个步骤",
       "tileKeys": "密钥",
-      "tileKeysValue": "AdminCap 归你",
-      "marginLive": "pandabox.sui · 在线",
-      "marginRevalidate": "60 秒重新校验"
+      "tileKeysValue": "AdminCap 归你所有",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "每 60 秒刷新"
     },
-    "featured": { "title": "精选项目", "subtitle": "精选推荐，正在募集中。", "viewAll": "查看全部" }
+    "featured": {
+      "title": "精选项目",
+      "subtitle": "精挑细选，正在募资中。",
+      "viewAll": "查看全部",
+      "eyebrow": "精选",
+      "headline": "正在募资中",
+      "watermark": "FUNDED",
+      "sectionRail": "section · 02 / featured",
+      "statOnchain": "链上",
+      "statProjects": "项目",
+      "statRaisedAcross": "前 3 名累计募集",
+      "exploreAll": "探索所有项目",
+      "dataMeta": "数据：sui mainnet · 每 60 秒刷新",
+      "empty": {
+        "label": "暂无项目",
+        "heading": "正在监听链上的第一个项目。",
+        "description": "<code>pandabox::project</code> 的 ProjectCreated 事件将显示在此处。"
+      },
+      "tape": {
+        "live": "进行中",
+        "onchain": "链上",
+        "backedAgo": "已支持 · 2 分钟前",
+        "verified": "已验证",
+        "cycle01": "周期 01",
+        "supportingNow": "正在支持 · 12 人",
+        "txConfirmed": "交易已确认",
+        "freshRaise": "新募资",
+        "unnamed": "未命名"
+      },
+      "skeleton": {
+        "ariaLoading": "正在加载精选项目",
+        "srLoading": "正在加载精选项目……"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "工作原理",
+      "eyebrowSpec": "03 步 · 想法 → 链上",
+      "title": "从想法到链上募资，仅需三步。",
+      "subtitle": "你在这里配置的每个参数都会转化为一次 Move 调用。支持者的每一次交互都会成为一笔交易。Pandabox 就是这一切的中间层。",
+      "nowViewing": "当前查看",
+      "progressDeploy": "部署",
+      "progressReconfigure": "重新配置",
+      "ctaLaunch": "发布项目",
+      "ctaDocs": "阅读文档",
+      "stepLabel": "步骤 {number} · {phase}",
+      "onchainSuiMove": "链上 · sui move",
+      "live": "进行中",
+      "steps": {
+        "0": {
+          "phase": "配置",
+          "heading": "部署",
+          "body": "配置周期、分配、代币和可选的 NFT 等级。签署一笔 Sui 交易。项目上线，admin cap 对象归你所有。",
+          "outcome": "AdminCap 已铸造"
+        },
+        "1": {
+          "phase": "流入",
+          "heading": "接收",
+          "body": "支持者直接向你的金库支付 SUI。他们按周期权重收到项目代币，如有定义还能收到等级 NFT。",
+          "outcome": "代币已铸造"
+        },
+        "2": {
+          "phase": "治理",
+          "heading": "重新配置",
+          "body": "为下一个周期提出变更。表决延迟过后，新参数生效。持有者可随时提取盈余。",
+          "outcome": "周期已排队"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "为什么选 Sui",
+      "title": "为此而生的链。",
+      "subtitle": "Sui 原生支持的三件事，让 Pandabox 用起来与众不同 —— 亚分级的支付、真正属于自己的管理权，以及零摩擦的入门体验。",
+      "nativeStamp": "sui-native",
+      "cards": {
+        "gas": {
+          "tag": "Gas",
+          "heading": "亚分级 Gas",
+          "body": "支持者不必为支持一个项目付出 30 美元。Pandabox 的支付成本仅几分之一美分 —— 真正重要的小额支持也能畅通无阻。",
+          "meta": "支付交易中位数 · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "所有权",
+          "heading": "以对象为中心的所有权",
+          "body": "你的 ProjectAdminCap 是一个真正的 Sui 对象。把它转给多签、交给 DAO、托管到 escrow —— 它就是一个对象。"
+        },
+        "onboarding": {
+          "tag": "入门",
+          "heading": "赞助交易",
+          "body": "支持还未持有 SUI 的新用户加入。Pandabox 可以赞助 gas，让一个全新钱包在第一次交互时就能支持项目。",
+          "meta": "gas 已赞助 · 仅需付款方签名"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "数据",
+      "title": "基于真实链上数据。",
+      "subtitle": "每个数字都由 Pandabox Move 包的事件实时计算得出，每 60 秒刷新一次。",
+      "sourceFootnote": "source · pandabox::project events · sum / count / set",
+      "computedAt": "计算时间",
+      "liveLabel": "Live · sui mainnet",
+      "totalRaised": "累计募集",
+      "totalRaisedHint": "所有项目的 sold ÷ base_rate 之和",
+      "delta24h": "24 小时",
+      "substat": {
+        "across": "覆盖",
+        "projects": "个项目",
+        "tokensMinted": "代币铸造量",
+        "platformFees": "平台费用",
+        "feeRate": "费率"
+      },
+      "activeProjects": "活跃项目",
+      "liveCount": "{count} 个进行中",
+      "closedCount": "{count} 个已结束",
+      "deployedAllTime": "历史累计部署",
+      "uniqueBackers": "独立支持者",
+      "addr": "地址",
+      "contribsPerBacker": "每位支持者贡献次数",
+      "moreOverflow": "+{count} 更多",
+      "latestActivity": "最新动态",
+      "lastContribution": "最近一笔贡献",
+      "largest": "最大",
+      "paymentsWindow": "{count} 笔支付 · 24 小时"
+    },
+    "heroConsole": {
+      "liveConsole": "实时控制台",
+      "streamSequenceAria": "事件流序列",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← 5 秒窗口 · 最早",
+      "pulseWindowNow": "现在 →",
+      "stream": "事件流",
+      "recentPayments": "最近支付",
+      "listeningEvents": "正在监听事件……",
+      "viewProjectAria": "查看项目 {name}",
+      "stat": {
+        "projects": "项目",
+        "platformFee": "平台费用",
+        "treasury": "金库"
+      }
+    }
   },
   "footer": {
     "homeAria": "Pandabox 首页",
-    "blurb": "面向 Sui 的可编程募资平台。链上构建，开放为默认。",
+    "blurb": "面向 Sui 的可编程募资平台。链上构建，默认开放。",
     "navigate": "导航",
     "ecosystem": "生态",
     "ecoSuiExplorer": "Sui Explorer",
@@ -101,70 +250,898 @@
     "technical": "技术",
     "movePackage": "Move 包",
     "network": "网络",
-    "commit": "提交",
+    "commit": "Commit",
     "copyright": "© Pandabox",
-    "buildTag": "v2 · 主网版本"
+    "buildTag": "v2 · Mainnet build"
   },
   "explore": {
     "title": "探索",
-    "headline": "正在募集中。",
-    "subtitle": "Pandabox 上所有进行中的代币募资，直接从 Sui 主网包读取 —— 中间没有任何索引器。",
+    "headline": "正在募资。",
+    "subtitle": "Pandabox 上每一场进行中的代币销售，直接从 Sui mainnet 包读取 —— 不经任何中间索引器。",
     "liveCount": "{count} 个进行中",
-    "totalCount": "{count} 个共计",
+    "totalCount": "{count} 个总计",
     "cachedHint": "缓存 60 秒",
     "all": "全部",
     "live": "进行中",
     "ended": "已结束",
-    "idle": "闲置",
-    "verified": "已认证",
-    "legacy": "遗留",
-    "legacyHint": "部署于 9 位小数缩放修复之前 —— 数值不可靠。",
+    "idle": "空闲",
+    "verified": "已验证",
+    "legacy": "旧版",
+    "legacyHint": "在 9 位小数缩放修复之前部署 —— 数据不可靠。",
     "filterByCategory": "按分类筛选",
     "sortLabel": "排序",
     "searchLabel": "搜索",
-    "sort": { "trending": "热门", "newest": "最新", "mostFunded": "募集最多", "endingSoonest": "即将结束" },
+    "sort": {
+      "trending": "热门",
+      "newest": "最新",
+      "mostFunded": "募集最多",
+      "endingSoonest": "即将结束"
+    },
     "searchPlaceholder": "搜索项目",
     "searchAria": "搜索项目",
-    "sortAria": "排序项目",
+    "sortAria": "项目排序",
     "loadMore": "加载更多",
-    "empty": "暂无项目符合这些筛选条件。",
-    "emptyTitle": "没有匹配项",
+    "empty": "尚无项目匹配这些筛选条件。",
+    "emptyTitle": "未找到匹配项",
     "resetFilters": "重置筛选",
-    "byCreator": "创建者 {addr}",
+    "byCreator": "由 {addr} 发布",
     "endsNow": "结束于 ",
-    "endedAt": "已结束于 ",
+    "endedAt": "结束于 ",
     "unnamed": "未命名项目",
     "viewProject": "查看 {name}",
-    "categories": { "opc": "OPC", "meme": "Meme", "art": "艺术", "infra": "基础设施", "dao": "DAO", "research": "研究", "gaming": "游戏", "music": "音乐", "social": "社交", "rwa": "RWA" }
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "艺术",
+      "infra": "基础设施",
+      "dao": "DAO",
+      "research": "研究",
+      "gaming": "游戏",
+      "music": "音乐",
+      "social": "社交",
+      "rwa": "RWA"
+    }
   },
   "project": {
-    "card": { "raised": "已募集", "supporters": "支持者" },
-    "hero": { "raised": "已募集", "supporters": "支持者", "heldBy": "持有人", "backThis": "支持此项目" },
-    "status": { "live": "进行中", "paused": "已暂停", "closed": "已关闭" }
+    "card": {
+      "raised": "已募集",
+      "supporters": "支持者"
+    },
+    "hero": {
+      "raised": "已募集",
+      "supporters": "支持者",
+      "heldBy": "持有者",
+      "backThis": "支持此项目"
+    },
+    "status": {
+      "live": "进行中",
+      "paused": "已暂停",
+      "closed": "已关闭"
+    },
+    "detail": {
+      "backToExplore": "返回探索",
+      "legacyBadge": "旧版 · 参数错误",
+      "legacyBody": "该项目部署时，向导尚未对 <code>base_rate</code> 应用 9 位小数缩放。下方的汇率、目标和已募集数字均有偏差 —— 请勿信任或支持此次销售。",
+      "creator": "创建者",
+      "contractAddressShort": "CA",
+      "verified": "已验证",
+      "statusLabel": "状态",
+      "statusLive": "进行中",
+      "statusEnded": "已结束",
+      "statusClosed": "已关闭",
+      "endsIn": "剩余时间",
+      "cap": "上限",
+      "sale": "销售",
+      "ended": "已结束",
+      "noCap": "无上限",
+      "finished": "已完成",
+      "closed": "已关闭",
+      "rate": "汇率",
+      "perSui": "/SUI",
+      "maxSupply": "最大供应量",
+      "unsold": "未售",
+      "unsoldToCreator": "→ 创建者",
+      "unsoldBurn": "销毁",
+      "remaining": "剩余",
+      "treasury": "金库",
+      "beFirstSupporter": "成为第一个支持此项目的人",
+      "supporterOne": "{count} 位支持者",
+      "supporterOther": "{count} 位支持者",
+      "lastBy": "最近由",
+      "justNow": "刚刚",
+      "agoMinutes": "{n} 分钟前",
+      "agoHours": "{n} 小时前",
+      "agoDays": "{n} 天前",
+      "aboutTitle": "关于",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "暂未发布描述 —— 创建者可以随时发布。请查看支付面板了解销售机制。",
+      "status": {
+        "ended": "已结束"
+      },
+      "meta": {
+        "notFoundTitle": "项目未找到",
+        "descriptionFallback": "{name}（{ticker}）—— Sui 上的链上募资，由 Pandabox 提供支持。"
+      },
+      "tabs": {
+        "about": "关于",
+        "activity": "动态"
+      },
+      "activity": {
+        "title": "动态",
+        "empty": "此项目暂无链上动态。贡献、领取和提现将显示在此处。",
+        "eventCount": "{count, plural, one {# 个事件} other {# 个事件}}",
+        "revalidates": "每 30 秒刷新",
+        "colTime": "时间",
+        "colEvent": "事件",
+        "colActor": "操作者",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "已贡献",
+          "claim": "已领取",
+          "withdraw": "已提现",
+          "close": "已关闭"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "领取你的代币",
+        "finalizeSale": "结算销售",
+        "receiptCount": "{count, plural, one {# 份凭证} other {# 份凭证}}",
+        "anyone": "任何人",
+        "claimIntroOne": "销售已结束。销毁你的 <code>ContributionReceipt&lt;T&gt;</code> 对象，领取你应得的 {ticker}。",
+        "claimIntroMany": "销售已结束。销毁你的 <code>ContributionReceipt&lt;T&gt;</code> 对象，领取你应得的 {ticker}。",
+        "youllReceive": "你将收到",
+        "from": "来自",
+        "contributed": "已贡献",
+        "finalizeIntro": "销售结束时间已过。任何人都可以执行 finalize 以锁定最终售出数量，并为所有人解锁领取与提现。",
+        "sold": "已售",
+        "treasury": "金库",
+        "claimCta": "领取 → {amount}",
+        "claimAllCta": "全部领取 → {amount}",
+        "receiptsSummary": "凭证（{count}）",
+        "modalClaimTitle": "领取代币",
+        "modalFinalizeTitle": "结算销售",
+        "backToProject": "返回项目",
+        "youBurn": "你将销毁",
+        "receiptOne": "份凭证",
+        "receiptOther": "份凭证",
+        "originallyContributed": "最初贡献 {amount}",
+        "youReceive": "你将收到",
+        "coinSentToWallet": "Coin<{ticker}> 已发送至你的钱包",
+        "cancel": "取消",
+        "signing": "签名中……",
+        "confirmClaim": "确认并领取",
+        "confirmFinalize": "确认并结算",
+        "finalizePreviewIntro": "销售窗口已结束。任何人都可以执行 finalize 来锁定最终售出数量 —— 这会为支持者解锁代币领取，为项目方解锁 SUI 提现。",
+        "finalizeFootnote": "若销售尚未就绪则空操作 · 仅消耗 gas · 销售对 {ticker} 持有者可领取",
+        "saleFinalized": "销售已结算",
+        "finalizeSuccessBody": "项目现已关闭。代币领取与管理员提现均已解锁。",
+        "txLabel": "tx",
+        "txFailed": "交易失败。",
+        "tweetText": "刚刚在 Pandabox 领取了来自 {projectName} 的 {ticker} —— Sui 上的可编程链上募资。",
+        "stampClaimed": "已领取",
+        "stampInYourWallet": "已在你的钱包",
+        "tokensDeliveredEyebrow": "· 代币已到账 ·",
+        "fromLabel": "来自",
+        "receiptsBurnedOne": "已销毁 {count} 份凭证",
+        "receiptsBurnedOther": "已销毁 {count} 份凭证",
+        "statReceived": "已收到",
+        "statReceipts": "凭证",
+        "burnedCount": "{count} 份已销毁",
+        "shareOnX": "分享到 X"
+      },
+      "share": {
+        "tweetText": "正在 Pandabox 支持 {projectName}（{ticker}）—— Sui 上的可编程链上募资。",
+        "copyAria": "复制项目链接",
+        "shareAria": "分享到 X",
+        "copy": "复制",
+        "copied": "已复制",
+        "share": "分享"
+      },
+      "cover": {
+        "specCover": "封面 · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "作品",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "{name} 封面",
+        "iconAlt": "{name} 图标"
+      },
+      "meter": {
+        "ofLabel": "/",
+        "target": "目标"
+      },
+      "onchain": {
+        "title": "链上记录",
+        "specSheet": "规格表",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "项目对象",
+        "sharedObject": "共享对象",
+        "coinType": "代币类型",
+        "contractAddress": "合约地址",
+        "deployed": "已部署",
+        "links": "链接",
+        "social": "社交",
+        "site": "网站",
+        "discord": "discord",
+        "noneProvided": "未提供",
+        "copy": "复制",
+        "copied": "已复制",
+        "copyAria": "复制到剪贴板",
+        "explorer": "浏览器",
+        "justNow": "刚刚",
+        "agoSeconds": "{n} 秒前",
+        "agoMinutes": "{n} 分钟前",
+        "agoHours": "{n} 小时前",
+        "agoDays": "{n} 天前",
+        "agoMonths": "{n} 个月前",
+        "agoYears": "{n} 年前"
+      },
+      "rail": {
+        "connectTitle": "连接钱包",
+        "connectBody": "连接钱包以支持此项目、领取代币，或在你是创建者时管理项目。",
+        "loadingTitle": "正在读取持仓",
+        "loadingBody": "检查你拥有的 admin cap 与凭证……",
+        "saleClosedTitle": "销售已关闭",
+        "saleClosedBody": "此次销售已结算。你没有持有 {token} 的贡献凭证，因此当前钱包没有可领取内容。",
+        "thisProjectFallback": "此项目"
+      },
+      "seedLiquidity": {
+        "title": "注入 Cetus 流动性",
+        "intro": "将此项目标记为已在 <strong>Cetus</strong> 上提供配对流动性。保存后，项目页面的价格图表将开始从 GeckoTerminal 读取实时 OHLCV 数据。",
+        "verifyExplainer": "我们会在 Sui 上验证你的池对象后再写入。该池必须是真实的 <code>pool::Pool&lt;A, B&gt;</code>，其中一侧为 SUI，另一侧为你的项目代币 —— <code>{coin}</code>。没有真实池子无法切换此标记。",
+        "poolAddressLabel": "Cetus 池地址",
+        "poolPlaceholder": "0x…（Cetus 池对象 ID）",
+        "verify": "验证",
+        "verifying": "验证中……",
+        "verifiedOk": "已验证 ✓",
+        "invalidObjectId": "不是有效的 Sui 对象 ID",
+        "verificationFailedTitle": "验证失败",
+        "verificationFailed": "验证失败。",
+        "poolVerified": "池已验证",
+        "cetus": "Cetus",
+        "rowPool": "池",
+        "rowSideA": "A 侧",
+        "rowSideB": "B 侧",
+        "cancel": "取消",
+        "pinning": "上传中……",
+        "signing": "签名中……",
+        "signAndSave": "签名并保存",
+        "pinningFailed": "上传至 IPFS 失败 —— {reason}",
+        "unknownError": "未知错误",
+        "txFailed": "交易失败。",
+        "seededTitle": "流动性已标记为已注入",
+        "seededBody": "项目页面将获取新池，并在约 30 秒缓存刷新内开始渲染实时图表。",
+        "detailsCid": "详情 cid · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
   },
   "pay": {
     "heading": "支持此项目",
-    "youReceive": "你将获得",
+    "youReceive": "你将收到",
     "remainingHint": "剩余可铸造 {amount}，超出部分将自动退款。",
     "memo": "备注（可选）",
-    "memoPlaceholder": "随支付一同记录上链",
+    "memoPlaceholder": "随你的支付一同上链记录",
     "enterAmount": "请输入金额",
     "payAmount": "支付 {amount} SUI",
-    "shareOfSupply": "占总供应量",
+    "shareOfSupply": "占供应量比例",
     "remainingMintable": "剩余可铸造",
-    "unsold": "未售出部分",
+    "unsold": "未售",
     "unsoldBurn": "销毁",
     "unsoldTransfer": "转给创建者",
-    "inspectorTitle": "交易检视器",
-    "inspectorPreview": "签名前预览。你的钱包将为此 Move 调用请求签名。",
+    "inspectorTitle": "交易检查器",
+    "inspectorPreview": "签名前预览。你的钱包将为此次 Move 调用请求签名。",
     "inspectorNotDeployed": "Move 包尚未部署 —— 在设置 NEXT_PUBLIC_PACKAGE_ID 之前，提交将在本地模拟。",
-    "inspector": { "package": "包", "module": "模块", "function": "函数", "projectId": "arg.project_id", "amountMist": "arg.amount_mist", "returns": "返回", "returnsValue": "ContributionReceipt + 退款币 → 发送者" },
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + 退款 coin → 发送方"
+    },
     "cancel": "取消",
     "signSubmit": "签名并提交",
-    "signing": "签名中…",
+    "signing": "签名中……",
     "confirmed": "支付已确认",
     "backToProject": "返回项目",
-    "connectFirst": "请先连接钱包以参与支持。",
+    "connectFirst": "请先连接钱包再进行贡献。",
     "txFailed": "交易失败。"
+  },
+  "create": {
+    "page": {
+      "metaTitle": "创建项目",
+      "metaDescription": "配置周期、代币、分配与等级。部署到 Sui。",
+      "headline": "配置你的项目，一笔交易完成部署。",
+      "intro": "六个步骤。草稿会自动保存到浏览器。右侧导轨实时显示支持者在项目页面将看到的内容。",
+      "badgeOneTransaction": "一笔交易",
+      "badgeAutoSaving": "自动保存草稿",
+      "badgeIpfs": "资源已上传到 ipfs"
+    },
+    "wizard": {
+      "stepsAria": "向导步骤",
+      "stepLabel": "步骤 {num}",
+      "stepLabels": {
+        "identity": "身份",
+        "coin": "代币",
+        "sale": "销售",
+        "deploy": "部署"
+      },
+      "percentComplete": "已完成 {pct}%",
+      "resetDraft": "重置草稿",
+      "back": "返回",
+      "continueStep": "继续 · 步骤 {num}",
+      "reviewAndDeployAbove": "上方进行检查与部署",
+      "resetModalTitle": "重置草稿？",
+      "resetModalBody": "这将清空向导中的每一个字段，并从浏览器中删除已保存的草稿。链上不会受到任何影响 —— 你只是从空白表单重新开始。",
+      "resetBullet1": "身份、代币、销售、部署 —— 全部清除",
+      "resetBullet2": "从 localStorage 中删除",
+      "resetBullet3": "此操作不可撤销",
+      "keepDraft": "保留草稿",
+      "resetDraftButton": "重置草稿"
+    },
+    "imageUpload": {
+      "defaultLabel": "封面图片",
+      "cidLabel": "cid",
+      "errorOnlyImages": "仅支持图片文件。",
+      "errorTooLarge": "图片过大（{size} MiB）。最大 {max} MiB。",
+      "errorUploadFailed": "上传失败。",
+      "dropToPin": "拖放以上传",
+      "dragOrClick": "拖放图片或点击上传",
+      "maxSize": "最大 {max} MiB",
+      "loadingFromIpfs": "从 ipfs 加载中",
+      "gatewayRetry": "网关重试 {attempt}/4",
+      "gatewayWarmup": "网关预热中",
+      "replace": "替换",
+      "remove": "移除",
+      "uploading": "上传中",
+      "pinningToIpfs": "上传到 ipfs",
+      "cancelUploadAria": "取消上传",
+      "cancel": "取消",
+      "sendingBytes": "正在将字节发送至上传服务",
+      "pinataReplicating": "Pinata 正在 ipfs 节点间同步 —— 大图可能需要几秒钟",
+      "pasteCidToggle": "或粘贴已有的 CID / URL",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "身份",
+      "body": "谁在为什么募资。这就是支持者在钱包和项目页面上看到的内容。",
+      "meta": "存储在链上",
+      "basicsTitle": "基础信息",
+      "basicsMeta": "部署后不可更改",
+      "projectName": "项目名称",
+      "projectNamePlaceholder": "例如：Atelier Ono",
+      "ticker": "代币符号",
+      "tickerHint": "大写字母/数字，2–10 字符",
+      "category": "分类",
+      "storyTitle": "故事",
+      "storyMeta": "可随时编辑",
+      "tagline": "一句话标语",
+      "taglineHint": "单行，8–160 字符 · {len}/160",
+      "taglinePlaceholder": "一个在 Sui 上每周发布的图片杂志合集。",
+      "description": "描述",
+      "descriptionHint": "支持 Markdown · 20–4000 字符 · {len}/4000",
+      "descriptionPlaceholder": "告诉支持者你在构建什么，以及他们的 SUI 为什么重要。",
+      "coverTitle": "封面图片",
+      "coverMeta": "已上传到 ipfs",
+      "coverHint": "显示在项目页面顶部。16:10 横版裁剪效果最佳。上传时会上传至 IPFS —— CID 将上链。",
+      "socialsTitle": "社交",
+      "socialsMeta": "可选",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "用户名",
+      "website": "网站",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "邀请链接"
+    },
+    "step2": {
+      "title": "代币",
+      "body": "Pandabox 需要一枚由你拥有的 Sui 代币。你可以现在用我们审计过的模板在浏览器中发布一枚，或者粘贴你已有的 TreasuryCap + CoinMetadata。",
+      "meta": "9 位小数 · 通过 sui::coin::create_currency 创建",
+      "modeLabel": "模式",
+      "modePublish": "发布新代币",
+      "modePaste": "我已有代币",
+      "untitledCoin": "未命名代币",
+      "howThisWorks": "工作原理",
+      "howThisWorksBody": "我们从一份预编译的 <code>coin_template.move</code> 模板（<strong>9 位小数</strong>）开始，通过 <code>@mysten/move-bytecode-template</code> 在浏览器中重写其标识符与元数据常量，然后由你的钱包发布。渲染后的 Move 源码会上传到 IPFS，任何人都可以审计实际部署的内容。",
+      "coinMetadataTitle": "代币元数据",
+      "coinMetadataMeta": "写入 CoinMetadata<T>",
+      "symbol": "符号",
+      "symbolHint": "2–10 字符 · 大写字母 / 数字",
+      "name": "名称",
+      "namePlaceholder": "Panda Token",
+      "description": "描述",
+      "descriptionHint": "≤240 字符 · ASCII",
+      "descriptionPlaceholder": "这枚代币代表什么。",
+      "iconUrl": "图标 URL",
+      "iconUrlHint": "复用项目封面或粘贴一个托管 URL",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "发布",
+      "publishMetaComplete": "已完成",
+      "publishMetaStep": "2 次部署中的第 1 次",
+      "coinPublishedConfirm": "代币已发布。TreasuryCap + CoinMetadata 已捕获至草稿。",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "正在重写字节码……",
+      "publishStateSigning": "签名中……",
+      "publishStateFetching": "等待链上确认……",
+      "publishStatePinning": "正在上传源码……",
+      "publishCoin": "发布代币",
+      "publishCaption": "一笔交易 · 可转让的 upgrade cap 将返回给你",
+      "errorNoDigest": "钱包未返回发布交易的 digest。",
+      "errorPublishFailed": "发布失败。",
+      "strandedTitle": "已发布 —— 但 RPC 失联",
+      "openOnSuiExplorer": "在 Sui Explorer 打开",
+      "switchToPasteMode": "切换到粘贴模式",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 字符 · A-Z、0-9、_ · 必须以字母开头",
+      "validateName": "请填写名称（2–32 字符）",
+      "validateDescriptionLength": "最多 240 字符",
+      "validateDescriptionAscii": "仅支持 ASCII（不含表情符号 / 智能引号）",
+      "validateIconUrl": "请使用完整的 https:// URL",
+      "validateInvalidIdentifier": "标识符无效",
+      "objectIdsTitle": "对象 ID",
+      "objectIdsMeta": "必须由你拥有",
+      "treasuryCapLabel": "TreasuryCap<T> 对象 ID",
+      "treasuryCapHint": "来自你的发布交易的 createdObjects。",
+      "metadataLabel": "CoinMetadata<T> 对象 ID",
+      "metadataHint": "我们会从链上读取它以识别代币类型与小数位。",
+      "coinInfoTitle": "代币信息",
+      "coinInfoMetaReading": "读取中……",
+      "coinInfoMetaDetected": "已识别",
+      "coinInfoMetaNotFound": "未找到",
+      "statName": "名称",
+      "statSymbol": "符号",
+      "statDecimals": "小数位",
+      "resolvedCoinType": "已解析代币类型",
+      "wrongDecimals": "此代币为 {decimals} 位小数。Pandabox 要求 {required} 位小数 —— 请用正确数值重新部署你的代币。",
+      "readingFromChain": "正在从链上读取……",
+      "pasteMetadataHint": "在上方粘贴 CoinMetadata ID 以识别代币。",
+      "errorObjectNotFound": "未找到对象。",
+      "errorNotCoinMetadata": "该对象不是 CoinMetadata<T>。",
+      "errorUnexpectedContent": "对象内容异常。",
+      "errorLookupFailed": "查询失败。"
+    },
+    "step3": {
+      "title": "销售条款",
+      "body": "支持者用 SUI 换取一份凭证（Receipt）。销售结束或售罄后，他们可以领取所分配的代币。任何未售出的部分将根据你的选择销毁或归还给你。",
+      "meta": "部署后不可更改",
+      "pricingTitle": "定价",
+      "pricingMeta": "代币 ↔ SUI",
+      "tokensPerSui": "每 SUI 兑换代币数",
+      "tokensPerSuiHint": "每 1 SUI 支持者可获得多少 {ticker}。",
+      "targetRaise": "目标募集（SUI）",
+      "targetRaiseHint": "编辑此项将反向计算每 SUI 代币数。",
+      "baseRateLabel": "base_rate（已缩放，链上数值）",
+      "allocationTitle": "分配",
+      "allocationMeta": "供出售的代币总量",
+      "tokensForSale": "出售代币数量",
+      "tokensForSaleHint": "为本次销售保留的 {ticker} 总量。TreasuryCap 最多铸造这个数量。",
+      "fundingAllocationLabel": "funding_allocation（原始 u64）",
+      "maxSupplyLabel": "最大供应量 · {ticker}",
+      "mintedAtLaunch": "发布时铸造",
+      "mintedAtLaunchValue": "0 —— 在领取时铸造",
+      "supplyNote": "代币从 <zeroSupply>0 供应量</zeroSupply> 开始。当支持者对其凭证调用 <code>claim</code> 时再延迟铸造代币。最终流通量 = <claimed>已领取</claimed>",
+      "supplyNoteReturn": " + 未售（返还到你的钱包）",
+      "supplyNoteBurn": "（未售部分销毁）",
+      "saleWindowTitle": "销售窗口",
+      "durationDays": "{days} 天",
+      "noTimeCap": "无时间上限",
+      "ends": "结束",
+      "inDays": "{days} 天后",
+      "unsoldTitle": "未售供应量",
+      "unsoldMeta": "销售结束后",
+      "actionLabel": "动作",
+      "unsoldBurnTitle": "销毁",
+      "unsoldBurnBody": "未售代币将被永久销毁，从而减少总供应量。",
+      "unsoldReturnTitle": "归还创建者",
+      "unsoldReturnBody": "未售代币将铸造给你的地址。可用于解锁、DEX 注入等场景。"
+    },
+    "step4": {
+      "title": "检查与部署",
+      "body": "Pandabox 会将你的描述和 project_details 上传到 IPFS，然后提交一笔 Sui 交易，创建项目、消耗你的 TreasuryCap，并将 ProjectAdminCap 转给你的钱包。",
+      "metaChecks": "{ok}/{total} 项检查 · {status}",
+      "statusReady": "就绪",
+      "statusBlocked": "已阻塞",
+      "headsUp": "重要提示",
+      "headsUpBody": "<strong>部署时消耗：</strong>你的 <code>TreasuryCap<T></code> 与 <code>CoinMetadata<T></code> 将归属于 Project 对象，无法找回。<strong>部署后不可更改：</strong>名称、代币、基础汇率、分配、结束时间、未售处理方式。<strong>稍后可编辑：</strong>描述、图标、源码 blob、project_details（通过 <code>update_metadata</code>）。",
+      "sourceCodeTitle": "可选 · 源码",
+      "sourceCodeMetaSet": "已设置",
+      "sourceCodeMetaSkipped": "已跳过",
+      "sourceCodeLabel": "源码 blob（IPFS CID）",
+      "sourceCodePlaceholder": "Qm… / bafy…（可选）",
+      "sourceCodeHint": "请单独上传你的仓库压缩包并粘贴 CID。或留空稍后再更新。",
+      "preflightTitle": "起飞前检查",
+      "preflightAllGreen": "全部通过",
+      "preflightBlocking": "{count} 项阻塞",
+      "fixInStep": "在步骤 {num} 中修复",
+      "deployTitle": "部署",
+      "deployMetaLive": "进行中 · sui mainnet",
+      "deployMetaSimulated": "已模拟",
+      "deployToSui": "部署到 Sui",
+      "deployCaption": "消耗 treasury cap + metadata · admin cap 返回给你",
+      "draftAutoSaves": "草稿自动保存到浏览器，键名为 <code>pandabox:draft:v3</code>。",
+      "modalSuccessTitle": "项目已部署",
+      "modalInspectorTitle": "交易检查器",
+      "openProjectPage": "打开项目页面",
+      "seeItOnExplore": "在探索中查看",
+      "inspectorIntroLive": "检查你即将发布的内容。Pandabox 会先将描述和详情上传到 IPFS，然后你的钱包会签署一笔交易在 Sui 上创建项目。",
+      "inspectorIntroSimulated": "Move 包未配置 —— 本次提交将在本地模拟。",
+      "sectionProject": "项目",
+      "sectionYourCoin": "你的代币",
+      "sectionSaleTerms": "销售条款",
+      "editLink": "编辑",
+      "summaryName": "名称",
+      "summaryTicker": "代币符号",
+      "summaryCategory": "分类",
+      "summaryTagline": "一句话标语",
+      "summarySymbol": "符号",
+      "summaryDecimals": "小数位",
+      "summaryRate": "汇率",
+      "tokensWord": "代币",
+      "summaryTotalForSale": "出售总量",
+      "summaryMaxSupply": "最大供应量",
+      "summaryMintedAtLaunch": "发布时铸造",
+      "summaryMintedAtLaunchValue": "0 —— 领取时延迟铸造",
+      "summaryMaxRaise": "最大募集",
+      "summarySaleEnds": "销售结束",
+      "summaryOpenEnded": "无截止",
+      "summaryUnsoldTokens": "未售代币",
+      "summaryUnsoldReturn": "返还到你的钱包",
+      "summaryUnsoldBurn": "销毁（减少最终供应量）",
+      "youllKeepLabel": "你将保留 ·",
+      "youllKeepBody": "钱包中会保留一个 <strong>ProjectAdminCap</strong> —— 你对此项目的管理权。之后可以转给多签。",
+      "youllGiveUpLabel": "你将放弃 ·",
+      "youllGiveUpBody": "你的 <strong>TreasuryCap</strong> 和 <strong>CoinMetadata</strong>。项目会获得它们的所有权，且无法找回。",
+      "lockedOnDeployLabel": "部署后锁定 ·",
+      "lockedOnDeployBody": "名称、代币、汇率、分配、结束时间、未售处理。描述、图标和链接保持可编辑。",
+      "advancedToggle": "高级 · 原始 move 调用",
+      "rawPinning": "上传中……",
+      "rawSetAtSubmit": "提交时设置",
+      "cancel": "取消",
+      "submitPinningDescription": "上传描述中……",
+      "submitPinningDetails": "上传详情中……",
+      "submitSigning": "签名中……",
+      "submitPinAndDeploy": "上传并部署",
+      "errorDeployFailed": "部署失败。",
+      "untitledProject": "未命名项目",
+      "coverWord": "封面",
+      "noCover": "无封面",
+      "projectCoverPreviewAlt": "项目封面预览",
+      "checkIdentityOk": "身份已完成",
+      "checkIdentityErr": "身份：{msg}",
+      "checkCoinOk": "代币已验证 · {symbol} · {decimals} 位小数",
+      "checkCoinWrongDecimals": "代币使用 {decimals} 位小数 —— 协议要求 {required}",
+      "checkCoinErr": "代币：{msg}",
+      "checkSaleOk": "销售条款有效",
+      "checkSaleErr": "销售：{msg}",
+      "checkIncomplete": "未完成"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "控制台",
+      "description": "你拥有和支持的 Pandabox 项目。"
+    },
+    "title": "控制台",
+    "headline": "你的动态",
+    "untitledProject": "未命名项目",
+    "connectGate": {
+      "eyebrow": "连接你的钱包",
+      "headline": "你的动态，全部在链上。",
+      "body": "连接 Sui 钱包以查看你创建的项目，以及你支持过的项目。"
+    },
+    "refresh": {
+      "label": "刷新",
+      "busy": "刷新中",
+      "aria": "刷新控制台",
+      "ariaRefreshing": "正在刷新控制台"
+    },
+    "kpi": {
+      "raised": "已募集",
+      "treasury": "金库",
+      "live": "进行中",
+      "backing": "支持中"
+    },
+    "owned": {
+      "title": "你的项目",
+      "subtitle": "你持有 ProjectAdminCap 的项目。点击“管理”进入工作区。",
+      "noMatchLabel": "没有项目匹配此筛选",
+      "noMatchBody": "尝试其它状态或清除筛选以查看全部 {count, plural, one {# 个项目} other {# 个项目}}。",
+      "empty": {
+        "label": "尚无项目",
+        "body": "几分钟内即可启动一场代币销售。预先部署你的代币，配置销售条款，一次签名即可发布。",
+        "cta": "发布项目"
+      },
+      "card": {
+        "treasury": "金库",
+        "withdrawable": "可提现",
+        "raisedPct": "已募集 {pct}%",
+        "tokensSold": "已售 {amount} {ticker}",
+        "manage": "管理",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "你支持的项目",
+      "subtitle": "你的 ContributionReceipts。销售结算后可领取。",
+      "receipts": "{count, plural, one {# 份凭证} other {# 份凭证}}",
+      "contributed": "已贡献",
+      "claimable": "可领取",
+      "yourShare": "你的份额",
+      "action": {
+        "claim": "领取代币",
+        "finalize": "结算销售",
+        "open": "打开项目"
+      },
+      "empty": {
+        "label": "尚未支持任何人",
+        "body": "在“探索”中支持一个项目 —— 你的凭证和可领取份额会显示在这里。",
+        "cta": "探索项目"
+      }
+    },
+    "loading": {
+      "aria": "正在加载项目",
+      "sr": "正在加载项目……"
+    },
+    "filter": {
+      "all": "全部",
+      "live": "进行中",
+      "endingSoon": "即将结束",
+      "needsFinalize": "需要结算",
+      "closed": "已关闭",
+      "disabledTitle": "没有 {label} 项目"
+    },
+    "sort": {
+      "label": "排序",
+      "aria": "项目排序",
+      "newest": "最新",
+      "mostRaised": "募集最多",
+      "endingSoonest": "即将结束"
+    },
+    "state": {
+      "live": "进行中",
+      "endingSoon": "即将结束",
+      "endedAwaiting": "需要结算",
+      "closed": "已关闭",
+      "unknown": "未知"
+    },
+    "time": {
+      "noCap": "无时间上限",
+      "endedJustNow": "刚刚结束",
+      "endsIn": "{duration}后结束",
+      "endedAgoFinalize": "{duration}前结束 · 结算后解锁",
+      "closedAgo": "{duration}前关闭",
+      "closed": "已关闭",
+      "durationDH": "{days} 天 {hours} 小时",
+      "durationHM": "{hours} 小时 {mins} 分",
+      "durationM": "{mins} 分"
+    },
+    "sparkline": {
+      "placeholder": "24 小时"
+    },
+    "manage": {
+      "backToDashboard": "返回控制台",
+      "openPublicPage": "打开公开页面",
+      "untitledProject": "未命名项目",
+      "status": {
+        "live": "进行中",
+        "ended": "已结束",
+        "closed": "已关闭"
+      },
+      "stats": {
+        "treasury": "金库",
+        "sold": "已售",
+        "creator": "创建者",
+        "cap": "上限"
+      },
+      "liquidity": {
+        "seededLabel": "流动性已注入 · 图表实时更新",
+        "noPoolLabel": "尚无池 · 图表占位中",
+        "poolLink": "池 {id}",
+        "seedViaPanel": "通过面板注入 →"
+      },
+      "info": {
+        "whatLabel": "你可以在这里做什么",
+        "whatBody": "每一个管理操作 —— 结算、提现、更新元数据、注入流动性、转移或放弃 cap —— 都通过项目页面所使用的同一组链上入口函数执行。按钮位于右侧面板；起飞前检查会显示在每个弹窗内部。"
+      },
+      "supply": {
+        "label": "供应量",
+        "allocation": "分配",
+        "sold": "已售",
+        "remaining": "剩余",
+        "unsoldAction": "未售处理",
+        "unsoldCreator": "→ 创建者",
+        "unsoldBurn": "销毁"
+      },
+      "error": {
+        "label": "无法加载项目",
+        "retry": "重试"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "文档",
+      "description": "Pandabox 在 Sui 上的工作方式：销售窗口、基础汇率与分配、贡献与领取、未售供应、结算与提现，以及创建向导的详细演示。"
+    },
+    "eyebrow": "文档",
+    "heading": "Pandabox 究竟如何运作。",
+    "subhead": "三个标签页：Mechanics 是协议；Walk the wizard 是创建流程；Reference 包含术语表与常见问题。",
+    "toc": {
+      "ariaLabel": "文档章节",
+      "onThisPage": "本页内容"
+    },
+    "tabs": {
+      "ariaLabel": "文档章节",
+      "mechanics": {
+        "label": "机制",
+        "sections": {
+          "how": "01 / 工作原理",
+          "window": "02 / 销售窗口",
+          "rate": "03 / 基础汇率与分配",
+          "claim": "04 / 贡献与领取",
+          "unsold": "05 / 未售供应",
+          "finalize": "06 / 结算与提现"
+        }
+      },
+      "wizard": {
+        "label": "走一遍向导",
+        "sections": {
+          "intro": "四个步骤",
+          "identity": "01 · 身份",
+          "coin": "02 · 代币",
+          "sale": "03 · 销售条款",
+          "deploy": "04 · 检查与部署"
+        }
+      },
+      "reference": {
+        "label": "参考",
+        "sections": {
+          "glossary": "术语表",
+          "faq": "常见问题"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / 工作原理",
+        "p1": "Pandabox 是 Sui 上的一个 Move 包。创建者部署一个 <term>Project</term> —— 一个 Sui 对象，持有 SUI 金库以及该项目自有代币的锁定 <term>TreasuryCap</term>。项目随后以固定汇率运行单次销售：支持者贡献 SUI，获得以约定价格领取项目代币的权利。",
+        "p2": "支持者不会直接收到代币。他们会收到一份 <term>ContributionReceipt</term> —— 一个可转让的 Sui NFT，记录其应得份额。销售关闭后，他们通过销毁凭证 <term>claim</term> 自己的代币。任何超出剩余分配的支付都会在同一笔交易中退还。",
+        "p3": "销售可以以三种方式结束：约定结束时间到达、全部分配售罄，或平台管理员关闭。关闭后，创建者提取所募集的 SUI（扣除平台费），并按部署时选择的策略处理任何未售出代币。",
+        "cta": "开始一个项目草稿 →"
+      },
+      "window": {
+        "label": "02 / 销售窗口",
+        "p1": "每场销售都有单一锁定的窗口。你在部署时设置 <term>结束时间</term> —— 或将其留空，由管理员手动关闭。在销售结算前，任何人都可以按固定汇率贡献。",
+        "p2": "三种情况会让销售结算：结束时间到达（<term>Time</term>）、分配售罄（<term>Sellout</term>）或管理员强制关闭（<term>Admin</term>）。结算是代币领取、SUI 提现和未售供应处理的前置条件 —— 销售活跃时它们都无法进行。",
+        "p3": "结算可由管理员触发（<code>try_finalize</code>），或在条件满足后由任何人触发（<code>permissionless_finalize</code>）—— 这样即使创建者掉线，结束时间过后也不会阻挡支持者的领取。",
+        "cta": "在步骤 03 中查看 →"
+      },
+      "rate": {
+        "label": "03 / 基础汇率与分配",
+        "p1": "两个数字主导销售：<term>基础汇率</term>（每 1 SUI 发行的项目代币数）与 <term>资金分配</term>（销售的项目代币总量）。两者在部署时设定，并在项目生命周期内冻结 —— 元数据更新或管理员操作均无法修改。",
+        "p2": "若一笔贡献将超出剩余分配，则只接受可负担的部分，其余在同一笔交易中退还。支持者永不超付。",
+        "cta": "在步骤 03 中查看 →"
+      },
+      "claim": {
+        "label": "04 / 贡献与领取",
+        "p1": "<term>贡献。</term> 支持者使用一枚 SUI coin 调用 <code>contribute</code>。项目将贡献记入其地址，并返还一份 <term>ContributionReceipt</term> NFT —— 若支付超出可分配范围，还会返还一枚退款 coin。",
+        "p2": "<term>领取。</term> 销售结算后，支持者通过 <code>claim</code> 销毁凭证并获得项目代币。来自多次贡献的多份凭证可通过 <code>claim_multiple</code> 在一次调用中一起销毁，返回一枚合并后的 coin。",
+        "p3": "凭证是普通的 Sui 对象：可转让，可在二级市场出售，且不会过期。只要项目对象存在，领取就一直开放。",
+        "cta": "在控制台查看你的凭证 →"
+      },
+      "unsold": {
+        "label": "05 / 未售供应",
+        "p1": "如果销售结束时分配中仍有剩余代币，创建者调用 <code>process_unsold</code> 执行其部署时选择的策略：",
+        "p2": "<term>销毁</term> —— 未售部分被销毁，提高每枚已领取代币的隐含价格。表明稀缺：流通量恰好等于募集量。",
+        "p3": "<term>归还创建者</term> —— 未售部分以普通 coin 余额转给创建者。适合用于注入流动性、进行二次销售或保留为金库头寸。项目页面会在规格行中以 <code>UNSOLD → CREATOR</code> 显示该策略，让支持者在付款前先看到。",
+        "cta": "在步骤 03 中查看 →"
+      },
+      "finalize": {
+        "label": "06 / 结算与提现",
+        "p1": "结算后，创建者调用 <code>withdraw_sui</code> 从项目金库中提取已募集的 SUI。平台费（以基点计，由 Pandabox 设定）会自动扣除 —— 创建者收到净额，费用归入平台金库。提现可分多次进行；cap 持有者可在之后提取剩余部分。",
+        "p2": "部署时铸造的 <term>ProjectAdminCap</term> 是普通的 Sui 对象。它通过 <code>transfer_project_admin</code> 转移（该函数会触发索引器依赖的事件 —— 建议使用而非原始的对象转移），或通过 <code>renounce_project_admin</code> 自我销毁，使项目永久失去管理员 —— 适合社区项目，让创建者从自由裁量中退出。",
+        "p3": "项目元数据 —— 名称、描述、图标 URL、源码 blob，以及链下的 details JSON（标语、分类、社交）—— 在销售活跃或关闭期间均可通过 <code>update_metadata</code> 编辑。"
+      }
+    },
+    "wizard": {
+      "stepWord": "步骤",
+      "intro": {
+        "label": "四个步骤",
+        "p1": "创建流程分四步。你在这里填写的内容要么落到链上（销售参数、名称、blob CID），要么落到上传到 IPFS 的 project_details JSON 中（标语、分类、社交）。右侧的实时预览会显示支持者将看到的内容。",
+        "cta": "打开向导 "
+      },
+      "steps": {
+        "identity": {
+          "alt": "创建向导第 01 步 —— 身份字段与实时项目页面预览并列。",
+          "title": "身份",
+          "caption": "项目名称、代币符号、分类、标语、封面图片、描述。此处展示的代币符号仅供参考 —— 真实的代币符号来自下一步连接的 CoinMetadata。"
+        },
+        "coin": {
+          "alt": "创建向导第 02 步 —— 连接或发布一枚 Sui 代币。",
+          "title": "代币",
+          "caption": "Pandabox 需要它自己的 Sui 代币。可以从预编译的 coin_template.move 发布一枚（标识符在浏览器中重写，源码上传 IPFS 可审计），或粘贴已有的 TreasuryCap + CoinMetadata。小数位必须为 9。"
+        },
+        "sale": {
+          "alt": "创建向导第 03 步 —— 销售条款：每 SUI 代币数、总分配、结束时间、未售策略。",
+          "title": "销售条款",
+          "caption": "部署时锁定的四个数字：基础汇率（每 1 SUI 代币数）、总分配、可选结束时间，以及未售处理方式（销毁或归还创建者）。隐含的最大募集会随输入实时推算。"
+        },
+        "deploy": {
+          "alt": "创建向导第 04 步 —— 检查并部署。",
+          "title": "检查与部署",
+          "caption": "一笔 Sui 交易创建 Project 对象，将你的 TreasuryCap + CoinMetadata 消耗进去，并将 ProjectAdminCap 返还到你的钱包。明显的提示会说明提交后哪些字段不可更改、哪些仍可通过 update_metadata 编辑。"
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "术语表",
+        "termLabels": {
+          "baseRate": "基础汇率",
+          "fundingAllocation": "资金分配",
+          "unsoldAction": "未售处理",
+          "endTime": "结束时间",
+          "finalize": "结算",
+          "closeTrigger": "关闭触发条件",
+          "projectStatus": "项目状态",
+          "platformFee": "平台费用"
+        },
+        "terms": {
+          "project": "一个共享 Sui 对象，持有 SUI 金库、锁定的 TreasuryCap<T> 与销售参数。",
+          "projectAdminCap": "被拥有的 Sui 对象，授予管理权：提现 SUI、处理未售、更新元数据、结算、转移、放弃。",
+          "contributionReceipt": "在 contribute 时铸造的 NFT。结算后可销毁以领取应得代币。像任何 Sui 对象一样可转让。",
+          "baseRate": "每 1 SUI 贡献发行的项目代币数。部署时冻结。",
+          "fundingAllocation": "供出售的项目代币总量。达到后触发 sellout。部署时冻结。",
+          "unsoldAction": "销售关闭时剩余代币的处理策略：销毁，或归还创建者。部署时冻结。",
+          "endTime": "可选的销售结束时间戳。若为 null，则只有管理员关闭或 sellout 能触发结算。",
+          "finalize": "锁定销售。在领取、SUI 提现或处理未售前必须执行。条件满足后允许任何人触发。",
+          "closeTrigger": "销售结束的原因：Time、Sellout 或 Admin。记录在链上。",
+          "projectStatus": "Active（销售中）、Closed（已结算）或 Compromised（被平台标记）。",
+          "platformFee": "Pandabox 在提现的 SUI 中所收取的基点费用。由平台管理员设置，在 withdraw_sui 时应用。",
+          "mist": "SUI 的最小单位。1 SUI = 1,000,000,000 MIST。"
+        }
+      },
+      "faq": {
+        "label": "常见问题",
+        "items": {
+          "audited": {
+            "q": "是否经过审计？",
+            "a": "尚未。Pandabox 目前处于 testnet 阶段。正式审计将在 mainnet 推进前完成。"
+          },
+          "editAfterDeploy": {
+            "q": "部署后还能编辑项目吗？",
+            "a": "链下身份信息可以：名称、描述、封面图（图标 URL）、源码 blob、标语、分类和社交链接都可以随时通过 <code>update_metadata</code> 更新。销售经济参数不可：基础汇率、资金分配、结束时间和未售供应策略在部署时冻结。代币符号与小数位由你在 Pandabox 之前部署的 coin 模块设定 —— 这些在这里也无法更改。"
+          },
+          "gas": {
+            "q": "Gas 如何计算？",
+            "a": "每笔交易都由签名的钱包支付。创建、贡献、领取、提现 —— 全部由签名方付费。Sui 在 mainnet 上的 gas 通常远低于一美分，因此支持项目的实际成本是你贡献的 SUI，而不是 gas。"
+          },
+          "neverClaims": {
+            "q": "如果支持者一直不领取怎么办？",
+            "a": "凭证不会过期。代币会一直锁定在项目的 TreasuryCap 中，直到持有者用 <code>claim</code> 销毁凭证。凭证是真实的 Sui 对象，也可以转让或出售给愿意领取的人。"
+          },
+          "transferCap": {
+            "q": "我可以转移 ProjectAdminCap 吗？",
+            "a": "可以 —— 请使用 <code>transfer_project_admin</code>，这样事件会被索引器捕获。cap 本身不携带任何项目代币或募集的 SUI，它纯粹是管理密钥。你也可以调用 <code>renounce_project_admin</code> 将其永久销毁 —— 项目之后将无任何管理员。"
+          },
+          "compromised": {
+            "q": "“Compromised”状态是什么意思？",
+            "a": "平台管理员在有明确证据表明被滥用（卷款跑路、冒充、所宣称权益中的恶意软件）时可将项目标记为 Compromised。这是单向的审核信号 —— 项目页面仍可访问，便于支持者看到标记并采取行动，但会清楚警告。它不会扣押资金。"
+          },
+          "featured": {
+            "q": "如何登上首页的精选行？",
+            "a": "精选只是按募集的 SUI 排序，取前三名。募集足够多就会自动出现。"
+          }
+        }
+      }
+    }
   }
 }

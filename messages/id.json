@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Pandabox — Danai yang layak didanai. Di Sui.",
-    "description": "Launchpad pendanaan yang dapat diprogram di Sui. Luncurkan proyek, tetapkan tarif, jalankan penjualan on-chain — setiap parameter, setiap transaksi, on-chain.",
+    "description": "Launchpad pendanaan yang dapat diprogram di Sui. Luncurkan proyek, atur tarif, jalankan sale on-chain — setiap parameter, setiap transaksi, on-chain.",
     "ogImageAlt": "Pandabox — launchpad pendanaan yang dapat diprogram untuk Sui.",
     "notFound": {
       "title": "404 · Tidak ditemukan",
@@ -29,8 +29,8 @@
   "wallet": {
     "connect": "Hubungkan dompet",
     "pickerTitle": "Hubungkan dompet Sui",
-    "pickerDescription": "Pilih dompet untuk masuk. Kami tidak pernah menyimpan kustodi — kunci Anda tetap di dompet Anda.",
-    "noWallets": "Tidak ada dompet Sui yang terdeteksi di peramban ini.",
+    "pickerDescription": "Pilih dompet untuk masuk. Kami tidak pernah menyimpan dana — kunci Anda tetap di dompet Anda.",
+    "noWallets": "Tidak ada dompet Sui terdeteksi di browser ini.",
     "installSuiWallet": "Pasang Sui Wallet →",
     "walletStandard": "Standar dompet Sui",
     "connectError": "Tidak dapat terhubung.",
@@ -43,10 +43,10 @@
     "disconnect": "Putuskan"
   },
   "pulse": {
-    "totalRaised": "Total terkumpul di seluruh Pandabox",
+    "totalRaised": "Total terhimpun di seluruh Pandabox",
     "mostRecent": "Terbaru",
     "flatlinedAria": "Treasury Pulse — datar",
-    "flatlinedCaption": "Tidak ada peristiwa pembayaran di rute ini. Pandabox tidak dapat menampilkan pulse untuk halaman yang tidak ada."
+    "flatlinedCaption": "Tidak ada event pembayaran di rute ini. Pandabox tidak dapat merender pulse untuk halaman yang tidak ada."
   },
   "notFound": {
     "eyebrow": "404 · RUTE TIDAK DITEMUKAN",
@@ -55,7 +55,7 @@
     "rowSignal": "SINYAL",
     "rowCycle": "SIKLUS",
     "headline": "Tidak ada sinyal di rute ini.",
-    "body": "Pandabox tidak dapat menemukan apa yang Anda cari. Entah URL bergeser antar siklus, atau halaman ini memang tidak pernah ada on-chain sejak awal. Pilih salah satu rute aktif di bawah ini — semuanya memberikan sinyal.",
+    "body": "Pandabox tidak dapat menemukan yang Anda cari. Bisa jadi URL bergeser antar siklus, atau halaman ini memang tidak pernah ada on-chain. Pilih salah satu rute aktif di bawah ini — semuanya memancarkan sinyal.",
     "ctaExplore": "Jelajahi proyek",
     "ctaLaunch": "Luncurkan proyek",
     "ctaDocs": "Baca dokumen",
@@ -68,7 +68,7 @@
       "titleWorth": "layak",
       "titleFunding": "didanai.",
       "titleOnSui": "Di Sui",
-      "tagline": "Pandabox adalah platform pendanaan yang dapat diprogram untuk Sui. Luncurkan proyek dalam hitungan menit. Terima SUI, terbitkan token, tentukan pembayaran — semuanya on-chain, semuanya transparan, semuanya milik Anda.",
+      "tagline": "Pandabox adalah platform pendanaan yang dapat diprogram untuk Sui. Luncurkan proyek dalam hitungan menit. Terima SUI, terbitkan token, atur payout — semuanya on-chain, semuanya transparan, semuanya milik Anda.",
       "ctaLaunch": "Luncurkan proyek",
       "ctaExplore": "Jelajahi proyek",
       "specVersion": "v1 · pandabox",
@@ -77,30 +77,166 @@
     },
     "finalCta": {
       "marginTop": "Nº 04 · final",
-      "marginSpec": "spesifikasi proyek — pandabox",
+      "marginSpec": "spec proyek — pandabox",
       "marginYear": "2026 · Sui mainnet",
       "shipIt": "Luncurkan",
       "titleYourProject": "Proyek Anda,",
       "titleOnchain": "on-chain",
       "titleInMinutes": "dalam 3 menit.",
-      "subhead": "Konfigurasikan siklus, pembayaran, dan token. Tanda tangani satu transaksi Sui. Anda memegang admin cap.",
+      "subhead": "Atur siklus, payout, dan token. Tanda tangani satu transaksi Sui. AdminCap di tangan Anda.",
       "ctaLaunch": "Luncurkan proyek",
       "ctaDocs": "Baca dokumen",
       "tileSign": "Tanda tangan",
       "tileSignValue": "1 transaksi",
       "tileGas": "Gas",
-      "tileGasValue": "< $0,001",
-      "tileSetup": "Pengaturan",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Setup",
       "tileSetupValue": "6 langkah",
       "tileKeys": "Kunci",
       "tileKeysValue": "AdminCap milik Anda",
-      "marginLive": "pandabox.sui · aktif",
-      "marginRevalidate": "validasi ulang 60d"
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "validasi ulang 60s"
     },
     "featured": {
       "title": "Proyek unggulan",
-      "subtitle": "Pilihan tangan, sedang menggalang dana.",
-      "viewAll": "Lihat semua"
+      "subtitle": "Pilihan pilihan, sedang menggalang dana.",
+      "viewAll": "Lihat semua",
+      "eyebrow": "Unggulan",
+      "headline": "Sedang didanai sekarang",
+      "watermark": "FUNDED",
+      "sectionRail": "bagian · 02 / unggulan",
+      "statOnchain": "on-chain",
+      "statProjects": "proyek",
+      "statRaisedAcross": "terhimpun di 3 teratas",
+      "exploreAll": "Jelajahi semua proyek",
+      "dataMeta": "data: sui mainnet · validasi ulang 60s",
+      "empty": {
+        "label": "Tidak ada proyek",
+        "heading": "Menunggu proyek pertama on-chain.",
+        "description": "Event ProjectCreated dari <code>pandabox::project</code> akan muncul di sini."
+      },
+      "tape": {
+        "live": "live",
+        "onchain": "on-chain",
+        "backedAgo": "didukung · 2m lalu",
+        "verified": "terverifikasi",
+        "cycle01": "siklus 01",
+        "supportingNow": "mendukung · 12 sekarang",
+        "txConfirmed": "tx terkonfirmasi",
+        "freshRaise": "penghimpunan baru",
+        "unnamed": "Tanpa nama"
+      },
+      "skeleton": {
+        "ariaLoading": "Memuat proyek unggulan",
+        "srLoading": "Memuat proyek unggulan…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Cara kerjanya",
+      "eyebrowSpec": "03 langkah · ide → on-chain",
+      "title": "Tiga langkah dari ide ke pendanaan on-chain.",
+      "subtitle": "Setiap parameter yang Anda atur di sini menjadi panggilan Move. Setiap interaksi pendukung menjadi transaksi. Pandabox adalah penghubungnya.",
+      "nowViewing": "Sedang dilihat",
+      "progressDeploy": "Deploy",
+      "progressReconfigure": "Konfigurasi ulang",
+      "ctaLaunch": "Luncurkan proyek",
+      "ctaDocs": "Baca dokumen",
+      "stepLabel": "Langkah {number} · {phase}",
+      "onchainSuiMove": "on-chain · sui move",
+      "live": "Live",
+      "steps": {
+        "0": {
+          "phase": "Konfigurasi",
+          "heading": "Deploy",
+          "body": "Atur siklus, payout, token, dan tier NFT opsional. Tanda tangani satu transaksi Sui. Proyek Anda aktif dengan AdminCap yang Anda miliki.",
+          "outcome": "AdminCap dicetak"
+        },
+        "1": {
+          "phase": "Pemasukan",
+          "heading": "Terima",
+          "body": "Pendukung membayar SUI langsung ke treasury Anda. Mereka menerima token proyek sesuai bobot siklus, plus NFT tier jika Anda menentukannya.",
+          "outcome": "Token dicetak"
+        },
+        "2": {
+          "phase": "Tata kelola",
+          "heading": "Konfigurasi ulang",
+          "body": "Ajukan perubahan untuk siklus berikutnya. Setelah penundaan ballot, parameter baru terkunci. Holder dapat menarik surplus kapan saja.",
+          "outcome": "Siklus diantrekan"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "Mengapa Sui",
+      "title": "Dibangun untuk chain yang dibangun untuk ini.",
+      "subtitle": "Tiga hal yang dilakukan Sui secara native yang membuat Pandabox terasa berbeda — pembayaran di bawah satu sen, kepemilikan hak admin yang nyata, dan onboarding tanpa hambatan.",
+      "nativeStamp": "sui-native",
+      "cards": {
+        "gas": {
+          "tag": "Gas",
+          "heading": "Gas di bawah satu sen",
+          "body": "Pendukung tidak perlu membayar $30 untuk mendukung proyek. Pembayaran Pandabox hanya butuh pecahan sen — kontribusi kecil yang berarti benar-benar tersalurkan.",
+          "meta": "median pay tx · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "Kepemilikan",
+          "heading": "Kepemilikan berbasis objek",
+          "body": "ProjectAdminCap Anda adalah objek Sui yang sesungguhnya. Transfer ke multisig, serahkan ke DAO, kunci di escrow — itu hanya sebuah objek."
+        },
+        "onboarding": {
+          "tag": "Onboarding",
+          "heading": "Transaksi disponsori",
+          "body": "Onboard pendukung yang belum memiliki SUI. Pandabox dapat mensponsori gas, sehingga dompet baru dapat mendukung proyek pada interaksi pertamanya.",
+          "meta": "gas disponsori · pembayar hanya menandatangani"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "Angka-angka",
+      "title": "Dibangun atas data on-chain yang nyata.",
+      "subtitle": "Setiap angka di sini dihitung dari event pada paket Move Pandabox, disegarkan setiap 60 detik.",
+      "sourceFootnote": "sumber · event pandabox::project · sum / count / set",
+      "computedAt": "dihitung pada",
+      "liveLabel": "Live · sui mainnet",
+      "totalRaised": "Total terhimpun",
+      "totalRaisedHint": "jumlah sold ÷ base_rate, semua proyek",
+      "delta24h": "24j",
+      "substat": {
+        "across": "Di",
+        "projects": "proyek",
+        "tokensMinted": "Token dicetak",
+        "platformFees": "Biaya platform",
+        "feeRate": "Tarif biaya"
+      },
+      "activeProjects": "Proyek aktif",
+      "liveCount": "{count} aktif",
+      "closedCount": "{count} ditutup",
+      "deployedAllTime": "deployed sepanjang masa",
+      "uniqueBackers": "Pendukung unik",
+      "addr": "addr",
+      "contribsPerBacker": "kontribusi / pendukung",
+      "moreOverflow": "+{count} lagi",
+      "latestActivity": "Aktivitas terbaru",
+      "lastContribution": "kontribusi terakhir",
+      "largest": "Terbesar",
+      "paymentsWindow": "{count} pembayaran · 24j"
+    },
+    "heroConsole": {
+      "liveConsole": "Konsol langsung",
+      "streamSequenceAria": "Urutan stream",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← jendela 5s · terlama",
+      "pulseWindowNow": "sekarang →",
+      "stream": "Stream",
+      "recentPayments": "pembayaran terbaru",
+      "listeningEvents": "Mendengarkan event…",
+      "viewProjectAria": "Lihat proyek {name}",
+      "stat": {
+        "projects": "Proyek",
+        "platformFee": "Biaya platform",
+        "treasury": "Treasury"
+      }
     }
   },
   "footer": {
@@ -121,24 +257,24 @@
   "explore": {
     "title": "Jelajahi",
     "headline": "Sedang didanai sekarang.",
-    "subtitle": "Setiap penjualan token aktif di Pandabox, dibaca langsung dari paket Sui mainnet — tanpa indexer di tengahnya.",
+    "subtitle": "Setiap sale token aktif di Pandabox, dibaca langsung dari paket Sui mainnet — tanpa indexer di tengah.",
     "liveCount": "{count} aktif",
     "totalCount": "{count} total",
-    "cachedHint": "cache 60d",
+    "cachedHint": "cache 60s",
     "all": "Semua",
     "live": "Aktif",
-    "ended": "Selesai",
-    "idle": "menganggur",
+    "ended": "Berakhir",
+    "idle": "idle",
     "verified": "terverifikasi",
-    "legacy": "lawas",
-    "legacyHint": "Di-deploy sebelum perbaikan penskalaan 9-desimal — angka tidak dapat diandalkan.",
+    "legacy": "legacy",
+    "legacyHint": "Dideploy sebelum perbaikan penskalaan 9-desimal — angka tidak dapat diandalkan.",
     "filterByCategory": "Filter berdasarkan kategori",
     "sortLabel": "Urutkan",
     "searchLabel": "Cari",
     "sort": {
-      "trending": "Tren",
+      "trending": "Trending",
       "newest": "Terbaru",
-      "mostFunded": "Paling banyak didanai",
+      "mostFunded": "Paling didanai",
       "endingSoonest": "Segera berakhir"
     },
     "searchPlaceholder": "cari proyek",
@@ -147,7 +283,7 @@
     "loadMore": "Muat lebih banyak",
     "empty": "Belum ada proyek yang cocok dengan filter ini.",
     "emptyTitle": "Tidak ada yang cocok",
-    "resetFilters": "Atur ulang filter",
+    "resetFilters": "Reset filter",
     "byCreator": "oleh {addr}",
     "endsNow": "berakhir ",
     "endedAt": "berakhir ",
@@ -168,11 +304,11 @@
   },
   "project": {
     "card": {
-      "raised": "Terkumpul",
+      "raised": "Terhimpun",
       "supporters": "Pendukung"
     },
     "hero": {
-      "raised": "Terkumpul",
+      "raised": "Terhimpun",
       "supporters": "Pendukung",
       "heldBy": "dipegang oleh",
       "backThis": "Dukung proyek ini"
@@ -181,39 +317,831 @@
       "live": "aktif",
       "paused": "dijeda",
       "closed": "ditutup"
+    },
+    "detail": {
+      "backToExplore": "kembali ke jelajah",
+      "legacyBadge": "Legacy · parameter salah",
+      "legacyBody": "Proyek ini dideploy sebelum wizard menerapkan penskalaan 9-desimal pada <code>base_rate</code>. Angka rate, target, dan terhimpun di bawah ini salah — jangan percayai atau dukung sale ini.",
+      "creator": "Kreator",
+      "contractAddressShort": "CA",
+      "verified": "Terverifikasi",
+      "statusLabel": "Status",
+      "statusLive": "Aktif",
+      "statusEnded": "Berakhir",
+      "statusClosed": "Ditutup",
+      "endsIn": "Berakhir dalam",
+      "cap": "Cap",
+      "sale": "Sale",
+      "ended": "Berakhir",
+      "noCap": "tanpa cap",
+      "finished": "selesai",
+      "closed": "ditutup",
+      "rate": "Rate",
+      "perSui": "/SUI",
+      "maxSupply": "supply maks",
+      "unsold": "tak terjual",
+      "unsoldToCreator": "→ kreator",
+      "unsoldBurn": "bakar",
+      "remaining": "tersisa",
+      "treasury": "treasury",
+      "beFirstSupporter": "jadilah yang pertama mendukung proyek ini",
+      "supporterOne": "{count} pendukung",
+      "supporterOther": "{count} pendukung",
+      "lastBy": "terakhir oleh",
+      "justNow": "baru saja",
+      "agoMinutes": "{n}m lalu",
+      "agoHours": "{n}j lalu",
+      "agoDays": "{n}h lalu",
+      "aboutTitle": "Tentang",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "Belum ada deskripsi yang dipin — kreator dapat mempublikasikannya kapan saja. Lihat panel pembayaran untuk mekanika sale.",
+      "status": {
+        "ended": "berakhir"
+      },
+      "meta": {
+        "notFoundTitle": "Proyek tidak ditemukan",
+        "descriptionFallback": "{name} ({ticker}) — pendanaan on-chain di Sui, didukung oleh Pandabox."
+      },
+      "tabs": {
+        "about": "Tentang",
+        "activity": "Aktivitas"
+      },
+      "activity": {
+        "title": "Aktivitas",
+        "empty": "Belum ada aktivitas on-chain untuk proyek ini. Kontribusi, klaim, dan penarikan akan muncul di sini.",
+        "eventCount": "{count, plural, one {# event} other {# event}}",
+        "revalidates": "validasi ulang 30s",
+        "colTime": "Waktu",
+        "colEvent": "Event",
+        "colActor": "Aktor",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "Berkontribusi",
+          "claim": "Diklaim",
+          "withdraw": "Ditarik",
+          "close": "Ditutup"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "Klaim token Anda",
+        "finalizeSale": "Finalisasi sale",
+        "receiptCount": "{count, plural, one {# receipt} other {# receipt}}",
+        "anyone": "siapa saja",
+        "claimIntroOne": "Sale telah ditutup. Bakar objek <code>ContributionReceipt&lt;T&gt;</code> Anda dan terima bagian {ticker} Anda.",
+        "claimIntroMany": "Sale telah ditutup. Bakar objek <code>ContributionReceipt&lt;T&gt;</code> Anda dan terima bagian {ticker} Anda.",
+        "youllReceive": "Anda akan menerima",
+        "from": "Dari",
+        "contributed": "dikontribusikan",
+        "finalizeIntro": "Waktu akhir sale telah lewat. Siapa saja dapat memfinalisasi untuk mengunci jumlah terjual akhir dan membuka klaim + penarikan untuk semua orang.",
+        "sold": "Terjual",
+        "treasury": "Treasury",
+        "claimCta": "Klaim → {amount}",
+        "claimAllCta": "Klaim semua → {amount}",
+        "receiptsSummary": "receipts ({count})",
+        "modalClaimTitle": "Klaim token",
+        "modalFinalizeTitle": "Finalisasi sale",
+        "backToProject": "Kembali ke proyek",
+        "youBurn": "Anda membakar",
+        "receiptOne": "receipt",
+        "receiptOther": "receipts",
+        "originallyContributed": "{amount} kontribusi awal",
+        "youReceive": "Anda menerima",
+        "coinSentToWallet": "Coin<{ticker}> dikirim ke dompet Anda",
+        "cancel": "Batal",
+        "signing": "Menandatangani…",
+        "confirmClaim": "Konfirmasi & klaim",
+        "confirmFinalize": "Konfirmasi & finalisasi",
+        "finalizePreviewIntro": "Jendela sale telah ditutup. Siapa saja dapat memfinalisasi untuk mengunci jumlah terjual akhir — ini membuka klaim token untuk pendukung dan penarikan SUI untuk pemilik proyek.",
+        "finalizeFootnote": "no-op jika sale belum siap · hanya gas · sale dapat diklaim oleh holder {ticker}",
+        "saleFinalized": "sale difinalisasi",
+        "finalizeSuccessBody": "Proyek kini ditutup. Klaim token dan penarikan admin telah dibuka.",
+        "txLabel": "tx",
+        "txFailed": "Transaksi gagal.",
+        "tweetText": "Baru saja mengklaim {ticker} saya dari {projectName} di Pandabox — pendanaan on-chain yang dapat diprogram di Sui.",
+        "stampClaimed": "diklaim",
+        "stampInYourWallet": "di dompet Anda",
+        "tokensDeliveredEyebrow": "· token terkirim ·",
+        "fromLabel": "dari",
+        "receiptsBurnedOne": "{count} receipt dibakar",
+        "receiptsBurnedOther": "{count} receipt dibakar",
+        "statReceived": "Diterima",
+        "statReceipts": "Receipts",
+        "burnedCount": "{count} dibakar",
+        "shareOnX": "bagikan di x"
+      },
+      "share": {
+        "tweetText": "Mendukung {projectName} ({ticker}) di Pandabox — pendanaan on-chain yang dapat diprogram di Sui.",
+        "copyAria": "Salin URL proyek",
+        "shareAria": "Bagikan ke X",
+        "copy": "salin",
+        "copied": "tersalin",
+        "share": "bagikan"
+      },
+      "cover": {
+        "specCover": "cover · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "artwork",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "Sampul {name}",
+        "iconAlt": "Ikon {name}"
+      },
+      "meter": {
+        "ofLabel": "dari",
+        "target": "target"
+      },
+      "onchain": {
+        "title": "Catatan on-chain",
+        "specSheet": "spec sheet",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Objek proyek",
+        "sharedObject": "shared object",
+        "coinType": "Tipe coin",
+        "contractAddress": "alamat kontrak",
+        "deployed": "Dideploy",
+        "links": "Tautan",
+        "social": "sosial",
+        "site": "situs",
+        "discord": "discord",
+        "noneProvided": "tidak disediakan",
+        "copy": "salin",
+        "copied": "tersalin",
+        "copyAria": "Salin ke clipboard",
+        "explorer": "explorer",
+        "justNow": "baru saja",
+        "agoSeconds": "{n}d lalu",
+        "agoMinutes": "{n}m lalu",
+        "agoHours": "{n}j lalu",
+        "agoDays": "{n}h lalu",
+        "agoMonths": "{n}bln lalu",
+        "agoYears": "{n}thn lalu"
+      },
+      "rail": {
+        "connectTitle": "Hubungkan dompet",
+        "connectBody": "Hubungkan untuk mendukung proyek ini, mengklaim token, atau mengelolanya jika Anda kreator.",
+        "loadingTitle": "Membaca kepemilikan",
+        "loadingBody": "Memeriksa AdminCap + receipt yang dimiliki…",
+        "saleClosedTitle": "Sale ditutup",
+        "saleClosedBody": "Sale ini telah difinalisasi. Anda tidak memegang contribution receipt untuk {token}, jadi tidak ada yang bisa diklaim dari dompet ini.",
+        "thisProjectFallback": "proyek ini"
+      },
+      "seedLiquidity": {
+        "title": "Tanam likuiditas Cetus",
+        "intro": "Menandai proyek ini memiliki likuiditas berpasangan di <strong>Cetus</strong>. Setelah disimpan, grafik harga di halaman proyek akan mulai membaca data OHLCV langsung dari GeckoTerminal.",
+        "verifyExplainer": "Kami memverifikasi objek pool Anda di Sui sebelum mempin. Pool harus berupa <code>pool::Pool&lt;A, B&gt;</code> yang sesungguhnya dengan satu sisi SUI dan sisi lain coin proyek Anda — <code>{coin}</code>. Anda tidak dapat membalik flag tanpa pool yang sesungguhnya.",
+        "poolAddressLabel": "Alamat pool Cetus",
+        "poolPlaceholder": "0x… (ID objek pool Cetus)",
+        "verify": "Verifikasi",
+        "verifying": "Memverifikasi…",
+        "verifiedOk": "Terverifikasi ✓",
+        "invalidObjectId": "Bukan ID objek Sui yang valid",
+        "verificationFailedTitle": "Verifikasi gagal",
+        "verificationFailed": "Verifikasi gagal.",
+        "poolVerified": "Pool terverifikasi",
+        "cetus": "Cetus",
+        "rowPool": "Pool",
+        "rowSideA": "Sisi A",
+        "rowSideB": "Sisi B",
+        "cancel": "Batal",
+        "pinning": "Mempin…",
+        "signing": "Menandatangani…",
+        "signAndSave": "Tanda tangan & simpan",
+        "pinningFailed": "Pin ke IPFS gagal — {reason}",
+        "unknownError": "kesalahan tidak diketahui",
+        "txFailed": "Transaksi gagal.",
+        "seededTitle": "Likuiditas ditandai tertanam",
+        "seededBody": "Halaman proyek akan mengambil pool baru dan mulai merender grafik langsung dalam ~30s setelah validasi ulang cache.",
+        "detailsCid": "details cid · {cid}",
+        "digest": "digest · {digest}"
+      }
     }
   },
   "pay": {
     "heading": "Dukung proyek ini",
     "youReceive": "Anda menerima",
-    "remainingHint": "Sisa yang dapat dicetak {amount}, kelebihan dikembalikan secara otomatis.",
+    "remainingHint": "Sisa yang dapat dicetak {amount}, kelebihan dikembalikan otomatis.",
     "memo": "Memo (opsional)",
     "memoPlaceholder": "dicatat on-chain bersama pembayaran Anda",
     "enterAmount": "Masukkan jumlah",
     "payAmount": "Bayar {amount} SUI",
-    "shareOfSupply": "Bagian dari pasokan",
+    "shareOfSupply": "Porsi supply",
     "remainingMintable": "Sisa yang dapat dicetak",
-    "unsold": "Tidak terjual",
+    "unsold": "Tak terjual",
     "unsoldBurn": "Bakar",
     "unsoldTransfer": "Transfer ke kreator",
-    "inspectorTitle": "Inspektur transaksi",
-    "inspectorPreview": "Pratinjau sebelum tanda tangan. Dompet Anda akan meminta tanda tangan untuk panggilan Move ini.",
-    "inspectorNotDeployed": "Paket Move belum di-deploy — pengiriman disimulasikan secara lokal sampai NEXT_PUBLIC_PACKAGE_ID ditetapkan.",
+    "inspectorTitle": "Transaction inspector",
+    "inspectorPreview": "Pratinjau pra-tanda-tangan. Dompet Anda akan meminta tanda tangan untuk panggilan Move ini.",
+    "inspectorNotDeployed": "Paket Move belum dideploy — pengiriman disimulasikan lokal sampai NEXT_PUBLIC_PACKAGE_ID diatur.",
     "inspector": {
-      "package": "paket",
-      "module": "modul",
-      "function": "fungsi",
+      "package": "package",
+      "module": "module",
+      "function": "function",
       "projectId": "arg.project_id",
       "amountMist": "arg.amount_mist",
-      "returns": "mengembalikan",
-      "returnsValue": "ContributionReceipt + koin refund → pengirim"
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + refund coin → pengirim"
     },
     "cancel": "Batal",
     "signSubmit": "Tanda tangan & kirim",
     "signing": "Menandatangani…",
-    "confirmed": "Pembayaran dikonfirmasi",
+    "confirmed": "Pembayaran terkonfirmasi",
     "backToProject": "Kembali ke proyek",
     "connectFirst": "Hubungkan dompet untuk berkontribusi.",
     "txFailed": "Transaksi gagal."
+  },
+  "create": {
+    "page": {
+      "metaTitle": "Buat proyek",
+      "metaDescription": "Atur siklus, token, payout, dan tier. Deploy ke Sui.",
+      "headline": "Atur proyek Anda, deploy dalam satu transaksi.",
+      "intro": "Enam langkah. Draft tersimpan otomatis di browser Anda. Sisi kanan menampilkan persis apa yang akan dilihat pendukung di halaman proyek Anda.",
+      "badgeOneTransaction": "satu transaksi",
+      "badgeAutoSaving": "menyimpan draft otomatis",
+      "badgeIpfs": "aset di-pin di ipfs"
+    },
+    "wizard": {
+      "stepsAria": "Langkah wizard",
+      "stepLabel": "Langkah {num}",
+      "stepLabels": {
+        "identity": "Identitas",
+        "coin": "Coin",
+        "sale": "Sale",
+        "deploy": "Deploy"
+      },
+      "percentComplete": "{pct}% selesai",
+      "resetDraft": "reset draft",
+      "back": "Kembali",
+      "continueStep": "Lanjut · langkah {num}",
+      "reviewAndDeployAbove": "tinjau & deploy di atas",
+      "resetModalTitle": "Reset draft?",
+      "resetModalBody": "Ini menghapus setiap field di wizard dan menghapus draft yang tersimpan dari browser Anda. Tidak ada yang terpengaruh on-chain — Anda hanya memulai dari form kosong.",
+      "resetBullet1": "identitas, coin, sale, deploy — semua dihapus",
+      "resetBullet2": "dihapus dari localStorage",
+      "resetBullet3": "ini tidak dapat diurungkan",
+      "keepDraft": "Simpan draft",
+      "resetDraftButton": "Reset draft"
+    },
+    "imageUpload": {
+      "defaultLabel": "Gambar sampul",
+      "cidLabel": "cid",
+      "errorOnlyImages": "Hanya file gambar yang diperbolehkan.",
+      "errorTooLarge": "Gambar terlalu besar ({size} MiB). Maks {max} MiB.",
+      "errorUploadFailed": "Unggahan gagal tidak terduga.",
+      "dropToPin": "Lepaskan untuk mempin",
+      "dragOrClick": "Seret gambar atau klik untuk mengunggah",
+      "maxSize": "maks {max} MiB",
+      "loadingFromIpfs": "memuat dari ipfs",
+      "gatewayRetry": "coba ulang gateway {attempt}/4",
+      "gatewayWarmup": "gateway warm-up",
+      "replace": "ganti",
+      "remove": "hapus",
+      "uploading": "mengunggah",
+      "pinningToIpfs": "mempin ke ipfs",
+      "cancelUploadAria": "Batalkan unggahan",
+      "cancel": "batal",
+      "sendingBytes": "mengirim byte ke layanan pinning",
+      "pinataReplicating": "pinata sedang mereplikasi antar node ipfs — bisa memakan beberapa detik untuk gambar besar",
+      "pasteCidToggle": "atau tempelkan CID / URL yang ada",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "Identitas",
+      "body": "Siapa yang mendanai apa. Ini yang akan dilihat pendukung di dompet mereka dan di halaman proyek.",
+      "meta": "disimpan on-chain",
+      "basicsTitle": "Dasar",
+      "basicsMeta": "tidak dapat diubah setelah deploy",
+      "projectName": "Nama proyek",
+      "projectNamePlaceholder": "mis. Atelier Ono",
+      "ticker": "Ticker",
+      "tickerHint": "Huruf besar/angka, 2–10 karakter",
+      "category": "Kategori",
+      "storyTitle": "Cerita",
+      "storyMeta": "dapat diedit kapan saja",
+      "tagline": "Tagline",
+      "taglineHint": "Satu baris, 8–160 karakter · {len}/160",
+      "taglinePlaceholder": "Kolektif photo-zine yang merilis karya mingguan di Sui.",
+      "description": "Deskripsi",
+      "descriptionHint": "Mendukung Markdown · 20–4000 karakter · {len}/4000",
+      "descriptionPlaceholder": "Ceritakan kepada pendukung apa yang Anda bangun dan mengapa SUI mereka penting.",
+      "coverTitle": "Gambar sampul",
+      "coverMeta": "di-pin ke ipfs",
+      "coverHint": "Muncul di bagian atas halaman proyek Anda. Crop 16:10 lebar paling cocok. Di-pin ke IPFS saat diunggah — CID-nya masuk on-chain.",
+      "socialsTitle": "Sosial",
+      "socialsMeta": "opsional",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "handle",
+      "website": "Situs web",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "URL undangan"
+    },
+    "step2": {
+      "title": "Coin",
+      "body": "Pandabox membutuhkan coin Sui yang Anda miliki. Anda dapat menerbitkan satu sekarang di browser menggunakan template kami yang teraudit, atau tempelkan TreasuryCap + CoinMetadata yang sudah ada jika Anda sudah memilikinya.",
+      "meta": "9 desimal · dibuat dengan sui::coin::create_currency",
+      "modeLabel": "Mode",
+      "modePublish": "Terbitkan coin baru",
+      "modePaste": "Saya sudah punya coin",
+      "untitledCoin": "Coin tanpa nama",
+      "howThisWorks": "Cara kerjanya",
+      "howThisWorksBody": "Kami mulai dari <code>coin_template.move</code> yang sudah dikompilasi dengan <strong>9 desimal</strong>, menulis ulang identifier + konstanta metadata-nya di browser Anda via <code>@mysten/move-bytecode-template</code>, lalu mempublikasikannya dari dompet Anda. Sumber Move yang dirender di-pin ke IPFS agar siapa saja dapat mengaudit persis apa yang dideploy.",
+      "coinMetadataTitle": "Metadata coin",
+      "coinMetadataMeta": "masuk ke CoinMetadata<T>",
+      "symbol": "Simbol",
+      "symbolHint": "2–10 karakter · huruf besar / angka",
+      "name": "Nama",
+      "namePlaceholder": "Panda Token",
+      "description": "Deskripsi",
+      "descriptionHint": "≤240 karakter · ASCII",
+      "descriptionPlaceholder": "Apa yang diwakili coin ini.",
+      "iconUrl": "URL ikon",
+      "iconUrlHint": "Gunakan ulang sampul proyek Anda atau tempelkan URL yang di-host",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "Publikasikan",
+      "publishMetaComplete": "selesai",
+      "publishMetaStep": "langkah 1 dari 2 deploy",
+      "coinPublishedConfirm": "Coin dipublikasikan. TreasuryCap + CoinMetadata tertangkap ke draft.",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "Menulis ulang bytecode…",
+      "publishStateSigning": "Menandatangani…",
+      "publishStateFetching": "Menunggu chain…",
+      "publishStatePinning": "Mempin sumber…",
+      "publishCoin": "Publikasikan coin",
+      "publishCaption": "satu transaksi · upgrade cap yang dapat ditransfer dikembalikan kepada Anda",
+      "errorNoDigest": "Dompet tidak mengembalikan digest untuk tx publikasi.",
+      "errorPublishFailed": "Publikasi gagal.",
+      "strandedTitle": "Dipublikasikan — tetapi RPC senyap",
+      "openOnSuiExplorer": "Buka di Sui Explorer",
+      "switchToPasteMode": "Beralih ke mode tempel",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 karakter · A-Z, 0-9, _ · harus dimulai dengan huruf",
+      "validateName": "Tambahkan nama (2–32 karakter)",
+      "validateDescriptionLength": "Maks 240 karakter",
+      "validateDescriptionAscii": "Hanya ASCII (tanpa emoji / smart quotes)",
+      "validateIconUrl": "Gunakan URL https:// lengkap",
+      "validateInvalidIdentifier": "Identifier tidak valid",
+      "objectIdsTitle": "ID objek",
+      "objectIdsMeta": "harus dimiliki oleh Anda",
+      "treasuryCapLabel": "ID objek TreasuryCap<T>",
+      "treasuryCapHint": "Dari createdObjects transaksi publikasi Anda.",
+      "metadataLabel": "ID objek CoinMetadata<T>",
+      "metadataHint": "Kami membaca ini dari chain untuk mendeteksi tipe coin + desimal.",
+      "coinInfoTitle": "Info coin",
+      "coinInfoMetaReading": "membaca…",
+      "coinInfoMetaDetected": "terdeteksi",
+      "coinInfoMetaNotFound": "tidak ditemukan",
+      "statName": "Nama",
+      "statSymbol": "Simbol",
+      "statDecimals": "Desimal",
+      "resolvedCoinType": "Tipe coin yang teridentifikasi",
+      "wrongDecimals": "Coin ini berdesimal {decimals}. Pandabox membutuhkan {required} desimal — deploy ulang coin Anda dengan nilai yang benar.",
+      "readingFromChain": "Membaca dari chain…",
+      "pasteMetadataHint": "Tempelkan ID CoinMetadata di atas untuk mendeteksi coin.",
+      "errorObjectNotFound": "Objek tidak ditemukan.",
+      "errorNotCoinMetadata": "Objek bukan CoinMetadata<T>.",
+      "errorUnexpectedContent": "Konten objek tidak terduga.",
+      "errorLookupFailed": "Pencarian gagal."
+    },
+    "step3": {
+      "title": "Ketentuan sale",
+      "body": "Pendukung berkontribusi SUI sebagai imbalan untuk Receipt. Setelah sale berakhir atau habis terjual, mereka mengklaim alokasi token mereka. Apa pun yang tak terjual dibakar atau dikembalikan ke Anda, sesuai pilihan Anda.",
+      "meta": "tidak dapat diubah setelah deploy",
+      "pricingTitle": "Harga",
+      "pricingMeta": "token ↔ SUI",
+      "tokensPerSui": "Token per SUI",
+      "tokensPerSuiHint": "Berapa banyak {ticker} yang diterima pendukung untuk setiap 1 SUI.",
+      "targetRaise": "Target penghimpunan (SUI)",
+      "targetRaiseHint": "Mengedit ini menghitung balik Token per SUI.",
+      "baseRateLabel": "base_rate (scaled, on-chain)",
+      "allocationTitle": "Alokasi",
+      "allocationMeta": "total token yang dijual",
+      "tokensForSale": "Token yang dijual",
+      "tokensForSaleHint": "Total {ticker} yang dicadangkan untuk sale ini. TreasuryCap mencetak hingga jumlah ini.",
+      "fundingAllocationLabel": "funding_allocation (raw u64)",
+      "maxSupplyLabel": "Supply maks · {ticker}",
+      "mintedAtLaunch": "Dicetak saat peluncuran",
+      "mintedAtLaunchValue": "0 — dicetak saat klaim",
+      "supplyNote": "Coin dimulai dengan <zeroSupply>supply 0</zeroSupply>. Token dicetak secara lazy ketika pendukung memanggil <code>claim</code> pada receipt mereka. Supply beredar akhir = <claimed>claimed</claimed>",
+      "supplyNoteReturn": " + tak terjual (dikembalikan ke dompet Anda)",
+      "supplyNoteBurn": " (porsi tak terjual dibakar)",
+      "saleWindowTitle": "Jendela sale",
+      "durationDays": "{days}h",
+      "noTimeCap": "tanpa batas waktu",
+      "ends": "Berakhir",
+      "inDays": "dalam {days} hari",
+      "unsoldTitle": "Supply tak terjual",
+      "unsoldMeta": "setelah sale ditutup",
+      "actionLabel": "Aksi",
+      "unsoldBurnTitle": "Bakar",
+      "unsoldBurnBody": "Token tak terjual dihancurkan permanen, mengurangi total supply.",
+      "unsoldReturnTitle": "Kembalikan ke kreator",
+      "unsoldReturnBody": "Token tak terjual dicetak ke alamat Anda. Gunakan untuk vesting atau seeding DEX."
+    },
+    "step4": {
+      "title": "Tinjau & deploy",
+      "body": "Pandabox mempin deskripsi dan project_details Anda ke IPFS, lalu mengirim satu transaksi Sui yang membuat proyek, mengonsumsi TreasuryCap Anda, dan mentransfer ProjectAdminCap ke dompet Anda.",
+      "metaChecks": "{ok}/{total} cek · {status}",
+      "statusReady": "siap",
+      "statusBlocked": "diblokir",
+      "headsUp": "Perhatian",
+      "headsUpBody": "<strong>Dikonsumsi saat deploy:</strong> <code>TreasuryCap<T></code> dan <code>CoinMetadata<T></code> Anda menjadi milik objek Project dan tidak dapat diambil kembali. <strong>Tidak dapat diubah setelah deploy:</strong> nama, coin, base rate, alokasi, waktu akhir, aksi tak terjual. <strong>Dapat diedit nanti:</strong> deskripsi, ikon, source-code blob, project_details (via <code>update_metadata</code>).",
+      "sourceCodeTitle": "Opsional · source code",
+      "sourceCodeMetaSet": "diatur",
+      "sourceCodeMetaSkipped": "dilewati",
+      "sourceCodeLabel": "Source code blob (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy… (opsional)",
+      "sourceCodeHint": "Pin arsip repo Anda secara terpisah dan tempelkan CID-nya. Atau biarkan kosong dan perbarui nanti.",
+      "preflightTitle": "Cek pra-penerbangan",
+      "preflightAllGreen": "semua hijau",
+      "preflightBlocking": "{count} memblokir",
+      "fixInStep": "perbaiki di langkah {num}",
+      "deployTitle": "Deploy",
+      "deployMetaLive": "live · sui mainnet",
+      "deployMetaSimulated": "disimulasikan",
+      "deployToSui": "Deploy ke Sui",
+      "deployCaption": "mengonsumsi treasury cap + metadata · admin cap dikembalikan ke Anda",
+      "draftAutoSaves": "Draft tersimpan otomatis ke browser Anda sebagai <code>pandabox:draft:v3</code>.",
+      "modalSuccessTitle": "Proyek dideploy",
+      "modalInspectorTitle": "Transaction inspector",
+      "openProjectPage": "Buka halaman proyek",
+      "seeItOnExplore": "Lihat di Jelajahi",
+      "inspectorIntroLive": "Tinjau apa yang akan Anda publikasikan. Pandabox akan mempin deskripsi dan detail Anda ke IPFS, lalu dompet Anda akan menandatangani satu transaksi yang membuat proyek di Sui.",
+      "inspectorIntroSimulated": "Paket Move belum dikonfigurasi — pengiriman ini akan disimulasikan secara lokal.",
+      "sectionProject": "Proyek",
+      "sectionYourCoin": "Coin Anda",
+      "sectionSaleTerms": "Ketentuan sale",
+      "editLink": "edit",
+      "summaryName": "Nama",
+      "summaryTicker": "Ticker",
+      "summaryCategory": "Kategori",
+      "summaryTagline": "Tagline",
+      "summarySymbol": "Simbol",
+      "summaryDecimals": "Desimal",
+      "summaryRate": "Rate",
+      "tokensWord": "token",
+      "summaryTotalForSale": "Total dijual",
+      "summaryMaxSupply": "Supply maks",
+      "summaryMintedAtLaunch": "Dicetak saat peluncuran",
+      "summaryMintedAtLaunchValue": "0 — dicetak lazy saat klaim",
+      "summaryMaxRaise": "Penghimpunan maks",
+      "summarySaleEnds": "Sale berakhir",
+      "summaryOpenEnded": "Terbuka tanpa batas",
+      "summaryUnsoldTokens": "Token tak terjual",
+      "summaryUnsoldReturn": "Dikembalikan ke dompet Anda",
+      "summaryUnsoldBurn": "Dibakar (mengurangi supply akhir)",
+      "youllKeepLabel": "Anda akan menyimpan ·",
+      "youllKeepBody": "<strong>ProjectAdminCap</strong> di dompet Anda — hak admin Anda untuk proyek ini. Anda dapat mentransfernya ke multisig nanti.",
+      "youllGiveUpLabel": "Anda akan menyerahkan ·",
+      "youllGiveUpBody": "<strong>TreasuryCap</strong> dan <strong>CoinMetadata</strong> Anda. Proyek mengambil kepemilikan dan tidak dapat dipulihkan.",
+      "lockedOnDeployLabel": "Terkunci saat deploy ·",
+      "lockedOnDeployBody": "nama, coin, rate, alokasi, waktu akhir, aksi tak terjual. Deskripsi, ikon, dan tautan tetap dapat diedit.",
+      "advancedToggle": "lanjutan · raw move call",
+      "rawPinning": "mempin…",
+      "rawSetAtSubmit": "diatur saat submit",
+      "cancel": "Batal",
+      "submitPinningDescription": "Mempin deskripsi…",
+      "submitPinningDetails": "Mempin detail…",
+      "submitSigning": "Menandatangani…",
+      "submitPinAndDeploy": "Pin & deploy",
+      "errorDeployFailed": "Deploy gagal.",
+      "untitledProject": "Proyek tanpa nama",
+      "coverWord": "sampul",
+      "noCover": "tanpa sampul",
+      "projectCoverPreviewAlt": "Pratinjau sampul proyek",
+      "checkIdentityOk": "Identitas lengkap",
+      "checkIdentityErr": "Identitas: {msg}",
+      "checkCoinOk": "Coin terverifikasi · {symbol} · {decimals} desimal",
+      "checkCoinWrongDecimals": "Coin menggunakan {decimals} desimal — protokol membutuhkan {required}",
+      "checkCoinErr": "Coin: {msg}",
+      "checkSaleOk": "Ketentuan sale valid",
+      "checkSaleErr": "Sale: {msg}",
+      "checkIncomplete": "tidak lengkap"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "Dasbor",
+      "description": "Proyek Pandabox yang Anda miliki dan dukung."
+    },
+    "title": "Dasbor",
+    "headline": "Aktivitas Anda",
+    "untitledProject": "Proyek tanpa nama",
+    "connectGate": {
+      "eyebrow": "Hubungkan dompet Anda",
+      "headline": "Aktivitas Anda, on-chain.",
+      "body": "Hubungkan dompet Sui untuk melihat proyek yang Anda buat dan proyek yang Anda dukung."
+    },
+    "refresh": {
+      "label": "segarkan",
+      "busy": "menyegarkan",
+      "aria": "Segarkan dasbor",
+      "ariaRefreshing": "Menyegarkan dasbor"
+    },
+    "kpi": {
+      "raised": "Terhimpun",
+      "treasury": "Treasury",
+      "live": "Aktif",
+      "backing": "Mendukung"
+    },
+    "owned": {
+      "title": "Proyek Anda",
+      "subtitle": "Proyek yang ProjectAdminCap-nya Anda pegang. Klik kelola untuk membuka workspace.",
+      "noMatchLabel": "Tidak ada proyek yang cocok dengan filter ini",
+      "noMatchBody": "Coba status berbeda atau hapus filter untuk melihat semua {count, plural, one {# proyek} other {# proyek}}.",
+      "empty": {
+        "label": "Belum ada proyek",
+        "body": "Luncurkan token sale dalam hitungan menit. Pra-deploy coin Anda, atur ketentuan sale, dan kirim dengan satu tanda tangan.",
+        "cta": "Luncurkan proyek"
+      },
+      "card": {
+        "treasury": "Treasury",
+        "withdrawable": "dapat ditarik",
+        "raisedPct": "terhimpun {pct}%",
+        "tokensSold": "{amount} {ticker} terjual",
+        "manage": "Kelola",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "Proyek yang Anda dukung",
+      "subtitle": "ContributionReceipt Anda. Klaim setelah sale difinalisasi.",
+      "receipts": "{count, plural, one {# receipt} other {# receipt}}",
+      "contributed": "Dikontribusikan",
+      "claimable": "Dapat diklaim",
+      "yourShare": "Bagian Anda",
+      "action": {
+        "claim": "Klaim token",
+        "finalize": "Finalisasi sale",
+        "open": "Buka proyek"
+      },
+      "empty": {
+        "label": "Belum mendukung siapa pun",
+        "body": "Dukung proyek di Jelajahi — receipt dan bagian yang dapat diklaim Anda akan muncul di sini.",
+        "cta": "Jelajahi proyek"
+      }
+    },
+    "loading": {
+      "aria": "Memuat proyek",
+      "sr": "Memuat proyek…"
+    },
+    "filter": {
+      "all": "Semua",
+      "live": "Aktif",
+      "endingSoon": "Segera berakhir",
+      "needsFinalize": "Perlu finalisasi",
+      "closed": "Ditutup",
+      "disabledTitle": "Tidak ada proyek {label}"
+    },
+    "sort": {
+      "label": "Urutkan",
+      "aria": "Urutkan proyek",
+      "newest": "Terbaru",
+      "mostRaised": "Paling terhimpun",
+      "endingSoonest": "Segera berakhir"
+    },
+    "state": {
+      "live": "aktif",
+      "endingSoon": "segera berakhir",
+      "endedAwaiting": "perlu finalisasi",
+      "closed": "ditutup",
+      "unknown": "tidak diketahui"
+    },
+    "time": {
+      "noCap": "tanpa batas waktu",
+      "endedJustNow": "berakhir baru saja",
+      "endsIn": "berakhir dalam {duration}",
+      "endedAgoFinalize": "berakhir {duration} lalu · finalisasi untuk membuka",
+      "closedAgo": "ditutup · {duration} lalu",
+      "closed": "ditutup",
+      "durationDH": "{days}h {hours}j",
+      "durationHM": "{hours}j {mins}m",
+      "durationM": "{mins}m"
+    },
+    "sparkline": {
+      "placeholder": "24j"
+    },
+    "manage": {
+      "backToDashboard": "kembali ke dasbor",
+      "openPublicPage": "buka halaman publik",
+      "untitledProject": "Proyek tanpa nama",
+      "status": {
+        "live": "aktif",
+        "ended": "berakhir",
+        "closed": "ditutup"
+      },
+      "stats": {
+        "treasury": "Treasury",
+        "sold": "Terjual",
+        "creator": "Kreator",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "Likuiditas tertanam · grafik aktif",
+        "noPoolLabel": "Belum ada pool · grafik placeholder",
+        "poolLink": "pool {id}",
+        "seedViaPanel": "tanam melalui panel →"
+      },
+      "info": {
+        "whatLabel": "Apa yang dapat Anda lakukan di sini",
+        "whatBody": "Setiap aksi admin — finalisasi, penarikan, update metadata, tanam likuiditas, transfer atau renounce cap — berjalan melalui entry function on-chain yang sama dengan halaman proyek. Tombolnya ada di panel sebelah kanan; pre-flight check muncul di dalam setiap modal."
+      },
+      "supply": {
+        "label": "Supply",
+        "allocation": "Alokasi",
+        "sold": "Terjual",
+        "remaining": "Tersisa",
+        "unsoldAction": "Aksi tak terjual",
+        "unsoldCreator": "→ kreator",
+        "unsoldBurn": "bakar"
+      },
+      "error": {
+        "label": "Tidak dapat memuat proyek",
+        "retry": "Coba lagi"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "Dokumen",
+      "description": "Cara kerja Pandabox di Sui: jendela sale, base rate & alokasi, kontribusi & klaim, supply tak terjual, finalisasi & penarikan, plus panduan wizard."
+    },
+    "eyebrow": "Dokumen",
+    "heading": "Bagaimana Pandabox sebenarnya bekerja.",
+    "subhead": "Tiga tab. Mechanics adalah protokolnya; Walk the wizard adalah alur create; Reference berisi glosarium dan FAQ.",
+    "toc": {
+      "ariaLabel": "Bagian dokumen",
+      "onThisPage": "Di halaman ini"
+    },
+    "tabs": {
+      "ariaLabel": "Bagian dokumen",
+      "mechanics": {
+        "label": "Mekanika",
+        "sections": {
+          "how": "01 / Cara kerjanya",
+          "window": "02 / Jendela sale",
+          "rate": "03 / Base rate & alokasi",
+          "claim": "04 / Kontribusi & klaim",
+          "unsold": "05 / Supply tak terjual",
+          "finalize": "06 / Finalisasi & penarikan"
+        }
+      },
+      "wizard": {
+        "label": "Pandu wizard",
+        "sections": {
+          "intro": "Empat langkah",
+          "identity": "01 · Identitas",
+          "coin": "02 · Coin",
+          "sale": "03 · Ketentuan sale",
+          "deploy": "04 · Tinjau & deploy"
+        }
+      },
+      "reference": {
+        "label": "Referensi",
+        "sections": {
+          "glossary": "Glosarium",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / Cara kerjanya",
+        "p1": "Pandabox adalah paket Move di Sui. Seorang kreator mendeploy <term>Project</term> — objek Sui yang memiliki treasury SUI dan <term>TreasuryCap</term> terkunci untuk coin proyek itu sendiri. Proyek kemudian menjalankan satu sale pada rate tetap: pendukung berkontribusi SUI dan memperoleh hak untuk mengklaim token proyek pada harga yang dikonfigurasi.",
+        "p2": "Pendukung tidak menerima token secara langsung. Mereka menerima <term>ContributionReceipt</term> — NFT Sui yang dapat ditransfer yang menyimpan hak mereka. Mereka <term>klaim</term> token mereka dengan membakar receipt setelah sale ditutup. Pembayaran apa pun yang akan melebihi alokasi tersisa dikembalikan dalam transaksi yang sama.",
+        "p3": "Sale berakhir dengan salah satu dari tiga cara: waktu akhir yang dikonfigurasi tiba, alokasi penuh habis terjual, atau admin platform menutupnya. Setelah ditutup, kreator menarik SUI yang terhimpun (dikurangi biaya platform) dan memproses token tak terjual sesuai kebijakan yang mereka pilih saat deploy.",
+        "cta": "Mulai draft proyek →"
+      },
+      "window": {
+        "label": "02 / Jendela sale",
+        "p1": "Setiap sale memiliki satu jendela terkunci. Anda mengatur <term>waktu akhir</term> saat deploy — atau biarkan terbuka dan tutup sale secara manual sebagai admin. Hingga sale difinalisasi, siapa pun dapat berkontribusi pada rate tetap.",
+        "p2": "Tiga hal memfinalisasi sale: waktu akhir berlalu (<term>Time</term>), alokasi habis terjual (<term>Sellout</term>), atau admin menutup paksa (<term>Admin</term>). Finalisasi adalah gerbang untuk klaim token, penarikan SUI, dan pemrosesan supply tak terjual — tidak ada yang berfungsi selama sale masih aktif.",
+        "p3": "Finalisasi dapat dipicu oleh admin (<code>try_finalize</code>) atau oleh siapa saja setelah kondisi terpenuhi (<code>permissionless_finalize</code>) — jadi kreator yang menghilang tidak dapat menjebak klaim pendukung setelah waktu akhir berlalu.",
+        "cta": "Lihat di langkah 03 →"
+      },
+      "rate": {
+        "label": "03 / Base rate & alokasi",
+        "p1": "Dua angka mengatur sale: <term>base rate</term> (token proyek yang diterbitkan per 1 SUI) dan <term>funding allocation</term> (total token proyek yang dijual). Keduanya diatur saat deploy dan dibekukan sepanjang masa proyek — tidak dapat diubah oleh update metadata atau aksi admin.",
+        "p2": "Jika kontribusi akan melebihi alokasi tersisa, hanya porsi yang sesuai yang diterima dan sisanya dikembalikan dalam transaksi yang sama. Pendukung tidak pernah membayar lebih.",
+        "cta": "Lihat di langkah 03 →"
+      },
+      "claim": {
+        "label": "04 / Kontribusi & klaim",
+        "p1": "<term>Kontribusi.</term> Pendukung memanggil <code>contribute</code> dengan coin SUI. Proyek mencatat kontribusi atas alamat mereka dan mengembalikan NFT <term>ContributionReceipt</term> — plus coin refund jika pembayaran melebihi yang dapat dialokasikan.",
+        "p2": "<term>Klaim.</term> Setelah sale difinalisasi, pendukung membakar receipt mereka dengan <code>claim</code> dan menerima token proyek. Beberapa receipt (dari beberapa kontribusi) dapat dibakar bersama dalam satu panggilan via <code>claim_multiple</code>, mengembalikan satu coin yang sudah digabungkan.",
+        "p3": "Receipt adalah objek Sui biasa: dapat ditransfer, dijual di pasar sekunder, dan tidak kedaluwarsa. Klaim tetap terbuka selama objek proyek hidup.",
+        "cta": "Lihat receipt Anda di Dasbor →"
+      },
+      "unsold": {
+        "label": "05 / Supply tak terjual",
+        "p1": "Jika sale ditutup dengan token tersisa di alokasi, kreator menjalankan <code>process_unsold</code> untuk mengeksekusi kebijakan yang mereka pilih saat deploy:",
+        "p2": "<term>Bakar</term> — supply tak terjual dihancurkan, menaikkan harga tersirat setiap token yang diklaim. Memberi sinyal kelangkaan: float-nya persis seperti yang dihimpun sale.",
+        "p3": "<term>Transfer ke kreator</term> — supply tak terjual berpindah ke kreator sebagai saldo coin normal. Berguna jika Anda berniat menanam likuiditas, menjalankan sale sekunder, atau memegang posisi treasury. Halaman proyek menampilkan ini sebagai <code>UNSOLD → CREATOR</code> di baris spec sehingga pendukung melihat kebijakannya sebelum membayar.",
+        "cta": "Lihat di langkah 03 →"
+      },
+      "finalize": {
+        "label": "06 / Finalisasi & penarikan",
+        "p1": "Setelah difinalisasi, kreator memanggil <code>withdraw_sui</code> untuk menarik SUI yang terhimpun dari treasury proyek. Biaya platform (dalam basis point, ditetapkan oleh Pandabox) dipotong otomatis — kreator menerima jumlah bersih, biaya masuk ke treasury platform. Penarikan dapat sebagian; pemegang cap dapat menarik sisanya nanti.",
+        "p2": "<term>ProjectAdminCap</term> yang dicetak saat deploy adalah objek Sui biasa. Berpindah via <code>transfer_project_admin</code> (yang mengeluarkan event yang diandalkan indexer — pilih ini daripada transfer objek mentah) atau menghancurkan dirinya via <code>renounce_project_admin</code>, membuat proyek selamanya tanpa admin — berguna untuk proyek komunitas yang ingin melepaskan diri dari kebijaksanaan kreator.",
+        "p3": "Metadata proyek — nama, deskripsi, URL ikon, source-code blob, dan JSON detail off-chain (tagline, kategori, sosial) — tetap dapat diedit via <code>update_metadata</code> baik sale aktif maupun ditutup."
+      }
+    },
+    "wizard": {
+      "stepWord": "Langkah",
+      "intro": {
+        "label": "Empat langkah",
+        "p1": "Alur create adalah empat langkah. Semua yang Anda isi di sini masuk ke on-chain (parameter sale, nama, CID blob) atau ke JSON project_details yang di-pin ke IPFS (tagline, kategori, sosial). Pratinjau langsung di kanan menampilkan persis apa yang akan dilihat pendukung.",
+        "cta": "Buka wizard "
+      },
+      "steps": {
+        "identity": {
+          "alt": "Langkah 01 dari wizard create — field identitas di samping pratinjau halaman proyek langsung.",
+          "title": "Identitas",
+          "caption": "Nama proyek, ticker, kategori, tagline, gambar sampul, deskripsi. Ticker yang ditampilkan di sini bersifat informasional — simbol coin sebenarnya berasal dari CoinMetadata yang Anda hubungkan di langkah berikutnya."
+        },
+        "coin": {
+          "alt": "Langkah 02 dari wizard create — hubungkan atau publikasikan coin Sui.",
+          "title": "Coin",
+          "caption": "Pandabox membutuhkan coin Sui-nya sendiri. Publikasikan satu dari coin_template.move yang sudah dikompilasi (ditulis ulang ke identifier Anda di browser, di-pin ke IPFS untuk auditabilitas) — atau tempelkan TreasuryCap + CoinMetadata yang sudah ada jika Anda sudah memilikinya. Desimal harus 9."
+        },
+        "sale": {
+          "alt": "Langkah 03 dari wizard create — ketentuan sale: rate token-per-SUI, total alokasi, waktu akhir, kebijakan tak terjual.",
+          "title": "Ketentuan sale",
+          "caption": "Empat angka yang terkunci saat deploy: base rate (token per 1 SUI), total alokasi, waktu akhir opsional, dan aksi tak terjual (bakar atau transfer ke kreator). Maks penghimpunan tersirat dihitung secara langsung saat Anda mengetik."
+        },
+        "deploy": {
+          "alt": "Langkah 04 dari wizard create — tinjau dan deploy.",
+          "title": "Tinjau & deploy",
+          "caption": "Satu transaksi Sui membuat objek Project, mengonsumsi TreasuryCap + CoinMetadata Anda ke dalamnya, dan mengembalikan ProjectAdminCap ke dompet Anda. Notis mencolok menjelaskan apa yang menjadi tidak dapat diubah saat submit dan apa yang tetap dapat diedit via update_metadata."
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "Glosarium",
+        "termLabels": {
+          "baseRate": "Base rate",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "Aksi tak terjual",
+          "endTime": "Waktu akhir",
+          "finalize": "Finalisasi",
+          "closeTrigger": "Pemicu penutupan",
+          "projectStatus": "Status proyek",
+          "platformFee": "Biaya platform"
+        },
+        "terms": {
+          "project": "Objek Sui bersama yang memegang treasury SUI, TreasuryCap<T> terkunci, dan parameter sale.",
+          "projectAdminCap": "Objek Sui dimiliki yang memberikan hak admin: tarik SUI, proses tak terjual, update metadata, finalisasi, transfer, renounce.",
+          "contributionReceipt": "NFT yang dicetak saat contribute. Dapat dibakar untuk token yang berhak setelah finalisasi. Dapat ditransfer seperti objek Sui lainnya.",
+          "baseRate": "Token proyek yang diterbitkan per 1 SUI kontribusi. Dibekukan saat deploy.",
+          "fundingAllocation": "Total token proyek yang dijual. Setelah tercapai, sellout terpicu. Dibekukan saat deploy.",
+          "unsoldAction": "Kebijakan untuk token yang tersisa saat sale ditutup: Bakar, atau Transfer ke kreator. Dibekukan saat deploy.",
+          "endTime": "Timestamp akhir sale opsional. Jika null, hanya penutupan admin atau sellout yang dapat memfinalisasi.",
+          "finalize": "Kunci sale. Diperlukan sebelum klaim, penarikan SUI, atau pemrosesan tak terjual. Permissionless setelah kondisi terpenuhi.",
+          "closeTrigger": "Alasan sale berakhir: Time, Sellout, atau Admin. Dicatat on-chain.",
+          "projectStatus": "Active (sedang menjual), Closed (difinalisasi), atau Compromised (ditandai platform).",
+          "platformFee": "Potongan basis-point dari SUI yang ditarik, diambil oleh Pandabox. Ditetapkan oleh admin platform, diterapkan saat withdraw_sui.",
+          "mist": "Unit SUI terkecil. 1 SUI = 1.000.000.000 MIST."
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "Apakah ini sudah diaudit?",
+            "a": "Belum. Pandabox berada di testnet. Audit formal akan dilakukan sebelum peluncuran mainnet."
+          },
+          "editAfterDeploy": {
+            "q": "Bisakah saya mengedit proyek setelah deploy?",
+            "a": "Ya untuk identitas off-chain: nama, deskripsi, gambar sampul (URL ikon), source-code blob, tagline, kategori, dan tautan sosial semuanya diperbarui via <code>update_metadata</code> kapan saja. Tidak untuk ekonomi sale: base rate, funding allocation, waktu akhir, dan kebijakan supply tak terjual dibekukan saat deploy. Simbol dan desimal coin ditetapkan oleh modul coin yang Anda deploy sebelum Pandabox — itu juga tidak dapat diubah di sini."
+          },
+          "gas": {
+            "q": "Bagaimana cara kerja gas?",
+            "a": "Setiap transaksi dibayar oleh dompet yang menandatanganinya. Create, contribute, claim, withdraw — semua dibayar oleh penanda tangan. Gas Sui biasanya di bawah satu sen pada tarif mainnet, jadi biaya praktis untuk mendukung proyek adalah SUI yang Anda kontribusikan, bukan gas."
+          },
+          "neverClaims": {
+            "q": "Bagaimana jika pendukung tidak pernah mengklaim?",
+            "a": "Receipt tidak kedaluwarsa. Token tetap terkunci di TreasuryCap proyek sampai pemegangnya membakar receipt dengan <code>claim</code>. Receipt adalah objek Sui yang sesungguhnya, jadi juga dapat ditransfer atau dijual ke orang lain yang akan mengklaimnya."
+          },
+          "transferCap": {
+            "q": "Bisakah saya mentransfer ProjectAdminCap?",
+            "a": "Ya — gunakan <code>transfer_project_admin</code> agar event-nya masuk ke indexer. Cap tidak membawa token proyek atau SUI yang terhimpun; ini murni kunci admin. Anda juga dapat memanggil <code>renounce_project_admin</code> untuk menghancurkannya permanen — proyek kemudian berjalan tanpa admin sama sekali."
+          },
+          "compromised": {
+            "q": "Apa arti status 'Compromised'?",
+            "a": "Admin platform dapat menandai proyek sebagai Compromised ketika ada bukti jelas penyalahgunaan (rug, peniruan identitas, malware dalam perks yang diklaim). Ini sinyal moderasi satu arah — halaman proyek tetap dapat diakses agar pendukung dapat melihat tanda dan bertindak, tetapi memperingatkan dengan jelas. Ini tidak menyita dana."
+          },
+          "featured": {
+            "q": "Bagaimana cara mendapatkan listing di baris unggulan landing?",
+            "a": "Unggulan hanyalah urutan berdasarkan SUI yang terhimpun, tiga teratas. Himpun cukup dan Anda muncul otomatis."
+          }
+        }
+      }
+    }
   }
 }

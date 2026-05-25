@@ -36,7 +36,7 @@
     "connectError": "無法連接。",
     "fallbackName": "錢包",
     "balanceLabel": "餘額",
-    "networkMainnet": "主網",
+    "networkMainnet": "Mainnet",
     "copyAddress": "複製地址",
     "copied": "已複製",
     "viewOnSuiscan": "在 Suiscan 上檢視",
@@ -49,64 +49,200 @@
     "flatlinedCaption": "此路徑沒有付款事件。Pandabox 無法為不存在的頁面呈現脈動。"
   },
   "notFound": {
-    "eyebrow": "404 · 路徑不存在",
+    "eyebrow": "404 · 找不到路徑",
     "rowStatus": "狀態",
     "rowStatusValue": "找不到",
     "rowSignal": "訊號",
     "rowCycle": "週期",
     "headline": "此路徑沒有訊號。",
-    "body": "Pandabox 找不到您要尋找的頁面。可能是網址在週期之間漂移了,或者這個頁面從未上鏈。請從下方選擇任一個可用路徑 — 每一個都正在傳送訊號。",
+    "body": "Pandabox 找不到您要尋找的內容。可能是 URL 在週期間漂移,或這個頁面從未上鏈。請從下方有效的路徑中選擇一個 — 它們都正在輸出訊號。",
     "ctaExplore": "探索專案",
-    "ctaLaunch": "發起專案",
+    "ctaLaunch": "啟動專案",
     "ctaDocs": "閱讀文件",
     "backHome": "返回 pandabox.money"
   },
   "home": {
     "hero": {
-      "live": "已上線於 Sui {network}",
+      "live": "於 Sui {network} 上線",
       "titleFund": "為值得",
-      "titleWorth": "資助的事",
-      "titleFunding": "注資。",
+      "titleWorth": "資助的",
+      "titleFunding": "事注資。",
       "titleOnSui": "在 Sui 上",
-      "tagline": "Pandabox 是建構於 Sui 的可程式化募資平台。數分鐘內發起一個專案。接收 SUI、發行代幣、定義分潤 — 全部在鏈上、全部透明、全部屬於您。",
-      "ctaLaunch": "發起專案",
+      "tagline": "Pandabox 是建構於 Sui 的可程式化募資平台。幾分鐘內啟動專案。接收 SUI、發行代幣、定義分潤 — 全部鏈上、全部透明、全部屬於您。",
+      "ctaLaunch": "啟動專案",
       "ctaExplore": "探索專案",
       "specVersion": "v1 · pandabox",
       "specNetwork": "sui {network}",
       "specPkg": "pkg"
     },
     "finalCta": {
-      "marginTop": "Nº 04 · 終章",
-      "marginSpec": "專案規格 — pandabox",
-      "marginYear": "2026 · Sui 主網",
-      "shipIt": "立即發佈",
+      "marginTop": "Nº 04 · final",
+      "marginSpec": "project spec — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "出貨",
       "titleYourProject": "您的專案,",
-      "titleOnchain": "鏈上運行",
-      "titleInMinutes": "三分鐘內完成。",
+      "titleOnchain": "鏈上化",
+      "titleInMinutes": "3 分鐘完成。",
       "subhead": "設定週期、分潤與代幣。簽署一筆 Sui 交易。AdminCap 由您持有。",
-      "ctaLaunch": "發起專案",
+      "ctaLaunch": "啟動專案",
       "ctaDocs": "閱讀文件",
       "tileSign": "簽署",
       "tileSignValue": "1 筆交易",
       "tileGas": "Gas",
       "tileGasValue": "< $0.001",
       "tileSetup": "設定",
-      "tileSetupValue": "6 個步驟",
+      "tileSetupValue": "6 步驟",
       "tileKeys": "金鑰",
-      "tileKeysValue": "AdminCap 歸您所有",
-      "marginLive": "pandabox.sui · 已上線",
-      "marginRevalidate": "每 60 秒重新驗證"
+      "tileKeysValue": "AdminCap 屬於您",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "60 秒重新驗證"
     },
     "featured": {
       "title": "精選專案",
       "subtitle": "精心挑選,正在募資中。",
-      "viewAll": "查看全部"
+      "viewAll": "查看全部",
+      "eyebrow": "精選",
+      "headline": "正在募資中",
+      "watermark": "已資助",
+      "sectionRail": "section · 02 / featured",
+      "statOnchain": "鏈上",
+      "statProjects": "專案",
+      "statRaisedAcross": "前 3 名累計募得",
+      "exploreAll": "探索所有專案",
+      "dataMeta": "資料來源:sui mainnet · 60 秒重新驗證",
+      "empty": {
+        "label": "尚無專案",
+        "heading": "正在等待第一個鏈上專案。",
+        "description": "來自 <code>pandabox::project</code> 的 ProjectCreated 事件將在此顯示。"
+      },
+      "tape": {
+        "live": "進行中",
+        "onchain": "鏈上",
+        "backedAgo": "支持 · 2 分鐘前",
+        "verified": "已驗證",
+        "cycle01": "cycle 01",
+        "supportingNow": "目前支持 · 12 人",
+        "txConfirmed": "交易已確認",
+        "freshRaise": "新募資",
+        "unnamed": "未命名"
+      },
+      "skeleton": {
+        "ariaLoading": "載入精選專案中",
+        "srLoading": "載入精選專案中…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "運作方式",
+      "eyebrowSpec": "03 個步驟 · 想法 → 鏈上",
+      "title": "從想法到鏈上募資,只需三步。",
+      "subtitle": "您在此設定的每個參數都會成為一次 Move 呼叫。您的支持者每次互動都會成為一筆交易。Pandabox 就是這之間的橋樑。",
+      "nowViewing": "目前檢視",
+      "progressDeploy": "部署",
+      "progressReconfigure": "重新設定",
+      "ctaLaunch": "啟動專案",
+      "ctaDocs": "閱讀文件",
+      "stepLabel": "步驟 {number} · {phase}",
+      "onchainSuiMove": "鏈上 · sui move",
+      "live": "進行中",
+      "steps": {
+        "0": {
+          "phase": "設定",
+          "heading": "部署",
+          "body": "設定週期、分潤、代幣與可選的 NFT 等級。簽署一筆 Sui 交易。您的專案隨即上線,並由您持有 AdminCap 物件。",
+          "outcome": "AdminCap 已鑄造"
+        },
+        "1": {
+          "phase": "資金流入",
+          "heading": "接收",
+          "body": "支持者直接向您的資金庫支付 SUI。他們會依您的週期權重收到專案代幣,若您有定義等級 NFT 也會一併獲得。",
+          "outcome": "代幣已鑄造"
+        },
+        "2": {
+          "phase": "治理",
+          "heading": "重新設定",
+          "body": "為下一個週期提出變更。經過投票延遲後,新參數即生效鎖定。持有者可隨時兌現剩餘金額。",
+          "outcome": "週期已排程"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "為何選擇 Sui",
+      "title": "為這件事而生的公鏈。",
+      "subtitle": "Sui 原生支援的三件事,讓 Pandabox 上手感截然不同 — 不到一分錢的支付、真正擁有管理權限,以及零摩擦的入門體驗。",
+      "nativeStamp": "sui 原生",
+      "cards": {
+        "gas": {
+          "tag": "Gas",
+          "heading": "不到一分錢的 Gas",
+          "body": "支持者不需要付 30 美元才能支持一個專案。Pandabox 的支付成本僅有不到一分錢 — 真正重要的小額支持得以順利通過。",
+          "meta": "中位數支付交易 · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "所有權",
+          "heading": "以物件為中心的所有權",
+          "body": "您的 ProjectAdminCap 是真實的 Sui 物件。可轉移到多簽錢包、交給 DAO、鎖入託管 — 它就是一個物件。"
+        },
+        "onboarding": {
+          "tag": "上手體驗",
+          "heading": "贊助交易",
+          "body": "為尚未持有 SUI 的支持者提供入門。Pandabox 可贊助 Gas,新錢包初次互動即可支持專案。",
+          "meta": "gas 已贊助 · 僅由付款方簽署"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "數據",
+      "title": "建立於真實的鏈上資料。",
+      "subtitle": "此處每一個數字皆由 Pandabox Move 套件的事件計算而來,每 60 秒更新一次。",
+      "sourceFootnote": "來源 · pandabox::project events · 加總 / 計數 / 集合",
+      "computedAt": "計算時間",
+      "liveLabel": "Live · sui mainnet",
+      "totalRaised": "累計募得",
+      "totalRaisedHint": "所有專案的 sold ÷ base_rate 加總",
+      "delta24h": "24 小時",
+      "substat": {
+        "across": "橫跨",
+        "projects": "個專案",
+        "tokensMinted": "已鑄造代幣",
+        "platformFees": "平台費用",
+        "feeRate": "費率"
+      },
+      "activeProjects": "進行中的專案",
+      "liveCount": "{count} 個進行中",
+      "closedCount": "{count} 個已結束",
+      "deployedAllTime": "歷來部署數",
+      "uniqueBackers": "獨立支持者",
+      "addr": "地址",
+      "contribsPerBacker": "每位支持者的貢獻數",
+      "moreOverflow": "+{count} 更多",
+      "latestActivity": "最新活動",
+      "lastContribution": "最近一次貢獻",
+      "largest": "最大筆",
+      "paymentsWindow": "{count} 筆付款 · 24 小時"
+    },
+    "heroConsole": {
+      "liveConsole": "Live console",
+      "streamSequenceAria": "串流序列",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← 5 秒視窗 · 最舊",
+      "pulseWindowNow": "現在 →",
+      "stream": "串流",
+      "recentPayments": "最近付款",
+      "listeningEvents": "正在監聽事件…",
+      "viewProjectAria": "檢視專案 {name}",
+      "stat": {
+        "projects": "專案",
+        "platformFee": "平台費",
+        "treasury": "資金庫"
+      }
     }
   },
   "footer": {
     "homeAria": "Pandabox 首頁",
-    "blurb": "建構於 Sui 的可程式化募資平台。鏈上原生,預設開放。",
-    "navigate": "瀏覽",
+    "blurb": "建構於 Sui 的可程式化募資平台。完全鏈上、預設開放。",
+    "navigate": "導覽",
     "ecosystem": "生態系",
     "ecoSuiExplorer": "Sui Explorer",
     "ecoSuiNetwork": "Sui Network",
@@ -116,14 +252,14 @@
     "network": "網路",
     "commit": "Commit",
     "copyright": "© Pandabox",
-    "buildTag": "v2 · 主網版本"
+    "buildTag": "v2 · Mainnet build"
   },
   "explore": {
     "title": "探索",
     "headline": "正在募資中。",
-    "subtitle": "Pandabox 上每一個進行中的代幣銷售,皆直接讀取自 Sui 主網套件 — 中間沒有任何索引器。",
+    "subtitle": "Pandabox 上所有進行中的代幣銷售,直接從 Sui mainnet 套件讀取 — 中間沒有任何索引器。",
     "liveCount": "{count} 個進行中",
-    "totalCount": "共 {count} 個",
+    "totalCount": "{count} 個總計",
     "cachedHint": "快取 60 秒",
     "all": "全部",
     "live": "進行中",
@@ -131,7 +267,7 @@
     "idle": "閒置",
     "verified": "已驗證",
     "legacy": "舊版",
-    "legacyHint": "部署於 9 位小數縮放修正之前 — 數據不可靠。",
+    "legacyHint": "部署於 9 位小數縮放修正前 — 數字不可靠。",
     "filterByCategory": "依分類篩選",
     "sortLabel": "排序",
     "searchLabel": "搜尋",
@@ -145,12 +281,12 @@
     "searchAria": "搜尋專案",
     "sortAria": "排序專案",
     "loadMore": "載入更多",
-    "empty": "尚無符合篩選條件的專案。",
-    "emptyTitle": "沒有符合的項目",
+    "empty": "目前沒有符合這些篩選條件的專案。",
+    "emptyTitle": "沒有符合的結果",
     "resetFilters": "重設篩選",
-    "byCreator": "由 {addr} 發起",
+    "byCreator": "由 {addr} 建立",
     "endsNow": "結束於 ",
-    "endedAt": "已結束於 ",
+    "endedAt": "已結束 ",
     "unnamed": "未命名專案",
     "viewProject": "檢視 {name}",
     "categories": {
@@ -162,17 +298,17 @@
       "research": "研究",
       "gaming": "遊戲",
       "music": "音樂",
-      "social": "社群",
+      "social": "社交",
       "rwa": "RWA"
     }
   },
   "project": {
     "card": {
-      "raised": "已募集",
+      "raised": "已募得",
       "supporters": "支持者"
     },
     "hero": {
-      "raised": "已募集",
+      "raised": "已募得",
       "supporters": "支持者",
       "heldBy": "持有者",
       "backThis": "支持此專案"
@@ -181,24 +317,222 @@
       "live": "進行中",
       "paused": "已暫停",
       "closed": "已結束"
+    },
+    "detail": {
+      "backToExplore": "返回探索",
+      "legacyBadge": "舊版 · 參數有誤",
+      "legacyBody": "此專案部署於建立精靈尚未對 <code>base_rate</code> 套用 9 位小數縮放之前。以下的匯率、目標與募得數字皆有誤差 — 請勿信任這些數字或支持此銷售。",
+      "creator": "建立者",
+      "contractAddressShort": "CA",
+      "verified": "已驗證",
+      "statusLabel": "狀態",
+      "statusLive": "進行中",
+      "statusEnded": "已結束",
+      "statusClosed": "已關閉",
+      "endsIn": "結束於",
+      "cap": "上限",
+      "sale": "銷售",
+      "ended": "已結束",
+      "noCap": "無上限",
+      "finished": "已完成",
+      "closed": "已關閉",
+      "rate": "匯率",
+      "perSui": "/SUI",
+      "maxSupply": "最大供應量",
+      "unsold": "未售出",
+      "unsoldToCreator": "→ 建立者",
+      "unsoldBurn": "銷毀",
+      "remaining": "剩餘",
+      "treasury": "資金庫",
+      "beFirstSupporter": "成為第一個支持此專案的人",
+      "supporterOne": "{count} 位支持者",
+      "supporterOther": "{count} 位支持者",
+      "lastBy": "最近一筆來自",
+      "justNow": "剛剛",
+      "agoMinutes": "{n} 分鐘前",
+      "agoHours": "{n} 小時前",
+      "agoDays": "{n} 天前",
+      "aboutTitle": "關於",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "尚未發布描述 — 建立者可隨時發布。請查看付款面板了解銷售機制。",
+      "status": {
+        "ended": "已結束"
+      },
+      "meta": {
+        "notFoundTitle": "找不到專案",
+        "descriptionFallback": "{name} ({ticker}) — 由 Pandabox 提供,建構於 Sui 的鏈上募資。"
+      },
+      "tabs": {
+        "about": "關於",
+        "activity": "活動"
+      },
+      "activity": {
+        "title": "活動",
+        "empty": "此專案目前尚無鏈上活動。貢獻、領取與提領都會在此呈現。",
+        "eventCount": "{count, plural, one {# 個事件} other {# 個事件}}",
+        "revalidates": "30 秒重新驗證",
+        "colTime": "時間",
+        "colEvent": "事件",
+        "colActor": "操作者",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "已貢獻",
+          "claim": "已領取",
+          "withdraw": "已提領",
+          "close": "已關閉"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "領取您的代幣",
+        "finalizeSale": "完成銷售",
+        "receiptCount": "{count, plural, one {# 張收據} other {# 張收據}}",
+        "anyone": "任何人",
+        "claimIntroOne": "銷售已結束。銷毀您的 <code>ContributionReceipt&lt;T&gt;</code> 物件並領取您應得的 {ticker}。",
+        "claimIntroMany": "銷售已結束。銷毀您的 <code>ContributionReceipt&lt;T&gt;</code> 物件並領取您應得的 {ticker}。",
+        "youllReceive": "您將收到",
+        "from": "來自",
+        "contributed": "已貢獻",
+        "finalizeIntro": "銷售結束時間已過。任何人皆可完成銷售,以鎖定最終售出金額,並為所有人解鎖領取與提領功能。",
+        "sold": "已售出",
+        "treasury": "資金庫",
+        "claimCta": "領取 → {amount}",
+        "claimAllCta": "全部領取 → {amount}",
+        "receiptsSummary": "收據 ({count})",
+        "modalClaimTitle": "領取代幣",
+        "modalFinalizeTitle": "完成銷售",
+        "backToProject": "返回專案",
+        "youBurn": "您將銷毀",
+        "receiptOne": "張收據",
+        "receiptOther": "張收據",
+        "originallyContributed": "原本貢獻了 {amount}",
+        "youReceive": "您將收到",
+        "coinSentToWallet": "Coin<{ticker}> 已發送至您的錢包",
+        "cancel": "取消",
+        "signing": "簽署中…",
+        "confirmClaim": "確認並領取",
+        "confirmFinalize": "確認並完成",
+        "finalizePreviewIntro": "銷售視窗已關閉。任何人皆可完成銷售,以鎖定最終售出金額 — 這將為支持者解鎖代幣領取,並為專案擁有者解鎖 SUI 提領。",
+        "finalizeFootnote": "若銷售尚未就緒則無作用 · 僅需 Gas · 銷售將可供 {ticker} 持有者領取",
+        "saleFinalized": "銷售已完成",
+        "finalizeSuccessBody": "此專案現已關閉。代幣領取與管理員提領皆已解鎖。",
+        "txLabel": "tx",
+        "txFailed": "交易失敗。",
+        "tweetText": "剛從 {projectName} 領取了我的 {ticker} — Pandabox,建構於 Sui 的可程式化鏈上募資。",
+        "stampClaimed": "已領取",
+        "stampInYourWallet": "已存入您的錢包",
+        "tokensDeliveredEyebrow": "· 代幣已送達 ·",
+        "fromLabel": "來自",
+        "receiptsBurnedOne": "已銷毀 {count} 張收據",
+        "receiptsBurnedOther": "已銷毀 {count} 張收據",
+        "statReceived": "已收到",
+        "statReceipts": "收據",
+        "burnedCount": "{count} 已銷毀",
+        "shareOnX": "分享至 X"
+      },
+      "share": {
+        "tweetText": "正在 Pandabox 支持 {projectName} ({ticker}) — 建構於 Sui 的可程式化鏈上募資。",
+        "copyAria": "複製專案 URL",
+        "shareAria": "分享至 X",
+        "copy": "複製",
+        "copied": "已複製",
+        "share": "分享"
+      },
+      "cover": {
+        "specCover": "封面 · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "視覺作品",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "{name} 封面",
+        "iconAlt": "{name} 圖示"
+      },
+      "meter": {
+        "ofLabel": "/",
+        "target": "目標"
+      },
+      "onchain": {
+        "title": "鏈上紀錄",
+        "specSheet": "規格表",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Project 物件",
+        "sharedObject": "shared object",
+        "coinType": "Coin type",
+        "contractAddress": "合約地址",
+        "deployed": "已部署",
+        "links": "連結",
+        "social": "社群",
+        "site": "網站",
+        "discord": "discord",
+        "noneProvided": "未提供",
+        "copy": "複製",
+        "copied": "已複製",
+        "copyAria": "複製到剪貼簿",
+        "explorer": "瀏覽器",
+        "justNow": "剛剛",
+        "agoSeconds": "{n} 秒前",
+        "agoMinutes": "{n} 分鐘前",
+        "agoHours": "{n} 小時前",
+        "agoDays": "{n} 天前",
+        "agoMonths": "{n} 個月前",
+        "agoYears": "{n} 年前"
+      },
+      "rail": {
+        "connectTitle": "連接錢包",
+        "connectBody": "連接錢包以支持此專案、領取代幣,或在您是建立者時管理它。",
+        "loadingTitle": "正在讀取持有資產",
+        "loadingBody": "正在檢查您持有的 AdminCap 與收據…",
+        "saleClosedTitle": "銷售已結束",
+        "saleClosedBody": "此銷售已完成。您未持有 {token} 的貢獻收據,因此此錢包沒有可領取的內容。",
+        "thisProjectFallback": "此專案"
+      },
+      "seedLiquidity": {
+        "title": "建立 Cetus 流動性",
+        "intro": "將此專案標記為已在 <strong>Cetus</strong> 上配對流動性。儲存後,專案頁面上的價格圖表將開始從 GeckoTerminal 讀取即時 OHLCV 資料。",
+        "verifyExplainer": "我們會在固定設定前驗證您在 Sui 上的池物件。該池必須是真實的 <code>pool::Pool&lt;A, B&gt;</code>,且一邊為 SUI、另一邊為您的專案代幣 — <code>{coin}</code>。沒有實際的池就無法切換旗標。",
+        "poolAddressLabel": "Cetus 池地址",
+        "poolPlaceholder": "0x… (Cetus Pool 物件 ID)",
+        "verify": "驗證",
+        "verifying": "驗證中…",
+        "verifiedOk": "已驗證 ✓",
+        "invalidObjectId": "並非有效的 Sui 物件 ID",
+        "verificationFailedTitle": "驗證失敗",
+        "verificationFailed": "驗證失敗。",
+        "poolVerified": "池已驗證",
+        "cetus": "Cetus",
+        "rowPool": "池",
+        "rowSideA": "Side A",
+        "rowSideB": "Side B",
+        "cancel": "取消",
+        "pinning": "釘選中…",
+        "signing": "簽署中…",
+        "signAndSave": "簽署並儲存",
+        "pinningFailed": "釘選至 IPFS 失敗 — {reason}",
+        "unknownError": "未知錯誤",
+        "txFailed": "交易失敗。",
+        "seededTitle": "流動性已標記為建立",
+        "seededBody": "專案頁面將會擷取新的池,並在約 30 秒的快取重新驗證後開始呈現即時圖表。",
+        "detailsCid": "details cid · {cid}",
+        "digest": "digest · {digest}"
+      }
     }
   },
   "pay": {
     "heading": "支持此專案",
-    "youReceive": "您將獲得",
-    "remainingHint": "剩餘可鑄造 {amount},超出部分將自動退還。",
+    "youReceive": "您將收到",
+    "remainingHint": "可鑄造剩餘 {amount},超額將自動退款。",
     "memo": "備註(選填)",
-    "memoPlaceholder": "將與付款一同記錄於鏈上",
+    "memoPlaceholder": "將與您的付款一同記錄於鏈上",
     "enterAmount": "請輸入金額",
     "payAmount": "支付 {amount} SUI",
-    "shareOfSupply": "佔總供應量比例",
-    "remainingMintable": "剩餘可鑄造",
+    "shareOfSupply": "佔供應量的比例",
+    "remainingMintable": "可鑄造剩餘",
     "unsold": "未售出",
     "unsoldBurn": "銷毀",
-    "unsoldTransfer": "轉移給創建者",
+    "unsoldTransfer": "轉移給建立者",
     "inspectorTitle": "交易檢視器",
-    "inspectorPreview": "簽署前預覽。您的錢包將為此 Move 呼叫請求簽章。",
-    "inspectorNotDeployed": "Move 套件尚未部署 — 在設定 NEXT_PUBLIC_PACKAGE_ID 之前,提交將以本機模擬執行。",
+    "inspectorPreview": "簽署前預覽。您的錢包將要求對此 Move 呼叫進行簽署。",
+    "inspectorNotDeployed": "Move 套件尚未部署 — 在設定 NEXT_PUBLIC_PACKAGE_ID 之前,送出動作將在本地模擬。",
     "inspector": {
       "package": "package",
       "module": "module",
@@ -206,14 +540,608 @@
       "projectId": "arg.project_id",
       "amountMist": "arg.amount_mist",
       "returns": "returns",
-      "returnsValue": "ContributionReceipt + 退款 coin → 發送者"
+      "returnsValue": "ContributionReceipt + 退款幣 → 寄送者"
     },
     "cancel": "取消",
     "signSubmit": "簽署並送出",
     "signing": "簽署中…",
     "confirmed": "付款已確認",
     "backToProject": "返回專案",
-    "connectFirst": "請先連接錢包以進行贊助。",
+    "connectFirst": "請先連接錢包以進行貢獻。",
     "txFailed": "交易失敗。"
+  },
+  "create": {
+    "page": {
+      "metaTitle": "建立專案",
+      "metaDescription": "設定週期、代幣、分潤與等級。部署至 Sui。",
+      "headline": "設定您的專案,一筆交易完成部署。",
+      "intro": "六個步驟。草稿會自動儲存到您的瀏覽器中。右側欄將顯示支持者在您的專案頁面上看到的確切內容。",
+      "badgeOneTransaction": "一筆交易",
+      "badgeAutoSaving": "自動儲存草稿",
+      "badgeIpfs": "資產釘選於 ipfs"
+    },
+    "wizard": {
+      "stepsAria": "建立精靈步驟",
+      "stepLabel": "步驟 {num}",
+      "stepLabels": {
+        "identity": "識別",
+        "coin": "代幣",
+        "sale": "銷售",
+        "deploy": "部署"
+      },
+      "percentComplete": "已完成 {pct}%",
+      "resetDraft": "重設草稿",
+      "back": "返回",
+      "continueStep": "繼續 · 步驟 {num}",
+      "reviewAndDeployAbove": "於上方檢視並部署",
+      "resetModalTitle": "重設草稿?",
+      "resetModalBody": "這將清空建立精靈中的所有欄位,並移除您瀏覽器中已儲存的草稿。鏈上資料不會受影響 — 只是從空白表單重新開始。",
+      "resetBullet1": "識別、代幣、銷售、部署 — 全部清除",
+      "resetBullet2": "從 localStorage 中移除",
+      "resetBullet3": "此操作無法復原",
+      "keepDraft": "保留草稿",
+      "resetDraftButton": "重設草稿"
+    },
+    "imageUpload": {
+      "defaultLabel": "封面圖片",
+      "cidLabel": "cid",
+      "errorOnlyImages": "僅允許圖片檔案。",
+      "errorTooLarge": "圖片過大({size} MiB)。最大 {max} MiB。",
+      "errorUploadFailed": "上傳發生未預期的錯誤。",
+      "dropToPin": "拖放以釘選",
+      "dragOrClick": "拖放圖片或點擊上傳",
+      "maxSize": "最大 {max} MiB",
+      "loadingFromIpfs": "從 ipfs 載入中",
+      "gatewayRetry": "閘道重試 {attempt}/4",
+      "gatewayWarmup": "閘道暖機中",
+      "replace": "取代",
+      "remove": "移除",
+      "uploading": "上傳中",
+      "pinningToIpfs": "釘選至 ipfs 中",
+      "cancelUploadAria": "取消上傳",
+      "cancel": "取消",
+      "sendingBytes": "正在傳送位元組至釘選服務",
+      "pinataReplicating": "pinata 正在跨 ipfs 節點複製 — 大型圖片可能需要幾秒鐘",
+      "pasteCidToggle": "或貼上現有的 CID / URL",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "識別",
+      "body": "誰在資助什麼。這是支持者在錢包中以及在專案頁面上看到的內容。",
+      "meta": "儲存於鏈上",
+      "basicsTitle": "基本資訊",
+      "basicsMeta": "部署後不可變更",
+      "projectName": "專案名稱",
+      "projectNamePlaceholder": "例如 Atelier Ono",
+      "ticker": "代號",
+      "tickerHint": "大寫字母/數字,2–10 個字元",
+      "category": "分類",
+      "storyTitle": "故事",
+      "storyMeta": "可隨時編輯",
+      "tagline": "標語",
+      "taglineHint": "一行,8–160 字元 · {len}/160",
+      "taglinePlaceholder": "在 Sui 上每週推出限量發行的攝影誌集體。",
+      "description": "描述",
+      "descriptionHint": "支援 Markdown · 20–4000 字元 · {len}/4000",
+      "descriptionPlaceholder": "告訴支持者您正在打造什麼,以及他們的 SUI 為何重要。",
+      "coverTitle": "封面圖片",
+      "coverMeta": "釘選至 ipfs",
+      "coverHint": "顯示於您的專案頁面最上方。寬 16:10 的裁切效果最佳。上傳時釘選至 IPFS — CID 會寫入鏈上。",
+      "socialsTitle": "社群",
+      "socialsMeta": "選填",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "帳號",
+      "website": "網站",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "邀請連結"
+    },
+    "step2": {
+      "title": "代幣",
+      "body": "Pandabox 需要您擁有的一個 Sui 代幣。您可以使用我們已稽核的範本在瀏覽器中發布一個新代幣,或者貼上您已經擁有的 TreasuryCap 與 CoinMetadata。",
+      "meta": "9 位小數 · 使用 sui::coin::create_currency 建立",
+      "modeLabel": "模式",
+      "modePublish": "發布新代幣",
+      "modePaste": "我已經有一個代幣",
+      "untitledCoin": "未命名代幣",
+      "howThisWorks": "運作方式",
+      "howThisWorksBody": "我們從一個預編譯的 <code>coin_template.move</code>(<strong>9 位小數</strong>)開始,透過 <code>@mysten/move-bytecode-template</code> 在您的瀏覽器中改寫其識別符與中繼資料常數,然後從您的錢包發布。產生的 Move 原始碼會釘選至 IPFS,任何人都可以稽核實際部署的內容。",
+      "coinMetadataTitle": "代幣中繼資料",
+      "coinMetadataMeta": "寫入 CoinMetadata<T>",
+      "symbol": "代號",
+      "symbolHint": "2–10 字元 · 大寫字母 / 數字",
+      "name": "名稱",
+      "namePlaceholder": "Panda Token",
+      "description": "描述",
+      "descriptionHint": "≤240 字元 · ASCII",
+      "descriptionPlaceholder": "此代幣代表什麼。",
+      "iconUrl": "圖示 URL",
+      "iconUrlHint": "可重複使用專案封面或貼上已託管的 URL",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "發布",
+      "publishMetaComplete": "完成",
+      "publishMetaStep": "兩次部署中的第 1 次",
+      "coinPublishedConfirm": "代幣已發布。TreasuryCap 與 CoinMetadata 已擷取至草稿。",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "正在改寫位元組碼…",
+      "publishStateSigning": "簽署中…",
+      "publishStateFetching": "等待鏈上回應…",
+      "publishStatePinning": "正在釘選原始碼…",
+      "publishCoin": "發布代幣",
+      "publishCaption": "一筆交易 · 可轉移的 upgrade cap 將返回給您",
+      "errorNoDigest": "錢包未回傳發布交易的 digest。",
+      "errorPublishFailed": "發布失敗。",
+      "strandedTitle": "已發布 — 但 RPC 沒有回應",
+      "openOnSuiExplorer": "在 Sui Explorer 上開啟",
+      "switchToPasteMode": "切換到貼上模式",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 字元 · A-Z, 0-9, _ · 必須以字母開頭",
+      "validateName": "請輸入名稱(2–32 字元)",
+      "validateDescriptionLength": "最多 240 個字元",
+      "validateDescriptionAscii": "僅限 ASCII(不可使用表情符號 / 智慧引號)",
+      "validateIconUrl": "請使用完整的 https:// URL",
+      "validateInvalidIdentifier": "識別符無效",
+      "objectIdsTitle": "物件 ID",
+      "objectIdsMeta": "必須由您擁有",
+      "treasuryCapLabel": "TreasuryCap<T> 物件 ID",
+      "treasuryCapHint": "來自您發布交易的 createdObjects。",
+      "metadataLabel": "CoinMetadata<T> 物件 ID",
+      "metadataHint": "我們會從鏈上讀取此資料,以偵測代幣類型與位數。",
+      "coinInfoTitle": "代幣資訊",
+      "coinInfoMetaReading": "讀取中…",
+      "coinInfoMetaDetected": "已偵測",
+      "coinInfoMetaNotFound": "找不到",
+      "statName": "名稱",
+      "statSymbol": "代號",
+      "statDecimals": "小數位數",
+      "resolvedCoinType": "解析後的代幣類型",
+      "wrongDecimals": "此代幣為 {decimals} 位小數。Pandabox 要求 {required} 位小數 — 請以正確的值重新部署您的代幣。",
+      "readingFromChain": "正在從鏈上讀取…",
+      "pasteMetadataHint": "請於上方貼上 CoinMetadata ID 以偵測代幣。",
+      "errorObjectNotFound": "找不到物件。",
+      "errorNotCoinMetadata": "此物件不是 CoinMetadata<T>。",
+      "errorUnexpectedContent": "未預期的物件內容。",
+      "errorLookupFailed": "查詢失敗。"
+    },
+    "step3": {
+      "title": "銷售條款",
+      "body": "支持者貢獻 SUI 以換取收據。銷售結束或售完後,他們可領取應得的代幣配額。任何未售出的部分將依您的選擇銷毀或返還給您。",
+      "meta": "部署後不可變更",
+      "pricingTitle": "定價",
+      "pricingMeta": "代幣 ↔ SUI",
+      "tokensPerSui": "每 SUI 對應的代幣數",
+      "tokensPerSuiHint": "支持者每 1 SUI 可收到多少 {ticker}。",
+      "targetRaise": "目標募資金額 (SUI)",
+      "targetRaiseHint": "編輯此項會反向計算每 SUI 對應的代幣數。",
+      "baseRateLabel": "base_rate(縮放後,儲存於鏈上)",
+      "allocationTitle": "配額",
+      "allocationMeta": "可供銷售的代幣總數",
+      "tokensForSale": "可供銷售的代幣",
+      "tokensForSaleHint": "本次銷售保留的 {ticker} 總數。TreasuryCap 最多會鑄造此數量。",
+      "fundingAllocationLabel": "funding_allocation(原始 u64)",
+      "maxSupplyLabel": "最大供應量 · {ticker}",
+      "mintedAtLaunch": "啟動時鑄造",
+      "mintedAtLaunchValue": "0 — 領取時才鑄造",
+      "supplyNote": "代幣從 <zeroSupply>0 供應量</zeroSupply> 開始。當支持者對其收據呼叫 <code>claim</code> 時,代幣才會延遲鑄造。最終流通供應量 = <claimed>已領取</claimed>",
+      "supplyNoteReturn": " + 未售出(返還至您的錢包)",
+      "supplyNoteBurn": "(未售出部分將銷毀)",
+      "saleWindowTitle": "銷售視窗",
+      "durationDays": "{days} 天",
+      "noTimeCap": "無時間上限",
+      "ends": "結束",
+      "inDays": "{days} 天後",
+      "unsoldTitle": "未售出供應量",
+      "unsoldMeta": "銷售結束後",
+      "actionLabel": "動作",
+      "unsoldBurnTitle": "銷毀",
+      "unsoldBurnBody": "未售出的代幣將永久銷毀,並減少總供應量。",
+      "unsoldReturnTitle": "返還給建立者",
+      "unsoldReturnBody": "未售出的代幣將鑄造至您的地址。可用於釋出、解鎖或建立 DEX 流動性。"
+    },
+    "step4": {
+      "title": "檢視並部署",
+      "body": "Pandabox 會將您的描述與 project_details 釘選至 IPFS,然後送出單一 Sui 交易以建立專案、消耗您的 TreasuryCap,並將 ProjectAdminCap 轉移到您的錢包。",
+      "metaChecks": "{ok}/{total} 項檢查 · {status}",
+      "statusReady": "就緒",
+      "statusBlocked": "已封鎖",
+      "headsUp": "注意",
+      "headsUpBody": "<strong>部署時消耗:</strong>您的 <code>TreasuryCap<T></code> 與 <code>CoinMetadata<T></code> 將由 Project 物件持有,無法取回。<strong>部署後不可變更:</strong>名稱、代幣、基準匯率、配額、結束時間、未售出處理動作。<strong>之後可編輯:</strong>描述、圖示、原始碼 blob、project_details(透過 <code>update_metadata</code>)。",
+      "sourceCodeTitle": "選填 · 原始碼",
+      "sourceCodeMetaSet": "已設定",
+      "sourceCodeMetaSkipped": "已略過",
+      "sourceCodeLabel": "原始碼 blob (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy…(選填)",
+      "sourceCodeHint": "將您的儲存庫封存檔個別釘選,然後貼上 CID。或留空稍後再更新。",
+      "preflightTitle": "起飛前檢查",
+      "preflightAllGreen": "全部通過",
+      "preflightBlocking": "{count} 項封鎖",
+      "fixInStep": "在步驟 {num} 中修復",
+      "deployTitle": "部署",
+      "deployMetaLive": "live · sui mainnet",
+      "deployMetaSimulated": "模擬",
+      "deployToSui": "部署至 Sui",
+      "deployCaption": "消耗 treasury cap 與 metadata · admin cap 將返回給您",
+      "draftAutoSaves": "草稿會自動儲存於您的瀏覽器,鍵為 <code>pandabox:draft:v3</code>。",
+      "modalSuccessTitle": "專案已部署",
+      "modalInspectorTitle": "交易檢視器",
+      "openProjectPage": "開啟專案頁面",
+      "seeItOnExplore": "在探索中檢視",
+      "inspectorIntroLive": "檢視您即將發布的內容。Pandabox 會將您的描述與細節釘選至 IPFS,然後您的錢包將簽署一筆交易以在 Sui 上建立此專案。",
+      "inspectorIntroSimulated": "Move 套件尚未設定 — 此送出將在本地模擬。",
+      "sectionProject": "專案",
+      "sectionYourCoin": "您的代幣",
+      "sectionSaleTerms": "銷售條款",
+      "editLink": "編輯",
+      "summaryName": "名稱",
+      "summaryTicker": "代號",
+      "summaryCategory": "分類",
+      "summaryTagline": "標語",
+      "summarySymbol": "代號",
+      "summaryDecimals": "小數位數",
+      "summaryRate": "匯率",
+      "tokensWord": "代幣",
+      "summaryTotalForSale": "可供銷售總數",
+      "summaryMaxSupply": "最大供應量",
+      "summaryMintedAtLaunch": "啟動時鑄造",
+      "summaryMintedAtLaunchValue": "0 — 領取時才延遲鑄造",
+      "summaryMaxRaise": "最大募資金額",
+      "summarySaleEnds": "銷售結束於",
+      "summaryOpenEnded": "開放式",
+      "summaryUnsoldTokens": "未售出代幣",
+      "summaryUnsoldReturn": "返還至您的錢包",
+      "summaryUnsoldBurn": "銷毀(減少最終供應量)",
+      "youllKeepLabel": "您將保留 ·",
+      "youllKeepBody": "錢包中的 <strong>ProjectAdminCap</strong> — 這是您對此專案的管理權限。您可以稍後將其轉移至多簽錢包。",
+      "youllGiveUpLabel": "您將放棄 ·",
+      "youllGiveUpBody": "您的 <strong>TreasuryCap</strong> 與 <strong>CoinMetadata</strong>。專案將取得所有權,且無法復原。",
+      "lockedOnDeployLabel": "部署後鎖定 ·",
+      "lockedOnDeployBody": "名稱、代幣、匯率、配額、結束時間、未售出處理動作。描述、圖示與連結仍可編輯。",
+      "advancedToggle": "進階 · raw move call",
+      "rawPinning": "釘選中…",
+      "rawSetAtSubmit": "送出時設定",
+      "cancel": "取消",
+      "submitPinningDescription": "正在釘選描述…",
+      "submitPinningDetails": "正在釘選細節…",
+      "submitSigning": "簽署中…",
+      "submitPinAndDeploy": "釘選並部署",
+      "errorDeployFailed": "部署失敗。",
+      "untitledProject": "未命名專案",
+      "coverWord": "封面",
+      "noCover": "無封面",
+      "projectCoverPreviewAlt": "專案封面預覽",
+      "checkIdentityOk": "識別資訊已完整",
+      "checkIdentityErr": "識別:{msg}",
+      "checkCoinOk": "代幣已驗證 · {symbol} · {decimals} 位小數",
+      "checkCoinWrongDecimals": "代幣使用 {decimals} 位小數 — 協定要求 {required}",
+      "checkCoinErr": "代幣:{msg}",
+      "checkSaleOk": "銷售條款有效",
+      "checkSaleErr": "銷售:{msg}",
+      "checkIncomplete": "未完成"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "儀表板",
+      "description": "您擁有與支持的 Pandabox 專案。"
+    },
+    "title": "儀表板",
+    "headline": "您的活動",
+    "untitledProject": "未命名專案",
+    "connectGate": {
+      "eyebrow": "連接您的錢包",
+      "headline": "您的活動,鏈上呈現。",
+      "body": "連接 Sui 錢包以檢視您建立的專案,以及您支持的專案。"
+    },
+    "refresh": {
+      "label": "重新整理",
+      "busy": "重新整理中",
+      "aria": "重新整理儀表板",
+      "ariaRefreshing": "正在重新整理儀表板"
+    },
+    "kpi": {
+      "raised": "已募得",
+      "treasury": "資金庫",
+      "live": "進行中",
+      "backing": "支持中"
+    },
+    "owned": {
+      "title": "您的專案",
+      "subtitle": "您持有 ProjectAdminCap 的專案。點擊「管理」開啟工作區。",
+      "noMatchLabel": "沒有符合此篩選的專案",
+      "noMatchBody": "試試不同的狀態或清除篩選,以查看全部 {count, plural, one {# 個專案} other {# 個專案}}。",
+      "empty": {
+        "label": "尚無專案",
+        "body": "幾分鐘內就能啟動代幣銷售。預先部署您的代幣、設定銷售條款,並以一次簽署出貨。",
+        "cta": "啟動專案"
+      },
+      "card": {
+        "treasury": "資金庫",
+        "withdrawable": "可提領",
+        "raisedPct": "已募得 {pct}%",
+        "tokensSold": "已售出 {amount} {ticker}",
+        "manage": "管理",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "您支持的專案",
+      "subtitle": "您的 ContributionReceipts。銷售完成後即可領取。",
+      "receipts": "{count, plural, one {# 張收據} other {# 張收據}}",
+      "contributed": "已貢獻",
+      "claimable": "可領取",
+      "yourShare": "您的份額",
+      "action": {
+        "claim": "領取代幣",
+        "finalize": "完成銷售",
+        "open": "開啟專案"
+      },
+      "empty": {
+        "label": "尚未支持任何專案",
+        "body": "在「探索」中支持一個專案 — 您的收據與可領取份額將會在此呈現。",
+        "cta": "探索專案"
+      }
+    },
+    "loading": {
+      "aria": "載入專案中",
+      "sr": "載入專案中…"
+    },
+    "filter": {
+      "all": "全部",
+      "live": "進行中",
+      "endingSoon": "即將結束",
+      "needsFinalize": "需要完成",
+      "closed": "已結束",
+      "disabledTitle": "沒有 {label} 的專案"
+    },
+    "sort": {
+      "label": "排序",
+      "aria": "排序專案",
+      "newest": "最新",
+      "mostRaised": "募得最多",
+      "endingSoonest": "即將結束"
+    },
+    "state": {
+      "live": "進行中",
+      "endingSoon": "即將結束",
+      "endedAwaiting": "需要完成",
+      "closed": "已結束",
+      "unknown": "未知"
+    },
+    "time": {
+      "noCap": "無時間上限",
+      "endedJustNow": "剛剛結束",
+      "endsIn": "{duration} 後結束",
+      "endedAgoFinalize": "{duration} 前結束 · 完成銷售以解鎖",
+      "closedAgo": "已結束 · {duration} 前",
+      "closed": "已結束",
+      "durationDH": "{days} 天 {hours} 小時",
+      "durationHM": "{hours} 小時 {mins} 分",
+      "durationM": "{mins} 分"
+    },
+    "sparkline": {
+      "placeholder": "24 小時"
+    },
+    "manage": {
+      "backToDashboard": "返回儀表板",
+      "openPublicPage": "開啟公開頁面",
+      "untitledProject": "未命名專案",
+      "status": {
+        "live": "進行中",
+        "ended": "已結束",
+        "closed": "已關閉"
+      },
+      "stats": {
+        "treasury": "資金庫",
+        "sold": "已售出",
+        "creator": "建立者",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "流動性已建立 · 圖表即時呈現",
+        "noPoolLabel": "尚無池 · 圖表為佔位狀態",
+        "poolLink": "pool {id}",
+        "seedViaPanel": "透過面板建立 →"
+      },
+      "info": {
+        "whatLabel": "您可以在這裡做什麼",
+        "whatBody": "每一項管理操作 — 完成銷售、提領、更新中繼資料、建立流動性、轉移或放棄 cap — 都透過與專案頁面相同的鏈上進入函式執行。按鈕位於右側面板;起飛前檢查會顯示於每個對話框內。"
+      },
+      "supply": {
+        "label": "供應量",
+        "allocation": "配額",
+        "sold": "已售出",
+        "remaining": "剩餘",
+        "unsoldAction": "未售出處理動作",
+        "unsoldCreator": "→ 建立者",
+        "unsoldBurn": "銷毀"
+      },
+      "error": {
+        "label": "無法載入專案",
+        "retry": "重試"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "文件",
+      "description": "Pandabox 在 Sui 上的運作方式:銷售視窗、基準匯率與配額、貢獻與領取、未售出供應量、完成銷售與提領,以及建立精靈逐步說明。"
+    },
+    "eyebrow": "文件",
+    "heading": "Pandabox 實際的運作方式。",
+    "subhead": "三個分頁。機制是協定本身;建立精靈是建立流程;參考則包含詞彙表與常見問題。",
+    "toc": {
+      "ariaLabel": "文件章節",
+      "onThisPage": "本頁內容"
+    },
+    "tabs": {
+      "ariaLabel": "文件章節",
+      "mechanics": {
+        "label": "機制",
+        "sections": {
+          "how": "01 / 運作方式",
+          "window": "02 / 銷售視窗",
+          "rate": "03 / 基準匯率與配額",
+          "claim": "04 / 貢獻與領取",
+          "unsold": "05 / 未售出供應量",
+          "finalize": "06 / 完成銷售與提領"
+        }
+      },
+      "wizard": {
+        "label": "建立精靈逐步說明",
+        "sections": {
+          "intro": "四個步驟",
+          "identity": "01 · 識別",
+          "coin": "02 · 代幣",
+          "sale": "03 · 銷售條款",
+          "deploy": "04 · 檢視並部署"
+        }
+      },
+      "reference": {
+        "label": "參考",
+        "sections": {
+          "glossary": "詞彙表",
+          "faq": "常見問題"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / 運作方式",
+        "p1": "Pandabox 是 Sui 上的一個 Move 套件。建立者部署一個 <term>Project</term> — 一個擁有 SUI 資金庫與鎖定的 <term>TreasuryCap</term>(專案自有代幣的)的 Sui 物件。專案接著以固定匯率執行單次銷售:支持者貢獻 SUI,並依設定的價格取得領取專案代幣的權利。",
+        "p2": "支持者不會直接收到代幣。他們會收到一張 <term>ContributionReceipt</term> — 一個可轉移的 Sui NFT,記錄其應得權益。在銷售關閉後,他們透過 <term>claim</term> 銷毀收據以領取代幣。任何超過剩餘配額的付款,都會在同一筆交易中退款。",
+        "p3": "銷售會以下列三種方式之一結束:設定的結束時間到達、整個配額售完,或平台管理員關閉銷售。關閉後,建立者可提領募得的 SUI(扣除平台費用),並依部署時所選的政策處理任何未售出的代幣。",
+        "cta": "開始草擬專案 →"
+      },
+      "window": {
+        "label": "02 / 銷售視窗",
+        "p1": "每場銷售都有一個鎖定的視窗。您可在部署時設定一個 <term>結束時間</term> — 或讓它保持開放,並以管理員身分手動關閉銷售。在銷售完成之前,任何人都可以以固定匯率貢獻。",
+        "p2": "三件事可完成銷售:結束時間到期(<term>時間</term>)、配額售完(<term>售完</term>),或管理員強制關閉(<term>管理員</term>)。完成銷售是代幣領取、SUI 提領與未售出供應量處理的閘門 — 銷售仍在進行時,以上皆無法執行。",
+        "p3": "完成銷售可由管理員觸發(<code>try_finalize</code>),或任何人於條件達成後觸發(<code>permissionless_finalize</code>) — 因此停滯的建立者無法在結束時間過後困住支持者的領取。",
+        "cta": "請見步驟 03 →"
+      },
+      "rate": {
+        "label": "03 / 基準匯率與配額",
+        "p1": "兩個數字決定銷售:<term>基準匯率</term>(每 1 SUI 發行的專案代幣數)與 <term>funding allocation</term>(可銷售的專案代幣總數)。兩者皆於部署時設定並終身凍結 — 中繼資料更新或管理員操作皆無法變更。",
+        "p2": "若一筆貢獻會超過剩餘配額,僅會接受可負擔的部分,其餘將於同一筆交易中退款。支持者絕不會超付。",
+        "cta": "請見步驟 03 →"
+      },
+      "claim": {
+        "label": "04 / 貢獻與領取",
+        "p1": "<term>貢獻。</term>支持者使用一枚 SUI 代幣呼叫 <code>contribute</code>。專案會記錄其貢獻並回傳一張 <term>ContributionReceipt</term> NFT — 若付款超過可分配的金額,也會回傳一枚退款幣。",
+        "p2": "<term>領取。</term>銷售完成後,支持者以 <code>claim</code> 銷毀收據以領取專案代幣。多張收據(來自多次貢獻)可透過 <code>claim_multiple</code> 一次燒毀,並回傳單一合併的代幣。",
+        "p3": "收據是一般的 Sui 物件:可轉移、可於次級市場出售,且不會過期。只要 Project 物件存在,領取功能就會持續開放。",
+        "cta": "在儀表板檢視您的收據 →"
+      },
+      "unsold": {
+        "label": "05 / 未售出供應量",
+        "p1": "若銷售結束時配額尚有剩餘,建立者會執行 <code>process_unsold</code> 以執行部署時選擇的政策:",
+        "p2": "<term>銷毀</term> — 未售出的供應量將被銷毀,提高每枚已領取代幣的隱含價格。傳達稀缺性:流通量恰為本次銷售募得的數量。",
+        "p3": "<term>轉移給建立者</term> — 未售出的供應量將以一般代幣餘額形式轉移到建立者。適合用於建立流動性、執行次級銷售或保留資金庫部位。專案頁面會在規格列中以 <code>UNSOLD → CREATOR</code> 顯示此政策,讓支持者在付款前看到政策。",
+        "cta": "請見步驟 03 →"
+      },
+      "finalize": {
+        "label": "06 / 完成銷售與提領",
+        "p1": "銷售完成後,建立者呼叫 <code>withdraw_sui</code> 以從專案資金庫取出募得的 SUI。平台費用(以基點計,由 Pandabox 設定)會自動扣除 — 建立者收到淨額,費用累積至平台資金庫。提領可分批進行;cap 持有者可在之後繼續提領剩餘的金額。",
+        "p2": "部署時鑄造的 <term>ProjectAdminCap</term> 是一個一般的 Sui 物件。它可透過 <code>transfer_project_admin</code> 轉移(這會發出索引器依賴的事件 — 請優先使用此方式而非直接的物件轉移),或透過 <code>renounce_project_admin</code> 自行銷毀,使專案永久無人管理 — 適用於想要脫離建立者裁量的社群專案。",
+        "p3": "專案中繼資料 — 名稱、描述、圖示 URL、原始碼 blob,以及釘選至 IPFS 的鏈下細節 JSON(標語、分類、社群連結) — 無論銷售進行中或已結束,皆可透過 <code>update_metadata</code> 隨時編輯。"
+      }
+    },
+    "wizard": {
+      "stepWord": "步驟",
+      "intro": {
+        "label": "四個步驟",
+        "p1": "建立流程共四個步驟。您在此處填寫的所有內容,要嘛會寫入鏈上(銷售參數、名稱、blob CID),要嘛會寫入釘選至 IPFS 的 project_details JSON(標語、分類、社群連結)。右側的即時預覽會顯示支持者實際會看到的內容。",
+        "cta": "開啟建立精靈 "
+      },
+      "steps": {
+        "identity": {
+          "alt": "建立精靈的步驟 01 — 識別欄位與專案頁面的即時預覽。",
+          "title": "識別",
+          "caption": "專案名稱、代號、分類、標語、封面圖片與描述。此處顯示的代號僅供參考 — 真正的代幣符號來自您於下一步連結的 CoinMetadata。"
+        },
+        "coin": {
+          "alt": "建立精靈的步驟 02 — 連接或發布一個 Sui 代幣。",
+          "title": "代幣",
+          "caption": "Pandabox 需要自己的 Sui 代幣。可從預編譯的 coin_template.move 發布一個(在瀏覽器中改寫為您的識別符,並釘選至 IPFS 以供稽核),或貼上您已擁有的 TreasuryCap 與 CoinMetadata。小數位數必須為 9。"
+        },
+        "sale": {
+          "alt": "建立精靈的步驟 03 — 銷售條款:每 SUI 對應的代幣匯率、總配額、結束時間、未售出政策。",
+          "title": "銷售條款",
+          "caption": "部署時鎖定的四個數字:基準匯率(每 1 SUI 對應的代幣數)、總配額、可選的結束時間,以及未售出處理動作(銷毀或轉移給建立者)。隱含的最大募資金額會在您輸入時即時計算。"
+        },
+        "deploy": {
+          "alt": "建立精靈的步驟 04 — 檢視並部署。",
+          "title": "檢視並部署",
+          "caption": "一筆 Sui 交易即可建立 Project 物件、將您的 TreasuryCap 與 CoinMetadata 消耗到其中,並將 ProjectAdminCap 返回到您的錢包。鮮明的提示會明確列出送出後哪些項目不可變更,以及哪些項目仍可透過 update_metadata 編輯。"
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "詞彙表",
+        "termLabels": {
+          "baseRate": "基準匯率",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "未售出處理動作",
+          "endTime": "結束時間",
+          "finalize": "完成銷售",
+          "closeTrigger": "關閉觸發",
+          "projectStatus": "專案狀態",
+          "platformFee": "平台費用"
+        },
+        "terms": {
+          "project": "持有 SUI 資金庫、鎖定的 TreasuryCap<T> 與銷售參數的共享 Sui 物件。",
+          "projectAdminCap": "授予管理權限的擁有型 Sui 物件:提領 SUI、處理未售出、更新中繼資料、完成銷售、轉移、放棄。",
+          "contributionReceipt": "在 contribute 時鑄造的 NFT。銷售完成後可銷毀以換取應得的代幣。與一般 Sui 物件相同,可轉移。",
+          "baseRate": "每 1 SUI 貢獻所發行的專案代幣數。部署時凍結。",
+          "fundingAllocation": "可銷售的專案代幣總數。一旦達到,即觸發售完。部署時凍結。",
+          "unsoldAction": "銷售結束時剩餘代幣的處理政策:銷毀,或轉移給建立者。部署時凍結。",
+          "endTime": "可選的銷售結束時間戳。若為 null,僅能由管理員關閉或售完觸發完成銷售。",
+          "finalize": "鎖定銷售。必須在領取、SUI 提領或未售出處理之前完成。一旦條件達成,任何人皆可觸發。",
+          "closeTrigger": "銷售結束的原因:時間、售完或管理員。記錄於鏈上。",
+          "projectStatus": "進行中(銷售中)、已結束(已完成)或已標記(由平台標記)。",
+          "platformFee": "Pandabox 從提領的 SUI 中取得的基點抽成。由平台管理員設定,在 withdraw_sui 時套用。",
+          "mist": "最小的 SUI 單位。1 SUI = 1,000,000,000 MIST。"
+        }
+      },
+      "faq": {
+        "label": "常見問題",
+        "items": {
+          "audited": {
+            "q": "是否已稽核?",
+            "a": "尚未。Pandabox 目前在 testnet。正式稽核將於 mainnet 上線前完成。"
+          },
+          "editAfterDeploy": {
+            "q": "部署後我可以編輯專案嗎?",
+            "a": "鏈下識別資訊可以:名稱、描述、封面圖片(圖示 URL)、原始碼 blob、標語、分類與社群連結皆可透過 <code>update_metadata</code> 隨時更新。銷售經濟參數則不可:基準匯率、funding allocation、結束時間,以及未售出供應量政策皆於部署時凍結。代幣的代號與小數位數由您部署 Pandabox 之前所部署的代幣模組決定 — 這些也無法在此處變更。"
+          },
+          "gas": {
+            "q": "Gas 如何運作?",
+            "a": "每筆交易由簽署的錢包支付。建立、貢獻、領取、提領 — 全由簽署者支付。Sui Gas 在 mainnet 匯率下通常不到一分錢,因此實際支持一個專案的成本是您貢獻的 SUI,而不是 Gas。"
+          },
+          "neverClaims": {
+            "q": "如果支持者從未領取代幣會如何?",
+            "a": "收據不會過期。代幣會持續鎖定在專案的 TreasuryCap 中,直到持有者以 <code>claim</code> 銷毀收據。收據是真實的 Sui 物件,因此也可以轉移或出售給其他人領取。"
+          },
+          "transferCap": {
+            "q": "我可以轉移 ProjectAdminCap 嗎?",
+            "a": "可以 — 請使用 <code>transfer_project_admin</code>,使事件可被索引器擷取。Cap 本身並不持有任何專案代幣或募得的 SUI;它純粹是管理金鑰。您也可以呼叫 <code>renounce_project_admin</code> 永久銷毀它 — 之後專案將完全沒有任何管理員。"
+          },
+          "compromised": {
+            "q": "「已標記」狀態是什麼意思?",
+            "a": "當有明確證據顯示專案被濫用時(rug、冒充、所領取的權益中含有惡意內容),平台管理員可將專案標記為已標記狀態。這是單向的審核訊號 — 專案頁面仍可存取,讓支持者看到標記並採取行動,但會明確警示。它不會沒收資金。"
+          },
+          "featured": {
+            "q": "如何登上首頁的精選列?",
+            "a": "精選只是依募得的 SUI 排序的前三名。募得足夠的金額,您就會自動出現。"
+          }
+        }
+      }
+    }
   }
 }
