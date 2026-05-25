@@ -6,7 +6,6 @@ import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
 import { Modal } from "@pandasui/ui";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
@@ -14,13 +13,13 @@ import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
 import { TierSelector } from "./tier-selector";
 import { TransactionSuccess } from "./transaction-success";
 import { buildContributeTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
-// NOTE: this UI still renders the legacy "pay" model (memo / tier selector /
-// cash-out preview) which doesn't exist on the deployed contract. The Move
-// call below is wired to `project::contribute<T>`. The surrounding inputs
-// will be reworked when the project pages are rebuilt against the new DTO.
 import type { ProjectDTO } from "@/lib/api/project-dto";
 
 const MEMO_MAX = 256;
+
+// 100 亿 × 10^9 decimals — fixed by contract (project.move:33).
+const TOTAL_SUPPLY_RAW = 10_000_000_000n * 1_000_000_000n;
+const TOTAL_SUPPLY_BN = new BigNumber(TOTAL_SUPPLY_RAW.toString());
 
 export function PayPanel({ project }: { project: ProjectDTO }) {
   const account = useCurrentAccount();
@@ -60,6 +59,20 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
     return (amountMist * BigInt(project.weight)) / 1_000_000_000n;
   }, [amountMist, project.weight]);
 
+  const sharePct = useMemo(() => {
+    if (tokensRaw === 0n) return "0.0000";
+    return new BigNumber(tokensRaw.toString())
+      .dividedBy(TOTAL_SUPPLY_BN)
+      .multipliedBy(100)
+      .toFormat(4, BigNumber.ROUND_DOWN);
+  }, [tokensRaw]);
+
+  const remainingMintable = useMemo(() => {
+    const alloc = BigInt(project.allocationTokens);
+    const minted = BigInt(project.alreadyMinted);
+    return alloc > minted ? alloc - minted : 0n;
+  }, [project.allocationTokens, project.alreadyMinted]);
+
   const isValid = amountMist > 0n;
 
   return (
@@ -97,6 +110,17 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
           }}
           className="mt-5"
         />
+
+        <p className="mt-2 font-mono text-[11px] tabular-nums text-ink/55">
+          剩余可铸{" "}
+          <TokenAmount
+            raw={remainingMintable}
+            decimals={9}
+            ticker={project.ticker}
+            compact
+          />
+          ，超额自动退款。
+        </p>
 
         <div className="mt-5 border-t border-ink/15 pt-4 text-xs">
           <Preview label="You receive">
@@ -158,7 +182,26 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
           )}
         </div>
 
-        {/* ParamCell row is rebuilt in stage 4 (share of supply / remaining mintable / unsold). */}
+        <div className="mt-4 grid grid-cols-3 border-t border-ink/15 pt-3 text-center">
+          <ParamCell label="Share of supply" value={`${sharePct}%`} />
+          <ParamCell
+            label="Remaining mintable"
+            value={
+              <TokenAmount
+                raw={remainingMintable}
+                decimals={9}
+                ticker={project.ticker}
+                compact
+              />
+            }
+            border
+          />
+          <ParamCell
+            label="Unsold"
+            value={project.unsoldAction === "transfer_to_creator" ? "转创建者" : "销毁"}
+            border
+          />
+        </div>
       </div>
 
       <Modal
@@ -282,7 +325,7 @@ function ParamCell({
   border = false,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   border?: boolean;
 }) {
   return (
