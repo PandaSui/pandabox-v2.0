@@ -1,6 +1,7 @@
 export type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
 
 export type Category =
+  | "opc"
   | "art"
   | "infra"
   | "dao"

@@ -29,6 +29,7 @@ const STATUSES: { key: Status; label: string }[] = [
 
 const CATEGORIES: { key: CategoryFilter; label: string }[] = [
   { key: "all", label: "All" },
+  { key: "opc", label: "OPC" },
   { key: "meme", label: "Meme" },
   { key: "art", label: "Art" },
   { key: "infra", label: "Infra" },
@@ -49,6 +50,7 @@ const ACCENT_ROTATION = ["saffron", "poppy", "jade", "sky", "sun", "plum"] as co
 // Three creative-register categories (art / music / meme) share saffron by
 // design; the rest each get their own accent.
 const CATEGORY_PILL: Record<Category, string> = {
+  opc: "bg-sky/12 border-sky/45",
   art: "bg-saffron/12 border-saffron/45",
   music: "bg-saffron/12 border-saffron/45",
   meme: "bg-saffron/12 border-saffron/45",

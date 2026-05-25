@@ -10,6 +10,7 @@ import { cn } from "@pandasui/ui/lib";
 import type { Category } from "@/types/pandabox";
 
 const CATEGORIES: { value: Category; label: string }[] = [
+  { value: "opc", label: "OPC" },
   { value: "art", label: "Art" },
   { value: "infra", label: "Infra" },
   { value: "meme", label: "Meme" },
