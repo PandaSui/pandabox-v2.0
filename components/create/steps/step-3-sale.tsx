@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { useWizard } from "@/lib/store/wizard";
@@ -23,6 +24,7 @@ function fromLocalInput(s: string): number {
 }
 
 export function StepSaleForm() {
+  const t = useTranslations("create.step3");
   const sale = useWizard((s) => s.draft.sale);
   const ticker = useWizard((s) => s.draft.identity.ticker) ?? "TOK";
   const patch = useWizard((s) => s.patchSale);
@@ -92,21 +94,34 @@ export function StepSaleForm() {
   const endMs = sale.endTimeMs ?? null;
   const durationDays = endMs ? Math.max(0, Math.round((endMs - now) / DAY)) : null;
 
+  const unsoldOptions = [
+    {
+      key: "burn" as const,
+      title: t("unsoldBurnTitle"),
+      body: t("unsoldBurnBody"),
+    },
+    {
+      key: "transfer_to_creator" as const,
+      title: t("unsoldReturnTitle"),
+      body: t("unsoldReturnBody"),
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <StepHeader
         n={3}
         accent="jade"
-        title="Sale terms"
-        body="Supporters contribute SUI in exchange for a Receipt. After the sale ends or sells out, they claim their token allocation. Anything unsold is burned or returned to you, per your choice."
-        meta="immutable on deploy"
+        title={t("title")}
+        body={t("body")}
+        meta={t("meta")}
       />
 
-      <StepCard title="Pricing" meta="tokens ↔ SUI">
+      <StepCard title={t("pricingTitle")} meta={t("pricingMeta")}>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <Field
-            label="Tokens per SUI"
-            hint={`How many ${ticker} a supporter receives for each 1 SUI.`}
+            label={t("tokensPerSui")}
+            hint={t("tokensPerSuiHint", { ticker })}
             error={errors.tokensPerSui}
           >
             {(id) => (
@@ -122,8 +137,8 @@ export function StepSaleForm() {
             )}
           </Field>
           <Field
-            label="Target raise (SUI)"
-            hint="Editing this back-calculates Tokens per SUI."
+            label={t("targetRaise")}
+            hint={t("targetRaiseHint")}
           >
             {(id) => (
               <TextField
@@ -147,15 +162,15 @@ export function StepSaleForm() {
           </Field>
         </div>
         <DerivedRow
-          label="base_rate (scaled, on-chain)"
+          label={t("baseRateLabel")}
           value={baseRateScaled.isFinite() ? baseRateScaled.toFixed(0) : "—"}
         />
       </StepCard>
 
-      <StepCard title="Allocation" meta="total tokens for sale">
+      <StepCard title={t("allocationTitle")} meta={t("allocationMeta")}>
         <Field
-          label="Tokens for sale"
-          hint={`Total ${ticker} reserved for this sale. The TreasuryCap mints up to this amount.`}
+          label={t("tokensForSale")}
+          hint={t("tokensForSaleHint", { ticker })}
           error={errors.allocationTokens}
         >
           {(id) => (
@@ -171,13 +186,13 @@ export function StepSaleForm() {
         </Field>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <DerivedRow
-            label="funding_allocation (raw u64)"
+            label={t("fundingAllocationLabel")}
             value={
               allocationScaled.isFinite() ? allocationScaled.toFixed(0) : "—"
             }
           />
           <DerivedRow
-            label={`Max supply · ${ticker}`}
+            label={t("maxSupplyLabel", { ticker })}
             value={
               allocation
                 ? `${new BigNumber(allocation).toFormat(0)} ${ticker}`
@@ -185,25 +200,32 @@ export function StepSaleForm() {
             }
           />
           <DerivedRow
-            label="Minted at launch"
-            value="0 — minted on claim"
+            label={t("mintedAtLaunch")}
+            value={t("mintedAtLaunchValue")}
           />
         </div>
         <p className="mt-2 font-mono text-[10px] leading-relaxed text-ink/55">
-          The coin starts at <span className="text-ink/75">0 supply</span>.
-          Tokens are minted lazily when supporters call{" "}
-          <code className="font-mono">claim</code> on their receipts. Final
-          circulating supply ={" "}
-          <span className="text-ink/75">claimed</span>
+          {t.rich("supplyNote", {
+            zeroSupply: (chunks) => <span className="text-ink/75">{chunks}</span>,
+            code: (chunks) => <code className="font-mono">{chunks}</code>,
+            claimed: (chunks) => <span className="text-ink/75">{chunks}</span>,
+          })}
           {sale.unsoldAction === "transfer_to_creator"
-            ? " + unsold (returned to your wallet)"
-            : " (unsold portion is burned)"}
+            ? t("supplyNoteReturn")
+            : t("supplyNoteBurn")}
           .
         </p>
       </StepCard>
 
-      <StepCard title="Sale window" meta={durationDays != null ? `${durationDays}d` : "no time cap"}>
-        <Field label="Ends">
+      <StepCard
+        title={t("saleWindowTitle")}
+        meta={
+          durationDays != null
+            ? t("durationDays", { days: durationDays })
+            : t("noTimeCap")
+        }
+      >
+        <Field label={t("ends")}>
           {() => (
             <div className="space-y-3">
               <div className="flex flex-wrap gap-1.5">
@@ -224,7 +246,7 @@ export function StepSaleForm() {
                           : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
                       )}
                     >
-                      in {d} days
+                      {t("inDays", { days: d })}
                     </button>
                   );
                 })}
@@ -239,7 +261,7 @@ export function StepSaleForm() {
                       : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
                   )}
                 >
-                  no time cap
+                  {t("noTimeCap")}
                 </button>
               </div>
               <input
@@ -257,24 +279,11 @@ export function StepSaleForm() {
         </Field>
       </StepCard>
 
-      <StepCard title="Unsold supply" meta="after sale closes">
-        <Field label="Action">
+      <StepCard title={t("unsoldTitle")} meta={t("unsoldMeta")}>
+        <Field label={t("actionLabel")}>
           {() => (
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {(
-                [
-                  {
-                    key: "burn",
-                    title: "Burn",
-                    body: "Unsold tokens are permanently destroyed, reducing total supply.",
-                  },
-                  {
-                    key: "transfer_to_creator",
-                    title: "Return to creator",
-                    body: "Unsold tokens are minted to your address. Use for vesting or DEX seeding.",
-                  },
-                ] as const
-              ).map((opt) => {
+              {unsoldOptions.map((opt) => {
                 const active = sale.unsoldAction === opt.key;
                 return (
                   <button

@@ -7,6 +7,7 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -69,6 +70,7 @@ export function ClaimPanel({
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
   const router = useRouter();
+  const t = useTranslations("project.detail.claim");
 
   const [state, setState] = useState<TxState>({ kind: "idle" });
   const [open, setOpen] = useState(false);
@@ -132,7 +134,7 @@ export function ClaimPanel({
     } catch (err) {
       setState({
         kind: "error",
-        message: err instanceof Error ? err.message : "Transaction failed.",
+        message: err instanceof Error ? err.message : t("txFailed"),
       });
     }
   };
@@ -142,12 +144,12 @@ export function ClaimPanel({
       <div className="border border-ink bg-bone shadow-offset-sm">
         <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
           <MonoLabel className="text-[10px]">
-            {mode === "claim" ? "Claim your tokens" : "Finalize sale"}
+            {mode === "claim" ? t("claimYourTokens") : t("finalizeSale")}
           </MonoLabel>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
             {mode === "claim"
-              ? `${receipts.length} receipt${receipts.length === 1 ? "" : "s"}`
-              : "anyone"}
+              ? t("receiptCount", { count: receipts.length })
+              : t("anyone")}
           </span>
         </header>
 
@@ -155,27 +157,34 @@ export function ClaimPanel({
           {mode === "claim" ? (
             <>
               <p className="text-sm text-ink/70">
-                The sale has closed. Burn your{" "}
-                <code className="font-mono text-[12px]">
-                  ContributionReceipt&lt;T&gt;
-                </code>{" "}
-                {receipts.length > 1 ? "objects" : "object"} and receive your
-                share of {ticker}.
+                {receipts.length > 1
+                  ? t.rich("claimIntroMany", {
+                      code: (chunks) => (
+                        <code className="font-mono text-[12px]">{chunks}</code>
+                      ),
+                      ticker,
+                    })
+                  : t.rich("claimIntroOne", {
+                      code: (chunks) => (
+                        <code className="font-mono text-[12px]">{chunks}</code>
+                      ),
+                      ticker,
+                    })}
               </p>
               <div className="grid grid-cols-2 gap-3 border-t border-ink/15 pt-4">
-                <Stat label="You'll receive">
+                <Stat label={t("youllReceive")}>
                   <Marker color="saffron">
                     <span className="font-mono tabular-nums text-base">
                       {formatToken(totalTokens, PROJECT_COIN_DECIMALS)} {ticker}
                     </span>
                   </Marker>
                 </Stat>
-                <Stat label="From">
+                <Stat label={t("from")}>
                   <span className="font-mono tabular-nums text-base">
                     {formatSui(totalSui)} SUI
                   </span>
                   <span className="mt-1 block font-mono text-[10px] text-ink/55">
-                    contributed
+                    {t("contributed")}
                   </span>
                 </Stat>
               </div>
@@ -183,16 +192,15 @@ export function ClaimPanel({
           ) : (
             <>
               <p className="text-sm text-ink/70">
-                The sale end-time has passed. Anyone can finalize to lock in
-                the final sold amount and unlock claim + withdraw for everyone.
+                {t("finalizeIntro")}
               </p>
               <div className="grid grid-cols-2 gap-3 border-t border-ink/15 pt-4">
-                <Stat label="Sold">
+                <Stat label={t("sold")}>
                   <span className="font-mono tabular-nums text-base">
                     {formatToken(project.sold, PROJECT_COIN_DECIMALS)} {ticker}
                   </span>
                 </Stat>
-                <Stat label="Treasury">
+                <Stat label={t("treasury")}>
                   <span className="font-mono tabular-nums text-base">
                     {formatSui(project.suiBalance)} SUI
                   </span>
@@ -212,8 +220,14 @@ export function ClaimPanel({
           >
             <span>
               {mode === "claim"
-                ? `Claim ${receipts.length > 1 ? "all" : ""} → ${formatToken(totalTokens, PROJECT_COIN_DECIMALS)} ${ticker}`
-                : "Finalize sale"}
+                ? receipts.length > 1
+                  ? t("claimAllCta", {
+                      amount: `${formatToken(totalTokens, PROJECT_COIN_DECIMALS)} ${ticker}`,
+                    })
+                  : t("claimCta", {
+                      amount: `${formatToken(totalTokens, PROJECT_COIN_DECIMALS)} ${ticker}`,
+                    })
+                : t("finalizeSale")}
             </span>
             <ArrowDiag size={14} />
           </button>
@@ -222,7 +236,7 @@ export function ClaimPanel({
         {mode === "claim" && receipts.length > 0 && (
           <details className="border-t border-ink/15 px-5 py-3">
             <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45 hover:text-ink">
-              receipts ({receipts.length})
+              {t("receiptsSummary", { count: receipts.length })}
             </summary>
             <ul className="mt-2 space-y-1 font-mono text-[11px] text-ink/65">
               {receipts.map((r) => (
@@ -248,7 +262,7 @@ export function ClaimPanel({
           setOpen(false);
           if (state.kind === "success") setState({ kind: "idle" });
         }}
-        title={mode === "claim" ? "Claim tokens" : "Finalize sale"}
+        title={mode === "claim" ? t("modalClaimTitle") : t("modalFinalizeTitle")}
       >
         {state.kind === "success" ? (
           mode === "claim" ? (
@@ -263,7 +277,7 @@ export function ClaimPanel({
                 setOpen(false);
                 setState({ kind: "idle" });
               }}
-              continueLabel="Back to project"
+              continueLabel={t("backToProject")}
             />
           ) : (
             <FinalizeSuccess
@@ -339,6 +353,7 @@ function ClaimPreview({
   onCancel: () => void;
   onSubmit: () => void;
 }) {
+  const t = useTranslations("project.detail.claim");
   const resolved = resolveBlobRef(iconUrl)?.url ?? iconUrl ?? "";
   const submitting = state.kind === "submitting";
 
@@ -349,18 +364,18 @@ function ClaimPreview({
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1 space-y-1">
             <span className="font-mono-label text-[10px] text-ink/55">
-              You burn
+              {t("youBurn")}
             </span>
             <div className="flex items-baseline gap-2">
               <span className="font-mono text-3xl tabular-nums text-ink">
                 {receiptCount}
               </span>
               <span className="font-mono-label text-[11px] text-ink/70">
-                {receiptCount === 1 ? "receipt" : "receipts"}
+                {receiptCount === 1 ? t("receiptOne") : t("receiptOther")}
               </span>
             </div>
             <p className="font-mono text-[11px] tabular-nums text-ink/45">
-              {totalSuiFormatted} originally contributed
+              {t("originallyContributed", { amount: totalSuiFormatted })}
             </p>
           </div>
           <ReceiptStack count={receiptCount} />
@@ -376,7 +391,7 @@ function ClaimPreview({
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1 space-y-1">
             <span className="font-mono-label text-[10px] text-jade">
-              You receive
+              {t("youReceive")}
             </span>
             <div className="flex items-baseline gap-2">
               <Marker color="saffron">
@@ -389,7 +404,7 @@ function ClaimPreview({
               </span>
             </div>
             <p className="font-mono text-[11px] tabular-nums text-ink/45">
-              Coin&lt;{ticker}&gt; sent to your wallet
+              {t("coinSentToWallet", { ticker })}
             </p>
           </div>
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-ink/[0.04]">
@@ -427,7 +442,7 @@ function ClaimPreview({
           onClick={onCancel}
           className={cn(CTA_BASE, "h-10 w-auto bg-bone px-4 text-ink")}
         >
-          <span>Cancel</span>
+          <span>{t("cancel")}</span>
         </button>
         <button
           type="button"
@@ -435,7 +450,7 @@ function ClaimPreview({
           onClick={onSubmit}
           className={cn(CTA_BASE, "h-10 w-auto bg-saffron px-4 text-ink")}
         >
-          <span>{submitting ? "Signing…" : "Confirm & claim"}</span>
+          <span>{submitting ? t("signing") : t("confirmClaim")}</span>
           <ArrowDiag size={12} />
         </button>
       </div>
@@ -458,26 +473,25 @@ function FinalizePreview({
   onCancel: () => void;
   onSubmit: () => void;
 }) {
+  const t = useTranslations("project.detail.claim");
   const submitting = state.kind === "submitting";
 
   return (
     <div className="space-y-4">
       <p className="text-sm text-ink/70">
-        The sale window has closed. Anyone can finalize to lock in the final
-        sold amount — this unlocks token claims for supporters and SUI
-        withdrawals for the project owner.
+        {t("finalizePreviewIntro")}
       </p>
 
       <div className="grid grid-cols-2 border border-ink/15">
         <div className="border-r border-ink/15 px-4 py-3">
-          <span className="font-mono-label text-[10px] text-ink/55">Sold</span>
+          <span className="font-mono-label text-[10px] text-ink/55">{t("sold")}</span>
           <div className="mt-1 font-mono text-base tabular-nums text-ink">
             {soldFormatted}
           </div>
         </div>
         <div className="px-4 py-3">
           <span className="font-mono-label text-[10px] text-ink/55">
-            Treasury
+            {t("treasury")}
           </span>
           <div className="mt-1 font-mono text-base tabular-nums text-ink">
             {treasuryFormatted}
@@ -486,8 +500,7 @@ function FinalizePreview({
       </div>
 
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-        no-op if the sale isn't ready · gas only · sale becomes claimable for{" "}
-        {ticker} holders
+        {t("finalizeFootnote", { ticker })}
       </p>
 
       {state.kind === "error" && (
@@ -506,7 +519,7 @@ function FinalizePreview({
           onClick={onCancel}
           className={cn(CTA_BASE, "h-10 w-auto bg-bone px-4 text-ink")}
         >
-          <span>Cancel</span>
+          <span>{t("cancel")}</span>
         </button>
         <button
           type="button"
@@ -514,7 +527,7 @@ function FinalizePreview({
           onClick={onSubmit}
           className={cn(CTA_BASE, "h-10 w-auto bg-saffron px-4 text-ink")}
         >
-          <span>{submitting ? "Signing…" : "Confirm & finalize"}</span>
+          <span>{submitting ? t("signing") : t("confirmFinalize")}</span>
           <ArrowDiag size={12} />
         </button>
       </div>
@@ -529,6 +542,7 @@ function FinalizeSuccess({
   digest: string;
   onContinue: () => void;
 }) {
+  const t = useTranslations("project.detail.claim");
   return (
     <div className="space-y-4">
       <div className="border border-jade/40 bg-jade/[0.06] p-4">
@@ -539,17 +553,16 @@ function FinalizeSuccess({
             style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
           />
           <span className="font-mono-label text-[10px] text-jade">
-            sale finalized
+            {t("saleFinalized")}
           </span>
         </div>
         <p className="mt-2 text-sm text-ink/75">
-          The project is now closed. Token claims and admin withdrawals are
-          unlocked.
+          {t("finalizeSuccessBody")}
         </p>
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="font-mono-label text-[10px] text-ink/55">tx</span>
+        <span className="font-mono-label text-[10px] text-ink/55">{t("txLabel")}</span>
         <TxHash value={digest} head={6} tail={4} />
       </div>
 
@@ -559,7 +572,7 @@ function FinalizeSuccess({
           onClick={onContinue}
           className={cn(CTA_BASE, "h-10 w-auto bg-ink px-5 text-bone")}
         >
-          <span>Back to project</span>
+          <span>{t("backToProject")}</span>
           <ArrowDiag size={12} />
         </button>
       </div>

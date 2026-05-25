@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
 
@@ -10,6 +11,7 @@ export type DocSection = {
 };
 
 export function Toc({ sections }: { sections: DocSection[] }) {
+  const t = useTranslations("docs.toc");
   const [active, setActive] = useState<string>(sections[0]?.id ?? "");
 
   useEffect(() => {
@@ -35,8 +37,8 @@ export function Toc({ sections }: { sections: DocSection[] }) {
   }, [sections]);
 
   return (
-    <nav aria-label="Docs sections" className="space-y-1">
-      <span className="font-mono-label text-ink/45 block pb-2">On this page</span>
+    <nav aria-label={t("ariaLabel")} className="space-y-1">
+      <span className="font-mono-label text-ink/45 block pb-2">{t("onThisPage")}</span>
       {sections.map((s) => {
         const selected = s.id === active;
         return (

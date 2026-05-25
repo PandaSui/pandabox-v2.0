@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { DashboardShell } from "@/components/dashboard";
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Your owned and supported Pandabox projects.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 export default function DashboardPage() {
   return (

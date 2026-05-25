@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
@@ -39,6 +40,7 @@ export function ManageWorkspace({
   capId: string;
   coinType: string;
 }) {
+  const t = useTranslations("dashboard.manage");
   const router = useRouter();
   const [project, setProject] = useState<HydratedProject | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,13 +110,13 @@ export function ManageWorkspace({
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            back to dashboard
+            {t("backToDashboard")}
           </button>
           <Link
             href={`/projects/${projectId}`}
             className="group inline-flex items-center gap-2 font-mono-label text-[10px] text-ink/55 transition-colors hover:text-ink"
           >
-            <span>open public page</span>
+            <span>{t("openPublicPage")}</span>
             <svg
               width="10"
               height="10"
@@ -159,6 +161,7 @@ function Loaded({
   project: HydratedProject;
   cap: AdminCapHolding;
 }) {
+  const t = useTranslations("dashboard.manage");
   const ticker = resolveTicker(project);
   const now = Date.now();
   const ended = project.endTimeMs > 0 && now > project.endTimeMs;
@@ -173,7 +176,7 @@ function Loaded({
 
           <div className="min-w-0 flex-1">
             <h1 className="truncate font-display text-2xl leading-tight">
-              {project.name || "Untitled project"}
+              {project.name || t("untitledProject")}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
               <span className="inline-flex items-center border border-ink bg-bone px-2 py-0.5 font-mono text-[11px]">
@@ -213,7 +216,7 @@ function Loaded({
                       : undefined
                   }
                 />
-                {live ? "live" : ended ? "ended" : "closed"}
+                {live ? t("status.live") : ended ? t("status.ended") : t("status.closed")}
               </span>
             </div>
           </div>
@@ -221,15 +224,15 @@ function Loaded({
 
         {/* Quick-glance stat strip */}
         <dl className="grid grid-cols-2 md:grid-cols-4">
-          <Stat label="Treasury" value={`${formatSui(project.suiBalance)} SUI`} />
+          <Stat label={t("stats.treasury")} value={`${formatSui(project.suiBalance)} SUI`} />
           <Stat
-            label="Sold"
+            label={t("stats.sold")}
             value={`${formatToken(project.sold, PROJECT_COIN_DECIMALS)} ${ticker}`}
             border
           />
-          <Stat label="Creator" value={<Address value={project.creator} link />} border />
+          <Stat label={t("stats.creator")} value={<Address value={project.creator} link />} border />
           <Stat
-            label="Cap"
+            label={t("stats.cap")}
             value={
               <span className="font-mono tabular-nums">
                 {shortMid(cap.capId)}
@@ -273,8 +276,8 @@ function Loaded({
               accent={project.liquiditySeeded ? "jade" : "ink"}
             >
               {project.liquiditySeeded
-                ? "Liquidity seeded · chart live"
-                : "No pool yet · chart in placeholder"}
+                ? t("liquidity.seededLabel")
+                : t("liquidity.noPoolLabel")}
             </MonoLabel>
           </div>
           <div className="font-mono text-[11px] tabular-nums text-ink/55">
@@ -285,10 +288,10 @@ function Loaded({
                 rel="noreferrer"
                 className="hover:text-ink"
               >
-                pool {shortMid(project.poolId)}
+                {t("liquidity.poolLink", { id: shortMid(project.poolId) })}
               </a>
             ) : (
-              <span>seed via the panel →</span>
+              <span>{t("liquidity.seedViaPanel")}</span>
             )}
           </div>
         </div>
@@ -299,17 +302,17 @@ function Loaded({
         {/* Left column — supporting context cards */}
         <div className="space-y-4">
           <SectionCard
-            label="What you can do here"
-            body="Every admin action — finalize, withdraw, update metadata, seed liquidity, transfer or renounce the cap — runs through the same on-chain entry functions as the project page. The buttons live in the panel on the right; pre-flight checks are surfaced inside each modal."
+            label={t("info.whatLabel")}
+            body={t("info.whatBody")}
           />
           <SectionCard
-            label="Supply"
+            label={t("supply.label")}
             body={
               <div className="grid grid-cols-2 gap-3 text-[12.5px]">
-                <Pair k="Allocation" v={`${formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)} ${ticker}`} />
-                <Pair k="Sold" v={`${formatToken(project.sold, PROJECT_COIN_DECIMALS)} ${ticker}`} />
-                <Pair k="Remaining" v={`${formatToken(project.fundingAllocation - project.sold > 0n ? project.fundingAllocation - project.sold : 0n, PROJECT_COIN_DECIMALS)} ${ticker}`} />
-                <Pair k="Unsold action" v={project.unsoldAction === 1 ? "→ creator" : "burn"} />
+                <Pair k={t("supply.allocation")} v={`${formatToken(project.fundingAllocation, PROJECT_COIN_DECIMALS)} ${ticker}`} />
+                <Pair k={t("supply.sold")} v={`${formatToken(project.sold, PROJECT_COIN_DECIMALS)} ${ticker}`} />
+                <Pair k={t("supply.remaining")} v={`${formatToken(project.fundingAllocation - project.sold > 0n ? project.fundingAllocation - project.sold : 0n, PROJECT_COIN_DECIMALS)} ${ticker}`} />
+                <Pair k={t("supply.unsoldAction")} v={project.unsoldAction === 1 ? t("supply.unsoldCreator") : t("supply.unsoldBurn")} />
               </div>
             }
           />
@@ -367,13 +370,14 @@ function ErrorShell({
   message: string;
   onRetry: () => void;
 }) {
+  const t = useTranslations("dashboard.manage");
   return (
     <div
       role="alert"
       className="border border-poppy/40 bg-poppy/[0.06] px-5 py-4 text-poppy"
     >
       <MonoLabel className="text-[10px]" accent="poppy">
-        Couldn&apos;t load project
+        {t("error.label")}
       </MonoLabel>
       <p className="mt-1 text-[13px] text-ink/75">{message}</p>
       <button
@@ -381,7 +385,7 @@ function ErrorShell({
         onClick={onRetry}
         className="mt-3 inline-flex h-9 items-center border border-ink bg-bone px-3 font-mono-label text-[10px] shadow-offset-sm transition-all duration-300 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset"
       >
-        Retry
+        {t("error.retry")}
       </button>
     </div>
   );

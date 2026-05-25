@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { TxHash } from "@/components/identity/tx-hash";
 import { resolveBlobRef } from "@/lib/ipfs";
@@ -31,12 +32,14 @@ export function ClaimSuccess({
   receiptCount,
   txDigest,
   onContinue,
-  continueLabel = "Back to project",
+  continueLabel,
 }: ClaimSuccessProps) {
+  const t = useTranslations("project.detail.claim");
   const scope = useRef<HTMLDivElement>(null);
   const coverUrl = resolveBlobRef(iconUrl)?.url ?? iconUrl ?? null;
+  const resolvedContinueLabel = continueLabel ?? t("backToProject");
 
-  const tweet = `Just claimed my ${ticker} from ${projectName} on Pandabox — programmable on-chain funding on Sui.`;
+  const tweet = t("tweetText", { ticker, projectName });
   const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
 
   useGSAP(
@@ -154,9 +157,9 @@ export function ClaimSuccess({
           data-anim
           className="absolute -right-3 -top-3 rotate-[8deg] border border-ink bg-jade px-3 py-1.5 text-bone shadow-offset-sm"
         >
-          <div className="font-mono-label text-[9px] leading-none">claimed</div>
+          <div className="font-mono-label text-[9px] leading-none">{t("stampClaimed")}</div>
           <div className="mt-0.5 font-mono-label text-[8px] leading-none opacity-75">
-            in your wallet
+            {t("stampInYourWallet")}
           </div>
         </div>
       </div>
@@ -167,7 +170,7 @@ export function ClaimSuccess({
           data-anim
           className="font-mono-label inline-block text-[10px] text-jade"
         >
-          · tokens delivered ·
+          {t("tokensDeliveredEyebrow")}
         </span>
         <h2 className="font-display text-3xl leading-tight md:text-4xl">
           <span
@@ -179,16 +182,18 @@ export function ClaimSuccess({
           </span>
         </h2>
         <p data-meta data-anim className="font-mono text-[11px] text-ink/55">
-          from <span className="text-ink/80">{projectName}</span> ·{" "}
-          {receiptCount} {receiptCount === 1 ? "receipt" : "receipts"} burned
+          {t("fromLabel")} <span className="text-ink/80">{projectName}</span> ·{" "}
+          {receiptCount === 1
+            ? t("receiptsBurnedOne", { count: receiptCount })
+            : t("receiptsBurnedOther", { count: receiptCount })}
         </p>
       </div>
 
       <div className="mt-6 grid grid-cols-2 divide-x divide-ink/15 border-y border-ink/15">
-        <Stat label="Received" value={tokensFormatted} accent />
+        <Stat label={t("statReceived")} value={tokensFormatted} accent />
         <Stat
-          label="Receipts"
-          value={`${receiptCount} burned`}
+          label={t("statReceipts")}
+          value={t("burnedCount", { count: receiptCount })}
           mute
         />
       </div>
@@ -198,7 +203,7 @@ export function ClaimSuccess({
         data-anim
         className="mt-4 flex items-center justify-center gap-2"
       >
-        <span className="font-mono-label text-[10px] text-ink/55">tx</span>
+        <span className="font-mono-label text-[10px] text-ink/55">{t("txLabel")}</span>
         <TxHash value={txDigest} head={6} tail={4} />
       </div>
 
@@ -216,7 +221,7 @@ export function ClaimSuccess({
               "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
             )}
           >
-            <span>{continueLabel}</span>
+            <span>{resolvedContinueLabel}</span>
             <ArrowDiag />
           </button>
         )}
@@ -233,7 +238,7 @@ export function ClaimSuccess({
           )}
         >
           <XGlyph />
-          <span>share on x</span>
+          <span>{t("shareOnX")}</span>
         </a>
       </div>
     </div>

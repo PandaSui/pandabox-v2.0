@@ -16,6 +16,8 @@ type DocsTabsProps = {
   tabs: DocsTab[];
   /** Panel content keyed by tab id. Each panel is server-rendered upstream. */
   panels: Record<string, React.ReactNode>;
+  /** Localized aria-label for the tablist. */
+  ariaLabel: string;
 };
 
 /**
@@ -25,7 +27,7 @@ type DocsTabsProps = {
  * mirrored to `?tab=…` so deep links work; switching tabs scrolls the
  * article back to the top so the user starts at the new section 01.
  */
-export function DocsTabs({ tabs, panels }: DocsTabsProps) {
+export function DocsTabs({ tabs, panels, ariaLabel }: DocsTabsProps) {
   const pathname = usePathname() ?? "";
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -65,7 +67,7 @@ export function DocsTabs({ tabs, panels }: DocsTabsProps) {
       <div className="sticky top-16 z-20 border-b border-ink/15 bg-bone/85 backdrop-blur">
         <div
           role="tablist"
-          aria-label="Docs sections"
+          aria-label={ariaLabel}
           className="container flex gap-1 overflow-x-auto whitespace-nowrap"
         >
           {tabs.map((t) => {

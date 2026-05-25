@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { gatewayUrl, isLikelyCid, resolveBlobRef, uploadBlob } from "@/lib/ipfs";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -39,7 +40,7 @@ export function ImageUpload({
   value,
   onChange,
   variant = "cover",
-  label = "Cover image",
+  label,
   hint,
 }: {
   value?: string;
@@ -48,6 +49,8 @@ export function ImageUpload({
   label?: string;
   hint?: string;
 }) {
+  const t = useTranslations("create.imageUpload");
+  const resolvedLabel = label ?? t("defaultLabel");
   const [state, setState] = useState<UploadState>({ kind: "idle" });
   const [dragging, setDragging] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -76,13 +79,16 @@ export function ImageUpload({
   const startUpload = useCallback(
     async (file: File) => {
       if (!file.type.startsWith("image/")) {
-        setState({ kind: "error", message: "Only image files are allowed." });
+        setState({ kind: "error", message: t("errorOnlyImages") });
         return;
       }
       if (file.size > MAX_MB * 1024 * 1024) {
         setState({
           kind: "error",
-          message: `Image too large (${(file.size / 1024 / 1024).toFixed(2)} MiB). Max ${MAX_MB} MiB.`,
+          message: t("errorTooLarge", {
+            size: (file.size / 1024 / 1024).toFixed(2),
+            max: MAX_MB,
+          }),
         });
         return;
       }
@@ -128,11 +134,11 @@ export function ImageUpload({
         setState({
           kind: "error",
           message:
-            err instanceof Error ? err.message : "Upload failed unexpectedly.",
+            err instanceof Error ? err.message : t("errorUploadFailed"),
         });
       }
     },
-    [onChange],
+    [onChange, t],
   );
 
   const cancelUpload = useCallback(() => {
@@ -200,10 +206,10 @@ export function ImageUpload({
   return (
     <div className="space-y-3">
       <div className="flex items-baseline justify-between">
-        <MonoLabel className="block">{label}</MonoLabel>
+        <MonoLabel className="block">{resolvedLabel}</MonoLabel>
         {resolved && (
           <span className="font-mono text-[10px] text-ink/45">
-            cid · {shortCid(resolved.blobId)}
+            {t("cidLabel")} · {shortCid(resolved.blobId)}
           </span>
         )}
       </div>
@@ -253,10 +259,10 @@ export function ImageUpload({
           >
             <UploadGlyph />
             <span className="font-mono-label text-[11px] text-ink/70">
-              {dragging ? "Drop to pin" : "Drag an image or click to upload"}
+              {dragging ? t("dropToPin") : t("dragOrClick")}
             </span>
             <span className="font-mono text-[10px] text-ink/45">
-              {ACCEPT.replace(/image\//g, "").replace(/,/g, " · ")} · max {MAX_MB} MiB
+              {ACCEPT.replace(/image\//g, "").replace(/,/g, " · ")} · {t("maxSize", { max: MAX_MB })}
             </span>
           </button>
         )}
@@ -286,13 +292,13 @@ export function ImageUpload({
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="block h-1.5 w-1.5 rounded-full bg-saffron stat-live-dot" />
                   <span className="font-mono-label text-[10px] text-ink">
-                    loading from ipfs
+                    {t("loadingFromIpfs")}
                   </span>
                 </div>
                 <span className="font-mono text-[10px] text-ink/45">
                   {retryAttempt > 0
-                    ? `gateway retry ${retryAttempt}/4`
-                    : "gateway warm-up"}
+                    ? t("gatewayRetry", { attempt: retryAttempt })
+                    : t("gatewayWarmup")}
                 </span>
               </div>
               <div className="relative h-[2px] w-full overflow-hidden bg-ink/10">
@@ -309,14 +315,14 @@ export function ImageUpload({
               onClick={() => inputRef.current?.click()}
               className="border border-ink bg-bone/95 px-2 py-1 font-mono-label text-[10px] hover:bg-ink hover:text-bone transition-colors"
             >
-              replace
+              {t("replace")}
             </button>
             <button
               type="button"
               onClick={clear}
               className="border border-ink bg-bone/95 px-2 py-1 font-mono-label text-[10px] hover:bg-poppy hover:text-bone hover:border-poppy transition-colors"
             >
-              remove
+              {t("remove")}
             </button>
           </div>
         )}
@@ -335,8 +341,8 @@ export function ImageUpload({
                   <span className="block h-1.5 w-1.5 rounded-full bg-saffron stat-live-dot" />
                   <span className="font-mono-label text-[10px] text-ink">
                     {state.phase === "transfer"
-                      ? "uploading"
-                      : "pinning to ipfs"}
+                      ? t("uploading")
+                      : t("pinningToIpfs")}
                   </span>
                   <span className="truncate font-mono text-[10px] text-ink/45">
                     · {state.name}
@@ -352,9 +358,9 @@ export function ImageUpload({
                     type="button"
                     onClick={cancelUpload}
                     className="border border-ink/25 px-2 py-[2px] font-mono-label text-[9px] text-ink/70 transition-colors hover:border-ink hover:text-ink"
-                    aria-label="Cancel upload"
+                    aria-label={t("cancelUploadAria")}
                   >
-                    cancel
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
@@ -378,8 +384,8 @@ export function ImageUpload({
               </div>
               <p className="px-3 pb-2 pt-1 font-mono text-[9px] leading-snug text-ink/45">
                 {state.phase === "transfer"
-                  ? "sending bytes to the pinning service"
-                  : "pinata is replicating across ipfs nodes — this can take a few seconds for large images"}
+                  ? t("sendingBytes")
+                  : t("pinataReplicating")}
               </p>
             </div>
           </>
@@ -400,13 +406,13 @@ export function ImageUpload({
       {/* Paste-CID escape hatch — power-users with an existing pin */}
       <details className="group">
         <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45 hover:text-ink">
-          or paste an existing CID / URL
+          {t("pasteCidToggle")}
         </summary>
         <input
           type="text"
           defaultValue={resolved?.blobId ?? value ?? ""}
           onBlur={(e) => onPasteCid(e.target.value)}
-          placeholder="Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+          placeholder={t("pasteCidPlaceholder")}
           className="mt-2 h-10 w-full border border-ink/25 bg-bone px-3 font-mono text-[11px] placeholder:text-ink/30 focus:border-ink focus:outline-none focus:shadow-offset-sm"
         />
       </details>

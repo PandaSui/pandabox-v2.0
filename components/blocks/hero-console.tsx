@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { SplitFlapCounter } from "@/components/data";
@@ -189,6 +190,7 @@ function ConsoleHeader({
   const labelRef = useRef<HTMLSpanElement>(null);
   const lastNonceRef = useRef(arrivalNonce);
   const initRef = useRef(false);
+  const t = useTranslations("home.heroConsole");
 
   useGSAP(
     () => {
@@ -240,7 +242,7 @@ function ConsoleHeader({
           <span className="absolute inset-0 rounded-full bg-saffron/40 blur-[3px]" />
         </span>
         <MonoLabel className="text-[10px]">
-          <span ref={labelRef}>Live console</span>
+          <span ref={labelRef}>{t("liveConsole")}</span>
         </MonoLabel>
       </div>
       <div className="flex items-center gap-3">
@@ -248,14 +250,14 @@ function ConsoleHeader({
           ref={seqRef}
           data-seq
           className="font-mono tabular-nums text-[10px] text-ink/50"
-          aria-label="Stream sequence"
+          aria-label={t("streamSequenceAria")}
         >
-          SEQ {sequence.toString().padStart(4, "0")}
+          {t("seq", { value: sequence.toString().padStart(4, "0") })}
         </span>
         <span className="inline-flex items-center gap-1.5 border border-ink/20 px-2 py-0.5">
           <span className="block h-1 w-1 rounded-full bg-jade" />
           <MonoLabel className="text-[9px]">
-            {network === "mainnet" ? "Sui mainnet" : "Sui testnet"}
+            {network === "mainnet" ? t("suiMainnet") : t("suiTestnet")}
           </MonoLabel>
         </span>
       </div>
@@ -280,6 +282,7 @@ function PulseStrip({
   const lastTopRef = useRef<string | null>(null);
   const lastNonceRef = useRef(arrivalNonce);
   const initRef = useRef(false);
+  const t = useTranslations("home.heroConsole");
 
   // Peak grow-in on each new top event.
   useGSAP(
@@ -439,8 +442,8 @@ function PulseStrip({
         />
       </svg>
       <div className="mt-1 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.14em] text-ink/40">
-        <span>← 5s window · oldest</span>
-        <span>now →</span>
+        <span>{t("pulseWindowOldest")}</span>
+        <span>{t("pulseWindowNow")}</span>
       </div>
     </div>
   );
@@ -459,6 +462,7 @@ function RecentStream({
   const lastTopRef = useRef<string | null>(null);
   const lastNonceRef = useRef(arrivalNonce);
   const initializedRef = useRef(false);
+  const t = useTranslations("home.heroConsole");
 
   useGSAP(
     () => {
@@ -557,15 +561,15 @@ function RecentStream({
   return (
     <div className="border-t border-ink/15 px-5 py-4">
       <div className="mb-3 flex items-baseline justify-between">
-        <MonoLabel className="text-[10px]">Stream</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("stream")}</MonoLabel>
         <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink/40">
-          recent payments
+          {t("recentPayments")}
         </span>
       </div>
       <ul ref={ulRef} className="relative space-y-1.5">
         {events.length === 0 ? (
           <li className="font-mono text-xs text-ink/40">
-            Listening for events…
+            {t("listeningEvents")}
           </li>
         ) : (
           events.map((e) => <StreamRow key={e.txHash} event={e} />)
@@ -584,6 +588,7 @@ function RecentStream({
 function StreamRow({ event }: { event: PulseEventDTO }) {
   const sui = (Number(BigInt(event.amountMist)) / 1e9).toFixed(2);
   const color = ACCENT_HEX[event.projectAccent];
+  const t = useTranslations("home.heroConsole");
   return (
     <li
       data-stream-row={event.txHash}
@@ -611,7 +616,7 @@ function StreamRow({ event }: { event: PulseEventDTO }) {
         />
       </span>
       <span
-        aria-label={`View project ${event.projectName}`}
+        aria-label={t("viewProjectAria", { name: event.projectName })}
         className="relative flex items-center gap-2 truncate transition-colors hover:text-ink"
       >
         {/* Show the project's on-chain object address rather than its name.
@@ -653,6 +658,7 @@ function StatsFooter({
   const treasuryRuleRef = useRef<HTMLSpanElement>(null);
   const lastNonceRef = useRef(arrivalNonce);
   const initRef = useRef(false);
+  const t = useTranslations("home.heroConsole");
 
   useGSAP(
     () => {
@@ -686,11 +692,11 @@ function StatsFooter({
 
   return (
     <div className="grid grid-cols-[0.85fr_0.9fr_1.25fr] border-t border-ink/15">
-      <StatCell label="Projects" accent="saffron">
+      <StatCell label={t("stat.projects")} accent="saffron">
         <SplitFlapCounter value={projectCount} className="text-lg md:text-xl" />
       </StatCell>
 
-      <StatCell label="Platform fee" accent="poppy" border>
+      <StatCell label={t("stat.platformFee")} accent="poppy" border>
         {feePercent !== null ? (
           <span className="flex items-baseline gap-0.5 font-mono tabular-nums leading-none">
             <span className="text-lg md:text-xl">{feePercent}</span>
@@ -701,7 +707,7 @@ function StatsFooter({
         )}
       </StatCell>
 
-      <StatCell label="Treasury" accent="jade" border ruleRef={treasuryRuleRef}>
+      <StatCell label={t("stat.treasury")} accent="jade" border ruleRef={treasuryRuleRef}>
         {treasuryAddress ? (
           <Address
             value={treasuryAddress}

@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { formatSui } from "./format";
@@ -30,11 +33,12 @@ export function KpiStrip({
   supported: DashboardSupportedRow[] | undefined;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard.kpi");
   const totals = computeTotals(owned, supported);
   return (
     <div className="grid grid-cols-2 border border-ink/15 bg-bone shadow-offset-sm md:grid-cols-4">
       <Cell
-        label="Raised"
+        label={t("raised")}
         value={
           loading || !owned
             ? "—"
@@ -42,7 +46,7 @@ export function KpiStrip({
         }
       />
       <Cell
-        label="Treasury"
+        label={t("treasury")}
         value={
           loading || !owned
             ? "—"
@@ -51,7 +55,7 @@ export function KpiStrip({
         border
       />
       <Cell
-        label="Live"
+        label={t("live")}
         value={
           loading || !owned
             ? "—"
@@ -65,7 +69,7 @@ export function KpiStrip({
         border
       />
       <Cell
-        label="Backing"
+        label={t("backing")}
         value={loading || !supported ? "—" : String(supported.length)}
         border
       />

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
@@ -60,13 +61,14 @@ export const revalidate = 30;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { projectId } = await params;
   const project = await getOnchainProject(projectId);
-  if (!project) return { title: "Project not found" };
+  const tMeta = await getTranslations("project.detail.meta");
+  if (!project) return { title: tMeta("notFoundTitle") };
 
   const tkr = ticker(project);
   const title = `${project.name} — ${tkr}`;
   const description =
     project.details?.tagline ??
-    `${project.name} (${tkr}) — on-chain funding on Sui, powered by Pandabox.`;
+    tMeta("descriptionFallback", { name: project.name, ticker: tkr });
   const url = `/projects/${project.id}`;
 
   // Note: og:image + twitter:image come from `opengraph-image.tsx` colocated
@@ -92,9 +94,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { projectId } = await params;
-  const [project, activity] = await Promise.all([
+  const [project, activity, t, tExplore] = await Promise.all([
     getOnchainProject(projectId),
     getProjectActivity(projectId, 25),
+    getTranslations("project.detail"),
+    getTranslations("explore"),
   ]);
   if (!project) notFound();
 
@@ -120,10 +124,15 @@ export default async function ProjectPage({ params }: Props) {
         )
       : 0;
 
-  const category = project.details?.category ?? "project";
-  const categoryAccent = CATEGORY_ACCENT[category.toLowerCase()] ?? "saffron";
+  const rawCategory = project.details?.category ?? "project";
+  const categoryAccent = CATEGORY_ACCENT[rawCategory.toLowerCase()] ?? "saffron";
   const tagline = project.details?.tagline ?? "";
   const socials = project.details?.socials ?? {};
+  // Translate known category keys; fall back to the raw label for unknown ones.
+  const categoryKey = rawCategory.toLowerCase();
+  const category = tExplore.has(`categories.${categoryKey}`)
+    ? tExplore(`categories.${categoryKey}`)
+    : rawCategory;
 
   return (
     <>
@@ -148,7 +157,7 @@ export default async function ProjectPage({ params }: Props) {
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            back to explore
+            {t("backToExplore")}
           </Link>
         </Container>
 
@@ -160,13 +169,14 @@ export default async function ProjectPage({ params }: Props) {
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full bg-poppy"
                 />
-                Legacy · bad params
+                {t("legacyBadge")}
               </span>
               <p className="text-sm text-ink/70">
-                This project was deployed before the wizard applied 9-decimal
-                scaling to <code className="font-mono">base_rate</code>. The
-                rate, target, and raised numbers below are off — don't trust
-                them or back this sale.
+                {t.rich("legacyBody", {
+                  code: (chunks) => (
+                    <code className="font-mono">{chunks}</code>
+                  ),
+                })}
               </p>
             </Container>
           </div>
@@ -211,12 +221,12 @@ export default async function ProjectPage({ params }: Props) {
                   {tkr}
                 </span>
                 <span className="text-ink/30">·</span>
-                <span className="text-xs text-ink/50">Creator</span>
+                <span className="text-xs text-ink/50">{t("creator")}</span>
                 <Address value={project.creator} link />
                 {project.tokenType && (
                   <>
                     <span className="text-ink/30">·</span>
-                    <span className="text-xs text-ink/50">CA</span>
+                    <span className="text-xs text-ink/50">{t("contractAddressShort")}</span>
                     <CoinType value={project.tokenType} link />
                   </>
                 )}
@@ -225,7 +235,7 @@ export default async function ProjectPage({ params }: Props) {
                     <span className="text-ink/30">·</span>
                     <span className="inline-flex items-center gap-1 font-mono-label text-[10px] text-jade">
                       <span className="block h-1.5 w-1.5 rounded-full bg-jade" />
-                      Verified
+                      {t("verified")}
                     </span>
                   </>
                 )}
@@ -242,12 +252,12 @@ export default async function ProjectPage({ params }: Props) {
               </div>
 
               {/* Supporter strip — social proof, even when empty */}
-              <SupporterStrip activity={activity} />
+              <SupporterStrip activity={activity} t={t} />
 
               {/* 3-cell stat strip — the three items that change the click decision */}
               <div className="mt-6 grid grid-cols-3 border border-ink/15">
                 <StatCell
-                  label="Status"
+                  label={t("statusLabel")}
                   value={
                     <span
                       className={cn(
@@ -274,7 +284,11 @@ export default async function ProjectPage({ params }: Props) {
                             : undefined
                         }
                       />
-                      {live ? "Live" : ended ? "Ended" : "Closed"}
+                      {live
+                        ? t("statusLive")
+                        : ended
+                          ? t("statusEnded")
+                          : t("statusClosed")}
                     </span>
                   }
                 />
@@ -282,33 +296,33 @@ export default async function ProjectPage({ params }: Props) {
                   label={
                     live
                       ? project.endTimeMs > 0
-                        ? "Ends in"
-                        : "Cap"
+                        ? t("endsIn")
+                        : t("cap")
                       : ended
-                        ? "Ended"
-                        : "Sale"
+                        ? t("ended")
+                        : t("sale")
                   }
                   value={
                     live ? (
                       project.endTimeMs > 0 ? (
-                        <Countdown endMs={project.endTimeMs} />
+                        <Countdown endMs={project.endTimeMs} endedLabel={t("ended")} />
                       ) : (
-                        <span className="text-sm text-ink/60">no cap</span>
+                        <span className="text-sm text-ink/60">{t("noCap")}</span>
                       )
                     ) : (
                       <span className="text-sm text-ink/60">
-                        {ended ? "finished" : "closed"}
+                        {ended ? t("finished") : t("closed")}
                       </span>
                     )
                   }
                   border
                 />
                 <StatCell
-                  label="Rate"
+                  label={t("rate")}
                   value={
                     <span className="whitespace-nowrap">
                       {formatToken(BigInt(project.baseRate ?? 0), 0)}
-                      <span className="text-ink/45">/SUI</span>
+                      <span className="text-ink/45">{t("perSui")}</span>
                     </span>
                   }
                   border
@@ -318,7 +332,7 @@ export default async function ProjectPage({ params }: Props) {
               {/* Tertiary spec line — supply + unsold action + treasury balance */}
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
                 <span>
-                  max supply{" "}
+                  {t("maxSupply")}{" "}
                   <span className="text-ink/70">
                     {formatToken(
                       project.fundingAllocation,
@@ -329,16 +343,16 @@ export default async function ProjectPage({ params }: Props) {
                 </span>
                 <span className="text-ink/20">·</span>
                 <span>
-                  unsold{" "}
+                  {t("unsold")}{" "}
                   <span className="text-ink/70">
                     {project.unsoldAction === UnsoldAction.TransferToCreator
-                      ? "→ creator"
-                      : "burn"}
+                      ? t("unsoldToCreator")
+                      : t("unsoldBurn")}
                   </span>
                 </span>
                 <span className="text-ink/20">·</span>
                 <span>
-                  remaining{" "}
+                  {t("remaining")}{" "}
                   <span className="text-ink/70">
                     {formatToken(
                       project.fundingAllocation - project.sold > 0n
@@ -351,7 +365,7 @@ export default async function ProjectPage({ params }: Props) {
                 </span>
                 <span className="text-ink/20">·</span>
                 <span>
-                  treasury{" "}
+                  {t("treasury")}{" "}
                   <span className="text-ink/70">
                     {formatSui(project.suiBalance)} SUI
                   </span>
@@ -380,7 +394,7 @@ export default async function ProjectPage({ params }: Props) {
         <section>
           <Container className="grid grid-cols-1 gap-10 py-12 lg:grid-cols-[7fr_5fr]">
             <div className="min-w-0 space-y-8">
-              <AboutTab project={project} />
+              <AboutTab project={project} t={t} />
               <ActivityFeed items={activity} ticker={tkr} />
             </div>
             <div className="lg:sticky lg:top-24 lg:self-start">
@@ -424,7 +438,18 @@ function StatCell({
   );
 }
 
-function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
+type ProjectDetailT = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+function SupporterStrip({
+  activity,
+  t,
+}: {
+  activity: ActivityItem[];
+  t: ProjectDetailT;
+}) {
   const contributions = activity.filter((a) => a.kind === "contribute");
   const count = contributions.length;
   const last = contributions[0];
@@ -437,7 +462,7 @@ function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
           className="block h-1.5 w-1.5 rounded-full bg-ink/25"
         />
         <span className="lowercase tracking-[0.04em]">
-          be the first to back this project
+          {t("beFirstSupporter")}
         </span>
       </div>
     );
@@ -446,12 +471,12 @@ function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
   const sinceMs = Date.now() - last.timestampMs;
   const rel =
     sinceMs < 60_000
-      ? "just now"
+      ? t("justNow")
       : sinceMs < 3_600_000
-        ? `${Math.floor(sinceMs / 60_000)}m ago`
+        ? t("agoMinutes", { n: Math.floor(sinceMs / 60_000) })
         : sinceMs < 86_400_000
-          ? `${Math.floor(sinceMs / 3_600_000)}h ago`
-          : `${Math.floor(sinceMs / 86_400_000)}d ago`;
+          ? t("agoHours", { n: Math.floor(sinceMs / 3_600_000) })
+          : t("agoDays", { n: Math.floor(sinceMs / 86_400_000) });
 
   return (
     <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-ink/55">
@@ -461,12 +486,14 @@ function SupporterStrip({ activity }: { activity: ActivityItem[] }) {
         style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
       />
       <span className="lowercase">
-        {count} {count === 1 ? "supporter" : "supporters"}
+        {count === 1
+          ? t("supporterOne", { count })
+          : t("supporterOther", { count })}
       </span>
       <span aria-hidden className="text-ink/20">
         ·
       </span>
-      <span className="lowercase">last by</span>
+      <span className="lowercase">{t("lastBy")}</span>
       <span className="font-mono tabular-nums text-ink/70">
         {shortAddr(last.actor)}
       </span>
@@ -483,15 +510,21 @@ function shortAddr(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
-function AboutTab({ project }: { project: HydratedProject }) {
+function AboutTab({
+  project,
+  t,
+}: {
+  project: HydratedProject;
+  t: ProjectDetailT;
+}) {
   const description = project.description?.trim();
   return (
     <article className="border border-ink/15 bg-bone shadow-offset-sm">
       <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
-        <MonoLabel className="text-[10px]">About</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("aboutTitle")}</MonoLabel>
         {project.descriptionBlobId && (
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-            ipfs · {shortCid(project.descriptionBlobId)}
+            {t("ipfsPrefix")} {shortCid(project.descriptionBlobId)}
           </span>
         )}
       </header>
@@ -502,8 +535,7 @@ function AboutTab({ project }: { project: HydratedProject }) {
           </div>
         ) : (
           <p className="text-sm text-ink/55">
-            No description pinned yet — the creator can publish one any time.
-            See the pay panel for sale mechanics.
+            {t("aboutEmpty")}
           </p>
         )}
       </div>
@@ -511,9 +543,15 @@ function AboutTab({ project }: { project: HydratedProject }) {
   );
 }
 
-function Countdown({ endMs }: { endMs: number }) {
+function Countdown({
+  endMs,
+  endedLabel,
+}: {
+  endMs: number;
+  endedLabel: string;
+}) {
   const ms = Math.max(0, endMs - Date.now());
-  if (ms === 0) return <span className="text-poppy">ended</span>;
+  if (ms === 0) return <span className="text-poppy">{endedLabel}</span>;
   const days = Math.floor(ms / 86_400_000);
   const hours = Math.floor((ms % 86_400_000) / 3_600_000);
   const mins = Math.floor((ms % 3_600_000) / 60_000);

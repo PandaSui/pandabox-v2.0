@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useWizard } from "@/lib/store/wizard";
 import { StepIdentity, type IdentityV } from "@/lib/store/wizard-schema";
 import { Field, TextArea, TextField } from "../field";
@@ -9,20 +10,22 @@ import { ImageUpload } from "../image-upload";
 import { cn } from "@pandasui/ui/lib";
 import type { Category } from "@/types/pandabox";
 
-const CATEGORIES: { value: Category; label: string }[] = [
-  { value: "opc", label: "OPC" },
-  { value: "art", label: "Art" },
-  { value: "infra", label: "Infra" },
-  { value: "meme", label: "Meme" },
-  { value: "dao", label: "DAO" },
-  { value: "research", label: "Research" },
-  { value: "gaming", label: "Gaming" },
-  { value: "music", label: "Music" },
-  { value: "social", label: "Social" },
-  { value: "rwa", label: "RWA" },
+const CATEGORY_VALUES: Category[] = [
+  "opc",
+  "art",
+  "infra",
+  "meme",
+  "dao",
+  "research",
+  "gaming",
+  "music",
+  "social",
+  "rwa",
 ];
 
 export function StepIdentityForm() {
+  const t = useTranslations("create.step1");
+  const tCat = useTranslations("explore.categories");
   const identity = useWizard((s) => s.draft.identity);
   const patch = useWizard((s) => s.patchIdentity);
   const errors = useMemo(() => parseErrors(identity), [identity]);
@@ -35,19 +38,19 @@ export function StepIdentityForm() {
       <StepHeader
         n={1}
         accent="saffron"
-        title="Identity"
-        body="Who is funding what. This is what supporters see in their wallet and on the project page."
-        meta="stored on-chain"
+        title={t("title")}
+        body={t("body")}
+        meta={t("meta")}
       />
 
-      <StepCard title="Basics" meta="immutable on deploy">
-        <Field label="Project name" error={errors.name}>
+      <StepCard title={t("basicsTitle")} meta={t("basicsMeta")}>
+        <Field label={t("projectName")} error={errors.name}>
           {(id) => (
             <TextField
               id={id}
               value={identity.name ?? ""}
               onChange={(v) => patch({ name: v })}
-              placeholder="e.g. Atelier Ono"
+              placeholder={t("projectNamePlaceholder")}
               maxLength={60}
             />
           )}
@@ -55,8 +58,8 @@ export function StepIdentityForm() {
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <Field
-            label="Ticker"
-            hint="Uppercase letters/digits, 2–10 chars"
+            label={t("ticker")}
+            hint={t("tickerHint")}
             error={errors.ticker}
           >
             {(id) => (
@@ -71,16 +74,16 @@ export function StepIdentityForm() {
               />
             )}
           </Field>
-          <Field label="Category" error={errors.category}>
+          <Field label={t("category")} error={errors.category}>
             {(id) => (
               <div className="flex flex-wrap gap-1.5" id={id}>
-                {CATEGORIES.map((c) => {
-                  const active = c.value === identity.category;
+                {CATEGORY_VALUES.map((value) => {
+                  const active = value === identity.category;
                   return (
                     <button
-                      key={c.value}
+                      key={value}
                       type="button"
-                      onClick={() => patch({ category: c.value })}
+                      onClick={() => patch({ category: value })}
                       aria-pressed={active}
                       className={cn(
                         "px-3 py-1.5 font-mono-label transition-all duration-200 ease-atelier border",
@@ -89,7 +92,7 @@ export function StepIdentityForm() {
                           : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
                       )}
                     >
-                      {c.label}
+                      {tCat(value)}
                     </button>
                   );
                 })}
@@ -99,10 +102,10 @@ export function StepIdentityForm() {
         </div>
       </StepCard>
 
-      <StepCard title="Story" meta="editable any time">
+      <StepCard title={t("storyTitle")} meta={t("storyMeta")}>
         <Field
-          label="Tagline"
-          hint={`One line, 8–160 chars · ${tagLen}/160`}
+          label={t("tagline")}
+          hint={t("taglineHint", { len: tagLen })}
           error={errors.tagline}
         >
           {(id) => (
@@ -110,15 +113,15 @@ export function StepIdentityForm() {
               id={id}
               value={identity.tagline ?? ""}
               onChange={(v) => patch({ tagline: v })}
-              placeholder="A photo-zine collective minting weekly drops on Sui."
+              placeholder={t("taglinePlaceholder")}
               maxLength={160}
             />
           )}
         </Field>
 
         <Field
-          label="Description"
-          hint={`Markdown supported · 20–4000 chars · ${descLen}/4000`}
+          label={t("description")}
+          hint={t("descriptionHint", { len: descLen })}
           error={errors.description}
         >
           {(id) => (
@@ -128,15 +131,15 @@ export function StepIdentityForm() {
               onChange={(v) => patch({ description: v })}
               rows={9}
               maxLength={4000}
-              placeholder="Tell supporters what you're building and why their SUI matters."
+              placeholder={t("descriptionPlaceholder")}
             />
           )}
         </Field>
       </StepCard>
 
-      <StepCard title="Cover image" meta="pinned to ipfs">
+      <StepCard title={t("coverTitle")} meta={t("coverMeta")}>
         <ImageUpload
-          label="Cover image"
+          label={t("coverTitle")}
           value={identity.coverImage}
           onChange={(v) =>
             patch({
@@ -144,39 +147,39 @@ export function StepIdentityForm() {
               coverImageCid: v?.cid ?? "",
             })
           }
-          hint="Lands at the top of your project page. Wide 16:10 crops look best. Pinned to IPFS on upload — the CID goes on-chain."
+          hint={t("coverHint")}
         />
       </StepCard>
 
-      <StepCard title="Socials" meta="optional">
+      <StepCard title={t("socialsTitle")} meta={t("socialsMeta")}>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          <Field label="X / Twitter">
+          <Field label={t("twitter")}>
             {(id) => (
               <TextField
                 id={id}
                 value={identity.twitter ?? ""}
                 onChange={(v) => patch({ twitter: v })}
-                placeholder="handle"
+                placeholder={t("twitterPlaceholder")}
               />
             )}
           </Field>
-          <Field label="Website">
+          <Field label={t("website")}>
             {(id) => (
               <TextField
                 id={id}
                 value={identity.website ?? ""}
                 onChange={(v) => patch({ website: v })}
-                placeholder="domain.com"
+                placeholder={t("websitePlaceholder")}
               />
             )}
           </Field>
-          <Field label="Discord">
+          <Field label={t("discord")}>
             {(id) => (
               <TextField
                 id={id}
                 value={identity.discord ?? ""}
                 onChange={(v) => patch({ discord: v })}
-                placeholder="invite URL"
+                placeholder={t("discordPlaceholder")}
               />
             )}
           </Field>

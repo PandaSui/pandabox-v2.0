@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
+import { useTranslations } from "next-intl";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { ContributePanel } from "@/components/pay/contribute-panel";
@@ -153,13 +154,13 @@ export function ProjectActionRail({
 }
 
 function ConnectPlaceholder() {
+  const t = useTranslations("project.detail.rail");
   return (
     <aside id="pay" className="lg:sticky lg:top-24">
       <div className="border border-ink/15 bg-bone p-6 shadow-offset-sm">
-        <MonoLabel>Connect a wallet</MonoLabel>
+        <MonoLabel>{t("connectTitle")}</MonoLabel>
         <p className="mt-2 text-sm text-ink/65">
-          Connect to back this project, claim tokens, or manage it if you're
-          the creator.
+          {t("connectBody")}
         </p>
         <div className="mt-4">
           <ConnectWallet />
@@ -170,12 +171,13 @@ function ConnectPlaceholder() {
 }
 
 function LoadingPlaceholder() {
+  const t = useTranslations("project.detail.rail");
   return (
     <aside id="pay" className="lg:sticky lg:top-24">
       <div className="border border-ink/15 bg-bone p-6 shadow-offset-sm">
-        <MonoLabel>Reading holdings</MonoLabel>
+        <MonoLabel>{t("loadingTitle")}</MonoLabel>
         <p className="mt-2 font-mono text-[11px] text-ink/55">
-          Checking owned admin caps + receipts…
+          {t("loadingBody")}
         </p>
       </div>
     </aside>
@@ -183,14 +185,15 @@ function LoadingPlaceholder() {
 }
 
 function PostSaleNote({ tokenSymbol }: { tokenSymbol: string }) {
+  const t = useTranslations("project.detail.rail");
   return (
     <aside id="pay" className="lg:sticky lg:top-24">
       <div className="border border-ink/15 bg-bone p-6 shadow-offset-sm">
-        <MonoLabel>Sale closed</MonoLabel>
+        <MonoLabel>{t("saleClosedTitle")}</MonoLabel>
         <p className="mt-2 text-sm text-ink/65">
-          This sale is finalized. You don't hold a contribution receipt for{" "}
-          {tokenSymbol || "this project"}, so there's nothing to claim from this
-          wallet.
+          {t("saleClosedBody", {
+            token: tokenSymbol || t("thisProjectFallback"),
+          })}
         </p>
       </div>
     </aside>

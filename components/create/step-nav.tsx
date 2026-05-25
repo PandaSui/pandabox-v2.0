@@ -1,9 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
 
-const STEPS = ["Identity", "Coin", "Sale", "Deploy"];
+const STEP_KEYS = ["identity", "coin", "sale", "deploy"] as const;
 
 export function StepNav({
   current,
@@ -12,18 +13,20 @@ export function StepNav({
   current: number;
   onChange: (n: number) => void;
 }) {
+  const t = useTranslations("create.wizard");
   return (
     <nav
-      aria-label="Wizard steps"
+      aria-label={t("stepsAria")}
       className="flex flex-wrap items-center gap-x-3 gap-y-2"
     >
-      {STEPS.map((label, i) => {
+      {STEP_KEYS.map((key, i) => {
         const n = i + 1;
         const active = n === current;
         const completed = n < current;
+        const label = t(`stepLabels.${key}`);
         return (
           <button
-            key={label}
+            key={key}
             type="button"
             onClick={() => onChange(n)}
             className={cn(

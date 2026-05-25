@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { gsap, ScrollTrigger, registerGsap } from "@pandasui/ui/lib";
 import { cn } from "@pandasui/ui/lib";
 import { Container } from "@/components/primitives/container";
@@ -34,6 +35,7 @@ export function FeaturedProjectsView({
   const tapeRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const ctaRef = useRef<HTMLAnchorElement | null>(null);
+  const t = useTranslations("home.featured");
 
   useEffect(() => {
     registerGsap();
@@ -331,7 +333,7 @@ export function FeaturedProjectsView({
         className="pointer-events-none absolute inset-x-0 -top-10 select-none text-center"
       >
         <span className="font-display text-[clamp(7rem,17vw,16rem)] leading-none tracking-[-0.06em] text-ink/[0.045]">
-          FUNDED
+          {t("watermark")}
         </span>
       </div>
 
@@ -341,7 +343,7 @@ export function FeaturedProjectsView({
         className="pointer-events-none absolute left-2 top-32 hidden flex-col items-center gap-3 lg:flex"
       >
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/30 [writing-mode:vertical-rl] [text-orientation:mixed]">
-          section · 02 / featured
+          {t("sectionRail")}
         </span>
         <span className="block h-12 w-px bg-ink/15" />
       </div>
@@ -356,18 +358,18 @@ export function FeaturedProjectsView({
                 className="block h-1 w-16 origin-left bg-saffron"
               />
               <span data-eyebrow className="inline-block">
-                <MonoLabel>Featured</MonoLabel>
+                <MonoLabel>{t("eyebrow")}</MonoLabel>
               </span>
             </div>
             <h2 className="mt-4 font-display text-3xl tracking-tight md:text-4xl">
-              {splitWords("Funded right now").map((w, i) => (
+              {splitWords(t("headline")).map((w, i, arr) => (
                 <span
                   key={i}
                   data-heading-word
                   className="inline-block opacity-100 will-change-transform"
                 >
                   {w}
-                  {i < 2 ? " " : ""}
+                  {i < arr.length - 1 ? " " : ""}
                 </span>
               ))}
             </h2>
@@ -377,7 +379,7 @@ export function FeaturedProjectsView({
             className="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55"
           >
             <span data-stat className="inline-flex items-baseline gap-2">
-              <span className="text-ink/40">on-chain</span>
+              <span className="text-ink/40">{t("statOnchain")}</span>
               <span
                 data-counter
                 data-target={totalProjects}
@@ -386,7 +388,7 @@ export function FeaturedProjectsView({
               >
                 {String(totalProjects).padStart(2, "0")}
               </span>
-              <span className="text-ink/40">projects</span>
+              <span className="text-ink/40">{t("statProjects")}</span>
             </span>
             <span aria-hidden className="text-ink/20">
               ·
@@ -404,7 +406,7 @@ export function FeaturedProjectsView({
                   totalRaisedSui >= 100 ? 0 : 2,
                 )}
               </span>
-              <span className="text-ink/40">raised across top 3</span>
+              <span className="text-ink/40">{t("statRaisedAcross")}</span>
             </span>
           </div>
         </header>
@@ -435,7 +437,21 @@ export function FeaturedProjectsView({
               ref={tapeRef}
               className="flex w-max whitespace-nowrap py-2.5 will-change-transform"
             >
-              {[...buildTapeChips(projects), ...buildTapeChips(projects)].map(
+              {(() => {
+                const tapeLabels = [
+                  t("tape.live"),
+                  t("tape.onchain"),
+                  t("tape.backedAgo"),
+                  t("tape.verified"),
+                  t("tape.cycle01"),
+                  t("tape.supportingNow"),
+                  t("tape.txConfirmed"),
+                  t("tape.freshRaise"),
+                ];
+                const unnamed = t("tape.unnamed");
+                const chips = buildTapeChips(projects, tapeLabels, unnamed);
+                return [...chips, ...chips];
+              })().map(
                 (chip, i) => (
                   <span
                     key={i}
@@ -477,7 +493,15 @@ export function FeaturedProjectsView({
         )}
 
         {projects.length === 0 ? (
-          <EmptyState />
+          <EmptyState
+            label={t("empty.label")}
+            heading={t("empty.heading")}
+            description={t.rich("empty.description", {
+              code: (chunks) => (
+                <code className="text-ink/65">{chunks}</code>
+              ),
+            })}
+          />
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((p, i) => (
@@ -511,7 +535,7 @@ export function FeaturedProjectsView({
             )}
           >
             <span className="relative pb-1">
-              Explore all projects
+              {t("exploreAll")}
               <span
                 aria-hidden
                 className={cn(
@@ -523,7 +547,7 @@ export function FeaturedProjectsView({
             <ArrowHookGlyph />
           </Link>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/35">
-            data: sui mainnet · revalidates 60s
+            {t("dataMeta")}
           </span>
         </div>
       </Container>
@@ -580,18 +604,20 @@ function ConnectorArc({
   );
 }
 
-function EmptyState() {
+function EmptyState({
+  label,
+  heading,
+  description,
+}: {
+  label: string;
+  heading: string;
+  description: React.ReactNode;
+}) {
   return (
     <div className="frame mt-2 p-12 text-center">
-      <MonoLabel className="text-[10px]">No projects</MonoLabel>
-      <p className="mt-3 font-display text-xl text-ink/70">
-        Listening for the first project on-chain.
-      </p>
-      <p className="mt-2 font-mono text-[11px] text-ink/45">
-        ProjectCreated events from{" "}
-        <code className="text-ink/65">pandabox::project</code> will show up
-        here.
-      </p>
+      <MonoLabel className="text-[10px]">{label}</MonoLabel>
+      <p className="mt-3 font-display text-xl text-ink/70">{heading}</p>
+      <p className="mt-2 font-mono text-[11px] text-ink/45">{description}</p>
     </div>
   );
 }
@@ -621,23 +647,17 @@ function splitWords(text: string): string[] {
 
 type TapeChip = { name: string; label: string; accent: Accent };
 
-function buildTapeChips(projects: OnChainProject[]): TapeChip[] {
-  const labels = [
-    "live",
-    "on-chain",
-    "backed · 2m ago",
-    "verified",
-    "cycle 01",
-    "supporting · 12 now",
-    "tx confirmed",
-    "fresh raise",
-  ];
+function buildTapeChips(
+  projects: OnChainProject[],
+  labels: string[],
+  unnamed: string,
+): TapeChip[] {
   // Cross-product so the tape feels populated even with a small project set —
   // each project gets a few status flavours rotating through it.
   const chips: TapeChip[] = [];
   projects.forEach((p, i) => {
     const a: Accent = RANK_ACCENT[i] ?? "jade";
-    const name = (p.name || "Unnamed").toUpperCase();
+    const name = (p.name || unnamed).toUpperCase();
     labels.forEach((l) => chips.push({ name, label: l, accent: a }));
   });
   return chips;

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { explorerUrl } from "@/lib/sui";
@@ -36,6 +37,7 @@ export function OnchainRecord({
   socials?: Socials;
 }) {
   const scope = useRef<HTMLElement>(null);
+  const t = useTranslations("project.detail.onchain");
 
   useGSAP(
     () => {
@@ -90,7 +92,7 @@ export function OnchainRecord({
   return (
     <section
       ref={scope}
-      aria-label="On-chain record"
+      aria-label={t("title")}
       className="container relative"
     >
       <div
@@ -105,10 +107,10 @@ export function OnchainRecord({
               aria-hidden
               className="block h-1 w-10 origin-left bg-saffron"
             />
-            <MonoLabel className="text-[10px]">On-chain record</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
             <span aria-hidden className="hidden text-ink/15 md:inline">·</span>
             <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40 md:inline">
-              spec sheet
+              {t("specSheet")}
             </span>
           </div>
           <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
@@ -117,7 +119,7 @@ export function OnchainRecord({
               className="block h-1.5 w-1.5 rounded-full bg-jade"
               style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
             />
-            sui · mainnet
+            {t("suiMainnet")}
           </span>
         </header>
 
@@ -126,8 +128,8 @@ export function OnchainRecord({
         <div className="grid grid-cols-1 divide-y divide-ink/10 md:grid-cols-2 md:divide-y-0 md:[&>*]:border-b md:[&>*]:border-ink/10 md:[&>*:nth-last-child(-n+2)]:border-b-0 lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:[&>*]:border-b-0">
           <Cell
             glyph={<GlyphObject />}
-            label="Project object"
-            footnote="shared object"
+            label={t("projectObject")}
+            footnote={t("sharedObject")}
           >
             <CopyableHash
               value={projectId}
@@ -139,8 +141,8 @@ export function OnchainRecord({
 
           <Cell
             glyph={<GlyphCoin />}
-            label="Coin type"
-            footnote="contract address"
+            label={t("coinType")}
+            footnote={t("contractAddress")}
           >
             {tokenType ? (
               <CopyableHash
@@ -161,19 +163,19 @@ export function OnchainRecord({
 
           <Cell
             glyph={<GlyphClock />}
-            label="Deployed"
-            footnote={createdAtMs ? relativeFrom(createdAtMs) : undefined}
+            label={t("deployed")}
+            footnote={createdAtMs ? relativeFrom(createdAtMs, t) : undefined}
           >
             <DeployedReadout ms={createdAtMs} />
           </Cell>
 
-          <Cell glyph={<GlyphLinks />} label="Links" footnote="social">
+          <Cell glyph={<GlyphLinks />} label={t("links")} footnote={t("social")}>
             {hasLinks ? (
               <div className="flex flex-wrap gap-1.5">
                 {socials.website && (
                   <LinkChip
                     href={ensureHttp(socials.website)}
-                    label="site"
+                    label={t("site")}
                     icon={<GlyphGlobe />}
                   />
                 )}
@@ -187,14 +189,14 @@ export function OnchainRecord({
                 {socials.discord && (
                   <LinkChip
                     href={socials.discord}
-                    label="discord"
+                    label={t("discord")}
                     icon={<GlyphDiscord />}
                   />
                 )}
               </div>
             ) : (
               <span className="font-mono text-[12px] text-ink/35">
-                none provided
+                {t("noneProvided")}
               </span>
             )}
           </Cell>
@@ -256,6 +258,7 @@ function CopyableHash({
   isCoinType?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("project.detail.onchain");
 
   const onCopy = async () => {
     try {
@@ -280,7 +283,7 @@ function CopyableHash({
         <button
           type="button"
           onClick={onCopy}
-          aria-label="Copy to clipboard"
+          aria-label={t("copyAria")}
           className={cn(
             "inline-flex h-7 items-center gap-1.5 border px-2",
             "font-mono-label text-[10px] transition-all duration-200 ease-atelier",
@@ -290,7 +293,7 @@ function CopyableHash({
           )}
         >
           {copied ? <GlyphCheck /> : <GlyphCopy />}
-          <span>{copied ? "copied" : "copy"}</span>
+          <span>{copied ? t("copied") : t("copy")}</span>
         </button>
         {explorerHref && (
           <a
@@ -304,7 +307,7 @@ function CopyableHash({
             )}
           >
             <GlyphArrow />
-            <span>explorer</span>
+            <span>{t("explorer")}</span>
           </a>
         )}
       </div>
@@ -315,6 +318,7 @@ function CopyableHash({
 /* ────────────────────────── Deployed readout ────────────────────── */
 
 function DeployedReadout({ ms }: { ms?: number }) {
+  const t = useTranslations("project.detail.onchain");
   if (!ms) {
     return <span className="font-mono text-[12px] text-ink/35">—</span>;
   }
@@ -337,7 +341,7 @@ function DeployedReadout({ ms }: { ms?: number }) {
         {date.toUpperCase()}
       </span>
       <span className="font-mono text-[10.5px] tabular-nums text-ink/55">
-        {time} UTC · {relativeFrom(ms)}
+        {time} UTC · {relativeFrom(ms, t)}
       </span>
     </div>
   );
@@ -497,20 +501,23 @@ function truncateCoinType(s: string, head: number, tail: number): string {
   return `${pkg.slice(0, head)}…${pkg.slice(-tail)}${rest}`;
 }
 
-function relativeFrom(ms: number): string {
+function relativeFrom(
+  ms: number,
+  t: (key: string, values?: Record<string, string | number>) => string,
+): string {
   const diff = Date.now() - ms;
-  if (diff < 0) return "just now";
+  if (diff < 0) return t("justNow");
   const secs = Math.floor(diff / 1000);
-  if (secs < 60) return `${secs}s ago`;
+  if (secs < 60) return t("agoSeconds", { n: secs });
   const mins = Math.floor(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return t("agoMinutes", { n: mins });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return t("agoHours", { n: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
+  if (days < 30) return t("agoDays", { n: days });
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(months / 12)}y ago`;
+  if (months < 12) return t("agoMonths", { n: months });
+  return t("agoYears", { n: Math.floor(months / 12) });
 }
 
 function ensureHttp(s: string): string {

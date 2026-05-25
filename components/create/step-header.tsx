@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -22,13 +25,14 @@ export function StepHeader({
   body?: string;
   meta?: React.ReactNode;
 }) {
+  const t = useTranslations("create.wizard");
   const num = String(n).padStart(2, "0");
   return (
     <header className="flex flex-wrap items-end justify-between gap-4 border-b border-ink/15 pb-6">
       <div>
         <AccentRule color={accent}>
           <MonoLabel accent={accent} className="text-[10px]">
-            Step {num}
+            {t("stepLabel", { num })}
           </MonoLabel>
         </AccentRule>
         <h2 className="mt-3 font-display text-3xl leading-[1.05] md:text-4xl">

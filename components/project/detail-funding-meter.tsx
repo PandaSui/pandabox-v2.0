@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
 import { FundingBar } from "./funding-bar";
@@ -22,12 +23,14 @@ export function DetailFundingMeter({
   targetLabel: ReactNode;
 }) {
   const pctRef = useRef<HTMLSpanElement>(null);
+  const t = useTranslations("project.detail.meter");
+  const tCard = useTranslations("project.card");
   const initial = pct.toFixed(pct >= 10 ? 0 : pct >= 1 ? 1 : 2);
 
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <MonoLabel className="text-[10px]">Raised</MonoLabel>
+        <MonoLabel className="text-[10px]">{tCard("raised")}</MonoLabel>
         <span className="font-mono tabular-nums text-2xl text-ink leading-none">
           <span ref={pctRef}>
             <span>{initial}</span>
@@ -66,7 +69,7 @@ export function DetailFundingMeter({
           )}
         </span>
         <span>
-          of {targetLabel} <span className="text-ink/40">target</span>
+          {t("ofLabel")} {targetLabel} <span className="text-ink/40">{t("target")}</span>
         </span>
       </div>
     </div>
