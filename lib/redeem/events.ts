@@ -57,12 +57,6 @@ type RawEvent = {
   parsedJson: Record<string, unknown>;
 };
 
-type RawQueryResult = {
-  data: RawEvent[];
-  nextCursor: EventPageCursor | null;
-  hasNextPage: boolean;
-};
-
 async function queryEvents<T>(
   type: string,
   args: QueryArgs,
@@ -72,17 +66,19 @@ async function queryEvents<T>(
     return { items: [], nextCursor: null, hasNextPage: false };
   }
   const limit = Math.max(1, Math.min(args.limit ?? 20, 50));
-  // dapp-kit/jsonRpc's typed surface for queryEvents narrows MoveEventType
-  // — call through the raw transport so we can use the canonical filter
-  // shape without ceremony.
-  const res = (await client().request("suix_queryEvents", [
-    { MoveEventType: type },
-    args.cursor ?? null,
+  const res = await client().queryEvents({
+    query: { MoveEventType: type },
+    cursor: args.cursor ?? null,
     limit,
-    true, // descending — newest first
-  ])) as RawQueryResult;
+    order: "descending",
+  });
   return {
-    items: res.data.map(parser),
+    items: res.data.map((e) =>
+      parser({
+        id: e.id,
+        parsedJson: (e.parsedJson ?? {}) as Record<string, unknown>,
+      }),
+    ),
     nextCursor: res.nextCursor ?? null,
     hasNextPage: Boolean(res.hasNextPage),
   };

@@ -1,0 +1,8 @@
+// Server-only entry point. Importing this file from a client component will
+// fail at compile-time via the `server-only` package re-exported transitively
+// by each module below. RSC pages and server actions should import from here;
+// shared, isomorphic helpers (types + pure quote math) live at
+// `@/lib/redeem`.
+
+export * from "./reader";
+export * from "./events";
