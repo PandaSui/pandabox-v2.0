@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 
 /**
@@ -14,11 +15,7 @@ export type FilterKey = "all" | "live" | "ending-soon" | "ended-awaiting" | "clo
 
 export type SortKey = "newest" | "most-raised" | "ending-soon";
 
-export const SORT_LABELS: Record<SortKey, string> = {
-  newest: "Newest",
-  "most-raised": "Most raised",
-  "ending-soon": "Ending soonest",
-};
+export const SORT_KEYS: SortKey[] = ["newest", "most-raised", "ending-soon"];
 
 export function FilterBar({
   filter,
@@ -33,12 +30,14 @@ export function FilterBar({
   sort: SortKey;
   onSortChange: (s: SortKey) => void;
 }) {
+  const t = useTranslations("dashboard.filter");
+  const tSort = useTranslations("dashboard.sort");
   const pills: Array<{ key: FilterKey; label: string }> = [
-    { key: "all", label: "All" },
-    { key: "live", label: "Live" },
-    { key: "ending-soon", label: "Ending soon" },
-    { key: "ended-awaiting", label: "Needs finalize" },
-    { key: "closed", label: "Closed" },
+    { key: "all", label: t("all") },
+    { key: "live", label: t("live") },
+    { key: "ending-soon", label: t("endingSoon") },
+    { key: "ended-awaiting", label: t("needsFinalize") },
+    { key: "closed", label: t("closed") },
   ];
 
   return (
@@ -60,7 +59,7 @@ export function FilterBar({
               onClick={() => onFilterChange(p.key)}
               aria-pressed={active}
               disabled={disabled}
-              title={disabled ? `No ${p.label.toLowerCase()} projects` : undefined}
+              title={disabled ? t("disabledTitle", { label: p.label.toLowerCase() }) : undefined}
               className={cn(
                 "inline-flex h-7 items-center gap-1.5 px-2.5",
                 "font-mono text-[10.5px] uppercase tracking-[0.14em] transition-colors",
@@ -86,11 +85,12 @@ export function FilterBar({
 
       {/* ── Sort — native <select> with a thin chevron ──────────── */}
       <label className="relative inline-flex items-center gap-2">
-        <span className="font-mono-label text-[10px] text-ink/45">Sort</span>
+        <span className="font-mono-label text-[10px] text-ink/45">{tSort("label")}</span>
         <span className="relative inline-flex items-center">
           <select
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortKey)}
+            aria-label={tSort("aria")}
             className={cn(
               "h-9 appearance-none border border-ink/20 bg-bone pl-3 pr-8",
               "font-mono text-[11px] uppercase tracking-[0.14em] text-ink",
@@ -99,9 +99,9 @@ export function FilterBar({
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
             )}
           >
-            {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+            {SORT_KEYS.map((k) => (
               <option key={k} value={k}>
-                {SORT_LABELS[k]}
+                {tSort(k === "most-raised" ? "mostRaised" : k === "ending-soon" ? "endingSoonest" : "newest")}
               </option>
             ))}
           </select>

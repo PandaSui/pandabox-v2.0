@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
@@ -9,20 +10,20 @@ import type { ActivityItem } from "@/lib/activity";
  * mono-numeric table — time · kind · actor · figures · tx — modelled after
  * the activity strip on the landing's Treasury Pulse section.
  */
-export function ActivityFeed({
+export async function ActivityFeed({
   items,
   ticker,
 }: {
   items: ActivityItem[];
   ticker: string;
 }) {
+  const t = await getTranslations("project.detail.activity");
   if (items.length === 0) {
     return (
       <div className="border border-ink/15 bg-bone p-6 shadow-offset-sm">
-        <MonoLabel>Activity</MonoLabel>
+        <MonoLabel>{t("title")}</MonoLabel>
         <p className="mt-2 text-sm text-ink/55">
-          No on-chain activity for this project yet. Contributions, claims,
-          and withdrawals will surface here.
+          {t("empty")}
         </p>
       </div>
     );
@@ -31,21 +32,21 @@ export function ActivityFeed({
   return (
     <div className="border border-ink/15 bg-bone shadow-offset-sm">
       <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
-        <MonoLabel className="text-[10px]">Activity</MonoLabel>
+        <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-          {items.length} event{items.length === 1 ? "" : "s"} · revalidates 30s
+          {t("eventCount", { count: items.length })} · {t("revalidates")}
         </span>
       </header>
       <div className="overflow-x-auto">
         <table className="w-full font-mono text-[12px]">
           <thead>
             <tr className="border-b border-ink/10 text-left font-mono-label text-[10px] text-ink/55">
-              <th className="px-5 py-2 font-normal">Time</th>
-              <th className="px-3 py-2 font-normal">Event</th>
-              <th className="px-3 py-2 font-normal">Actor</th>
+              <th className="px-5 py-2 font-normal">{t("colTime")}</th>
+              <th className="px-3 py-2 font-normal">{t("colEvent")}</th>
+              <th className="px-3 py-2 font-normal">{t("colActor")}</th>
               <th className="px-3 py-2 text-right font-normal">SUI</th>
               <th className="px-3 py-2 text-right font-normal">{ticker}</th>
-              <th className="px-5 py-2 text-right font-normal">Tx</th>
+              <th className="px-5 py-2 text-right font-normal">{t("colTx")}</th>
             </tr>
           </thead>
           <tbody>
@@ -58,7 +59,16 @@ export function ActivityFeed({
                   {formatRelative(it.timestampMs)}
                 </td>
                 <td className="px-3 py-2">
-                  <KindBadge kind={it.kind} extra={it.extra} />
+                  <KindBadge
+                    kind={it.kind}
+                    extra={it.extra}
+                    labels={{
+                      contribute: t("kind.contribute"),
+                      claim: t("kind.claim"),
+                      withdraw: t("kind.withdraw"),
+                      close: t("kind.close"),
+                    }}
+                  />
                 </td>
                 <td className="px-3 py-2">
                   {it.actor ? (
@@ -95,31 +105,33 @@ export function ActivityFeed({
 function KindBadge({
   kind,
   extra,
+  labels,
 }: {
   kind: ActivityItem["kind"];
   extra?: string;
+  labels: Record<ActivityItem["kind"], string>;
 }) {
   const map: Record<
     ActivityItem["kind"],
     { label: string; color: string; dot: string }
   > = {
     contribute: {
-      label: "Contributed",
+      label: labels.contribute,
       color: "text-jade",
       dot: "bg-jade",
     },
     claim: {
-      label: "Claimed",
+      label: labels.claim,
       color: "text-saffron",
       dot: "bg-saffron",
     },
     withdraw: {
-      label: "Withdrawn",
+      label: labels.withdraw,
       color: "text-poppy",
       dot: "bg-poppy",
     },
     close: {
-      label: "Closed",
+      label: labels.close,
       color: "text-sky",
       dot: "bg-sky",
     },

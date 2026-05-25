@@ -13,6 +13,7 @@ const SORT_KEYS: ReadonlySet<SortKey> = new Set([
 ]);
 
 const CATEGORIES: ReadonlySet<Category> = new Set([
+  "opc",
   "art",
   "infra",
   "dao",

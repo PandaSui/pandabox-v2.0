@@ -1,0 +1,1147 @@
+{
+  "metadata": {
+    "title": "Pandabox — 가치 있는 것에 펀딩하세요. Sui 위에서.",
+    "description": "Sui의 프로그래머블 펀딩 런치패드. 프로젝트를 출시하고, 비율을 설정하고, 온체인 세일을 운영하세요 — 모든 파라미터, 모든 트랜잭션이 온체인에서.",
+    "ogImageAlt": "Pandabox — Sui를 위한 프로그래머블 펀딩 런치패드.",
+    "notFound": {
+      "title": "404 · 찾을 수 없음",
+      "description": "이 경로에는 신호가 없습니다."
+    }
+  },
+  "common": {
+    "skipToContent": "본문으로 건너뛰기",
+    "language": "언어"
+  },
+  "nav": {
+    "homeAria": "Pandabox 홈",
+    "primaryAria": "주요 메뉴",
+    "mobileAria": "모바일",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기",
+    "links": {
+      "explore": "탐색",
+      "create": "생성",
+      "dashboard": "대시보드",
+      "docs": "문서",
+      "admin": "관리자"
+    }
+  },
+  "wallet": {
+    "connect": "지갑 연결",
+    "pickerTitle": "Sui 지갑 연결",
+    "pickerDescription": "로그인할 지갑을 선택하세요. 우리는 결코 수탁하지 않습니다 — 키는 지갑에 그대로 보관됩니다.",
+    "noWallets": "이 브라우저에서 Sui 지갑이 감지되지 않았습니다.",
+    "installSuiWallet": "Sui Wallet 설치하기 →",
+    "walletStandard": "Sui wallet standard",
+    "connectError": "연결할 수 없습니다.",
+    "fallbackName": "지갑",
+    "balanceLabel": "잔액",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "주소 복사",
+    "copied": "복사됨",
+    "viewOnSuiscan": "Suiscan에서 보기",
+    "disconnect": "연결 해제"
+  },
+  "pulse": {
+    "totalRaised": "Pandabox 전체 펀딩 총액",
+    "mostRecent": "가장 최근",
+    "flatlinedAria": "Treasury Pulse — 무신호 상태",
+    "flatlinedCaption": "이 경로에는 결제 이벤트가 없습니다. Pandabox는 존재하지 않는 페이지에 대한 펄스를 렌더링할 수 없습니다."
+  },
+  "notFound": {
+    "eyebrow": "404 · 경로를 찾을 수 없음",
+    "rowStatus": "상태",
+    "rowStatusValue": "찾을 수 없음",
+    "rowSignal": "신호",
+    "rowCycle": "사이클",
+    "headline": "이 경로에는 신호가 없습니다.",
+    "body": "Pandabox가 찾으시는 것을 찾을 수 없었습니다. URL이 사이클 사이에서 변경되었거나, 이 페이지가 애초에 온체인에 존재한 적이 없습니다. 아래의 활성 경로 중 하나를 선택하세요 — 모두 신호를 송출 중입니다.",
+    "ctaExplore": "프로젝트 탐색",
+    "ctaLaunch": "프로젝트 런칭",
+    "ctaDocs": "문서 읽기",
+    "backHome": "pandabox.money로 돌아가기"
+  },
+  "home": {
+    "hero": {
+      "live": "Sui {network}에서 라이브",
+      "titleFund": "가치 있는 것에",
+      "titleWorth": "",
+      "titleFunding": "펀딩하세요.",
+      "titleOnSui": "Sui 위에서",
+      "tagline": "Pandabox는 Sui를 위한 프로그래머블 펀딩 플랫폼입니다. 몇 분 만에 프로젝트를 런칭하세요. SUI를 받고, 토큰을 발행하고, 지급을 정의하세요 — 모두 온체인, 모두 투명, 모두 당신의 것.",
+      "ctaLaunch": "프로젝트 런칭",
+      "ctaExplore": "프로젝트 탐색",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · 최종",
+      "marginSpec": "project spec — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "출시하기",
+      "titleYourProject": "당신의 프로젝트,",
+      "titleOnchain": "온체인에서",
+      "titleInMinutes": "3분 만에.",
+      "subhead": "사이클, 지급, 토큰을 구성하세요. Sui 트랜잭션 하나에 서명하세요. AdminCap은 당신이 보유합니다.",
+      "ctaLaunch": "프로젝트 런칭",
+      "ctaDocs": "문서 읽기",
+      "tileSign": "서명",
+      "tileSignValue": "트랜잭션 1회",
+      "tileGas": "가스비",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "설정",
+      "tileSetupValue": "6단계",
+      "tileKeys": "키",
+      "tileKeysValue": "AdminCap은 당신의 것",
+      "marginLive": "pandabox.sui · 라이브",
+      "marginRevalidate": "60초마다 갱신"
+    },
+    "featured": {
+      "title": "주목할 프로젝트",
+      "subtitle": "엄선된, 현재 펀딩 중인 프로젝트.",
+      "viewAll": "전체 보기",
+      "eyebrow": "주목",
+      "headline": "지금 펀딩 중",
+      "watermark": "펀딩됨",
+      "sectionRail": "섹션 · 02 / 주목",
+      "statOnchain": "온체인",
+      "statProjects": "프로젝트",
+      "statRaisedAcross": "상위 3개 누적 펀딩액",
+      "exploreAll": "모든 프로젝트 탐색",
+      "dataMeta": "데이터: sui mainnet · 60초마다 갱신",
+      "empty": {
+        "label": "프로젝트 없음",
+        "heading": "첫 번째 온체인 프로젝트를 기다리는 중.",
+        "description": "<code>pandabox::project</code>의 ProjectCreated 이벤트가 여기에 표시됩니다."
+      },
+      "tape": {
+        "live": "라이브",
+        "onchain": "온체인",
+        "backedAgo": "후원됨 · 2분 전",
+        "verified": "검증됨",
+        "cycle01": "사이클 01",
+        "supportingNow": "지원 중 · 현재 12명",
+        "txConfirmed": "트랜잭션 확인됨",
+        "freshRaise": "신규 펀딩",
+        "unnamed": "이름 없음"
+      },
+      "skeleton": {
+        "ariaLoading": "주목 프로젝트 로딩 중",
+        "srLoading": "주목 프로젝트 로딩 중…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "작동 방식",
+      "eyebrowSpec": "03 단계 · 아이디어 → 온체인",
+      "title": "아이디어에서 온체인 펀딩까지 세 단계.",
+      "subtitle": "여기서 설정하는 모든 파라미터는 Move 호출이 됩니다. 후원자가 취하는 모든 상호작용은 트랜잭션이 됩니다. Pandabox는 그 사이에 있는 것입니다.",
+      "nowViewing": "현재 보는 중",
+      "progressDeploy": "배포",
+      "progressReconfigure": "재구성",
+      "ctaLaunch": "프로젝트 런칭",
+      "ctaDocs": "문서 읽기",
+      "stepLabel": "단계 {number} · {phase}",
+      "onchainSuiMove": "온체인 · sui move",
+      "live": "라이브",
+      "steps": {
+        "0": {
+          "phase": "구성",
+          "heading": "배포",
+          "body": "사이클, 지급, 토큰, 선택적 NFT 등급을 구성하세요. Sui 트랜잭션 하나에 서명하세요. 당신이 소유한 admin cap 객체와 함께 프로젝트가 라이브가 됩니다.",
+          "outcome": "AdminCap 민팅됨"
+        },
+        "1": {
+          "phase": "유입",
+          "heading": "수령",
+          "body": "후원자가 SUI를 트레저리에 직접 지불합니다. 사이클의 가중치에 따라 프로젝트 토큰을 받고, 정의된 경우 등급 NFT도 받습니다.",
+          "outcome": "토큰 민팅됨"
+        },
+        "2": {
+          "phase": "거버넌스",
+          "heading": "재구성",
+          "body": "다음 사이클을 위한 변경사항을 제안하세요. 투표 지연 이후 새 파라미터가 적용됩니다. 보유자는 언제든 잉여분을 인출할 수 있습니다.",
+          "outcome": "사이클 대기 중"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "왜 Sui인가",
+      "title": "이를 위해 만들어진 체인 위에서.",
+      "subtitle": "Sui가 네이티브로 제공하는 세 가지 — Pandabox를 손에서 다르게 느끼게 만드는 — 1센트 미만의 결제, admin 권한의 실제 소유권, 마찰 없는 온보딩.",
+      "nativeStamp": "sui-네이티브",
+      "cards": {
+        "gas": {
+          "tag": "가스비",
+          "heading": "1센트 미만의 가스비",
+          "body": "후원자는 프로젝트를 후원하기 위해 $30를 지불하지 않습니다. Pandabox 결제는 1센트의 일부에 불과합니다 — 중요한 소액 기여도 실제로 통과됩니다.",
+          "meta": "중간값 결제 트랜잭션 · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "소유권",
+          "heading": "객체 중심 소유권",
+          "body": "당신의 ProjectAdminCap은 실제 Sui 객체입니다. 멀티시그로 전송하거나, DAO에 넘기거나, 에스크로에 잠그세요 — 그저 하나의 객체입니다."
+        },
+        "onboarding": {
+          "tag": "온보딩",
+          "heading": "스폰서 트랜잭션",
+          "body": "아직 SUI를 보유하지 않은 후원자를 온보딩하세요. Pandabox가 가스비를 스폰서할 수 있어, 첫 지갑이 첫 상호작용에서 프로젝트를 후원할 수 있습니다.",
+          "meta": "가스비 스폰서 · 결제자만 서명"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "숫자",
+      "title": "실제 온체인 데이터 기반.",
+      "subtitle": "여기의 모든 수치는 Pandabox Move 패키지의 이벤트로부터 계산되며, 60초마다 갱신됩니다.",
+      "sourceFootnote": "출처 · pandabox::project 이벤트 · 합계 / 카운트 / 셋",
+      "computedAt": "계산 시각",
+      "liveLabel": "라이브 · sui mainnet",
+      "totalRaised": "총 펀딩액",
+      "totalRaisedHint": "전체 프로젝트의 sold ÷ base_rate 합계",
+      "delta24h": "24시간",
+      "substat": {
+        "across": "전체",
+        "projects": "프로젝트",
+        "tokensMinted": "민팅된 토큰",
+        "platformFees": "플랫폼 수수료",
+        "feeRate": "수수료율"
+      },
+      "activeProjects": "활성 프로젝트",
+      "liveCount": "{count}개 라이브",
+      "closedCount": "{count}개 종료됨",
+      "deployedAllTime": "전체 기간 배포됨",
+      "uniqueBackers": "고유 후원자",
+      "addr": "주소",
+      "contribsPerBacker": "후원자당 기여",
+      "moreOverflow": "+{count}명 더보기",
+      "latestActivity": "최근 활동",
+      "lastContribution": "마지막 기여",
+      "largest": "최대",
+      "paymentsWindow": "{count}건 결제 · 24시간"
+    },
+    "heroConsole": {
+      "liveConsole": "라이브 콘솔",
+      "streamSequenceAria": "스트림 시퀀스",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← 5초 윈도우 · 최오래된",
+      "pulseWindowNow": "현재 →",
+      "stream": "스트림",
+      "recentPayments": "최근 결제",
+      "listeningEvents": "이벤트 수신 중…",
+      "viewProjectAria": "프로젝트 {name} 보기",
+      "stat": {
+        "projects": "프로젝트",
+        "platformFee": "플랫폼 수수료",
+        "treasury": "트레저리"
+      }
+    }
+  },
+  "footer": {
+    "homeAria": "Pandabox 홈",
+    "blurb": "Sui를 위한 프로그래머블 펀딩 플랫폼. 온체인 기반, 기본적으로 오픈.",
+    "navigate": "탐색",
+    "ecosystem": "생태계",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "기술",
+    "movePackage": "Move 패키지",
+    "network": "네트워크",
+    "commit": "커밋",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Mainnet 빌드"
+  },
+  "explore": {
+    "title": "탐색",
+    "headline": "지금 펀딩 중.",
+    "subtitle": "Pandabox의 모든 활성 토큰 세일, Sui mainnet 패키지에서 직접 읽어옵니다 — 중간에 인덱서가 없습니다.",
+    "liveCount": "{count}개 라이브",
+    "totalCount": "{count}개 전체",
+    "cachedHint": "60초 캐시",
+    "all": "전체",
+    "live": "라이브",
+    "ended": "종료됨",
+    "idle": "유휴",
+    "verified": "검증됨",
+    "legacy": "레거시",
+    "legacyHint": "9-decimal 스케일링 수정 이전에 배포됨 — 수치를 신뢰할 수 없음.",
+    "filterByCategory": "카테고리로 필터",
+    "sortLabel": "정렬",
+    "searchLabel": "검색",
+    "sort": {
+      "trending": "트렌딩",
+      "newest": "최신순",
+      "mostFunded": "펀딩액순",
+      "endingSoonest": "마감 임박순"
+    },
+    "searchPlaceholder": "프로젝트 검색",
+    "searchAria": "프로젝트 검색",
+    "sortAria": "프로젝트 정렬",
+    "loadMore": "더 보기",
+    "empty": "아직 이 필터에 일치하는 프로젝트가 없습니다.",
+    "emptyTitle": "일치 항목 없음",
+    "resetFilters": "필터 초기화",
+    "byCreator": "{addr} 제작",
+    "endsNow": "마감 ",
+    "endedAt": "종료됨 ",
+    "unnamed": "이름 없는 프로젝트",
+    "viewProject": "{name} 보기",
+    "categories": {
+      "opc": "OPC",
+      "meme": "밈",
+      "art": "아트",
+      "infra": "인프라",
+      "dao": "DAO",
+      "research": "연구",
+      "gaming": "게이밍",
+      "music": "음악",
+      "social": "소셜",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "펀딩액",
+      "supporters": "후원자"
+    },
+    "hero": {
+      "raised": "펀딩액",
+      "supporters": "후원자",
+      "heldBy": "보유자",
+      "backThis": "이 프로젝트 후원"
+    },
+    "status": {
+      "live": "라이브",
+      "paused": "일시정지",
+      "closed": "종료됨"
+    },
+    "detail": {
+      "backToExplore": "탐색으로 돌아가기",
+      "legacyBadge": "레거시 · 잘못된 파라미터",
+      "legacyBody": "이 프로젝트는 위저드가 <code>base_rate</code>에 9-decimal 스케일링을 적용하기 이전에 배포되었습니다. 아래의 비율, 목표, 펀딩액 수치는 부정확합니다 — 신뢰하거나 이 세일을 후원하지 마세요.",
+      "creator": "제작자",
+      "contractAddressShort": "CA",
+      "verified": "검증됨",
+      "statusLabel": "상태",
+      "statusLive": "라이브",
+      "statusEnded": "종료됨",
+      "statusClosed": "종료됨",
+      "endsIn": "마감",
+      "cap": "Cap",
+      "sale": "세일",
+      "ended": "종료됨",
+      "noCap": "캡 없음",
+      "finished": "완료됨",
+      "closed": "종료됨",
+      "rate": "비율",
+      "perSui": "/SUI",
+      "maxSupply": "최대 공급량",
+      "unsold": "미판매",
+      "unsoldToCreator": "→ 제작자",
+      "unsoldBurn": "소각",
+      "remaining": "잔여",
+      "treasury": "트레저리",
+      "beFirstSupporter": "이 프로젝트의 첫 후원자가 되세요",
+      "supporterOne": "후원자 {count}명",
+      "supporterOther": "후원자 {count}명",
+      "lastBy": "마지막 후원자",
+      "justNow": "방금 전",
+      "agoMinutes": "{n}분 전",
+      "agoHours": "{n}시간 전",
+      "agoDays": "{n}일 전",
+      "aboutTitle": "소개",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "아직 설명이 핀되지 않았습니다 — 제작자가 언제든 게시할 수 있습니다. 세일 메커니즘은 결제 패널을 참조하세요.",
+      "status": {
+        "ended": "종료됨"
+      },
+      "meta": {
+        "notFoundTitle": "프로젝트를 찾을 수 없음",
+        "descriptionFallback": "{name} ({ticker}) — Sui 온체인 펀딩, Pandabox 제공."
+      },
+      "tabs": {
+        "about": "소개",
+        "activity": "활동"
+      },
+      "activity": {
+        "title": "활동",
+        "empty": "이 프로젝트에 대한 온체인 활동이 아직 없습니다. 기여, 클레임, 인출 내역이 여기에 표시됩니다.",
+        "eventCount": "{count, plural, one {# 이벤트} other {# 이벤트}}",
+        "revalidates": "30초마다 갱신",
+        "colTime": "시간",
+        "colEvent": "이벤트",
+        "colActor": "행위자",
+        "colTx": "트랜잭션",
+        "kind": {
+          "contribute": "기여됨",
+          "claim": "클레임됨",
+          "withdraw": "인출됨",
+          "close": "종료됨"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "토큰 클레임",
+        "finalizeSale": "세일 확정",
+        "receiptCount": "{count, plural, one {# 영수증} other {# 영수증}}",
+        "anyone": "누구나",
+        "claimIntroOne": "세일이 종료되었습니다. <code>ContributionReceipt&lt;T&gt;</code> 객체를 소각하고 {ticker}의 배분을 받으세요.",
+        "claimIntroMany": "세일이 종료되었습니다. <code>ContributionReceipt&lt;T&gt;</code> 객체들을 소각하고 {ticker}의 배분을 받으세요.",
+        "youllReceive": "받을 금액",
+        "from": "출처",
+        "contributed": "기여됨",
+        "finalizeIntro": "세일 마감 시간이 지났습니다. 누구나 확정하여 최종 판매량을 확정하고 모두를 위한 클레임 + 인출을 해제할 수 있습니다.",
+        "sold": "판매됨",
+        "treasury": "트레저리",
+        "claimCta": "클레임 → {amount}",
+        "claimAllCta": "전체 클레임 → {amount}",
+        "receiptsSummary": "영수증 ({count})",
+        "modalClaimTitle": "토큰 클레임",
+        "modalFinalizeTitle": "세일 확정",
+        "backToProject": "프로젝트로 돌아가기",
+        "youBurn": "소각",
+        "receiptOne": "영수증",
+        "receiptOther": "영수증",
+        "originallyContributed": "{amount} 원래 기여액",
+        "youReceive": "받을 금액",
+        "coinSentToWallet": "Coin<{ticker}>이 지갑으로 전송됨",
+        "cancel": "취소",
+        "signing": "서명 중…",
+        "confirmClaim": "확인 후 클레임",
+        "confirmFinalize": "확인 후 확정",
+        "finalizePreviewIntro": "세일 윈도우가 종료되었습니다. 누구나 확정하여 최종 판매량을 확정할 수 있습니다 — 후원자의 토큰 클레임과 프로젝트 소유자의 SUI 인출이 해제됩니다.",
+        "finalizeFootnote": "세일이 준비되지 않았다면 no-op · 가스비만 · {ticker} 보유자에게 클레임 가능 상태로 전환",
+        "saleFinalized": "세일 확정됨",
+        "finalizeSuccessBody": "프로젝트가 이제 종료되었습니다. 토큰 클레임과 admin 인출이 해제되었습니다.",
+        "txLabel": "트랜잭션",
+        "txFailed": "트랜잭션이 실패했습니다.",
+        "tweetText": "방금 Pandabox에서 {projectName}의 {ticker}를 클레임했습니다 — Sui의 프로그래머블 온체인 펀딩.",
+        "stampClaimed": "클레임됨",
+        "stampInYourWallet": "지갑에서",
+        "tokensDeliveredEyebrow": "· 토큰 전달됨 ·",
+        "fromLabel": "출처",
+        "receiptsBurnedOne": "영수증 {count}개 소각됨",
+        "receiptsBurnedOther": "영수증 {count}개 소각됨",
+        "statReceived": "받음",
+        "statReceipts": "영수증",
+        "burnedCount": "{count}개 소각됨",
+        "shareOnX": "X에 공유"
+      },
+      "share": {
+        "tweetText": "Pandabox에서 {projectName} ({ticker}) 후원 중 — Sui의 프로그래머블 온체인 펀딩.",
+        "copyAria": "프로젝트 URL 복사",
+        "shareAria": "X에 공유",
+        "copy": "복사",
+        "copied": "복사됨",
+        "share": "공유"
+      },
+      "cover": {
+        "specCover": "커버 · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "아트워크",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "{name} 커버",
+        "iconAlt": "{name} 아이콘"
+      },
+      "meter": {
+        "ofLabel": "/",
+        "target": "목표"
+      },
+      "onchain": {
+        "title": "온체인 기록",
+        "specSheet": "스펙 시트",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Project 객체",
+        "sharedObject": "shared object",
+        "coinType": "Coin 타입",
+        "contractAddress": "컨트랙트 주소",
+        "deployed": "배포됨",
+        "links": "링크",
+        "social": "소셜",
+        "site": "사이트",
+        "discord": "discord",
+        "noneProvided": "제공되지 않음",
+        "copy": "복사",
+        "copied": "복사됨",
+        "copyAria": "클립보드에 복사",
+        "explorer": "익스플로러",
+        "justNow": "방금 전",
+        "agoSeconds": "{n}초 전",
+        "agoMinutes": "{n}분 전",
+        "agoHours": "{n}시간 전",
+        "agoDays": "{n}일 전",
+        "agoMonths": "{n}개월 전",
+        "agoYears": "{n}년 전"
+      },
+      "rail": {
+        "connectTitle": "지갑 연결",
+        "connectBody": "이 프로젝트를 후원하거나, 토큰을 클레임하거나, 제작자인 경우 관리하려면 연결하세요.",
+        "loadingTitle": "보유 자산 읽는 중",
+        "loadingBody": "보유한 admin cap과 영수증을 확인하는 중…",
+        "saleClosedTitle": "세일 종료",
+        "saleClosedBody": "이 세일은 확정되었습니다. {token}에 대한 기여 영수증을 보유하고 있지 않아 이 지갑에서 클레임할 것이 없습니다.",
+        "thisProjectFallback": "이 프로젝트"
+      },
+      "seedLiquidity": {
+        "title": "Cetus 유동성 시딩",
+        "intro": "이 프로젝트가 <strong>Cetus</strong>에 페어 유동성을 보유하고 있음을 표시합니다. 저장하면 프로젝트 페이지의 가격 차트가 GeckoTerminal에서 라이브 OHLCV 데이터를 읽기 시작합니다.",
+        "verifyExplainer": "핀하기 전에 Sui의 풀 객체를 검증합니다. 풀은 실제 <code>pool::Pool&lt;A, B&gt;</code>여야 하며 한 쪽은 SUI, 다른 쪽은 프로젝트의 코인 — <code>{coin}</code>이어야 합니다. 실제 풀 없이는 플래그를 전환할 수 없습니다.",
+        "poolAddressLabel": "Cetus 풀 주소",
+        "poolPlaceholder": "0x… (Cetus Pool 객체 ID)",
+        "verify": "검증",
+        "verifying": "검증 중…",
+        "verifiedOk": "검증됨 ✓",
+        "invalidObjectId": "유효한 Sui 객체 ID가 아님",
+        "verificationFailedTitle": "검증 실패",
+        "verificationFailed": "검증에 실패했습니다.",
+        "poolVerified": "풀 검증됨",
+        "cetus": "Cetus",
+        "rowPool": "풀",
+        "rowSideA": "Side A",
+        "rowSideB": "Side B",
+        "cancel": "취소",
+        "pinning": "핀 중…",
+        "signing": "서명 중…",
+        "signAndSave": "서명 후 저장",
+        "pinningFailed": "IPFS 핀에 실패 — {reason}",
+        "unknownError": "알 수 없는 오류",
+        "txFailed": "트랜잭션이 실패했습니다.",
+        "seededTitle": "유동성 시딩 완료 표시됨",
+        "seededBody": "프로젝트 페이지가 새 풀을 인식하고 캐시 재검증 ~30초 이내에 라이브 차트 렌더링을 시작합니다.",
+        "detailsCid": "details cid · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
+  },
+  "pay": {
+    "heading": "이 프로젝트 후원",
+    "youReceive": "받을 금액",
+    "remainingHint": "잔여 민팅 가능 {amount}, 초과분은 자동 환불됩니다.",
+    "memo": "메모 (선택)",
+    "memoPlaceholder": "결제와 함께 온체인에 기록됨",
+    "enterAmount": "금액 입력",
+    "payAmount": "{amount} SUI 결제",
+    "shareOfSupply": "공급 점유율",
+    "remainingMintable": "잔여 민팅 가능",
+    "unsold": "미판매",
+    "unsoldBurn": "소각",
+    "unsoldTransfer": "제작자에게 전송",
+    "inspectorTitle": "트랜잭션 인스펙터",
+    "inspectorPreview": "서명 전 미리보기. 지갑이 이 Move 호출에 대한 서명을 요청합니다.",
+    "inspectorNotDeployed": "Move 패키지가 아직 배포되지 않음 — NEXT_PUBLIC_PACKAGE_ID가 설정될 때까지 제출은 로컬에서 시뮬레이션됩니다.",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "반환값",
+      "returnsValue": "ContributionReceipt + 환불 코인 → 발신자"
+    },
+    "cancel": "취소",
+    "signSubmit": "서명 후 제출",
+    "signing": "서명 중…",
+    "confirmed": "결제 확정됨",
+    "backToProject": "프로젝트로 돌아가기",
+    "connectFirst": "기여하려면 지갑을 연결하세요.",
+    "txFailed": "트랜잭션이 실패했습니다."
+  },
+  "create": {
+    "page": {
+      "metaTitle": "프로젝트 생성",
+      "metaDescription": "사이클, 토큰, 지급, 등급을 구성하세요. Sui에 배포하세요.",
+      "headline": "프로젝트를 구성하고, 트랜잭션 한 번에 배포하세요.",
+      "intro": "여섯 단계. 드래프트는 브라우저에 자동 저장됩니다. 오른쪽 레일에서 후원자가 프로젝트 페이지에서 보게 될 것을 정확히 확인할 수 있습니다.",
+      "badgeOneTransaction": "트랜잭션 1회",
+      "badgeAutoSaving": "드래프트 자동 저장",
+      "badgeIpfs": "ipfs 핀 에셋"
+    },
+    "wizard": {
+      "stepsAria": "위저드 단계",
+      "stepLabel": "단계 {num}",
+      "stepLabels": {
+        "identity": "정체성",
+        "coin": "코인",
+        "sale": "세일",
+        "deploy": "배포"
+      },
+      "percentComplete": "{pct}% 완료",
+      "resetDraft": "드래프트 초기화",
+      "back": "뒤로",
+      "continueStep": "계속 · 단계 {num}",
+      "reviewAndDeployAbove": "위에서 검토 및 배포",
+      "resetModalTitle": "드래프트를 초기화하시겠습니까?",
+      "resetModalBody": "위저드의 모든 필드를 지우고 브라우저에 저장된 드래프트를 제거합니다. 온체인에는 영향이 없습니다 — 빈 폼에서 다시 시작할 뿐입니다.",
+      "resetBullet1": "정체성, 코인, 세일, 배포 — 모두 삭제",
+      "resetBullet2": "localStorage에서 제거됨",
+      "resetBullet3": "이 작업은 취소할 수 없습니다",
+      "keepDraft": "드래프트 유지",
+      "resetDraftButton": "드래프트 초기화"
+    },
+    "imageUpload": {
+      "defaultLabel": "커버 이미지",
+      "cidLabel": "cid",
+      "errorOnlyImages": "이미지 파일만 허용됩니다.",
+      "errorTooLarge": "이미지가 너무 큽니다 ({size} MiB). 최대 {max} MiB.",
+      "errorUploadFailed": "업로드가 예기치 않게 실패했습니다.",
+      "dropToPin": "핀하려면 드롭",
+      "dragOrClick": "이미지를 드래그하거나 클릭하여 업로드",
+      "maxSize": "최대 {max} MiB",
+      "loadingFromIpfs": "ipfs에서 로딩 중",
+      "gatewayRetry": "게이트웨이 재시도 {attempt}/4",
+      "gatewayWarmup": "게이트웨이 워밍업",
+      "replace": "교체",
+      "remove": "제거",
+      "uploading": "업로드 중",
+      "pinningToIpfs": "ipfs에 핀 중",
+      "cancelUploadAria": "업로드 취소",
+      "cancel": "취소",
+      "sendingBytes": "핀 서비스로 바이트 전송 중",
+      "pinataReplicating": "pinata가 ipfs 노드 전반에 복제 중입니다 — 큰 이미지는 몇 초 걸릴 수 있습니다",
+      "pasteCidToggle": "또는 기존 CID / URL 붙여넣기",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "정체성",
+      "body": "누가 무엇을 펀딩하는가. 후원자가 지갑과 프로젝트 페이지에서 보게 될 내용입니다.",
+      "meta": "온체인에 저장됨",
+      "basicsTitle": "기본 정보",
+      "basicsMeta": "배포 시 불변",
+      "projectName": "프로젝트 이름",
+      "projectNamePlaceholder": "예: Atelier Ono",
+      "ticker": "티커",
+      "tickerHint": "대문자/숫자, 2–10자",
+      "category": "카테고리",
+      "storyTitle": "스토리",
+      "storyMeta": "언제든 편집 가능",
+      "tagline": "태그라인",
+      "taglineHint": "한 줄, 8–160자 · {len}/160",
+      "taglinePlaceholder": "Sui에서 주간 드롭을 민팅하는 포토-진 콜렉티브.",
+      "description": "설명",
+      "descriptionHint": "마크다운 지원 · 20–4000자 · {len}/4000",
+      "descriptionPlaceholder": "무엇을 만들고 있는지, 후원자의 SUI가 왜 중요한지 알려주세요.",
+      "coverTitle": "커버 이미지",
+      "coverMeta": "ipfs에 핀됨",
+      "coverHint": "프로젝트 페이지 상단에 표시됩니다. 와이드 16:10 크롭이 가장 좋습니다. 업로드 시 IPFS에 핀됩니다 — CID가 온체인에 기록됩니다.",
+      "socialsTitle": "소셜",
+      "socialsMeta": "선택",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "핸들",
+      "website": "웹사이트",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "초대 URL"
+    },
+    "step2": {
+      "title": "코인",
+      "body": "Pandabox는 당신이 소유한 Sui 코인이 필요합니다. 감사된 템플릿을 사용해 지금 브라우저에서 발행하거나, 이미 보유한 TreasuryCap + CoinMetadata를 붙여넣을 수 있습니다.",
+      "meta": "9 decimals · sui::coin::create_currency로 생성",
+      "modeLabel": "모드",
+      "modePublish": "새 코인 발행",
+      "modePaste": "이미 코인을 보유 중",
+      "untitledCoin": "이름 없는 코인",
+      "howThisWorks": "작동 방식",
+      "howThisWorksBody": "<strong>9 decimals</strong>로 사전 컴파일된 <code>coin_template.move</code>에서 시작합니다. <code>@mysten/move-bytecode-template</code>을 통해 브라우저에서 식별자와 메타데이터 상수를 재작성한 후, 당신의 지갑에서 발행합니다. 렌더링된 Move 소스는 IPFS에 핀되어 누구나 배포된 내용을 정확히 감사할 수 있습니다.",
+      "coinMetadataTitle": "코인 메타데이터",
+      "coinMetadataMeta": "CoinMetadata<T>에 들어감",
+      "symbol": "심볼",
+      "symbolHint": "2–10자 · 대문자 / 숫자",
+      "name": "이름",
+      "namePlaceholder": "Panda Token",
+      "description": "설명",
+      "descriptionHint": "≤240자 · ASCII",
+      "descriptionPlaceholder": "이 코인이 무엇을 나타내는지.",
+      "iconUrl": "아이콘 URL",
+      "iconUrlHint": "프로젝트 커버를 재사용하거나 호스팅된 URL을 붙여넣으세요",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "발행",
+      "publishMetaComplete": "완료",
+      "publishMetaStep": "2개 배포 중 1단계",
+      "coinPublishedConfirm": "코인이 발행되었습니다. TreasuryCap + CoinMetadata가 드래프트에 캡처되었습니다.",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "바이트코드 재작성 중…",
+      "publishStateSigning": "서명 중…",
+      "publishStateFetching": "체인 대기 중…",
+      "publishStatePinning": "소스 핀 중…",
+      "publishCoin": "코인 발행",
+      "publishCaption": "트랜잭션 1회 · 양도 가능한 upgrade cap이 당신에게 반환됨",
+      "errorNoDigest": "지갑이 발행 트랜잭션에 대한 digest를 반환하지 않았습니다.",
+      "errorPublishFailed": "발행에 실패했습니다.",
+      "strandedTitle": "발행됨 — 그러나 RPC가 응답하지 않음",
+      "openOnSuiExplorer": "Sui Explorer에서 열기",
+      "switchToPasteMode": "붙여넣기 모드로 전환",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10자 · A-Z, 0-9, _ · 반드시 문자로 시작",
+      "validateName": "이름 입력 (2–32자)",
+      "validateDescriptionLength": "최대 240자",
+      "validateDescriptionAscii": "ASCII만 가능 (이모지/스마트 따옴표 불가)",
+      "validateIconUrl": "전체 https:// URL을 사용하세요",
+      "validateInvalidIdentifier": "유효하지 않은 식별자",
+      "objectIdsTitle": "객체 ID",
+      "objectIdsMeta": "당신이 소유해야 함",
+      "treasuryCapLabel": "TreasuryCap<T> 객체 ID",
+      "treasuryCapHint": "발행 트랜잭션의 createdObjects에서.",
+      "metadataLabel": "CoinMetadata<T> 객체 ID",
+      "metadataHint": "체인에서 읽어 코인 타입과 decimals를 감지합니다.",
+      "coinInfoTitle": "코인 정보",
+      "coinInfoMetaReading": "읽는 중…",
+      "coinInfoMetaDetected": "감지됨",
+      "coinInfoMetaNotFound": "찾을 수 없음",
+      "statName": "이름",
+      "statSymbol": "심볼",
+      "statDecimals": "Decimals",
+      "resolvedCoinType": "해석된 코인 타입",
+      "wrongDecimals": "이 코인은 {decimals}-decimal입니다. Pandabox는 {required} decimals가 필요합니다 — 올바른 값으로 코인을 재배포하세요.",
+      "readingFromChain": "체인에서 읽는 중…",
+      "pasteMetadataHint": "위에 CoinMetadata ID를 붙여넣어 코인을 감지하세요.",
+      "errorObjectNotFound": "객체를 찾을 수 없습니다.",
+      "errorNotCoinMetadata": "객체가 CoinMetadata<T>가 아닙니다.",
+      "errorUnexpectedContent": "예상하지 못한 객체 내용입니다.",
+      "errorLookupFailed": "조회에 실패했습니다."
+    },
+    "step3": {
+      "title": "세일 조건",
+      "body": "후원자는 SUI를 기여하고 Receipt를 받습니다. 세일이 종료되거나 매진되면, 토큰 배분을 클레임합니다. 미판매분은 당신의 선택에 따라 소각되거나 반환됩니다.",
+      "meta": "배포 시 불변",
+      "pricingTitle": "가격",
+      "pricingMeta": "토큰 ↔ SUI",
+      "tokensPerSui": "SUI당 토큰",
+      "tokensPerSuiHint": "후원자가 1 SUI당 받는 {ticker}의 수량.",
+      "targetRaise": "목표 펀딩액 (SUI)",
+      "targetRaiseHint": "이 값을 편집하면 SUI당 토큰이 역산됩니다.",
+      "baseRateLabel": "base_rate (스케일링됨, 온체인)",
+      "allocationTitle": "배분",
+      "allocationMeta": "세일용 전체 토큰",
+      "tokensForSale": "판매용 토큰",
+      "tokensForSaleHint": "이 세일을 위해 예약된 총 {ticker}. TreasuryCap이 이 수량까지 민팅합니다.",
+      "fundingAllocationLabel": "funding_allocation (raw u64)",
+      "maxSupplyLabel": "최대 공급량 · {ticker}",
+      "mintedAtLaunch": "런칭 시 민팅",
+      "mintedAtLaunchValue": "0 — 클레임 시 민팅",
+      "supplyNote": "코인은 <zeroSupply>0 공급량</zeroSupply>으로 시작합니다. 토큰은 후원자가 영수증에 대해 <code>claim</code>을 호출할 때 지연 민팅됩니다. 최종 유통량 = <claimed>클레임됨</claimed>",
+      "supplyNoteReturn": " + 미판매 (당신의 지갑으로 반환)",
+      "supplyNoteBurn": " (미판매분은 소각됨)",
+      "saleWindowTitle": "세일 윈도우",
+      "durationDays": "{days}일",
+      "noTimeCap": "시간 제한 없음",
+      "ends": "종료",
+      "inDays": "{days}일 후",
+      "unsoldTitle": "미판매 공급량",
+      "unsoldMeta": "세일 종료 후",
+      "actionLabel": "동작",
+      "unsoldBurnTitle": "소각",
+      "unsoldBurnBody": "미판매 토큰이 영구적으로 파기되어 총 공급량이 줄어듭니다.",
+      "unsoldReturnTitle": "제작자에게 반환",
+      "unsoldReturnBody": "미판매 토큰이 당신의 주소로 민팅됩니다. 베스팅이나 DEX 시딩에 사용하세요."
+    },
+    "step4": {
+      "title": "검토 및 배포",
+      "body": "Pandabox는 설명과 project_details를 IPFS에 핀한 다음, 프로젝트를 생성하고 TreasuryCap을 소비하며 ProjectAdminCap을 당신의 지갑으로 전송하는 단일 Sui 트랜잭션을 제출합니다.",
+      "metaChecks": "{ok}/{total} 확인 · {status}",
+      "statusReady": "준비됨",
+      "statusBlocked": "차단됨",
+      "headsUp": "참고",
+      "headsUpBody": "<strong>배포 시 소비됨:</strong> 당신의 <code>TreasuryCap<T></code>와 <code>CoinMetadata<T></code>는 Project 객체에 의해 소유되며 회수할 수 없습니다. <strong>배포 시 불변:</strong> 이름, 코인, base rate, 배분, 종료 시간, unsold-action. <strong>나중에 편집 가능:</strong> 설명, 아이콘, 소스코드 blob, project_details (<code>update_metadata</code>를 통해).",
+      "sourceCodeTitle": "선택 · 소스 코드",
+      "sourceCodeMetaSet": "설정됨",
+      "sourceCodeMetaSkipped": "건너뜀",
+      "sourceCodeLabel": "소스 코드 blob (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy… (선택)",
+      "sourceCodeHint": "리포 아카이브를 별도로 핀하고 CID를 붙여넣으세요. 비워두고 나중에 업데이트해도 됩니다.",
+      "preflightTitle": "사전 점검",
+      "preflightAllGreen": "모두 통과",
+      "preflightBlocking": "{count}개 차단 중",
+      "fixInStep": "단계 {num}에서 수정",
+      "deployTitle": "배포",
+      "deployMetaLive": "라이브 · sui mainnet",
+      "deployMetaSimulated": "시뮬레이션됨",
+      "deployToSui": "Sui에 배포",
+      "deployCaption": "treasury cap + metadata 소비 · admin cap이 당신에게 반환됨",
+      "draftAutoSaves": "드래프트가 <code>pandabox:draft:v3</code>로 브라우저에 자동 저장됩니다.",
+      "modalSuccessTitle": "프로젝트 배포됨",
+      "modalInspectorTitle": "트랜잭션 인스펙터",
+      "openProjectPage": "프로젝트 페이지 열기",
+      "seeItOnExplore": "탐색에서 보기",
+      "inspectorIntroLive": "발행하려는 내용을 검토하세요. Pandabox는 설명과 세부정보를 IPFS에 핀한 다음, 당신의 지갑이 Sui에서 프로젝트를 생성하는 트랜잭션 하나에 서명합니다.",
+      "inspectorIntroSimulated": "Move 패키지가 구성되지 않음 — 이 제출은 로컬에서 시뮬레이션됩니다.",
+      "sectionProject": "프로젝트",
+      "sectionYourCoin": "당신의 코인",
+      "sectionSaleTerms": "세일 조건",
+      "editLink": "편집",
+      "summaryName": "이름",
+      "summaryTicker": "티커",
+      "summaryCategory": "카테고리",
+      "summaryTagline": "태그라인",
+      "summarySymbol": "심볼",
+      "summaryDecimals": "Decimals",
+      "summaryRate": "비율",
+      "tokensWord": "토큰",
+      "summaryTotalForSale": "판매 총량",
+      "summaryMaxSupply": "최대 공급량",
+      "summaryMintedAtLaunch": "런칭 시 민팅",
+      "summaryMintedAtLaunchValue": "0 — 클레임 시 지연 민팅",
+      "summaryMaxRaise": "최대 펀딩액",
+      "summarySaleEnds": "세일 종료",
+      "summaryOpenEnded": "기한 없음",
+      "summaryUnsoldTokens": "미판매 토큰",
+      "summaryUnsoldReturn": "당신의 지갑으로 반환",
+      "summaryUnsoldBurn": "소각됨 (최종 공급량 감소)",
+      "youllKeepLabel": "당신이 보유 ·",
+      "youllKeepBody": "지갑 안의 <strong>ProjectAdminCap</strong> — 이 프로젝트에 대한 admin 권한. 나중에 멀티시그로 전송할 수 있습니다.",
+      "youllGiveUpLabel": "당신이 포기 ·",
+      "youllGiveUpBody": "당신의 <strong>TreasuryCap</strong>과 <strong>CoinMetadata</strong>. 프로젝트가 소유권을 가져가며 회수할 수 없습니다.",
+      "lockedOnDeployLabel": "배포 시 잠김 ·",
+      "lockedOnDeployBody": "이름, 코인, 비율, 배분, 종료 시간, unsold-action. 설명, 아이콘, 링크는 편집 가능 상태로 유지됩니다.",
+      "advancedToggle": "고급 · raw move 호출",
+      "rawPinning": "핀 중…",
+      "rawSetAtSubmit": "제출 시 설정됨",
+      "cancel": "취소",
+      "submitPinningDescription": "설명 핀 중…",
+      "submitPinningDetails": "세부정보 핀 중…",
+      "submitSigning": "서명 중…",
+      "submitPinAndDeploy": "핀 후 배포",
+      "errorDeployFailed": "배포에 실패했습니다.",
+      "untitledProject": "이름 없는 프로젝트",
+      "coverWord": "커버",
+      "noCover": "커버 없음",
+      "projectCoverPreviewAlt": "프로젝트 커버 미리보기",
+      "checkIdentityOk": "정체성 완료",
+      "checkIdentityErr": "정체성: {msg}",
+      "checkCoinOk": "코인 검증됨 · {symbol} · {decimals} decimals",
+      "checkCoinWrongDecimals": "코인이 {decimals} decimals를 사용합니다 — 프로토콜은 {required}을 요구합니다",
+      "checkCoinErr": "코인: {msg}",
+      "checkSaleOk": "세일 조건 유효",
+      "checkSaleErr": "세일: {msg}",
+      "checkIncomplete": "미완료"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "대시보드",
+      "description": "당신이 소유하고 후원하는 Pandabox 프로젝트."
+    },
+    "title": "대시보드",
+    "headline": "당신의 활동",
+    "untitledProject": "이름 없는 프로젝트",
+    "connectGate": {
+      "eyebrow": "지갑 연결",
+      "headline": "당신의 활동, 온체인.",
+      "body": "Sui 지갑을 연결해 당신이 만든 프로젝트와 후원한 프로젝트를 확인하세요."
+    },
+    "refresh": {
+      "label": "새로고침",
+      "busy": "새로고침 중",
+      "aria": "대시보드 새로고침",
+      "ariaRefreshing": "대시보드 새로고침 중"
+    },
+    "kpi": {
+      "raised": "펀딩액",
+      "treasury": "트레저리",
+      "live": "라이브",
+      "backing": "후원 중"
+    },
+    "owned": {
+      "title": "당신의 프로젝트",
+      "subtitle": "당신이 ProjectAdminCap을 보유한 프로젝트. 관리를 클릭해 워크스페이스를 여세요.",
+      "noMatchLabel": "이 필터에 일치하는 프로젝트가 없습니다",
+      "noMatchBody": "다른 상태를 시도하거나 필터를 초기화해 모든 {count, plural, one {# 프로젝트} other {# 프로젝트}}를 보세요.",
+      "empty": {
+        "label": "아직 프로젝트 없음",
+        "body": "몇 분 만에 토큰 세일을 시작하세요. 코인을 사전 배포하고, 세일 조건을 구성하고, 서명 한 번으로 출시하세요.",
+        "cta": "프로젝트 런칭"
+      },
+      "card": {
+        "treasury": "트레저리",
+        "withdrawable": "인출 가능",
+        "raisedPct": "{pct}% 펀딩됨",
+        "tokensSold": "{amount} {ticker} 판매됨",
+        "manage": "관리",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "후원 중인 프로젝트",
+      "subtitle": "당신의 ContributionReceipt. 세일이 확정되면 클레임하세요.",
+      "receipts": "{count, plural, one {# 영수증} other {# 영수증}}",
+      "contributed": "기여됨",
+      "claimable": "클레임 가능",
+      "yourShare": "당신의 점유율",
+      "action": {
+        "claim": "토큰 클레임",
+        "finalize": "세일 확정",
+        "open": "프로젝트 열기"
+      },
+      "empty": {
+        "label": "아직 후원 중인 프로젝트 없음",
+        "body": "탐색에서 프로젝트를 후원하세요 — 영수증과 클레임 가능 점유율이 여기에 표시됩니다.",
+        "cta": "프로젝트 탐색"
+      }
+    },
+    "loading": {
+      "aria": "프로젝트 로딩 중",
+      "sr": "프로젝트 로딩 중…"
+    },
+    "filter": {
+      "all": "전체",
+      "live": "라이브",
+      "endingSoon": "마감 임박",
+      "needsFinalize": "확정 필요",
+      "closed": "종료됨",
+      "disabledTitle": "{label} 프로젝트 없음"
+    },
+    "sort": {
+      "label": "정렬",
+      "aria": "프로젝트 정렬",
+      "newest": "최신순",
+      "mostRaised": "펀딩액순",
+      "endingSoonest": "마감 임박순"
+    },
+    "state": {
+      "live": "라이브",
+      "endingSoon": "마감 임박",
+      "endedAwaiting": "확정 필요",
+      "closed": "종료됨",
+      "unknown": "알 수 없음"
+    },
+    "time": {
+      "noCap": "시간 제한 없음",
+      "endedJustNow": "방금 종료됨",
+      "endsIn": "{duration} 후 마감",
+      "endedAgoFinalize": "{duration} 전 종료됨 · 확정해 잠금 해제",
+      "closedAgo": "종료됨 · {duration} 전",
+      "closed": "종료됨",
+      "durationDH": "{days}일 {hours}시간",
+      "durationHM": "{hours}시간 {mins}분",
+      "durationM": "{mins}분"
+    },
+    "sparkline": {
+      "placeholder": "24시간"
+    },
+    "manage": {
+      "backToDashboard": "대시보드로 돌아가기",
+      "openPublicPage": "공개 페이지 열기",
+      "untitledProject": "이름 없는 프로젝트",
+      "status": {
+        "live": "라이브",
+        "ended": "종료됨",
+        "closed": "종료됨"
+      },
+      "stats": {
+        "treasury": "트레저리",
+        "sold": "판매됨",
+        "creator": "제작자",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "유동성 시딩됨 · 차트 라이브",
+        "noPoolLabel": "아직 풀 없음 · 차트 플레이스홀더",
+        "poolLink": "풀 {id}",
+        "seedViaPanel": "패널에서 시딩 →"
+      },
+      "info": {
+        "whatLabel": "여기서 할 수 있는 일",
+        "whatBody": "모든 admin 동작 — 확정, 인출, 메타데이터 업데이트, 유동성 시딩, cap 전송 또는 포기 — 은 프로젝트 페이지와 동일한 온체인 엔트리 함수를 통해 실행됩니다. 버튼은 오른쪽 패널에 있으며, 사전 점검은 각 모달 안에서 표시됩니다."
+      },
+      "supply": {
+        "label": "공급량",
+        "allocation": "배분",
+        "sold": "판매됨",
+        "remaining": "잔여",
+        "unsoldAction": "미판매 동작",
+        "unsoldCreator": "→ 제작자",
+        "unsoldBurn": "소각"
+      },
+      "error": {
+        "label": "프로젝트를 로드할 수 없음",
+        "retry": "재시도"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "문서",
+      "description": "Sui에서 Pandabox가 작동하는 방식: 세일 윈도우, base rate와 배분, 기여와 클레임, 미판매 공급량, 확정과 인출, 그리고 위저드 안내."
+    },
+    "eyebrow": "문서",
+    "heading": "Pandabox가 실제로 작동하는 방식.",
+    "subhead": "세 개의 탭. 메커니즘은 프로토콜; 위저드 안내는 생성 흐름; 레퍼런스는 용어집과 FAQ를 담고 있습니다.",
+    "toc": {
+      "ariaLabel": "문서 섹션",
+      "onThisPage": "이 페이지에서"
+    },
+    "tabs": {
+      "ariaLabel": "문서 섹션",
+      "mechanics": {
+        "label": "메커니즘",
+        "sections": {
+          "how": "01 / 작동 방식",
+          "window": "02 / 세일 윈도우",
+          "rate": "03 / Base rate와 배분",
+          "claim": "04 / 기여와 클레임",
+          "unsold": "05 / 미판매 공급량",
+          "finalize": "06 / 확정과 인출"
+        }
+      },
+      "wizard": {
+        "label": "위저드 안내",
+        "sections": {
+          "intro": "네 가지 단계",
+          "identity": "01 · 정체성",
+          "coin": "02 · 코인",
+          "sale": "03 · 세일 조건",
+          "deploy": "04 · 검토 및 배포"
+        }
+      },
+      "reference": {
+        "label": "레퍼런스",
+        "sections": {
+          "glossary": "용어집",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / 작동 방식",
+        "p1": "Pandabox는 Sui 위의 Move 패키지입니다. 제작자는 <term>Project</term>를 배포합니다 — SUI 트레저리와 프로젝트 자체 코인을 위한 잠긴 <term>TreasuryCap</term>을 소유하는 Sui 객체입니다. 프로젝트는 그런 다음 고정 비율로 단일 세일을 실행합니다: 후원자가 SUI를 기여하면 구성된 가격으로 프로젝트 토큰을 클레임할 권리를 얻습니다.",
+        "p2": "후원자는 토큰을 직접 받지 않습니다. 대신 <term>ContributionReceipt</term>를 받습니다 — 권리를 보유한 양도 가능한 Sui NFT입니다. 세일이 종료된 후 영수증을 소각하여 토큰을 <term>클레임</term>합니다. 잔여 배분을 초과하는 결제는 동일한 트랜잭션에서 환불됩니다.",
+        "p3": "세일은 세 가지 방식 중 하나로 종료됩니다: 구성된 종료 시간 도달, 전체 배분 매진, 또는 플랫폼 admin의 종료. 종료 후 제작자는 펀딩된 SUI를 인출하고(플랫폼 수수료 차감), 배포 시 선택한 정책에 따라 미판매 토큰을 처리합니다.",
+        "cta": "드래프트 프로젝트 시작 →"
+      },
+      "window": {
+        "label": "02 / 세일 윈도우",
+        "p1": "모든 세일은 단일 잠긴 윈도우를 가집니다. 배포 시 <term>종료 시간</term>을 설정하거나, 열어두고 admin으로서 수동으로 세일을 종료할 수 있습니다. 세일이 확정되기 전까지는 누구나 고정 비율로 기여할 수 있습니다.",
+        "p2": "세 가지가 세일을 확정시킵니다: 종료 시간 경과 (<term>Time</term>), 배분 매진 (<term>Sellout</term>), 또는 admin이 강제 종료 (<term>Admin</term>). 확정은 토큰 클레임, SUI 인출, 미판매 공급량 처리의 관문입니다 — 세일이 활성 상태인 동안에는 그 어느 것도 작동하지 않습니다.",
+        "p3": "확정은 admin이 트리거(<code>try_finalize</code>)하거나, 조건이 충족되면 누구나(<code>permissionless_finalize</code>) 트리거할 수 있습니다 — 그래서 멈춘 제작자가 종료 시간이 지난 후에도 후원자의 클레임을 가둘 수 없습니다.",
+        "cta": "단계 03에서 확인 →"
+      },
+      "rate": {
+        "label": "03 / Base rate와 배분",
+        "p1": "두 숫자가 세일을 지배합니다: <term>base rate</term> (1 SUI당 발행되는 프로젝트 토큰) 및 <term>funding allocation</term> (판매할 총 프로젝트 토큰). 둘 다 배포 시 설정되며 프로젝트 수명 동안 동결됩니다 — 메타데이터 업데이트나 admin 동작으로 변경할 수 없습니다.",
+        "p2": "기여가 잔여 배분을 초과할 경우, 감당 가능한 부분만 받아들여지고 나머지는 동일한 트랜잭션에서 환불됩니다. 후원자는 절대 과지불하지 않습니다.",
+        "cta": "단계 03에서 확인 →"
+      },
+      "claim": {
+        "label": "04 / 기여와 클레임",
+        "p1": "<term>기여.</term> 후원자는 SUI 코인과 함께 <code>contribute</code>를 호출합니다. 프로젝트는 그들의 주소에 대해 기여를 기록하고 <term>ContributionReceipt</term> NFT를 반환합니다 — 결제가 배분 가능 한도를 초과한 경우 환불 코인도 함께.",
+        "p2": "<term>클레임.</term> 세일이 확정된 후, 후원자는 <code>claim</code>으로 영수증을 소각하고 프로젝트 토큰을 받습니다. 여러 영수증(여러 번의 기여)을 <code>claim_multiple</code>을 통해 한 번의 호출로 함께 소각하여 단일 병합된 코인으로 반환받을 수 있습니다.",
+        "p3": "영수증은 일반 Sui 객체입니다: 양도 가능하고, 2차 시장에서 판매 가능하며, 만료되지 않습니다. 프로젝트 객체가 존재하는 한 클레임은 계속 열려 있습니다.",
+        "cta": "대시보드에서 영수증 보기 →"
+      },
+      "unsold": {
+        "label": "05 / 미판매 공급량",
+        "p1": "세일이 배분에 토큰이 남은 채로 종료되면, 제작자는 <code>process_unsold</code>를 실행해 배포 시 선택한 정책을 실행합니다:",
+        "p2": "<term>소각</term> — 미판매 공급량이 파기되어 클레임된 모든 토큰의 암시적 가격이 상승합니다. 희소성 신호: 유통량은 정확히 세일이 펀딩한 만큼입니다.",
+        "p3": "<term>제작자에게 전송</term> — 미판매 공급량이 일반 코인 잔액으로 제작자에게 이동합니다. 유동성 시딩, 2차 세일, 또는 트레저리 포지션 보유 시 유용합니다. 프로젝트 페이지는 이를 스펙 라인에 <code>UNSOLD → CREATOR</code>로 노출하여 후원자가 결제 전에 정책을 볼 수 있습니다.",
+        "cta": "단계 03에서 확인 →"
+      },
+      "finalize": {
+        "label": "06 / 확정과 인출",
+        "p1": "확정된 후, 제작자는 <code>withdraw_sui</code>를 호출해 프로젝트 트레저리에서 펀딩된 SUI를 가져옵니다. 플랫폼 수수료(Pandabox가 설정한 basis points)는 자동으로 차감됩니다 — 제작자는 순액을 받고, 수수료는 플랫폼 트레저리에 누적됩니다. 인출은 부분적일 수 있으며, cap 보유자는 나머지를 나중에 인출할 수 있습니다.",
+        "p2": "배포 시 민팅된 <term>ProjectAdminCap</term>은 일반 Sui 객체입니다. <code>transfer_project_admin</code>을 통해 이동(인덱서가 의존하는 이벤트를 발생시킴 — raw 객체 전송보다 이를 선호)하거나, <code>renounce_project_admin</code>을 통해 자체 파기하여 프로젝트를 영구적으로 관리자 없는 상태로 만들 수 있습니다 — 제작자의 재량에서 스스로를 제거하고자 하는 커뮤니티 프로젝트에 유용합니다.",
+        "p3": "프로젝트 메타데이터 — 이름, 설명, 아이콘 URL, 소스코드 blob, 그리고 오프체인 details JSON (태그라인, 카테고리, 소셜) — 은 세일이 활성 상태이든 종료되었든 <code>update_metadata</code>를 통해 편집 가능한 상태로 유지됩니다."
+      }
+    },
+    "wizard": {
+      "stepWord": "단계",
+      "intro": {
+        "label": "네 가지 단계",
+        "p1": "생성 흐름은 네 단계입니다. 여기에 입력하는 모든 내용은 온체인(세일 파라미터, 이름, blob CID) 또는 IPFS에 핀된 project_details JSON(태그라인, 카테고리, 소셜)에 저장됩니다. 오른쪽의 라이브 미리보기가 후원자가 볼 내용을 정확히 보여줍니다.",
+        "cta": "위저드 열기 "
+      },
+      "steps": {
+        "identity": {
+          "alt": "생성 위저드의 단계 01 — 라이브 프로젝트 페이지 미리보기 옆의 정체성 필드.",
+          "title": "정체성",
+          "caption": "프로젝트 이름, 티커, 카테고리, 태그라인, 커버 이미지, 설명. 여기에 표시되는 티커는 정보용입니다 — 실제 코인 심볼은 다음 단계에서 연결하는 CoinMetadata에서 나옵니다."
+        },
+        "coin": {
+          "alt": "생성 위저드의 단계 02 — Sui 코인 연결 또는 발행.",
+          "title": "코인",
+          "caption": "Pandabox는 자체 Sui 코인이 필요합니다. 사전 컴파일된 coin_template.move (브라우저에서 당신의 식별자로 재작성, 감사 가능하도록 IPFS에 핀됨)에서 발행하거나, 이미 보유한 TreasuryCap + CoinMetadata를 붙여넣을 수 있습니다. Decimals는 반드시 9여야 합니다."
+        },
+        "sale": {
+          "alt": "생성 위저드의 단계 03 — 세일 조건: SUI당 토큰 비율, 전체 배분, 종료 시간, 미판매 정책.",
+          "title": "세일 조건",
+          "caption": "배포 시 잠기는 네 개의 숫자: base rate (1 SUI당 토큰), 전체 배분, 선택적 종료 시간, 미판매 동작 (소각 또는 제작자에게 전송). 암시된 최대 펀딩액은 입력할 때 라이브로 도출됩니다."
+        },
+        "deploy": {
+          "alt": "생성 위저드의 단계 04 — 검토 및 배포.",
+          "title": "검토 및 배포",
+          "caption": "Sui 트랜잭션 하나가 Project 객체를 생성하고, 당신의 TreasuryCap + CoinMetadata를 그 안에 소비하고, ProjectAdminCap을 당신의 지갑으로 반환합니다. poppy 알림은 제출 시 무엇이 불변이 되고 무엇이 update_metadata를 통해 편집 가능한 상태로 유지되는지 명시합니다."
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "용어집",
+        "termLabels": {
+          "baseRate": "Base rate",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "Unsold action",
+          "endTime": "End time",
+          "finalize": "Finalize",
+          "closeTrigger": "Close trigger",
+          "projectStatus": "Project status",
+          "platformFee": "Platform fee"
+        },
+        "terms": {
+          "project": "SUI 트레저리, 잠긴 TreasuryCap<T>, 그리고 세일 파라미터를 보유한 공유된 Sui 객체.",
+          "projectAdminCap": "admin 권한을 부여하는 소유 Sui 객체: SUI 인출, 미판매 처리, 메타데이터 업데이트, 확정, 전송, 포기.",
+          "contributionReceipt": "기여 시 민팅되는 NFT. 확정 후 권리 토큰을 위해 소각 가능. 다른 Sui 객체처럼 양도 가능.",
+          "baseRate": "기여 1 SUI당 발행되는 프로젝트 토큰. 배포 시 동결.",
+          "fundingAllocation": "판매할 총 프로젝트 토큰. 도달하면 매진이 트리거됨. 배포 시 동결.",
+          "unsoldAction": "세일 종료 시 남은 토큰에 대한 정책: 소각 또는 제작자에게 전송. 배포 시 동결.",
+          "endTime": "선택적 세일 종료 타임스탬프. null인 경우 admin 종료 또는 매진만 확정 가능.",
+          "finalize": "세일을 잠금. 클레임, SUI 인출, 또는 미판매 처리 전에 필요. 조건이 충족되면 누구나 가능.",
+          "closeTrigger": "세일이 종료된 이유: Time, Sellout, 또는 Admin. 온체인에 기록됨.",
+          "projectStatus": "Active (판매 중), Closed (확정됨), 또는 Compromised (플랫폼 플래그됨).",
+          "platformFee": "Pandabox가 인출된 SUI에서 가져가는 basis-point 비율. 플랫폼 admin이 설정, withdraw_sui에서 적용됨.",
+          "mist": "최소 SUI 단위. 1 SUI = 1,000,000,000 MIST."
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "감사가 완료되었나요?",
+            "a": "아직입니다. Pandabox는 테스트넷 단계입니다. 메인넷 램프 전에 공식 감사가 완료될 예정입니다."
+          },
+          "editAfterDeploy": {
+            "q": "배포 후 프로젝트를 편집할 수 있나요?",
+            "a": "오프체인 정체성은 가능: 이름, 설명, 커버 이미지 (아이콘 URL), 소스코드 blob, 태그라인, 카테고리, 소셜 링크 모두 언제든 <code>update_metadata</code>를 통해 업데이트됩니다. 세일 경제학은 불가능: base rate, funding allocation, 종료 시간, 미판매 공급량 정책은 배포 시 동결됩니다. 코인의 심볼과 decimals는 Pandabox 이전에 배포한 코인 모듈에 의해 설정되므로 여기서도 변경할 수 없습니다."
+          },
+          "gas": {
+            "q": "가스비는 어떻게 작동하나요?",
+            "a": "모든 트랜잭션은 서명한 지갑이 지불합니다. 생성, 기여, 클레임, 인출 — 모두 서명자가 지불. Sui 가스비는 일반적으로 메인넷 요율에서 1센트 미만이므로, 프로젝트를 후원하는 실질 비용은 기여하는 SUI이지 가스비가 아닙니다."
+          },
+          "neverClaims": {
+            "q": "후원자가 클레임하지 않으면 어떻게 되나요?",
+            "a": "영수증은 만료되지 않습니다. 보유자가 <code>claim</code>으로 영수증을 소각할 때까지 토큰은 프로젝트의 TreasuryCap에 잠겨 있습니다. 영수증은 실제 Sui 객체이므로, 클레임할 다른 사람에게 전송하거나 판매할 수도 있습니다."
+          },
+          "transferCap": {
+            "q": "ProjectAdminCap을 전송할 수 있나요?",
+            "a": "네 — 이벤트가 인덱서에 기록되도록 <code>transfer_project_admin</code>을 사용하세요. cap은 프로젝트 토큰이나 펀딩된 SUI를 보유하지 않습니다; 순전히 admin 키일 뿐입니다. <code>renounce_project_admin</code>을 호출해 영구적으로 파기할 수도 있습니다 — 그러면 프로젝트는 admin 없이 작동합니다."
+          },
+          "compromised": {
+            "q": "'Compromised' 상태는 무엇을 의미하나요?",
+            "a": "플랫폼 admin은 오용에 대한 명확한 증거가 있을 때(러그풀, 사칭, 클레임된 보상의 멀웨어) 프로젝트를 Compromised로 플래그할 수 있습니다. 일방향 조치 신호입니다 — 프로젝트 페이지는 후원자가 플래그를 보고 행동할 수 있도록 계속 접근 가능하지만, 명확하게 경고합니다. 자금을 압류하지는 않습니다."
+          },
+          "featured": {
+            "q": "랜딩의 주목 섹션에 어떻게 등재되나요?",
+            "a": "주목은 단지 펀딩된 SUI 기준 상위 3개로 정렬됩니다. 충분히 펀딩되면 자동으로 표시됩니다."
+          }
+        }
+      }
+    }
+  }
+}

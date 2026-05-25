@@ -17,7 +17,6 @@ import {
   TxHash,
 } from "@/components/identity";
 import {
-  getCycles,
   getGlobalStats,
   getHolders,
   getRecentPaymentsGlobal,
@@ -48,10 +47,7 @@ export default async function DevPage() {
     getRecentPaymentsGlobal(6),
   ]);
   const first = list.items[0];
-  const [cycles, holders] = await Promise.all([
-    first ? getCycles(first.id) : Promise.resolve([]),
-    first ? getHolders(first.id) : Promise.resolve([]),
-  ]);
+  const holders = first ? await getHolders(first.id) : [];
 
   return (
     <main className="py-16">
@@ -261,7 +257,7 @@ export default async function DevPage() {
             <Stat label="TVL" value={<SuiAmount mist={stats.tvlMist} compact />} delta={stats.delta7d.tvlPct} />
             <Stat label="Projects" value={<TokenAmount raw={stats.projectCount} />} delta={stats.delta7d.projectsPct} />
             <Stat label="Supporters" value={<TokenAmount raw={stats.supporterCount} compact />} delta={stats.delta7d.supportersPct} />
-            <Stat label="Median cycle" value={<TokenAmount raw={stats.medianCycleDays} ticker="DAYS" />} />
+            <Stat label="Median sale" value={<TokenAmount raw={stats.medianSaleDays} ticker="DAYS" />} />
           </div>
         </Section>
 
@@ -277,7 +273,7 @@ export default async function DevPage() {
                 <div className="col-span-3 font-mono text-xs text-ink/60">{p.ticker}</div>
                 <div className="col-span-3"><SuiAmount mist={p.raisedMist} compact /></div>
                 <div className="col-span-3 font-mono text-xs text-ink/60">
-                  {p.supporters.toLocaleString()} supporters · cycle Nº{p.cycleNumber}
+                  {p.supporters.toLocaleString()} supporters
                 </div>
               </div>
             ))}
@@ -298,28 +294,6 @@ export default async function DevPage() {
             ))}
           </div>
         </Section>
-
-        {first && (
-          <Section label={`15 / Indexer · cycles for "${first.name}"`}>
-            <div className="space-y-1.5 font-mono text-xs">
-              {cycles.map((c) => (
-                <div key={c.number} className="grid grid-cols-12 items-center gap-3 text-ink/80">
-                  <div className="col-span-1">Nº{c.number}</div>
-                  <div className="col-span-3 text-ink/50">
-                    {c.status === "past" ? "past" : c.status === "current" ? "current" : "upcoming"}
-                  </div>
-                  <div className="col-span-3"><SuiAmount mist={c.raisedMist} compact /></div>
-                  <div className="col-span-3 text-ink/50">
-                    payouts <SuiAmount mist={c.payoutsMist} compact />
-                  </div>
-                  <div className="col-span-2 text-right text-ink/40">
-                    {c.params.reservedRate}% reserved
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-        )}
 
         {first && (
           <Section label={`16 / Indexer · top holders for "${first.name}"`}>

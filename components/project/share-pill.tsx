@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 
 /**
@@ -17,6 +18,7 @@ export function SharePill({
   ticker: string;
   className?: string;
 }) {
+  const t = useTranslations("project.detail.share");
   const [copied, setCopied] = useState(false);
   // tweetHref is computed post-mount so SSR and the first CSR render emit
   // the same href ("…?text="). Previously the component conditionally
@@ -27,11 +29,11 @@ export function SharePill({
   );
 
   useEffect(() => {
-    const tweet = `Backing ${projectName} (${ticker}) on Pandabox — programmable on-chain funding on Sui.\n\n${window.location.href}`;
+    const tweet = `${t("tweetText", { projectName, ticker })}\n\n${window.location.href}`;
     setTweetHref(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
     );
-  }, [projectName, ticker]);
+  }, [projectName, ticker, t]);
 
   const onCopy = async () => {
     try {
@@ -54,24 +56,24 @@ export function SharePill({
             ? "border-jade/60 text-jade"
             : "text-ink/60 hover:border-ink hover:text-ink",
         )}
-        aria-label="Copy project URL"
+        aria-label={t("copyAria")}
       >
         {copied ? (
           <CheckGlyph />
         ) : (
           <CopyGlyph />
         )}
-        <span>{copied ? "copied" : "copy"}</span>
+        <span>{copied ? t("copied") : t("copy")}</span>
       </button>
       <a
         href={tweetHref}
         target="_blank"
         rel="noreferrer"
         className="inline-flex h-7 items-center gap-1 border border-ink/25 px-2 font-mono-label text-[10px] text-ink/60 transition-colors hover:border-ink hover:text-ink"
-        aria-label="Share on X"
+        aria-label={t("shareAria")}
       >
         <XGlyph />
-        <span>share</span>
+        <span>{t("share")}</span>
       </a>
     </div>
   );

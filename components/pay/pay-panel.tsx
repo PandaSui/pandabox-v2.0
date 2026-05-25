@@ -3,10 +3,10 @@
 import { useMemo, useState } from "react";
 import { useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import BigNumber from "bignumber.js";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
-import { SuiAmount } from "@/components/identity/sui-amount";
 import { TokenAmount } from "@/components/identity/token-amount";
 import { Modal } from "@pandasui/ui";
 import { AmountInput, suiUsd, usdSui, type Currency } from "./amount-input";
@@ -14,15 +14,16 @@ import { useSuiUsdPrice } from "@/lib/hooks/use-sui-usd-price";
 import { TierSelector } from "./tier-selector";
 import { TransactionSuccess } from "./transaction-success";
 import { buildContributeTx, IS_DEPLOYED, PACKAGE_ID } from "@/lib/contracts";
-// NOTE: this UI still renders the legacy "pay" model (memo / tier selector /
-// cash-out preview) which doesn't exist on the deployed contract. The Move
-// call below is wired to `project::contribute<T>`. The surrounding inputs
-// will be reworked when the project pages are rebuilt against the new DTO.
 import type { ProjectDTO } from "@/lib/api/project-dto";
 
 const MEMO_MAX = 256;
 
+// 100 亿 × 10^9 decimals — fixed by contract (project.move:33).
+const TOTAL_SUPPLY_RAW = 10_000_000_000n * 1_000_000_000n;
+const TOTAL_SUPPLY_BN = new BigNumber(TOTAL_SUPPLY_RAW.toString());
+
 export function PayPanel({ project }: { project: ProjectDTO }) {
+  const t = useTranslations("pay");
   const account = useCurrentAccount();
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState<Currency>("SUI");
@@ -57,40 +58,29 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
 
   // Token preview: amount × weight.
   const tokensRaw = useMemo(() => {
-    return (amountMist * BigInt(project.params.weight)) / 1_000_000_000n;
-  }, [amountMist, project.params.weight]);
+    return (amountMist * BigInt(project.weight)) / 1_000_000_000n;
+  }, [amountMist, project.weight]);
 
-  // Cash-out preview (heuristic): your share of treasury, less cash-out tax.
-  const cashOutSui = useMemo(() => {
-    if (suiAmount.isZero()) return new BigNumber(0);
-    // After your payment, share = your tokens / (existing supply + your tokens).
-    // Treasury after your payment ≈ raised + your amount.
-    const raisedSui = new BigNumber(project.raisedMist).dividedBy(1e9);
-    const newTreasury = raisedSui.plus(suiAmount);
-    // Total supply ≈ raised × weight + your tokens.
-    const totalSupply = new BigNumber(project.raisedMist)
-      .multipliedBy(project.params.weight)
-      .dividedBy(1e9)
-      .plus(new BigNumber(tokensRaw.toString()));
-    if (totalSupply.isZero()) return new BigNumber(0);
-    const share = new BigNumber(tokensRaw.toString()).dividedBy(totalSupply);
-    const gross = newTreasury.multipliedBy(share);
-    const tax = new BigNumber(project.params.cashOutTax).dividedBy(100);
-    return gross.multipliedBy(new BigNumber(1).minus(tax));
-  }, [
-    suiAmount,
-    tokensRaw,
-    project.raisedMist,
-    project.params.weight,
-    project.params.cashOutTax,
-  ]);
+  const sharePct = useMemo(() => {
+    if (tokensRaw === 0n) return "0.0000";
+    return new BigNumber(tokensRaw.toString())
+      .dividedBy(TOTAL_SUPPLY_BN)
+      .multipliedBy(100)
+      .toFormat(4, BigNumber.ROUND_DOWN);
+  }, [tokensRaw]);
+
+  const remainingMintable = useMemo(() => {
+    const alloc = BigInt(project.allocationTokens);
+    const minted = BigInt(project.alreadyMinted);
+    return alloc > minted ? alloc - minted : 0n;
+  }, [project.allocationTokens, project.alreadyMinted]);
 
   const isValid = amountMist > 0n;
 
   return (
     <aside id="pay" className="lg:sticky lg:top-24">
       <div className="border border-ink/15 bg-bone/40 p-5">
-        <MonoLabel>Back this project</MonoLabel>
+        <MonoLabel>{t("heading")}</MonoLabel>
 
         <AmountInput
           value={amount}
@@ -123,8 +113,21 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
           className="mt-5"
         />
 
-        <div className="mt-5 grid grid-cols-2 gap-3 border-t border-ink/15 pt-4 text-xs">
-          <Preview label="You receive">
+        <p className="mt-2 font-mono text-[11px] tabular-nums text-ink/55">
+          {t.rich("remainingHint", {
+            amount: () => (
+              <TokenAmount
+                raw={remainingMintable}
+                decimals={9}
+                ticker={project.ticker}
+                compact
+              />
+            ),
+          })}
+        </p>
+
+        <div className="mt-5 border-t border-ink/15 pt-4 text-xs">
+          <Preview label={t("youReceive")}>
             <TokenAmount
               raw={tokensRaw}
               decimals={9}
@@ -132,11 +135,6 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
               compact
               className="text-sm"
             />
-          </Preview>
-          <Preview label="Cash out today">
-            <span className="inline-flex items-baseline gap-1 text-sm">
-              ≈ <SuiAmount mist={BigInt(cashOutSui.multipliedBy(1e9).integerValue().toFixed(0))} maxFractionDigits={2} />
-            </span>
           </Preview>
         </div>
 
@@ -148,11 +146,11 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
         />
 
         <label className="mt-5 block">
-          <MonoLabel>Memo (optional)</MonoLabel>
+          <MonoLabel>{t("memo")}</MonoLabel>
           <textarea
             value={memo}
             onChange={(e) => setMemo(e.target.value.slice(0, MEMO_MAX))}
-            placeholder="recorded on-chain with your payment"
+            placeholder={t("memoPlaceholder")}
             rows={2}
             className={cn(
               "mt-2 block w-full resize-none border border-ink/25 bg-bone p-2.5",
@@ -179,8 +177,8 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
             >
               <span className="font-mono-label">
                 {isValid
-                  ? `Pay ${suiAmount.toFormat(2, BigNumber.ROUND_DOWN)} SUI`
-                  : "Enter an amount"}
+                  ? t("payAmount", { amount: suiAmount.toFormat(2, BigNumber.ROUND_DOWN) })
+                  : t("enterAmount")}
               </span>
             </button>
           ) : (
@@ -189,9 +187,24 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
         </div>
 
         <div className="mt-4 grid grid-cols-3 border-t border-ink/15 pt-3 text-center">
-          <ParamCell label="Reserved" value={`${project.params.reservedRate}%`} />
-          <ParamCell label="Cash-out tax" value={`${project.params.cashOutTax}%`} border />
-          <ParamCell label="Issuance ↓" value={`${project.params.issuanceReduction}%`} border />
+          <ParamCell label={t("shareOfSupply")} value={`${sharePct}%`} />
+          <ParamCell
+            label={t("remainingMintable")}
+            value={
+              <TokenAmount
+                raw={remainingMintable}
+                decimals={9}
+                ticker={project.ticker}
+                compact
+              />
+            }
+            border
+          />
+          <ParamCell
+            label={t("unsold")}
+            value={project.unsoldAction === "transfer_to_creator" ? t("unsoldTransfer") : t("unsoldBurn")}
+            border
+          />
         </div>
       </div>
 
@@ -203,30 +216,28 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
             if (submitState.kind === "success") setSubmitState({ kind: "idle" });
           }
         }}
-        title="Transaction inspector"
+        title={t("inspectorTitle")}
       >
         {submitState.kind === "success" ? (
           <TransactionSuccess
-            title="Payment confirmed"
+            title={t("confirmed")}
             projectName={project.name}
             txDigest={submitState.digest}
             primaryHref={`/projects/${project.id}`}
-            primaryLabel="Back to project"
+            primaryLabel={t("backToProject")}
           />
         ) : (
           <div className="space-y-4 text-xs">
             <p className="text-ink/55">
-              {IS_DEPLOYED
-                ? "Pre-sign preview. Your wallet will request a signature for this Move call."
-                : "Move package not deployed yet — submission is simulated locally until NEXT_PUBLIC_PACKAGE_ID is set."}
+              {IS_DEPLOYED ? t("inspectorPreview") : t("inspectorNotDeployed")}
             </p>
             <div className="border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
-              <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
-              <Row k="module">project</Row>
-              <Row k="function">contribute&lt;T&gt;</Row>
-              <Row k="arg.project_id">{project.id.slice(0, 18)}…</Row>
-              <Row k="arg.amount_mist">{amountMist.toString()}</Row>
-              <Row k="returns">ContributionReceipt + refund coin → sender</Row>
+              <Row k={t("inspector.package")}>{PACKAGE_ID.slice(0, 18)}…</Row>
+              <Row k={t("inspector.module")}>project</Row>
+              <Row k={t("inspector.function")}>contribute&lt;T&gt;</Row>
+              <Row k={t("inspector.projectId")}>{project.id.slice(0, 18)}…</Row>
+              <Row k={t("inspector.amountMist")}>{amountMist.toString()}</Row>
+              <Row k={t("inspector.returns")}>{t("inspector.returnsValue")}</Row>
             </div>
             {submitState.kind === "error" && (
               <p
@@ -243,7 +254,7 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
                 onClick={() => setInspectorOpen(false)}
                 className="diecut border border-ink/40 px-4 py-2 hover:bg-ink hover:text-bone transition-colors"
               >
-                <span className="font-mono-label">Cancel</span>
+                <span className="font-mono-label">{t("cancel")}</span>
               </button>
               <button
                 type="button"
@@ -261,21 +272,10 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
                       return;
                     }
                     if (!account) {
-                      throw new Error("Connect a wallet to contribute.");
-                    }
-                    // ProjectDTO doesn't yet carry the coin type T. Until the
-                    // DTO migration lands, we can't safely build a contribute
-                    // tx — surface a clear error instead of submitting a
-                    // malformed call against the contract.
-                    const coinType = (project as { coinType?: string }).coinType;
-                    if (!coinType) {
-                      throw new Error(
-                        "Contribute panel disabled until ProjectDTO carries the coin type. " +
-                          "See `lib/api/project-dto.ts` migration TODO.",
-                      );
+                      throw new Error(t("connectFirst"));
                     }
                     const tx = buildContributeTx({
-                      coinType,
+                      coinType: project.coinType,
                       projectId: project.id,
                       amountMist,
                       sender: account.address,
@@ -286,7 +286,7 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
                     setSubmitState({
                       kind: "error",
                       message:
-                        err instanceof Error ? err.message : "Transaction failed.",
+                        err instanceof Error ? err.message : t("txFailed"),
                     });
                   }
                 }}
@@ -294,8 +294,8 @@ export function PayPanel({ project }: { project: ProjectDTO }) {
               >
                 <span className="font-mono-label">
                   {submitState.kind === "submitting"
-                    ? "Signing…"
-                    : "Sign & submit"}
+                    ? t("signing")
+                    : t("signSubmit")}
                 </span>
               </button>
             </div>
@@ -327,7 +327,7 @@ function ParamCell({
   border = false,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   border?: boolean;
 }) {
   return (

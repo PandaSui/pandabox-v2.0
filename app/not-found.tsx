@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
 
-export const metadata: Metadata = {
-  title: "404 · Not found",
-  description: "No signal on this route.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("metadata.notFound");
+  return {
+    title: t("title"),
+    description: t("description"),
+    robots: { index: false, follow: false },
+  };
+}
 
 /**
  * Global 404 page. The conceptual conceit: Pandabox's signature kinetic
@@ -20,7 +24,8 @@ export const metadata: Metadata = {
  * Plum is the accent — it's the design system's "historical / archive"
  * semantic, fitting for "this isn't where you wanted to go."
  */
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound");
   return (
     <>
       <Nav />
@@ -33,7 +38,7 @@ export default function NotFound() {
               className="block h-1.5 w-1.5 rounded-full bg-plum"
             />
             <MonoLabel className="text-[11px]" accent="plum">
-              404 · ROUTE NOT FOUND
+              {t("eyebrow")}
             </MonoLabel>
           </div>
 
@@ -42,20 +47,17 @@ export default function NotFound() {
 
           {/* ─── Spec block: status sheet ─────────────────────────── */}
           <dl className="mt-10 grid max-w-md grid-cols-[6.5rem_1fr] gap-x-6 gap-y-2 font-mono text-[12px]">
-            <Row label="STATUS" value="NOT FOUND" tone="plum" />
-            <Row label="SIGNAL" value="—" />
-            <Row label="CYCLE" value="—" />
+            <Row label={t("rowStatus")} value={t("rowStatusValue")} tone="plum" />
+            <Row label={t("rowSignal")} value="—" />
+            <Row label={t("rowCycle")} value="—" />
           </dl>
 
           {/* ─── Headline + body ──────────────────────────────────── */}
           <h1 className="mt-10 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl">
-            No signal on this route.
+            {t("headline")}
           </h1>
           <p className="mt-5 max-w-prose text-base text-ink/70 md:text-lg">
-            Pandabox couldn't find what you were looking for. Either the URL
-            drifted between cycles, or this page was never on-chain to begin
-            with. Pick one of the live routes below — they're all paying out
-            signal.
+            {t("body")}
           </p>
 
           {/* ─── Recovery CTAs ────────────────────────────────────── */}
@@ -63,14 +65,14 @@ export default function NotFound() {
             <RecoveryCta
               href="/explore"
               accent="saffron"
-              label="Explore projects"
+              label={t("ctaExplore")}
             />
             <RecoveryCta
               href="/create"
               accent="poppy"
-              label="Launch a project"
+              label={t("ctaLaunch")}
             />
-            <RecoveryCta href="/docs" accent="sky" label="Read the docs" />
+            <RecoveryCta href="/docs" accent="sky" label={t("ctaDocs")} />
           </div>
 
           {/* ─── Home link, restrained ────────────────────────────── */}
@@ -79,7 +81,7 @@ export default function NotFound() {
               href="/"
               className="font-mono-label text-[11px] text-ink/55 underline-offset-4 hover:text-ink hover:underline"
             >
-              back to pandabox.money
+              {t("backHome")}
             </Link>
           </div>
         </Container>

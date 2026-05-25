@@ -2,74 +2,75 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { DocsTabs, type DocsTab } from "@/components/docs";
 
-export const metadata: Metadata = {
-  title: "Docs",
-  description:
-    "How Pandabox works on Sui: sale window, base rate & allocation, contribute & claim, unsold supply, finalize & withdraw, plus a wizard walkthrough.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("docs.metadata");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
-// Tabs split a long single-scroll page into focused panels. Section ids
-// remain unique across the whole document so deep links via `?tab=` + `#id`
-// keep working even if we later reshuffle tabs.
-const TABS: DocsTab[] = [
-  {
-    id: "mechanics",
-    label: "Mechanics",
-    sections: [
-      { id: "how", label: "01 / How it works" },
-      { id: "window", label: "02 / Sale window" },
-      { id: "rate", label: "03 / Base rate & allocation" },
-      { id: "claim", label: "04 / Contribute & claim" },
-      { id: "unsold", label: "05 / Unsold supply" },
-      { id: "finalize", label: "06 / Finalize & withdraw" },
-    ],
-  },
-  {
-    id: "wizard",
-    label: "Walk the wizard",
-    sections: [
-      { id: "wizard-intro", label: "The four steps" },
-      { id: "wizard-identity", label: "01 · Identity" },
-      { id: "wizard-coin", label: "02 · Coin" },
-      { id: "wizard-sale", label: "03 · Sale terms" },
-      { id: "wizard-deploy", label: "04 · Review & deploy" },
-    ],
-  },
-  {
-    id: "reference",
-    label: "Reference",
-    sections: [
-      { id: "glossary", label: "Glossary" },
-      { id: "faq", label: "FAQ" },
-    ],
-  },
-];
+export default async function DocsPage() {
+  const t = await getTranslations("docs");
 
-export default function DocsPage() {
+  // Tabs split a long single-scroll page into focused panels. Section ids
+  // remain unique across the whole document so deep links via `?tab=` + `#id`
+  // keep working even if we later reshuffle tabs.
+  const TABS: DocsTab[] = [
+    {
+      id: "mechanics",
+      label: t("tabs.mechanics.label"),
+      sections: [
+        { id: "how", label: t("tabs.mechanics.sections.how") },
+        { id: "window", label: t("tabs.mechanics.sections.window") },
+        { id: "rate", label: t("tabs.mechanics.sections.rate") },
+        { id: "claim", label: t("tabs.mechanics.sections.claim") },
+        { id: "unsold", label: t("tabs.mechanics.sections.unsold") },
+        { id: "finalize", label: t("tabs.mechanics.sections.finalize") },
+      ],
+    },
+    {
+      id: "wizard",
+      label: t("tabs.wizard.label"),
+      sections: [
+        { id: "wizard-intro", label: t("tabs.wizard.sections.intro") },
+        { id: "wizard-identity", label: t("tabs.wizard.sections.identity") },
+        { id: "wizard-coin", label: t("tabs.wizard.sections.coin") },
+        { id: "wizard-sale", label: t("tabs.wizard.sections.sale") },
+        { id: "wizard-deploy", label: t("tabs.wizard.sections.deploy") },
+      ],
+    },
+    {
+      id: "reference",
+      label: t("tabs.reference.label"),
+      sections: [
+        { id: "glossary", label: t("tabs.reference.sections.glossary") },
+        { id: "faq", label: t("tabs.reference.sections.faq") },
+      ],
+    },
+  ];
+
   return (
     <>
       <Nav />
       <main id="main">
         <Container className="border-b border-ink/15 py-8">
-          <MonoLabel>Docs</MonoLabel>
-          <h1 className="mt-2 text-3xl md:text-4xl">
-            How Pandabox actually works.
-          </h1>
-          <p className="mt-2 max-w-prose text-sm text-ink/60">
-            Three tabs. Mechanics is the protocol; Walk the wizard is the create
-            flow; Reference holds the glossary and FAQ.
-          </p>
+          <MonoLabel>{t("eyebrow")}</MonoLabel>
+          <h1 className="mt-2 text-3xl md:text-4xl">{t("heading")}</h1>
+          <p className="mt-2 max-w-prose text-sm text-ink/60">{t("subhead")}</p>
         </Container>
 
         <Suspense fallback={null}>
           <DocsTabs
             tabs={TABS}
+            ariaLabel={t("tabs.ariaLabel")}
             panels={{
               mechanics: <MechanicsPanel />,
               wizard: <WizardPanel />,
@@ -86,67 +87,52 @@ export default function DocsPage() {
 
 /* ─────────────────────────── Mechanics tab ─────────────────────────── */
 
-function MechanicsPanel() {
+async function MechanicsPanel() {
+  const t = await getTranslations("docs.mechanics");
   return (
     <>
-      <Section id="how" label="01 / How it works">
+      <Section id="how" label={t("how.label")}>
         <P>
-          Pandabox is a Move package on Sui. A creator deploys a{" "}
-          <Term>Project</Term> — a Sui object that owns a SUI treasury and a
-          locked <Term>TreasuryCap</Term> for the project's own coin. The
-          project then runs a single sale at a fixed rate: supporters contribute
-          SUI and earn the right to claim project tokens at the configured
-          price.
+          {t.rich("how.p1", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
         <P>
-          Supporters don't receive tokens directly. They receive a{" "}
-          <Term>ContributionReceipt</Term> — a transferable Sui NFT holding
-          their entitlement. They <Term>claim</Term> their tokens by burning the
-          receipt after the sale closes. Any payment that would exceed the
-          remaining allocation is refunded in the same transaction.
+          {t.rich("how.p2", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
-        <P>
-          The sale ends in one of three ways: the configured end time arrives,
-          the full allocation sells out, or the platform admin closes it. After
-          close, the creator withdraws the raised SUI (minus a platform fee) and
-          processes any unsold tokens per the policy they chose at deploy.
-        </P>
-        <TryIt href="/create" label="Start a draft project →" />
+        <P>{t("how.p3")}</P>
+        <TryIt href="/create" label={t("how.cta")} />
       </Section>
 
-      <Section id="window" label="02 / Sale window">
+      <Section id="window" label={t("window.label")}>
         <P>
-          Every sale has a single locked window. You set an{" "}
-          <Term>end time</Term> at deploy — or leave it open and close the sale
-          manually as admin. Until the sale finalizes, anyone can contribute at
-          the fixed rate.
+          {t.rich("window.p1", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
         <P>
-          Three things finalize a sale: the end time elapses (<Term>Time</Term>
-          ), the allocation sells out (<Term>Sellout</Term>), or the admin
-          force-closes it (<Term>Admin</Term>). Finalization is the gate for
-          token claims, SUI withdrawal, and unsold-supply processing — none of
-          those work while the sale is still active.
+          {t.rich("window.p2", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
         <P>
-          Finalization can be triggered by the admin (<code>try_finalize</code>)
-          or by anyone once the conditions are met (
-          <code>permissionless_finalize</code>) — so a stalled creator can't
-          trap supporters' claims after an end time has passed.
+          {t.rich("window.p3", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <TryIt
           href="/docs?tab=wizard#wizard-sale"
-          label="See it in step 03 →"
+          label={t("window.cta")}
         />
       </Section>
 
-      <Section id="rate" label="03 / Base rate & allocation">
+      <Section id="rate" label={t("rate.label")}>
         <P>
-          Two numbers govern the sale: the <Term>base rate</Term> (project
-          tokens issued per 1 SUI) and the <Term>funding allocation</Term>{" "}
-          (total project tokens to sell). Both are set at deploy and frozen for
-          the life of the project — they can't be changed by metadata updates or
-          admin actions.
+          {t.rich("rate.p1", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
         <Code>
           base rate = 1,000 tokens / SUI
@@ -157,85 +143,69 @@ function MechanicsPanel() {
           <br />
           if a supporter pays 12 SUI → entitled to 12,000 tokens
         </Code>
-        <P>
-          If a contribution would push past the remaining allocation, only the
-          affordable portion is accepted and the rest is refunded in the same
-          transaction. Supporters never overpay.
-        </P>
+        <P>{t("rate.p2")}</P>
         <TryIt
           href="/docs?tab=wizard#wizard-sale"
-          label="See it in step 03 →"
+          label={t("rate.cta")}
         />
       </Section>
 
-      <Section id="claim" label="04 / Contribute & claim">
+      <Section id="claim" label={t("claim.label")}>
         <P>
-          <Term>Contribute.</Term> A supporter calls <code>contribute</code>{" "}
-          with a SUI coin. The project records the contribution against their
-          address and returns a <Term>ContributionReceipt</Term> NFT — plus a
-          refund coin if the payment exceeded what could be allocated.
+          {t.rich("claim.p1", {
+            term: (chunks) => <Term>{chunks}</Term>,
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <P>
-          <Term>Claim.</Term> After the sale finalizes, the supporter burns
-          their receipt with <code>claim</code> and receives the project tokens.
-          Multiple receipts (from several contributions) can be burned together
-          in one call via <code>claim_multiple</code>, returning a single merged
-          coin.
+          {t.rich("claim.p2", {
+            term: (chunks) => <Term>{chunks}</Term>,
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
-        <P>
-          Receipts are regular Sui objects: transferable, sellable on secondary
-          markets, and they don't expire. Claims remain open as long as the
-          project object lives.
-        </P>
-        <TryIt href="/dashboard" label="View your receipts on Dashboard →" />
+        <P>{t("claim.p3")}</P>
+        <TryIt href="/dashboard" label={t("claim.cta")} />
       </Section>
 
-      <Section id="unsold" label="05 / Unsold supply">
+      <Section id="unsold" label={t("unsold.label")}>
         <P>
-          If the sale closes with tokens left in the allocation, the creator
-          runs <code>process_unsold</code> to execute the policy they picked at
-          deploy:
+          {t.rich("unsold.p1", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <P>
-          <Term>Burn</Term> — the unsold supply is destroyed, raising the
-          implied price of every claimed token. Signals scarcity: the float is
-          exactly what the sale raised.
+          {t.rich("unsold.p2", {
+            term: (chunks) => <Term>{chunks}</Term>,
+          })}
         </P>
         <P>
-          <Term>Transfer to creator</Term> — the unsold supply moves to the
-          creator as a normal coin balance. Useful if you intend to seed
-          liquidity, run a secondary sale, or hold a treasury position. The
-          project page surfaces this as <code>UNSOLD → CREATOR</code> in the
-          spec line so supporters see the policy before paying.
+          {t.rich("unsold.p3", {
+            term: (chunks) => <Term>{chunks}</Term>,
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <TryIt
           href="/docs?tab=wizard#wizard-sale"
-          label="See it in step 03 →"
+          label={t("unsold.cta")}
         />
       </Section>
 
-      <Section id="finalize" label="06 / Finalize & withdraw">
+      <Section id="finalize" label={t("finalize.label")}>
         <P>
-          Once finalized, the creator calls <code>withdraw_sui</code> to pull
-          raised SUI from the project treasury. The platform fee (in basis
-          points, set by Pandabox) is skimmed automatically — the creator
-          receives the net amount, the fee accrues to the platform treasury.
-          Withdrawals can be partial; the cap holder can withdraw the rest
-          later.
+          {t.rich("finalize.p1", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <P>
-          The <Term>ProjectAdminCap</Term> minted at deploy is a regular Sui
-          object. It moves via <code>transfer_project_admin</code> (which emits
-          the event the indexer relies on — prefer this over a raw object
-          transfer) or destroys itself via <code>renounce_project_admin</code>,
-          leaving the project permanently un-administered — useful for community
-          projects that want to remove themselves from the creator's discretion.
+          {t.rich("finalize.p2", {
+            term: (chunks) => <Term>{chunks}</Term>,
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
         <P>
-          Project metadata — name, description, icon URL, source-code blob, and
-          the off-chain details JSON (tagline, category, socials) — stays
-          editable via <code>update_metadata</code> whether the sale is active
-          or closed.
+          {t.rich("finalize.p3", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </P>
       </Section>
     </>
@@ -244,53 +214,53 @@ function MechanicsPanel() {
 
 /* ───────────────────────── Walk the wizard tab ───────────────────────── */
 
-function WizardPanel() {
+async function WizardPanel() {
+  const t = await getTranslations("docs.wizard");
   return (
     <>
-      <Section id="wizard-intro" label="The four steps">
-        <P>
-          The create flow is four steps. Everything you fill in here lands
-          either on-chain (sale params, name, blob CIDs) or in the
-          project_details JSON pinned to IPFS (tagline, category, socials). A
-          live preview on the right shows exactly what supporters will see.
-        </P>
-        <TryIt href="/create" label="Open the wizard " />
+      <Section id="wizard-intro" label={t("intro.label")}>
+        <P>{t("intro.p1")}</P>
+        <TryIt href="/create" label={t("intro.cta")} />
       </Section>
 
       <Shot
         id="wizard-identity"
         src="/screenshots-doc/identity-docs.png"
-        alt="Step 01 of the create wizard — identity fields next to a live project-page preview."
+        alt={t("steps.identity.alt")}
         step="01"
-        title="Identity"
-        caption="Project name, ticker, category, tagline, cover image, description. The ticker shown here is informational — the real coin symbol comes from the CoinMetadata you connect in the next step."
+        title={t("steps.identity.title")}
+        caption={t("steps.identity.caption")}
+        stepWord={t("stepWord")}
       />
 
       <Shot
         id="wizard-coin"
         src="/screenshots-doc/coin-docs.png"
-        alt="Step 02 of the create wizard — connect or publish a Sui coin."
+        alt={t("steps.coin.alt")}
         step="02"
-        title="Coin"
-        caption="Pandabox needs its own Sui coin. Publish one from a pre-compiled coin_template.move (rewritten to your identifiers in-browser, pinned to IPFS for auditability) — or paste an existing TreasuryCap + CoinMetadata if you already have one. Decimals must be 9."
+        title={t("steps.coin.title")}
+        caption={t("steps.coin.caption")}
+        stepWord={t("stepWord")}
       />
 
       <Shot
         id="wizard-sale"
         src="/screenshots-doc/sales-terms.png"
-        alt="Step 03 of the create wizard — sale terms: tokens-per-SUI rate, total allocation, end time, unsold policy."
+        alt={t("steps.sale.alt")}
         step="03"
-        title="Sale terms"
-        caption="The four numbers that get locked at deploy: base rate (tokens per 1 SUI), total allocation, optional end time, and unsold action (burn or transfer to creator). The implied max raise is derived live as you type."
+        title={t("steps.sale.title")}
+        caption={t("steps.sale.caption")}
+        stepWord={t("stepWord")}
       />
 
       <Shot
         id="wizard-deploy"
         src="/screenshots-doc/review-deploy-docs.png"
-        alt="Step 04 of the create wizard — review and deploy."
+        alt={t("steps.deploy.alt")}
         step="04"
-        title="Review & deploy"
-        caption="One Sui transaction creates the Project object, consumes your TreasuryCap + CoinMetadata into it, and returns a ProjectAdminCap to your wallet. The poppy notice spells out what becomes immutable on submit and what stays editable via update_metadata."
+        title={t("steps.deploy.title")}
+        caption={t("steps.deploy.caption")}
+        stepWord={t("stepWord")}
       />
     </>
   );
@@ -298,104 +268,70 @@ function WizardPanel() {
 
 /* ─────────────────────────── Reference tab ─────────────────────────── */
 
-function ReferencePanel() {
+async function ReferencePanel() {
+  const t = await getTranslations("docs.reference");
   return (
     <>
-      <Section id="glossary" label="Glossary">
+      <Section id="glossary" label={t("glossary.label")}>
         <Glossary
           entries={[
+            ["Project", t("glossary.terms.project")],
+            ["ProjectAdminCap", t("glossary.terms.projectAdminCap")],
+            ["ContributionReceipt", t("glossary.terms.contributionReceipt")],
+            [t("glossary.termLabels.baseRate"), t("glossary.terms.baseRate")],
             [
-              "Project",
-              "A shared Sui object holding the SUI treasury, the locked TreasuryCap<T>, and the sale parameters.",
+              t("glossary.termLabels.fundingAllocation"),
+              t("glossary.terms.fundingAllocation"),
             ],
             [
-              "ProjectAdminCap",
-              "Owned Sui object granting admin rights: withdraw SUI, process unsold, update metadata, finalize, transfer, renounce.",
+              t("glossary.termLabels.unsoldAction"),
+              t("glossary.terms.unsoldAction"),
+            ],
+            [t("glossary.termLabels.endTime"), t("glossary.terms.endTime")],
+            [
+              t("glossary.termLabels.finalize"),
+              t("glossary.terms.finalize"),
             ],
             [
-              "ContributionReceipt",
-              "NFT minted on contribute. Burnable for the entitled tokens after finalize. Transferable like any Sui object.",
+              t("glossary.termLabels.closeTrigger"),
+              t("glossary.terms.closeTrigger"),
             ],
             [
-              "Base rate",
-              "Project tokens issued per 1 SUI of contribution. Frozen at deploy.",
+              t("glossary.termLabels.projectStatus"),
+              t("glossary.terms.projectStatus"),
             ],
             [
-              "Funding allocation",
-              "Total project tokens to sell. Once reached, sellout triggers. Frozen at deploy.",
+              t("glossary.termLabels.platformFee"),
+              t("glossary.terms.platformFee"),
             ],
-            [
-              "Unsold action",
-              "Policy for tokens left at sale close: Burn, or Transfer to creator. Frozen at deploy.",
-            ],
-            [
-              "End time",
-              "Optional sale end timestamp. If null, only admin close or sellout can finalize.",
-            ],
-            [
-              "Finalize",
-              "Lock the sale. Required before claims, SUI withdrawal, or unsold processing. Permissionless once conditions are met.",
-            ],
-            [
-              "Close trigger",
-              "Why the sale ended: Time, Sellout, or Admin. Recorded on-chain.",
-            ],
-            [
-              "Project status",
-              "Active (selling), Closed (finalized), or Compromised (platform-flagged).",
-            ],
-            [
-              "Platform fee",
-              "Basis-point cut of withdrawn SUI taken by Pandabox. Set by the platform admin, applied at withdraw_sui.",
-            ],
-            ["MIST", "Smallest SUI unit. 1 SUI = 1,000,000,000 MIST."],
+            ["MIST", t("glossary.terms.mist")],
           ]}
         />
       </Section>
 
-      <Section id="faq" label="FAQ">
-        <FaqItem q="Is this audited?">
-          Not yet. Pandabox is in testnet. A formal audit will land before the
-          mainnet ramp.
+      <Section id="faq" label={t("faq.label")}>
+        <FaqItem q={t("faq.items.audited.q")}>{t("faq.items.audited.a")}</FaqItem>
+        <FaqItem q={t("faq.items.editAfterDeploy.q")}>
+          {t.rich("faq.items.editAfterDeploy.a", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </FaqItem>
-        <FaqItem q="Can I edit my project after deploy?">
-          Yes for off-chain identity: name, description, cover image (icon URL),
-          source-code blob, tagline, category, and social links all update via{" "}
-          <code>update_metadata</code> at any time. No for sale economics: base
-          rate, funding allocation, end time, and the unsold-supply policy are
-          frozen at deploy. The coin's symbol and decimals are set by the coin
-          module you deployed before Pandabox — those can't be changed here
-          either.
+        <FaqItem q={t("faq.items.gas.q")}>{t("faq.items.gas.a")}</FaqItem>
+        <FaqItem q={t("faq.items.neverClaims.q")}>
+          {t.rich("faq.items.neverClaims.a", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </FaqItem>
-        <FaqItem q="How does gas work?">
-          Every transaction is paid by the wallet that signs it. Create,
-          contribute, claim, withdraw — all signer-paid. Sui gas is typically
-          sub-cent at mainnet rates, so the practical cost to back a project is
-          the SUI you contribute, not the gas.
+        <FaqItem q={t("faq.items.transferCap.q")}>
+          {t.rich("faq.items.transferCap.a", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </FaqItem>
-        <FaqItem q="What if a supporter never claims?">
-          Receipts don't expire. The tokens stay locked in the project's
-          TreasuryCap until the holder burns the receipt with <code>claim</code>
-          . A receipt is a real Sui object, so it can also be transferred or
-          sold to someone else who'll claim it.
+        <FaqItem q={t("faq.items.compromised.q")}>
+          {t("faq.items.compromised.a")}
         </FaqItem>
-        <FaqItem q="Can I transfer the ProjectAdminCap?">
-          Yes — use <code>transfer_project_admin</code> so the event lands in
-          the indexer. The cap doesn't carry any project tokens or raised SUI;
-          it's purely the admin key. You can also call{" "}
-          <code>renounce_project_admin</code> to destroy it permanently — the
-          project then runs without any admin at all.
-        </FaqItem>
-        <FaqItem q="What does the 'Compromised' status mean?">
-          The platform admin can flag a project as Compromised when there's
-          clear evidence of misuse (rug, impersonation, malware in claimed
-          perks). It's a one-way moderation signal — the project page stays
-          accessible so supporters can see the flag and act, but it warns
-          clearly. It does not seize funds.
-        </FaqItem>
-        <FaqItem q="How do I get listed on the landing's featured row?">
-          Featured is just sort by SUI raised, top three. Raise enough and you
-          appear automatically.
+        <FaqItem q={t("faq.items.featured.q")}>
+          {t("faq.items.featured.a")}
         </FaqItem>
       </Section>
     </>
@@ -452,6 +388,7 @@ function Shot({
   step,
   title,
   caption,
+  stepWord,
 }: {
   id: string;
   src: string;
@@ -459,6 +396,7 @@ function Shot({
   step: string;
   title: string;
   caption: string;
+  stepWord: string;
 }) {
   return (
     <figure id={id} className="scroll-mt-32 border border-ink/15 bg-bone">
@@ -472,7 +410,7 @@ function Shot({
       />
       <figcaption className="px-4 py-3">
         <MonoLabel className="block text-[10px]">
-          Step {step} · {title}
+          {stepWord} {step} · {title}
         </MonoLabel>
         <p className="mt-1.5 text-sm text-ink/70">{caption}</p>
       </figcaption>
@@ -493,17 +431,17 @@ function TryIt({ href, label }: { href: string; label: string }) {
   );
 }
 
-function Glossary({ entries }: { entries: [string, string][] }) {
+function Glossary({ entries }: { entries: [string, React.ReactNode][] }) {
   return (
     <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-[10rem_1fr]">
-      {entries.map(([term, def]) => (
-        <Row key={term} term={term} def={def} />
+      {entries.map(([term, def], i) => (
+        <Row key={typeof term === "string" ? term : i} term={term} def={def} />
       ))}
     </dl>
   );
 }
 
-function Row({ term, def }: { term: string; def: string }) {
+function Row({ term, def }: { term: string; def: React.ReactNode }) {
   return (
     <>
       <dt className="font-mono-label text-ink/70">{term}</dt>
@@ -512,7 +450,13 @@ function Row({ term, def }: { term: string; def: string }) {
   );
 }
 
-function FaqItem({ q, children }: { q: string; children: React.ReactNode }) {
+function FaqItem({
+  q,
+  children,
+}: {
+  q: string;
+  children: React.ReactNode;
+}) {
   return (
     <details className="group border-b border-ink/15 py-3">
       <summary className="flex cursor-pointer items-baseline justify-between gap-3 list-none">

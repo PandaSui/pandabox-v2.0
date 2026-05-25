@@ -1,0 +1,1147 @@
+{
+  "metadata": {
+    "title": "Pandabox — 価値あるものに資金を。Sui上で。",
+    "description": "Sui上のプログラマブル資金調達ローンチパッド。プロジェクトを立ち上げ、レートを設定し、オンチェーンセールを実行 — 全てのパラメーター、全てのトランザクションがオンチェーン。",
+    "ogImageAlt": "Pandabox — Sui向けプログラマブル資金調達ローンチパッド。",
+    "notFound": {
+      "title": "404 · ページが見つかりません",
+      "description": "このルートにシグナルはありません。"
+    }
+  },
+  "common": {
+    "skipToContent": "コンテンツへスキップ",
+    "language": "言語"
+  },
+  "nav": {
+    "homeAria": "Pandabox ホーム",
+    "primaryAria": "メイン",
+    "mobileAria": "モバイル",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる",
+    "links": {
+      "explore": "探索",
+      "create": "作成",
+      "dashboard": "ダッシュボード",
+      "docs": "ドキュメント",
+      "admin": "管理"
+    }
+  },
+  "wallet": {
+    "connect": "ウォレット接続",
+    "pickerTitle": "Sui ウォレットを接続",
+    "pickerDescription": "サインインするウォレットを選択してください。当社は秘密鍵を保管しません — 鍵はあなたのウォレット内に留まります。",
+    "noWallets": "このブラウザでは Sui ウォレットが検出されませんでした。",
+    "installSuiWallet": "Sui Wallet をインストール →",
+    "walletStandard": "Sui ウォレット標準",
+    "connectError": "接続できませんでした。",
+    "fallbackName": "ウォレット",
+    "balanceLabel": "残高",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "アドレスをコピー",
+    "copied": "コピー済み",
+    "viewOnSuiscan": "Suiscan で表示",
+    "disconnect": "切断"
+  },
+  "pulse": {
+    "totalRaised": "Pandabox 全体の累計調達額",
+    "mostRecent": "最新",
+    "flatlinedAria": "Treasury Pulse — フラットライン",
+    "flatlinedCaption": "このルートにはペイメントイベントがありません。Pandabox は存在しないページのパルスをレンダリングできません。"
+  },
+  "notFound": {
+    "eyebrow": "404 · ルートが見つかりません",
+    "rowStatus": "ステータス",
+    "rowStatusValue": "見つかりません",
+    "rowSignal": "シグナル",
+    "rowCycle": "サイクル",
+    "headline": "このルートにシグナルはありません。",
+    "body": "Pandabox はお探しのものを見つけられませんでした。URL がサイクル間でずれたか、このページは元々オンチェーンに存在しませんでした。下記のライブルートからお選びください — どれもシグナルを発信しています。",
+    "ctaExplore": "プロジェクトを探索",
+    "ctaLaunch": "プロジェクトを立ち上げる",
+    "ctaDocs": "ドキュメントを読む",
+    "backHome": "pandabox.money へ戻る"
+  },
+  "home": {
+    "hero": {
+      "live": "Sui {network} で稼働中",
+      "titleFund": "価値あるものに",
+      "titleWorth": "資金を",
+      "titleFunding": "提供する。",
+      "titleOnSui": "Sui の上で",
+      "tagline": "Pandabox は Sui 向けのプログラマブル資金調達プラットフォームです。数分でプロジェクトを立ち上げ、SUI を受け取り、トークンを発行し、ペイアウトを定義 — 全てオンチェーン、全て透明、全てあなたのもの。",
+      "ctaLaunch": "プロジェクトを立ち上げる",
+      "ctaExplore": "プロジェクトを探索",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · 最終",
+      "marginSpec": "プロジェクト仕様 — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "リリース",
+      "titleYourProject": "あなたのプロジェクトを、",
+      "titleOnchain": "オンチェーンで",
+      "titleInMinutes": "3分で立ち上げ。",
+      "subhead": "サイクル、ペイアウト、トークンを設定。Sui トランザクションに1回署名するだけ。AdminCap はあなたが保持します。",
+      "ctaLaunch": "プロジェクトを立ち上げる",
+      "ctaDocs": "ドキュメントを読む",
+      "tileSign": "署名",
+      "tileSignValue": "トランザクション1回",
+      "tileGas": "ガス",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "セットアップ",
+      "tileSetupValue": "6ステップ",
+      "tileKeys": "鍵",
+      "tileKeysValue": "AdminCap はあなたのもの",
+      "marginLive": "pandabox.sui · 稼働中",
+      "marginRevalidate": "60秒ごとに再検証"
+    },
+    "featured": {
+      "title": "注目のプロジェクト",
+      "subtitle": "厳選された現在資金調達中のプロジェクト。",
+      "viewAll": "全て表示",
+      "eyebrow": "注目",
+      "headline": "今、資金調達中",
+      "watermark": "資金調達済み",
+      "sectionRail": "セクション · 02 / 注目",
+      "statOnchain": "オンチェーン",
+      "statProjects": "プロジェクト",
+      "statRaisedAcross": "トップ3で調達",
+      "exploreAll": "全プロジェクトを探索",
+      "dataMeta": "データ: sui mainnet · 60秒ごとに再検証",
+      "empty": {
+        "label": "プロジェクトなし",
+        "heading": "最初のオンチェーンプロジェクトを待機中。",
+        "description": "<code>pandabox::project</code> からの ProjectCreated イベントがここに表示されます。"
+      },
+      "tape": {
+        "live": "稼働中",
+        "onchain": "オンチェーン",
+        "backedAgo": "サポート · 2分前",
+        "verified": "認証済み",
+        "cycle01": "サイクル 01",
+        "supportingNow": "サポート中 · 12名",
+        "txConfirmed": "tx 確認済み",
+        "freshRaise": "新規調達",
+        "unnamed": "無題"
+      },
+      "skeleton": {
+        "ariaLoading": "注目プロジェクトを読み込み中",
+        "srLoading": "注目プロジェクトを読み込み中…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "仕組み",
+      "eyebrowSpec": "03 ムーブ · アイデア → オンチェーン",
+      "title": "アイデアからオンチェーン資金調達まで3ステップ。",
+      "subtitle": "ここで設定する全パラメーターが Move コールになります。サポーターの全てのインタラクションがトランザクションになります。Pandabox はその間にあるものです。",
+      "nowViewing": "表示中",
+      "progressDeploy": "デプロイ",
+      "progressReconfigure": "再設定",
+      "ctaLaunch": "プロジェクトを立ち上げる",
+      "ctaDocs": "ドキュメントを読む",
+      "stepLabel": "ステップ {number} · {phase}",
+      "onchainSuiMove": "オンチェーン · sui move",
+      "live": "稼働中",
+      "steps": {
+        "0": {
+          "phase": "設定",
+          "heading": "デプロイ",
+          "body": "サイクル、ペイアウト、トークン、オプションの NFT ティアを設定。Sui トランザクションに1回署名するだけ。あなたが所有する AdminCap オブジェクトと共にプロジェクトが稼働開始します。",
+          "outcome": "AdminCap がミントされました"
+        },
+        "1": {
+          "phase": "流入",
+          "heading": "受け取り",
+          "body": "サポーターはあなたのトレジャリーに直接 SUI を支払います。彼らはサイクルの重み付けでプロジェクトトークンを受け取り、定義されていればティア NFT も受け取ります。",
+          "outcome": "トークンがミントされました"
+        },
+        "2": {
+          "phase": "ガバナンス",
+          "heading": "再設定",
+          "body": "次のサイクルへの変更を提案。投票遅延の後、新しいパラメーターがロックされます。保有者はいつでも余剰分を換金できます。",
+          "outcome": "サイクルがキューに入りました"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "なぜ Sui か",
+      "title": "そのために作られたチェーンの上に構築。",
+      "subtitle": "Sui がネイティブで実現する3つの要素が、Pandabox の使用感を変えます — 1セント未満のペイメント、管理権限の真の所有、ゼロフリクションのオンボーディング。",
+      "nativeStamp": "sui ネイティブ",
+      "cards": {
+        "gas": {
+          "tag": "ガス",
+          "heading": "1セント未満のガス",
+          "body": "サポーターはプロジェクトを支援するために30ドルも払う必要はありません。Pandabox のペイメントは1セントの何分の一かで済むため、重要な小さな貢献も実際に通過します。",
+          "meta": "ペイ tx 中央値 · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "所有権",
+          "heading": "オブジェクト中心の所有権",
+          "body": "あなたの ProjectAdminCap は本物の Sui オブジェクトです。マルチシグに転送したり、DAO に渡したり、エスクローにロックしたり — ただのオブジェクトです。"
+        },
+        "onboarding": {
+          "tag": "オンボーディング",
+          "heading": "スポンサードトランザクション",
+          "body": "まだ SUI を保有していないサポーターをオンボード。Pandabox がガスをスポンサーできるので、初めてのウォレットでも最初のインタラクションでプロジェクトを支援できます。",
+          "meta": "ガスはスポンサード · 支払者は署名のみ"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "数字で見る",
+      "title": "実際のオンチェーンデータに基づく。",
+      "subtitle": "ここに表示される全ての数値は Pandabox Move パッケージのイベントから計算され、60秒ごとに更新されます。",
+      "sourceFootnote": "ソース · pandabox::project イベント · 合計 / カウント / セット",
+      "computedAt": "計算時刻",
+      "liveLabel": "稼働中 · sui mainnet",
+      "totalRaised": "累計調達額",
+      "totalRaisedHint": "全プロジェクトの sold ÷ base_rate の合計",
+      "delta24h": "24時間",
+      "substat": {
+        "across": "対象",
+        "projects": "プロジェクト",
+        "tokensMinted": "ミントされたトークン",
+        "platformFees": "プラットフォーム手数料",
+        "feeRate": "手数料率"
+      },
+      "activeProjects": "アクティブなプロジェクト",
+      "liveCount": "{count} 稼働中",
+      "closedCount": "{count} 終了",
+      "deployedAllTime": "累計デプロイ数",
+      "uniqueBackers": "ユニークサポーター",
+      "addr": "アドレス",
+      "contribsPerBacker": "貢献 / サポーター",
+      "moreOverflow": "+{count} 件",
+      "latestActivity": "最新アクティビティ",
+      "lastContribution": "最終貢献",
+      "largest": "最大",
+      "paymentsWindow": "{count} ペイメント · 24時間"
+    },
+    "heroConsole": {
+      "liveConsole": "ライブコンソール",
+      "streamSequenceAria": "ストリームシーケンス",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← 5秒ウィンドウ · 最古",
+      "pulseWindowNow": "現在 →",
+      "stream": "ストリーム",
+      "recentPayments": "最近のペイメント",
+      "listeningEvents": "イベントを待機中…",
+      "viewProjectAria": "プロジェクト {name} を表示",
+      "stat": {
+        "projects": "プロジェクト",
+        "platformFee": "プラットフォーム手数料",
+        "treasury": "トレジャリー"
+      }
+    }
+  },
+  "footer": {
+    "homeAria": "Pandabox ホーム",
+    "blurb": "Sui 向けプログラマブル資金調達プラットフォーム。オンチェーン構築、デフォルトでオープン。",
+    "navigate": "ナビゲーション",
+    "ecosystem": "エコシステム",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "技術情報",
+    "movePackage": "Move パッケージ",
+    "network": "ネットワーク",
+    "commit": "コミット",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Mainnet ビルド"
+  },
+  "explore": {
+    "title": "探索",
+    "headline": "今、資金調達中。",
+    "subtitle": "Pandabox 上の全てのアクティブなトークンセール、Sui mainnet パッケージから直接読み込み — 間にインデクサーはありません。",
+    "liveCount": "{count} 稼働中",
+    "totalCount": "{count} 合計",
+    "cachedHint": "60秒キャッシュ",
+    "all": "全て",
+    "live": "稼働中",
+    "ended": "終了",
+    "idle": "アイドル",
+    "verified": "認証済み",
+    "legacy": "レガシー",
+    "legacyHint": "9桁スケーリング修正前にデプロイされました — 数値は信頼できません。",
+    "filterByCategory": "カテゴリーで絞り込む",
+    "sortLabel": "並び替え",
+    "searchLabel": "検索",
+    "sort": {
+      "trending": "トレンド",
+      "newest": "新着",
+      "mostFunded": "資金調達額順",
+      "endingSoonest": "終了が近い順"
+    },
+    "searchPlaceholder": "プロジェクトを検索",
+    "searchAria": "プロジェクトを検索",
+    "sortAria": "プロジェクトを並び替え",
+    "loadMore": "さらに表示",
+    "empty": "このフィルターに一致するプロジェクトはまだありません。",
+    "emptyTitle": "一致なし",
+    "resetFilters": "フィルターをリセット",
+    "byCreator": "by {addr}",
+    "endsNow": "終了 ",
+    "endedAt": "終了 ",
+    "unnamed": "無題のプロジェクト",
+    "viewProject": "{name} を表示",
+    "categories": {
+      "opc": "OPC",
+      "meme": "ミーム",
+      "art": "アート",
+      "infra": "インフラ",
+      "dao": "DAO",
+      "research": "リサーチ",
+      "gaming": "ゲーミング",
+      "music": "ミュージック",
+      "social": "ソーシャル",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "調達額",
+      "supporters": "サポーター"
+    },
+    "hero": {
+      "raised": "調達額",
+      "supporters": "サポーター",
+      "heldBy": "保有者",
+      "backThis": "このプロジェクトを支援"
+    },
+    "status": {
+      "live": "稼働中",
+      "paused": "一時停止",
+      "closed": "終了"
+    },
+    "detail": {
+      "backToExplore": "探索へ戻る",
+      "legacyBadge": "レガシー · 不正なパラメーター",
+      "legacyBody": "このプロジェクトはウィザードが <code>base_rate</code> に9桁スケーリングを適用する前にデプロイされました。下のレート、目標、調達額の数値は不正確です — 信頼しないでください、このセールを支援しないでください。",
+      "creator": "クリエイター",
+      "contractAddressShort": "CA",
+      "verified": "認証済み",
+      "statusLabel": "ステータス",
+      "statusLive": "稼働中",
+      "statusEnded": "終了",
+      "statusClosed": "クローズ",
+      "endsIn": "終了まで",
+      "cap": "Cap",
+      "sale": "セール",
+      "ended": "終了",
+      "noCap": "上限なし",
+      "finished": "完了",
+      "closed": "クローズ",
+      "rate": "レート",
+      "perSui": "/SUI",
+      "maxSupply": "最大供給量",
+      "unsold": "未販売",
+      "unsoldToCreator": "→ クリエイター",
+      "unsoldBurn": "バーン",
+      "remaining": "残り",
+      "treasury": "トレジャリー",
+      "beFirstSupporter": "このプロジェクトの最初のサポーターになろう",
+      "supporterOne": "{count} 名のサポーター",
+      "supporterOther": "{count} 名のサポーター",
+      "lastBy": "最終 by",
+      "justNow": "たった今",
+      "agoMinutes": "{n}分前",
+      "agoHours": "{n}時間前",
+      "agoDays": "{n}日前",
+      "aboutTitle": "概要",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "まだ説明がピン留めされていません — クリエイターはいつでも公開できます。セールの仕組みはペイパネルをご覧ください。",
+      "status": {
+        "ended": "終了"
+      },
+      "meta": {
+        "notFoundTitle": "プロジェクトが見つかりません",
+        "descriptionFallback": "{name} ({ticker}) — Pandabox が提供する Sui 上のオンチェーン資金調達。"
+      },
+      "tabs": {
+        "about": "概要",
+        "activity": "アクティビティ"
+      },
+      "activity": {
+        "title": "アクティビティ",
+        "empty": "このプロジェクトのオンチェーンアクティビティはまだありません。貢献、クレーム、引き出しがここに表示されます。",
+        "eventCount": "{count, plural, one {# 件のイベント} other {# 件のイベント}}",
+        "revalidates": "30秒ごとに再検証",
+        "colTime": "時刻",
+        "colEvent": "イベント",
+        "colActor": "アクター",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "貢献",
+          "claim": "クレーム",
+          "withdraw": "引き出し",
+          "close": "クローズ"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "トークンをクレーム",
+        "finalizeSale": "セールをファイナライズ",
+        "receiptCount": "{count, plural, one {# 件のレシート} other {# 件のレシート}}",
+        "anyone": "誰でも",
+        "claimIntroOne": "セールが終了しました。<code>ContributionReceipt&lt;T&gt;</code> オブジェクトをバーンして {ticker} の取り分を受け取ってください。",
+        "claimIntroMany": "セールが終了しました。<code>ContributionReceipt&lt;T&gt;</code> オブジェクトをバーンして {ticker} の取り分を受け取ってください。",
+        "youllReceive": "受け取る量",
+        "from": "From",
+        "contributed": "貢献済み",
+        "finalizeIntro": "セールの終了時刻が過ぎました。誰でもファイナライズして最終販売額をロックインし、全員のクレームと引き出しを解放できます。",
+        "sold": "販売済み",
+        "treasury": "トレジャリー",
+        "claimCta": "クレーム → {amount}",
+        "claimAllCta": "全てクレーム → {amount}",
+        "receiptsSummary": "レシート ({count})",
+        "modalClaimTitle": "トークンをクレーム",
+        "modalFinalizeTitle": "セールをファイナライズ",
+        "backToProject": "プロジェクトへ戻る",
+        "youBurn": "バーンするもの",
+        "receiptOne": "レシート",
+        "receiptOther": "レシート",
+        "originallyContributed": "最初の貢献額 {amount}",
+        "youReceive": "受け取るもの",
+        "coinSentToWallet": "Coin<{ticker}> がウォレットへ送信されました",
+        "cancel": "キャンセル",
+        "signing": "署名中…",
+        "confirmClaim": "確認してクレーム",
+        "confirmFinalize": "確認してファイナライズ",
+        "finalizePreviewIntro": "セールウィンドウが終了しました。誰でもファイナライズして最終販売額をロックインできます — これによりサポーターのトークンクレームとプロジェクト所有者の SUI 引き出しが解放されます。",
+        "finalizeFootnote": "セールが準備できていない場合は no-op · ガスのみ · {ticker} 保有者向けにクレーム可能になります",
+        "saleFinalized": "セールがファイナライズされました",
+        "finalizeSuccessBody": "プロジェクトはクローズされました。トークンクレームと管理者引き出しが解放されました。",
+        "txLabel": "tx",
+        "txFailed": "トランザクションが失敗しました。",
+        "tweetText": "{projectName} から {ticker} を Pandabox でクレームしました — Sui 上のプログラマブルなオンチェーン資金調達。",
+        "stampClaimed": "クレーム済み",
+        "stampInYourWallet": "ウォレット内",
+        "tokensDeliveredEyebrow": "· トークン配布完了 ·",
+        "fromLabel": "from",
+        "receiptsBurnedOne": "{count} 件のレシートがバーンされました",
+        "receiptsBurnedOther": "{count} 件のレシートがバーンされました",
+        "statReceived": "受領済み",
+        "statReceipts": "レシート",
+        "burnedCount": "{count} バーン",
+        "shareOnX": "X でシェア"
+      },
+      "share": {
+        "tweetText": "Pandabox で {projectName} ({ticker}) を支援中 — Sui 上のプログラマブルなオンチェーン資金調達。",
+        "copyAria": "プロジェクトURLをコピー",
+        "shareAria": "X でシェア",
+        "copy": "コピー",
+        "copied": "コピー済み",
+        "share": "シェア"
+      },
+      "cover": {
+        "specCover": "カバー · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "アートワーク",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "{name} カバー",
+        "iconAlt": "{name} アイコン"
+      },
+      "meter": {
+        "ofLabel": "/",
+        "target": "目標"
+      },
+      "onchain": {
+        "title": "オンチェーン記録",
+        "specSheet": "スペックシート",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "プロジェクトオブジェクト",
+        "sharedObject": "共有オブジェクト",
+        "coinType": "コインタイプ",
+        "contractAddress": "コントラクトアドレス",
+        "deployed": "デプロイ済み",
+        "links": "リンク",
+        "social": "ソーシャル",
+        "site": "サイト",
+        "discord": "discord",
+        "noneProvided": "未提供",
+        "copy": "コピー",
+        "copied": "コピー済み",
+        "copyAria": "クリップボードへコピー",
+        "explorer": "エクスプローラー",
+        "justNow": "たった今",
+        "agoSeconds": "{n}秒前",
+        "agoMinutes": "{n}分前",
+        "agoHours": "{n}時間前",
+        "agoDays": "{n}日前",
+        "agoMonths": "{n}ヶ月前",
+        "agoYears": "{n}年前"
+      },
+      "rail": {
+        "connectTitle": "ウォレットを接続",
+        "connectBody": "接続してこのプロジェクトを支援、トークンをクレーム、または作成者の場合は管理してください。",
+        "loadingTitle": "保有データを読み込み中",
+        "loadingBody": "所有する AdminCap とレシートを確認中…",
+        "saleClosedTitle": "セール終了",
+        "saleClosedBody": "このセールはファイナライズされました。{token} の貢献レシートを保有していないため、このウォレットからクレームできるものはありません。",
+        "thisProjectFallback": "このプロジェクト"
+      },
+      "seedLiquidity": {
+        "title": "Cetus 流動性をシード",
+        "intro": "このプロジェクトを <strong>Cetus</strong> 上にペア流動性があるものとしてマークします。保存後、プロジェクトページの価格チャートは GeckoTerminal からライブ OHLCV データの読み込みを開始します。",
+        "verifyExplainer": "ピン留めの前に Sui 上のプールオブジェクトを検証します。プールは実際の <code>pool::Pool&lt;A, B&gt;</code> で、一方が SUI、もう一方があなたのプロジェクトコイン — <code>{coin}</code> である必要があります。実際のプール無しではフラグを反転できません。",
+        "poolAddressLabel": "Cetus プールアドレス",
+        "poolPlaceholder": "0x… (Cetus Pool オブジェクト ID)",
+        "verify": "検証",
+        "verifying": "検証中…",
+        "verifiedOk": "検証済み ✓",
+        "invalidObjectId": "有効な Sui オブジェクト ID ではありません",
+        "verificationFailedTitle": "検証失敗",
+        "verificationFailed": "検証に失敗しました。",
+        "poolVerified": "プール検証済み",
+        "cetus": "Cetus",
+        "rowPool": "プール",
+        "rowSideA": "サイド A",
+        "rowSideB": "サイド B",
+        "cancel": "キャンセル",
+        "pinning": "ピン留め中…",
+        "signing": "署名中…",
+        "signAndSave": "署名して保存",
+        "pinningFailed": "IPFS へのピン留めに失敗しました — {reason}",
+        "unknownError": "不明なエラー",
+        "txFailed": "トランザクションが失敗しました。",
+        "seededTitle": "流動性がシード済みとしてマークされました",
+        "seededBody": "プロジェクトページは新しいプールを検出し、約30秒のキャッシュ再検証以内にライブチャートのレンダリングを開始します。",
+        "detailsCid": "詳細 cid · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
+  },
+  "pay": {
+    "heading": "このプロジェクトを支援",
+    "youReceive": "受け取る量",
+    "remainingHint": "残りミント可能量 {amount}、超過分は自動的に返金されます。",
+    "memo": "メモ (オプション)",
+    "memoPlaceholder": "ペイメントと共にオンチェーンに記録されます",
+    "enterAmount": "金額を入力",
+    "payAmount": "{amount} SUI を支払う",
+    "shareOfSupply": "供給量シェア",
+    "remainingMintable": "残りミント可能量",
+    "unsold": "未販売",
+    "unsoldBurn": "バーン",
+    "unsoldTransfer": "クリエイターへ転送",
+    "inspectorTitle": "トランザクションインスペクター",
+    "inspectorPreview": "署名前プレビュー。ウォレットがこの Move コールに対する署名を要求します。",
+    "inspectorNotDeployed": "Move パッケージはまだデプロイされていません — NEXT_PUBLIC_PACKAGE_ID が設定されるまで、送信はローカルでシミュレートされます。",
+    "inspector": {
+      "package": "パッケージ",
+      "module": "モジュール",
+      "function": "関数",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "返却値",
+      "returnsValue": "ContributionReceipt + 返金コイン → 送信者"
+    },
+    "cancel": "キャンセル",
+    "signSubmit": "署名して送信",
+    "signing": "署名中…",
+    "confirmed": "ペイメント確認済み",
+    "backToProject": "プロジェクトへ戻る",
+    "connectFirst": "貢献するにはウォレットを接続してください。",
+    "txFailed": "トランザクションが失敗しました。"
+  },
+  "create": {
+    "page": {
+      "metaTitle": "プロジェクトを作成",
+      "metaDescription": "サイクル、トークン、ペイアウト、ティアを設定。Sui へデプロイ。",
+      "headline": "プロジェクトを設定し、1つのトランザクションでデプロイ。",
+      "intro": "6ステップ。ドラフトはブラウザに自動保存されます。右側のレールにはサポーターがプロジェクトページで見るものが正確に表示されます。",
+      "badgeOneTransaction": "1トランザクション",
+      "badgeAutoSaving": "ドラフトを自動保存中",
+      "badgeIpfs": "ipfs にピン留めされたアセット"
+    },
+    "wizard": {
+      "stepsAria": "ウィザードステップ",
+      "stepLabel": "ステップ {num}",
+      "stepLabels": {
+        "identity": "アイデンティティ",
+        "coin": "コイン",
+        "sale": "セール",
+        "deploy": "デプロイ"
+      },
+      "percentComplete": "{pct}% 完了",
+      "resetDraft": "ドラフトをリセット",
+      "back": "戻る",
+      "continueStep": "続行 · ステップ {num}",
+      "reviewAndDeployAbove": "上でレビュー＆デプロイ",
+      "resetModalTitle": "ドラフトをリセットしますか？",
+      "resetModalBody": "ウィザードの全フィールドをクリアし、ブラウザから保存されたドラフトを削除します。オンチェーンへの影響はありません — 空のフォームから始めるだけです。",
+      "resetBullet1": "アイデンティティ、コイン、セール、デプロイ — 全て消去",
+      "resetBullet2": "localStorage から削除",
+      "resetBullet3": "この操作は元に戻せません",
+      "keepDraft": "ドラフトを保持",
+      "resetDraftButton": "ドラフトをリセット"
+    },
+    "imageUpload": {
+      "defaultLabel": "カバー画像",
+      "cidLabel": "cid",
+      "errorOnlyImages": "画像ファイルのみ許可されます。",
+      "errorTooLarge": "画像が大きすぎます ({size} MiB)。最大 {max} MiB。",
+      "errorUploadFailed": "アップロードが予期せず失敗しました。",
+      "dropToPin": "ドロップでピン留め",
+      "dragOrClick": "画像をドラッグするか、クリックでアップロード",
+      "maxSize": "最大 {max} MiB",
+      "loadingFromIpfs": "ipfs から読み込み中",
+      "gatewayRetry": "ゲートウェイ再試行 {attempt}/4",
+      "gatewayWarmup": "ゲートウェイウォームアップ",
+      "replace": "置換",
+      "remove": "削除",
+      "uploading": "アップロード中",
+      "pinningToIpfs": "ipfs にピン留め中",
+      "cancelUploadAria": "アップロードをキャンセル",
+      "cancel": "キャンセル",
+      "sendingBytes": "ピン留めサービスにバイトを送信中",
+      "pinataReplicating": "pinata が ipfs ノード全体にレプリケート中 — 大きな画像では数秒かかる場合があります",
+      "pasteCidToggle": "または既存の CID / URL を貼り付け",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "アイデンティティ",
+      "body": "誰が何のために資金を集めるか。サポーターがウォレットとプロジェクトページで目にするものです。",
+      "meta": "オンチェーンに保存",
+      "basicsTitle": "基本情報",
+      "basicsMeta": "デプロイ時に不変",
+      "projectName": "プロジェクト名",
+      "projectNamePlaceholder": "例: Atelier Ono",
+      "ticker": "ティッカー",
+      "tickerHint": "大文字と数字、2〜10文字",
+      "category": "カテゴリー",
+      "storyTitle": "ストーリー",
+      "storyMeta": "いつでも編集可能",
+      "tagline": "タグライン",
+      "taglineHint": "1行、8〜160文字 · {len}/160",
+      "taglinePlaceholder": "Sui で毎週ドロップをミントするフォトジン・コレクティブ。",
+      "description": "説明",
+      "descriptionHint": "Markdown 対応 · 20〜4000文字 · {len}/4000",
+      "descriptionPlaceholder": "サポーターに何を作っているか、なぜ彼らの SUI が重要かを伝えてください。",
+      "coverTitle": "カバー画像",
+      "coverMeta": "ipfs にピン留め",
+      "coverHint": "プロジェクトページの上部に配置されます。16:10 のワイドクロップが最適。アップロード時に IPFS へピン留め — CID はオンチェーンに保存されます。",
+      "socialsTitle": "ソーシャル",
+      "socialsMeta": "オプション",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "ハンドル",
+      "website": "ウェブサイト",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "招待 URL"
+    },
+    "step2": {
+      "title": "コイン",
+      "body": "Pandabox にはあなたが所有する Sui コインが必要です。当社の監査済みテンプレートを使って今ブラウザで公開するか、既にお持ちの TreasuryCap + CoinMetadata を貼り付けることができます。",
+      "meta": "9桁小数 · sui::coin::create_currency で作成",
+      "modeLabel": "モード",
+      "modePublish": "新しいコインを公開",
+      "modePaste": "既にコインがあります",
+      "untitledCoin": "無題のコイン",
+      "howThisWorks": "仕組み",
+      "howThisWorksBody": "<strong>9桁小数</strong>のプリコンパイル済み <code>coin_template.move</code> から開始し、<code>@mysten/move-bytecode-template</code> でブラウザ内で識別子とメタデータ定数を書き換え、その後あなたのウォレットから公開します。レンダリングされた Move ソースは IPFS にピン留めされ、誰でもデプロイされた内容を正確に監査できます。",
+      "coinMetadataTitle": "コインメタデータ",
+      "coinMetadataMeta": "CoinMetadata<T> に格納されます",
+      "symbol": "シンボル",
+      "symbolHint": "2〜10文字 · 大文字 / 数字",
+      "name": "名前",
+      "namePlaceholder": "Panda Token",
+      "description": "説明",
+      "descriptionHint": "240文字以内 · ASCII",
+      "descriptionPlaceholder": "このコインが表すもの。",
+      "iconUrl": "アイコン URL",
+      "iconUrlHint": "プロジェクトカバーを再利用するか、ホスティングされた URL を貼り付け",
+      "moduleLabel": "モジュール",
+      "witnessLabel": "witness",
+      "publishTitle": "公開",
+      "publishMetaComplete": "完了",
+      "publishMetaStep": "2デプロイのステップ 1",
+      "coinPublishedConfirm": "コインが公開されました。TreasuryCap + CoinMetadata がドラフトに取り込まれました。",
+      "rowPackage": "パッケージ",
+      "rowCoinType": "コインタイプ",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "メタデータ",
+      "rowDigest": "digest",
+      "publishStateRewriting": "バイトコードを書き換え中…",
+      "publishStateSigning": "署名中…",
+      "publishStateFetching": "チェーンを待機中…",
+      "publishStatePinning": "ソースをピン留め中…",
+      "publishCoin": "コインを公開",
+      "publishCaption": "1トランザクション · 譲渡可能なアップグレードキャップが返却されます",
+      "errorNoDigest": "ウォレットが公開 tx の digest を返しませんでした。",
+      "errorPublishFailed": "公開に失敗しました。",
+      "strandedTitle": "公開済み — ただし RPC が応答しません",
+      "openOnSuiExplorer": "Sui Explorer で開く",
+      "switchToPasteMode": "貼り付けモードに切り替え",
+      "digestLabel": "digest",
+      "validateSymbol": "2〜10文字 · A-Z, 0-9, _ · 文字で始まる必要があります",
+      "validateName": "名前を追加 (2〜32文字)",
+      "validateDescriptionLength": "最大240文字",
+      "validateDescriptionAscii": "ASCII のみ (絵文字 / スマートクォート不可)",
+      "validateIconUrl": "完全な https:// URL を使用",
+      "validateInvalidIdentifier": "無効な識別子",
+      "objectIdsTitle": "オブジェクト ID",
+      "objectIdsMeta": "あなたが所有している必要があります",
+      "treasuryCapLabel": "TreasuryCap<T> オブジェクト ID",
+      "treasuryCapHint": "公開トランザクションの createdObjects から。",
+      "metadataLabel": "CoinMetadata<T> オブジェクト ID",
+      "metadataHint": "コインタイプと小数桁数を検出するためにチェーンから読み込みます。",
+      "coinInfoTitle": "コイン情報",
+      "coinInfoMetaReading": "読み込み中…",
+      "coinInfoMetaDetected": "検出済み",
+      "coinInfoMetaNotFound": "見つかりません",
+      "statName": "名前",
+      "statSymbol": "シンボル",
+      "statDecimals": "小数桁",
+      "resolvedCoinType": "解決済みコインタイプ",
+      "wrongDecimals": "このコインは{decimals}桁の小数です。Pandabox は {required} 桁の小数を必要とします — 正しい値でコインを再デプロイしてください。",
+      "readingFromChain": "チェーンから読み込み中…",
+      "pasteMetadataHint": "上に CoinMetadata ID を貼り付けてコインを検出します。",
+      "errorObjectNotFound": "オブジェクトが見つかりません。",
+      "errorNotCoinMetadata": "オブジェクトは CoinMetadata<T> ではありません。",
+      "errorUnexpectedContent": "予期しないオブジェクトコンテンツ。",
+      "errorLookupFailed": "ルックアップに失敗しました。"
+    },
+    "step3": {
+      "title": "セール条件",
+      "body": "サポーターは SUI を貢献してレシートを受け取ります。セール終了後または完売後、彼らはトークン割り当てをクレームします。未販売分はバーンされるか、あなたの選択により返却されます。",
+      "meta": "デプロイ時に不変",
+      "pricingTitle": "価格設定",
+      "pricingMeta": "トークン ↔ SUI",
+      "tokensPerSui": "1 SUI あたりのトークン数",
+      "tokensPerSuiHint": "サポーターが 1 SUI ごとに受け取る {ticker} の数。",
+      "targetRaise": "目標調達額 (SUI)",
+      "targetRaiseHint": "これを編集すると 1 SUI あたりのトークン数が逆算されます。",
+      "baseRateLabel": "base_rate (スケール済み、オンチェーン)",
+      "allocationTitle": "割り当て",
+      "allocationMeta": "セール用の総トークン数",
+      "tokensForSale": "販売用トークン",
+      "tokensForSaleHint": "このセール用に予約された {ticker} の総数。TreasuryCap はこの量までミントします。",
+      "fundingAllocationLabel": "funding_allocation (生 u64)",
+      "maxSupplyLabel": "最大供給量 · {ticker}",
+      "mintedAtLaunch": "ローンチ時のミント数",
+      "mintedAtLaunchValue": "0 — クレーム時にミント",
+      "supplyNote": "コインは <zeroSupply>供給量 0</zeroSupply> から開始されます。サポーターがレシートで <code>claim</code> を呼び出した時にトークンが遅延ミントされます。最終流通供給量 = <claimed>クレーム済み</claimed>",
+      "supplyNoteReturn": " + 未販売分 (あなたのウォレットへ返却)",
+      "supplyNoteBurn": " (未販売分はバーンされます)",
+      "saleWindowTitle": "セールウィンドウ",
+      "durationDays": "{days}日",
+      "noTimeCap": "時間制限なし",
+      "ends": "終了",
+      "inDays": "{days} 日後",
+      "unsoldTitle": "未販売供給量",
+      "unsoldMeta": "セールクローズ後",
+      "actionLabel": "アクション",
+      "unsoldBurnTitle": "バーン",
+      "unsoldBurnBody": "未販売トークンは永久に破棄され、総供給量が減少します。",
+      "unsoldReturnTitle": "クリエイターへ返却",
+      "unsoldReturnBody": "未販売トークンはあなたのアドレスへミントされます。ベスティングや DEX シードに使用できます。"
+    },
+    "step4": {
+      "title": "レビュー＆デプロイ",
+      "body": "Pandabox は説明と project_details を IPFS にピン留めし、その後、プロジェクトを作成し、TreasuryCap を消費し、ProjectAdminCap をあなたのウォレットへ転送する単一の Sui トランザクションを送信します。",
+      "metaChecks": "{ok}/{total} チェック · {status}",
+      "statusReady": "準備完了",
+      "statusBlocked": "ブロック中",
+      "headsUp": "注意",
+      "headsUpBody": "<strong>デプロイで消費:</strong> あなたの <code>TreasuryCap<T></code> と <code>CoinMetadata<T></code> は Project オブジェクトの所有となり、取り戻すことはできません。<strong>デプロイで不変:</strong> 名前、コイン、ベースレート、割り当て、終了時刻、未販売アクション。<strong>後から編集可能:</strong> 説明、アイコン、ソースコード blob、project_details (<code>update_metadata</code> 経由)。",
+      "sourceCodeTitle": "オプション · ソースコード",
+      "sourceCodeMetaSet": "設定済み",
+      "sourceCodeMetaSkipped": "スキップ",
+      "sourceCodeLabel": "ソースコード blob (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy… (オプション)",
+      "sourceCodeHint": "リポジトリアーカイブを別途ピン留めし、CID を貼り付けてください。または空欄のままにして後で更新できます。",
+      "preflightTitle": "プリフライトチェック",
+      "preflightAllGreen": "全てクリア",
+      "preflightBlocking": "{count} 件ブロック中",
+      "fixInStep": "ステップ {num} で修正",
+      "deployTitle": "デプロイ",
+      "deployMetaLive": "稼働中 · sui mainnet",
+      "deployMetaSimulated": "シミュレート",
+      "deployToSui": "Sui へデプロイ",
+      "deployCaption": "treasury cap + メタデータを消費 · AdminCap が返却されます",
+      "draftAutoSaves": "ドラフトは <code>pandabox:draft:v3</code> としてブラウザに自動保存されます。",
+      "modalSuccessTitle": "プロジェクトがデプロイされました",
+      "modalInspectorTitle": "トランザクションインスペクター",
+      "openProjectPage": "プロジェクトページを開く",
+      "seeItOnExplore": "探索で表示",
+      "inspectorIntroLive": "公開しようとしている内容をレビューしてください。Pandabox は説明と詳細を IPFS にピン留めし、その後あなたのウォレットが Sui 上にプロジェクトを作成する1つのトランザクションに署名します。",
+      "inspectorIntroSimulated": "Move パッケージが設定されていません — この送信はローカルでシミュレートされます。",
+      "sectionProject": "プロジェクト",
+      "sectionYourCoin": "あなたのコイン",
+      "sectionSaleTerms": "セール条件",
+      "editLink": "編集",
+      "summaryName": "名前",
+      "summaryTicker": "ティッカー",
+      "summaryCategory": "カテゴリー",
+      "summaryTagline": "タグライン",
+      "summarySymbol": "シンボル",
+      "summaryDecimals": "小数桁",
+      "summaryRate": "レート",
+      "tokensWord": "トークン",
+      "summaryTotalForSale": "総販売数",
+      "summaryMaxSupply": "最大供給量",
+      "summaryMintedAtLaunch": "ローンチ時のミント数",
+      "summaryMintedAtLaunchValue": "0 — クレーム時に遅延ミント",
+      "summaryMaxRaise": "最大調達額",
+      "summarySaleEnds": "セール終了",
+      "summaryOpenEnded": "終了なし",
+      "summaryUnsoldTokens": "未販売トークン",
+      "summaryUnsoldReturn": "あなたのウォレットへ返却",
+      "summaryUnsoldBurn": "バーン (最終供給量を削減)",
+      "youllKeepLabel": "保持するもの ·",
+      "youllKeepBody": "ウォレット内の <strong>ProjectAdminCap</strong> — このプロジェクトの管理権限。後でマルチシグに転送できます。",
+      "youllGiveUpLabel": "手放すもの ·",
+      "youllGiveUpBody": "あなたの <strong>TreasuryCap</strong> と <strong>CoinMetadata</strong>。プロジェクトが所有権を取得し、回収できなくなります。",
+      "lockedOnDeployLabel": "デプロイでロック ·",
+      "lockedOnDeployBody": "名前、コイン、レート、割り当て、終了時刻、未販売アクション。説明、アイコン、リンクは編集可能なままです。",
+      "advancedToggle": "高度 · 生の Move コール",
+      "rawPinning": "ピン留め中…",
+      "rawSetAtSubmit": "送信時に設定",
+      "cancel": "キャンセル",
+      "submitPinningDescription": "説明をピン留め中…",
+      "submitPinningDetails": "詳細をピン留め中…",
+      "submitSigning": "署名中…",
+      "submitPinAndDeploy": "ピン留め＆デプロイ",
+      "errorDeployFailed": "デプロイに失敗しました。",
+      "untitledProject": "無題のプロジェクト",
+      "coverWord": "カバー",
+      "noCover": "カバーなし",
+      "projectCoverPreviewAlt": "プロジェクトカバープレビュー",
+      "checkIdentityOk": "アイデンティティ完了",
+      "checkIdentityErr": "アイデンティティ: {msg}",
+      "checkCoinOk": "コイン検証済み · {symbol} · {decimals} 桁小数",
+      "checkCoinWrongDecimals": "コインは {decimals} 桁の小数を使用 — プロトコルは {required} を要求",
+      "checkCoinErr": "コイン: {msg}",
+      "checkSaleOk": "セール条件は有効",
+      "checkSaleErr": "セール: {msg}",
+      "checkIncomplete": "未完了"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "ダッシュボード",
+      "description": "あなたが所有・支援している Pandabox プロジェクト。"
+    },
+    "title": "ダッシュボード",
+    "headline": "あなたのアクティビティ",
+    "untitledProject": "無題のプロジェクト",
+    "connectGate": {
+      "eyebrow": "ウォレットを接続",
+      "headline": "あなたのアクティビティを、オンチェーンで。",
+      "body": "Sui ウォレットを接続して、あなたが作成したプロジェクトや支援したプロジェクトを表示してください。"
+    },
+    "refresh": {
+      "label": "更新",
+      "busy": "更新中",
+      "aria": "ダッシュボードを更新",
+      "ariaRefreshing": "ダッシュボードを更新中"
+    },
+    "kpi": {
+      "raised": "調達額",
+      "treasury": "トレジャリー",
+      "live": "稼働中",
+      "backing": "支援中"
+    },
+    "owned": {
+      "title": "あなたのプロジェクト",
+      "subtitle": "あなたが ProjectAdminCap を保有するプロジェクト。管理をクリックしてワークスペースを開きます。",
+      "noMatchLabel": "このフィルターに一致するプロジェクトはありません",
+      "noMatchBody": "別の状態を試すか、フィルターをクリアして全ての {count, plural, one {# 件のプロジェクト} other {# 件のプロジェクト}} を表示してください。",
+      "empty": {
+        "label": "まだプロジェクトはありません",
+        "body": "数分でトークンセールを立ち上げ。コインを事前デプロイし、セール条件を設定し、1つの署名で出荷。",
+        "cta": "プロジェクトを立ち上げる"
+      },
+      "card": {
+        "treasury": "トレジャリー",
+        "withdrawable": "引き出し可能",
+        "raisedPct": "調達 {pct}%",
+        "tokensSold": "{amount} {ticker} 販売済み",
+        "manage": "管理",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "支援中のプロジェクト",
+      "subtitle": "あなたの ContributionReceipts。セールがファイナライズされたらクレームできます。",
+      "receipts": "{count, plural, one {# 件のレシート} other {# 件のレシート}}",
+      "contributed": "貢献済み",
+      "claimable": "クレーム可能",
+      "yourShare": "あなたの取り分",
+      "action": {
+        "claim": "トークンをクレーム",
+        "finalize": "セールをファイナライズ",
+        "open": "プロジェクトを開く"
+      },
+      "empty": {
+        "label": "まだ誰も支援していません",
+        "body": "探索でプロジェクトを支援 — レシートとクレーム可能な取り分がここに表示されます。",
+        "cta": "プロジェクトを探索"
+      }
+    },
+    "loading": {
+      "aria": "プロジェクトを読み込み中",
+      "sr": "プロジェクトを読み込み中…"
+    },
+    "filter": {
+      "all": "全て",
+      "live": "稼働中",
+      "endingSoon": "もうすぐ終了",
+      "needsFinalize": "ファイナライズが必要",
+      "closed": "終了",
+      "disabledTitle": "{label} のプロジェクトはありません"
+    },
+    "sort": {
+      "label": "並び替え",
+      "aria": "プロジェクトを並び替え",
+      "newest": "新着",
+      "mostRaised": "調達額順",
+      "endingSoonest": "終了が近い順"
+    },
+    "state": {
+      "live": "稼働中",
+      "endingSoon": "もうすぐ終了",
+      "endedAwaiting": "ファイナライズが必要",
+      "closed": "終了",
+      "unknown": "不明"
+    },
+    "time": {
+      "noCap": "時間制限なし",
+      "endedJustNow": "たった今終了",
+      "endsIn": "残り {duration} で終了",
+      "endedAgoFinalize": "{duration} 前に終了 · ファイナライズで解放",
+      "closedAgo": "終了 · {duration} 前",
+      "closed": "終了",
+      "durationDH": "{days}日 {hours}時間",
+      "durationHM": "{hours}時間 {mins}分",
+      "durationM": "{mins}分"
+    },
+    "sparkline": {
+      "placeholder": "24時間"
+    },
+    "manage": {
+      "backToDashboard": "ダッシュボードへ戻る",
+      "openPublicPage": "公開ページを開く",
+      "untitledProject": "無題のプロジェクト",
+      "status": {
+        "live": "稼働中",
+        "ended": "終了",
+        "closed": "クローズ"
+      },
+      "stats": {
+        "treasury": "トレジャリー",
+        "sold": "販売済み",
+        "creator": "クリエイター",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "流動性シード済み · チャート稼働中",
+        "noPoolLabel": "まだプールなし · チャートはプレースホルダー",
+        "poolLink": "プール {id}",
+        "seedViaPanel": "パネルからシード →"
+      },
+      "info": {
+        "whatLabel": "ここでできること",
+        "whatBody": "全ての管理アクション — ファイナライズ、引き出し、メタデータ更新、流動性シード、キャップの転送または放棄 — はプロジェクトページと同じオンチェーンエントリ関数を経由します。ボタンは右側のパネルにあり、プリフライトチェックは各モーダル内に表示されます。"
+      },
+      "supply": {
+        "label": "供給",
+        "allocation": "割り当て",
+        "sold": "販売済み",
+        "remaining": "残り",
+        "unsoldAction": "未販売アクション",
+        "unsoldCreator": "→ クリエイター",
+        "unsoldBurn": "バーン"
+      },
+      "error": {
+        "label": "プロジェクトを読み込めませんでした",
+        "retry": "再試行"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "ドキュメント",
+      "description": "Pandabox が Sui 上でどう動作するか: セールウィンドウ、ベースレートと割り当て、貢献とクレーム、未販売供給量、ファイナライズと引き出し、加えてウィザードのウォークスルー。"
+    },
+    "eyebrow": "ドキュメント",
+    "heading": "Pandabox の実際の仕組み。",
+    "subhead": "3つのタブ。メカニクスはプロトコル、ウィザードを歩むは作成フロー、リファレンスは用語集と FAQ。",
+    "toc": {
+      "ariaLabel": "ドキュメントセクション",
+      "onThisPage": "このページ内"
+    },
+    "tabs": {
+      "ariaLabel": "ドキュメントセクション",
+      "mechanics": {
+        "label": "メカニクス",
+        "sections": {
+          "how": "01 / 仕組み",
+          "window": "02 / セールウィンドウ",
+          "rate": "03 / ベースレートと割り当て",
+          "claim": "04 / 貢献とクレーム",
+          "unsold": "05 / 未販売供給量",
+          "finalize": "06 / ファイナライズと引き出し"
+        }
+      },
+      "wizard": {
+        "label": "ウィザードを歩む",
+        "sections": {
+          "intro": "4つのステップ",
+          "identity": "01 · アイデンティティ",
+          "coin": "02 · コイン",
+          "sale": "03 · セール条件",
+          "deploy": "04 · レビュー＆デプロイ"
+        }
+      },
+      "reference": {
+        "label": "リファレンス",
+        "sections": {
+          "glossary": "用語集",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / 仕組み",
+        "p1": "Pandabox は Sui 上の Move パッケージです。クリエイターは <term>プロジェクト</term> — SUI トレジャリーとプロジェクト独自のコインのロックされた <term>TreasuryCap</term> を所有する Sui オブジェクト — をデプロイします。プロジェクトはその後、固定レートで単一のセールを実行します: サポーターは SUI を貢献し、設定された価格でプロジェクトトークンをクレームする権利を獲得します。",
+        "p2": "サポーターはトークンを直接受け取りません。<term>ContributionReceipt</term> — 権利を保持する譲渡可能な Sui NFT — を受け取ります。彼らはセールクローズ後にレシートをバーンしてトークンを <term>クレーム</term> します。残りの割り当てを超えるペイメントは同じトランザクションで返金されます。",
+        "p3": "セールは3つの方法のいずれかで終了します: 設定された終了時刻が到来、割り当て全量が完売、またはプラットフォーム管理者がクローズ。クローズ後、クリエイターは調達した SUI を引き出し (プラットフォーム手数料を差し引いて)、デプロイ時に選択したポリシーに従って未販売トークンを処理します。",
+        "cta": "ドラフトプロジェクトを開始 →"
+      },
+      "window": {
+        "label": "02 / セールウィンドウ",
+        "p1": "全てのセールには1つのロックされたウィンドウがあります。デプロイ時に <term>終了時刻</term> を設定するか、空のままにして管理者として手動でセールをクローズします。セールがファイナライズされるまで、誰でも固定レートで貢献できます。",
+        "p2": "セールをファイナライズするのは3つの要因です: 終了時刻が経過 (<term>時間</term>)、割り当てが完売 (<term>完売</term>)、または管理者による強制クローズ (<term>管理者</term>)。ファイナライズはトークンクレーム、SUI 引き出し、未販売供給量処理のためのゲートです — セールがアクティブな間はどれも動作しません。",
+        "p3": "ファイナライズは管理者 (<code>try_finalize</code>) によって、または条件が満たされれば誰でも (<code>permissionless_finalize</code>) によってトリガーできます — そのため停滞したクリエイターは終了時刻が過ぎた後にサポーターのクレームを閉じ込めることはできません。",
+        "cta": "ステップ 03 で確認 →"
+      },
+      "rate": {
+        "label": "03 / ベースレートと割り当て",
+        "p1": "2つの数値がセールを支配します: <term>ベースレート</term> (1 SUI あたりに発行されるプロジェクトトークン) と <term>資金割り当て</term> (販売するプロジェクトトークンの総数)。両方ともデプロイ時に設定され、プロジェクトの存続期間中固定されます — メタデータ更新や管理者アクションで変更することはできません。",
+        "p2": "貢献が残りの割り当てを超える場合、賄える部分のみが受け入れられ、残りは同じトランザクションで返金されます。サポーターは決して払い過ぎることはありません。",
+        "cta": "ステップ 03 で確認 →"
+      },
+      "claim": {
+        "label": "04 / 貢献とクレーム",
+        "p1": "<term>貢献。</term> サポーターは SUI コインで <code>contribute</code> を呼び出します。プロジェクトは彼らのアドレスに対して貢献を記録し、<term>ContributionReceipt</term> NFT を返却します — ペイメントが割り当て可能量を超えた場合は返金コインも返却します。",
+        "p2": "<term>クレーム。</term> セールがファイナライズされた後、サポーターは <code>claim</code> でレシートをバーンしてプロジェクトトークンを受け取ります。複数のレシート (複数の貢献から) は <code>claim_multiple</code> 経由で一度の呼び出しで一緒にバーンでき、マージされた単一のコインが返却されます。",
+        "p3": "レシートは通常の Sui オブジェクトです: 譲渡可能、セカンダリーマーケットで販売可能、そして有効期限はありません。プロジェクトオブジェクトが存続する限りクレームは開いたままです。",
+        "cta": "ダッシュボードでレシートを表示 →"
+      },
+      "unsold": {
+        "label": "05 / 未販売供給量",
+        "p1": "セールが割り当てにトークンを残してクローズした場合、クリエイターはデプロイ時に選択したポリシーを実行するために <code>process_unsold</code> を実行します:",
+        "p2": "<term>バーン</term> — 未販売供給量が破棄され、クレームされた全てのトークンの示唆価格が上昇します。希少性を示唆: フロートはセールが調達した量と正確に一致します。",
+        "p3": "<term>クリエイターへ転送</term> — 未販売供給量が通常のコイン残高としてクリエイターに移動します。流動性をシード、セカンダリーセールを実行、またはトレジャリーポジションを保持する予定がある場合に有用です。プロジェクトページは仕様行に <code>UNSOLD → CREATOR</code> として表示し、サポーターは支払う前にポリシーを確認できます。",
+        "cta": "ステップ 03 で確認 →"
+      },
+      "finalize": {
+        "label": "06 / ファイナライズと引き出し",
+        "p1": "ファイナライズされると、クリエイターは <code>withdraw_sui</code> を呼び出してプロジェクトトレジャリーから調達した SUI を引き出します。プラットフォーム手数料 (ベーシスポイント単位、Pandabox が設定) は自動的に差し引かれます — クリエイターは正味額を受け取り、手数料はプラットフォームトレジャリーに蓄積されます。引き出しは部分的にも可能で、キャップ保有者は残りを後で引き出せます。",
+        "p2": "デプロイ時にミントされる <term>ProjectAdminCap</term> は通常の Sui オブジェクトです。<code>transfer_project_admin</code> (インデクサーが依存するイベントを発行 — 生のオブジェクト転送よりこれを推奨) で移動するか、<code>renounce_project_admin</code> で自身を破棄してプロジェクトを永久に管理者なしの状態にします — クリエイターの裁量から自身を排除したいコミュニティプロジェクトに有用です。",
+        "p3": "プロジェクトメタデータ — 名前、説明、アイコン URL、ソースコード blob、オフチェーン詳細 JSON (タグライン、カテゴリー、ソーシャル) — はセールがアクティブかクローズしているかに関わらず <code>update_metadata</code> 経由で編集可能なままです。"
+      }
+    },
+    "wizard": {
+      "stepWord": "ステップ",
+      "intro": {
+        "label": "4つのステップ",
+        "p1": "作成フローは4ステップです。ここで入力する全ては、オンチェーン (セールパラメーター、名前、blob CID) または IPFS にピン留めされた project_details JSON (タグライン、カテゴリー、ソーシャル) のいずれかに保存されます。右側のライブプレビューはサポーターが見るものを正確に表示します。",
+        "cta": "ウィザードを開く "
+      },
+      "steps": {
+        "identity": {
+          "alt": "作成ウィザードのステップ 01 — ライブプロジェクトページプレビューの隣のアイデンティティフィールド。",
+          "title": "アイデンティティ",
+          "caption": "プロジェクト名、ティッカー、カテゴリー、タグライン、カバー画像、説明。ここに表示されるティッカーは情報用です — 実際のコインシンボルは次のステップで接続する CoinMetadata から来ます。"
+        },
+        "coin": {
+          "alt": "作成ウィザードのステップ 02 — Sui コインの接続または公開。",
+          "title": "コイン",
+          "caption": "Pandabox には独自の Sui コインが必要です。プリコンパイル済み coin_template.move から公開 (ブラウザ内で識別子を書き換え、監査可能性のために IPFS にピン留め) するか、既にお持ちの場合は既存の TreasuryCap + CoinMetadata を貼り付けます。小数桁数は 9 でなければなりません。"
+        },
+        "sale": {
+          "alt": "作成ウィザードのステップ 03 — セール条件: 1 SUI あたりのトークン数、総割り当て、終了時刻、未販売ポリシー。",
+          "title": "セール条件",
+          "caption": "デプロイ時にロックされる4つの数値: ベースレート (1 SUI あたりのトークン数)、総割り当て、オプションの終了時刻、未販売アクション (バーンまたはクリエイターへ転送)。示唆最大調達額は入力中にライブで導出されます。"
+        },
+        "deploy": {
+          "alt": "作成ウィザードのステップ 04 — レビューとデプロイ。",
+          "title": "レビュー＆デプロイ",
+          "caption": "1つの Sui トランザクションが Project オブジェクトを作成し、TreasuryCap + CoinMetadata を消費し、ProjectAdminCap をあなたのウォレットへ返却します。鮮やかな通知は、送信時に何が不変になり、何が update_metadata 経由で編集可能なままかを明示します。"
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "用語集",
+        "termLabels": {
+          "baseRate": "ベースレート",
+          "fundingAllocation": "資金割り当て",
+          "unsoldAction": "未販売アクション",
+          "endTime": "終了時刻",
+          "finalize": "ファイナライズ",
+          "closeTrigger": "クローズトリガー",
+          "projectStatus": "プロジェクトステータス",
+          "platformFee": "プラットフォーム手数料"
+        },
+        "terms": {
+          "project": "SUI トレジャリー、ロックされた TreasuryCap<T>、セールパラメーターを保持する共有 Sui オブジェクト。",
+          "projectAdminCap": "管理権限を付与する所有 Sui オブジェクト: SUI 引き出し、未販売処理、メタデータ更新、ファイナライズ、転送、放棄。",
+          "contributionReceipt": "貢献時にミントされる NFT。ファイナライズ後に権利化されたトークンに対してバーン可能。Sui オブジェクトと同様に譲渡可能。",
+          "baseRate": "1 SUI の貢献ごとに発行されるプロジェクトトークン。デプロイ時に固定。",
+          "fundingAllocation": "販売する総プロジェクトトークン数。到達時に完売がトリガー。デプロイ時に固定。",
+          "unsoldAction": "セールクローズ時に残ったトークンのポリシー: バーン、またはクリエイターへ転送。デプロイ時に固定。",
+          "endTime": "オプションのセール終了タイムスタンプ。null の場合、管理者クローズまたは完売のみがファイナライズ可能。",
+          "finalize": "セールをロックする。クレーム、SUI 引き出し、または未販売処理の前に必要。条件が満たされればパーミッションレス。",
+          "closeTrigger": "セールが終了した理由: 時間、完売、または管理者。オンチェーンに記録。",
+          "projectStatus": "アクティブ (販売中)、クローズ (ファイナライズ済み)、または侵害 (プラットフォームフラグ付き)。",
+          "platformFee": "Pandabox が引き出した SUI から取るベーシスポイント単位の取り分。プラットフォーム管理者が設定し、withdraw_sui 時に適用。",
+          "mist": "最小 SUI 単位。1 SUI = 1,000,000,000 MIST。"
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "これは監査済みですか？",
+            "a": "まだです。Pandabox はテストネットにあります。正式な監査は Mainnet ランプの前に行われます。"
+          },
+          "editAfterDeploy": {
+            "q": "デプロイ後にプロジェクトを編集できますか？",
+            "a": "オフチェーンアイデンティティは可能です: 名前、説明、カバー画像 (アイコン URL)、ソースコード blob、タグライン、カテゴリー、ソーシャルリンクは全ていつでも <code>update_metadata</code> 経由で更新できます。セールエコノミクスは不可: ベースレート、資金割り当て、終了時刻、未販売供給量ポリシーはデプロイ時に固定されます。コインのシンボルと小数桁数は Pandabox の前にデプロイしたコインモジュールで設定されています — それらもここでは変更できません。"
+          },
+          "gas": {
+            "q": "ガスはどう動作しますか？",
+            "a": "全てのトランザクションは署名するウォレットによって支払われます。作成、貢献、クレーム、引き出し — 全て署名者払いです。Sui のガスは Mainnet レートで通常1セント未満なので、プロジェクトを支援する実質コストは貢献する SUI であり、ガスではありません。"
+          },
+          "neverClaims": {
+            "q": "サポーターが決してクレームしなかった場合はどうなりますか？",
+            "a": "レシートは有効期限がありません。トークンは保有者が <code>claim</code> でレシートをバーンするまで、プロジェクトの TreasuryCap にロックされたままです。レシートは本物の Sui オブジェクトなので、クレームする別の誰かへ転送または販売することもできます。"
+          },
+          "transferCap": {
+            "q": "ProjectAdminCap を転送できますか？",
+            "a": "はい — イベントがインデクサーに届くように <code>transfer_project_admin</code> を使用してください。キャップにはプロジェクトトークンや調達した SUI は含まれず、純粋に管理者キーです。<code>renounce_project_admin</code> を呼び出して永久に破棄することもできます — その場合、プロジェクトは管理者なしで動作します。"
+          },
+          "compromised": {
+            "q": "「侵害 (Compromised)」ステータスは何を意味しますか？",
+            "a": "プラットフォーム管理者は、悪用 (ラグ、なりすまし、クレームされた特典内のマルウェア) の明確な証拠がある場合、プロジェクトを侵害としてフラグ付けできます。これは一方向のモデレーションシグナルです — プロジェクトページはアクセス可能なまま、サポーターはフラグを確認して行動できますが、明確に警告します。資金を差し押さえることはありません。"
+          },
+          "featured": {
+            "q": "ランディングの注目行に掲載されるにはどうすればよいですか？",
+            "a": "注目は SUI 調達額順のトップ3です。十分に調達すれば自動的に表示されます。"
+          }
+        }
+      }
+    }
+  }
+}

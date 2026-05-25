@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowDiag } from "@pandasui/ui";
 import { gsap, ScrollTrigger, registerGsap } from "@pandasui/ui/lib";
 import { cn } from "@pandasui/ui/lib";
@@ -20,26 +21,26 @@ const PALETTE_BARS = ["saffron", "poppy", "jade", "sky", "sun", "plum"] as const
 
 const SPEC_TILES = [
   {
-    label: "Sign",
-    value: "1 transaction",
+    labelKey: "tileSign",
+    valueKey: "tileSignValue",
     accent: ACCENT_HEX.saffron,
     tint: "transparent",
   },
   {
-    label: "Gas",
-    value: "< $0.001",
+    labelKey: "tileGas",
+    valueKey: "tileGasValue",
     accent: ACCENT_HEX.poppy,
     tint: `${ACCENT_HEX.poppy}10`,
   },
   {
-    label: "Setup",
-    value: "6 steps",
+    labelKey: "tileSetup",
+    valueKey: "tileSetupValue",
     accent: ACCENT_HEX.sky,
     tint: `${ACCENT_HEX.sky}10`,
   },
   {
-    label: "Keys",
-    value: "AdminCap yours",
+    labelKey: "tileKeys",
+    valueKey: "tileKeysValue",
     accent: ACCENT_HEX.plum,
     tint: `${ACCENT_HEX.plum}10`,
   },
@@ -52,9 +53,6 @@ const FLOATING_DOTS = [
   { top: "22%", left: "38%", color: ACCENT_HEX.saffron, size: 7 },
 ] as const;
 
-const SUBHEAD =
-  "Configure cycles, payouts, and tokens. Sign one Sui transaction. You hold the admin cap.";
-
 const CTA_BASE =
   "group relative inline-flex items-center justify-center gap-2 h-14 px-8 font-sans font-medium uppercase tracking-[0.12em] text-[0.8125rem] " +
   "border border-ink shadow-offset-sm transition-all duration-300 ease-atelier " +
@@ -64,6 +62,8 @@ const CTA_BASE =
 
 export function FinalCta() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const t = useTranslations("home.finalCta");
+  const subhead = t("subhead");
 
   useEffect(() => {
     registerGsap();
@@ -555,12 +555,12 @@ export function FinalCta() {
         <Container className="flex items-center justify-between py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45">
           <span data-fc-margin className="inline-flex items-center gap-2">
             <span aria-hidden className="block h-1 w-1 rounded-full bg-saffron" />
-            Nº 04 · final
+            {t("marginTop")}
           </span>
           <span data-fc-margin className="hidden md:inline">
-            project spec — pandabox
+            {t("marginSpec")}
           </span>
-          <span data-fc-margin>2026 · Sui mainnet</span>
+          <span data-fc-margin>{t("marginYear")}</span>
         </Container>
       </div>
 
@@ -644,7 +644,7 @@ export function FinalCta() {
             >
               +
             </span>
-            Ship it
+            {t("shipIt")}
           </span>
 
           {/* Palette bars — the 6 brand accents */}
@@ -665,7 +665,7 @@ export function FinalCta() {
               data-fc-line
               className="block text-[clamp(2.4rem,6vw,5rem)]"
             >
-              Your project,
+              {t("titleYourProject")}
             </span>
             <span
               data-fc-line
@@ -675,20 +675,20 @@ export function FinalCta() {
                 data-fc-onchain
                 className="relative inline-block will-change-transform"
               >
-                <span className="font-light italic text-saffron">on-chain</span>
+                <span className="font-light italic text-saffron">{t("titleOnchain")}</span>
                 <span
                   data-fc-underline
                   aria-hidden
                   className="absolute left-[0.04em] right-[0.04em] -bottom-[0.04em] block h-[0.07em] bg-saffron/45"
                 />
               </span>{" "}
-              in 3 minutes.
+              {t("titleInMinutes")}
             </span>
           </h2>
 
           {/* Subhead — word-split for reveal stagger */}
           <p className="mt-7 max-w-[52ch] text-pretty text-[1.0625rem] leading-relaxed text-ink/70">
-            {SUBHEAD.split(" ").map((w, i) => (
+            {subhead.split(" ").map((w, i) => (
               <span
                 key={i}
                 data-fc-word
@@ -717,7 +717,7 @@ export function FinalCta() {
                   opacity: 0.55,
                 }}
               />
-              <span className="relative">Launch a project</span>
+              <span className="relative">{t("ctaLaunch")}</span>
               <span
                 data-fc-magnet-arrow
                 className="relative inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]"
@@ -730,7 +730,7 @@ export function FinalCta() {
               data-fc-btn
               className={cn(CTA_BASE, "bg-bone text-ink")}
             >
-              <span>Read the docs</span>
+              <span>{t("ctaDocs")}</span>
               <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
                 <ArrowDiag size={14} />
               </span>
@@ -739,27 +739,27 @@ export function FinalCta() {
 
           {/* Spec tile row */}
           <div className="mt-14 grid w-full max-w-[820px] grid-cols-2 gap-3 md:grid-cols-4">
-            {SPEC_TILES.map((t) => (
+            {SPEC_TILES.map((tile) => (
               <div
-                key={t.label}
+                key={tile.labelKey}
                 data-fc-tile
                 className="group relative border border-ink/15 px-4 py-3 text-left will-change-transform transition-colors duration-300 hover:border-ink/45"
-                style={{ background: t.tint }}
+                style={{ background: tile.tint }}
               >
                 <span
                   data-fc-tile-corner
                   aria-hidden
                   className="absolute right-2.5 top-2.5 block h-1.5 w-1.5 rounded-full"
-                  style={{ background: t.accent, opacity: 0.55 }}
+                  style={{ background: tile.accent, opacity: 0.55 }}
                 />
                 <div
                   className="font-mono text-[10px] uppercase tracking-[0.18em]"
-                  style={{ color: t.accent }}
+                  style={{ color: tile.accent }}
                 >
-                  {t.label}
+                  {t(tile.labelKey)}
                 </div>
                 <div className="mt-1.5 font-display text-[1.25rem] leading-tight text-ink">
-                  {t.value}
+                  {t(tile.valueKey)}
                 </div>
               </div>
             ))}
@@ -775,14 +775,14 @@ export function FinalCta() {
               <span className="absolute inset-0 animate-ping rounded-full bg-jade opacity-60" />
               <span className="relative block h-1.5 w-1.5 rounded-full bg-jade" />
             </span>
-            pandabox.sui · live
+            {t("marginLive")}
           </span>
           <span data-fc-margin className="hidden md:inline">
             <code className="font-mono text-ink/60">
               pandabox::create_project
             </code>
           </span>
-          <span data-fc-margin>revalidates 60s</span>
+          <span data-fc-margin>{t("marginRevalidate")}</span>
         </Container>
       </div>
     </section>

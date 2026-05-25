@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { Container } from "@/components/primitives/container";
@@ -9,6 +10,7 @@ import { getOnchainAggregate, type OnChainAggregate } from "@/lib/stats";
 
 export async function TheNumbers() {
   const agg = await getOnchainAggregate();
+  const t = await getTranslations("home.theNumbers");
 
   return (
     <section className="border-t border-ink/15 bg-paper/40">
@@ -16,33 +18,32 @@ export async function TheNumbers() {
         <header className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AccentRule color="saffron" className="mb-3">
-              <MonoLabel>The numbers</MonoLabel>
+              <MonoLabel>{t("eyebrow")}</MonoLabel>
             </AccentRule>
             <h2 className="text-3xl md:text-4xl">
-              Built on real on-chain data.
+              {t("title")}
             </h2>
             <p className="mt-3 max-w-prose text-base text-ink/60">
-              Every figure here is computed from events on the Pandabox Move
-              package, refreshed every 60 seconds.
+              {t("subtitle")}
             </p>
           </div>
-          <LiveBadge updatedMs={agg.computedAtMs} />
+          <LiveBadge updatedMs={agg.computedAtMs} liveLabel={t("liveLabel")} />
         </header>
 
         <div className="grid grid-cols-1 border border-ink bg-bone shadow-offset-sm md:grid-cols-2 lg:grid-cols-5">
-          <HeroCell agg={agg} />
-          <ActiveCell agg={agg} />
-          <BackersCell agg={agg} />
-          <LatestCell agg={agg} />
+          <HeroCell agg={agg} t={t} />
+          <ActiveCell agg={agg} t={t} />
+          <BackersCell agg={agg} t={t} />
+          <LatestCell agg={agg} t={t} />
         </div>
 
         {/* Technical footnote — the "real builders" tell */}
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
           <span>
-            source · pandabox::project events · sum / count / set
+            {t("sourceFootnote")}
           </span>
           <span>
-            computed at{" "}
+            {t("computedAt")}{" "}
             <span className="text-ink/60">
               {new Date(agg.computedAtMs)
                 .toISOString()
@@ -59,7 +60,12 @@ export async function TheNumbers() {
 
 /* ─────────────────────────── Cells ─────────────────────────── */
 
-function HeroCell({ agg }: { agg: OnChainAggregate }) {
+// Translation function shape returned by next-intl's getTranslations. We pass
+// it down so each server-rendered cell can pull its own labels without re-
+// awaiting getTranslations per cell.
+type TFn = (key: string, values?: Record<string, string | number>) => string;
+
+function HeroCell({ agg, t }: { agg: OnChainAggregate; t: TFn }) {
   const raisedSui = Number(agg.totalRaisedMist) / 1e9;
   const raised24Sui = Number(agg.raised24hMist) / 1e9;
 
@@ -72,14 +78,14 @@ function HeroCell({ agg }: { agg: OnChainAggregate }) {
               className="block h-1.5 w-1.5 rounded-full bg-saffron"
               style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
             />
-            <MonoLabel className="text-[10px]">Total raised</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("totalRaised")}</MonoLabel>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-            sum of sold ÷ base_rate, all projects
+            {t("totalRaisedHint")}
           </p>
         </div>
         <DeltaPill
-          label="24h"
+          label={t("delta24h")}
           value={raised24Sui > 0 ? `+${raised24Sui.toFixed(2)}` : "0.00"}
           unit="SUI"
         />
@@ -99,7 +105,7 @@ function HeroCell({ agg }: { agg: OnChainAggregate }) {
 
       <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-ink/15 pt-4">
         <SubStat
-          label="Across"
+          label={t("substat.across")}
           value={
             <>
               <SplitFlapCounter
@@ -107,20 +113,20 @@ function HeroCell({ agg }: { agg: OnChainAggregate }) {
                 className="text-lg"
                 grouping={false}
               />
-              <span className="ml-1 text-ink/50">projects</span>
+              <span className="ml-1 text-ink/50">{t("substat.projects")}</span>
             </>
           }
         />
         <SubStat
-          label="Tokens minted"
+          label={t("substat.tokensMinted")}
           value={formatToken(agg.totalTokensMintedRaw)}
         />
         <SubStat
-          label="Platform fees"
+          label={t("substat.platformFees")}
           value={`${formatSuiCompact(Number(agg.totalFeesMist) / 1e9)} SUI`}
         />
         <SubStat
-          label="Fee rate"
+          label={t("substat.feeRate")}
           value={`${(agg.feeBps / 100).toFixed(2)}%`}
         />
       </div>
@@ -128,12 +134,12 @@ function HeroCell({ agg }: { agg: OnChainAggregate }) {
   );
 }
 
-function ActiveCell({ agg }: { agg: OnChainAggregate }) {
+function ActiveCell({ agg, t }: { agg: OnChainAggregate; t: TFn }) {
   const total = agg.activeProjects + agg.closedProjects;
   const safeTotal = total || 1;
   const liveRatio = agg.activeProjects / safeTotal;
   return (
-    <Cell label="Active projects" border>
+    <Cell label={t("activeProjects")} border>
       <div className="mt-3 flex items-baseline gap-2">
         <SplitFlapCounter
           value={agg.activeProjects}
@@ -160,26 +166,26 @@ function ActiveCell({ agg }: { agg: OnChainAggregate }) {
       <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
         <span>
           <span className="text-jade">●</span>{" "}
-          {agg.activeProjects} live
+          {t("liveCount", { count: agg.activeProjects })}
         </span>
         <span>
-          {agg.closedProjects} closed{" "}
+          {t("closedCount", { count: agg.closedProjects })}{" "}
           <span className="text-plum/60">●</span>
         </span>
       </div>
 
-      <Footer>deployed all-time</Footer>
+      <Footer>{t("deployedAllTime")}</Footer>
     </Cell>
   );
 }
 
-function BackersCell({ agg }: { agg: OnChainAggregate }) {
+function BackersCell({ agg, t }: { agg: OnChainAggregate; t: TFn }) {
   const perBacker =
     agg.uniqueBackers > 0
       ? (agg.contributionCount / agg.uniqueBackers).toFixed(2)
       : "—";
   return (
-    <Cell label="Unique backers" border>
+    <Cell label={t("uniqueBackers")} border>
       <div className="mt-3 flex items-baseline gap-2">
         <SplitFlapCounter
           value={agg.uniqueBackers}
@@ -187,24 +193,24 @@ function BackersCell({ agg }: { agg: OnChainAggregate }) {
           grouping={false}
         />
         <span className="font-mono text-sm tabular-nums text-ink/35">
-          addr
+          {t("addr")}
         </span>
       </div>
 
-      <DotGrid count={agg.uniqueBackers} max={25} />
+      <DotGrid count={agg.uniqueBackers} max={25} t={t} />
 
       <Footer>
         <span className="font-mono tabular-nums text-ink/70">{perBacker}</span>{" "}
-        contribs / backer
+        {t("contribsPerBacker")}
       </Footer>
     </Cell>
   );
 }
 
-function LatestCell({ agg }: { agg: OnChainAggregate }) {
+function LatestCell({ agg, t }: { agg: OnChainAggregate; t: TFn }) {
   const largestSui = Number(agg.largestContributionMist) / 1e9;
   return (
-    <Cell label="Latest activity" border>
+    <Cell label={t("latestActivity")} border>
       <div className="mt-3 flex items-center gap-2">
         <span className="relative inline-flex h-2 w-2">
           <span
@@ -228,12 +234,12 @@ function LatestCell({ agg }: { agg: OnChainAggregate }) {
       </div>
 
       <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/50">
-        last contribution
+        {t("lastContribution")}
       </div>
 
       <div className="mt-3 flex items-baseline justify-between border-t border-ink/15 pt-3 font-mono text-[11px] text-ink/55">
         <span className="uppercase tracking-[0.14em] text-ink/40">
-          Largest
+          {t("largest")}
         </span>
         <span className="inline-flex items-baseline gap-1 tabular-nums text-ink">
           <SuiGlyph size={10} className="text-ink/55" />
@@ -244,7 +250,7 @@ function LatestCell({ agg }: { agg: OnChainAggregate }) {
         </span>
       </div>
 
-      <Footer>{agg.contributionCount24h} payments · 24h</Footer>
+      <Footer>{t("paymentsWindow", { count: agg.contributionCount24h })}</Footer>
     </Cell>
   );
 }
@@ -332,7 +338,13 @@ function DeltaPill({
   );
 }
 
-function LiveBadge({ updatedMs }: { updatedMs: number }) {
+function LiveBadge({
+  updatedMs,
+  liveLabel,
+}: {
+  updatedMs: number;
+  liveLabel: string;
+}) {
   return (
     <span className="inline-flex items-center gap-2 border border-ink bg-bone px-3 py-1.5 shadow-offset-sm">
       <span className="relative inline-flex h-1.5 w-1.5">
@@ -344,7 +356,7 @@ function LiveBadge({ updatedMs }: { updatedMs: number }) {
           className="absolute inset-0 rounded-full bg-jade/40 blur-[2px]"
         />
       </span>
-      <MonoLabel className="text-[10px]">Live · sui mainnet</MonoLabel>
+      <MonoLabel className="text-[10px]">{liveLabel}</MonoLabel>
       <span className="h-3 w-px bg-ink/15" aria-hidden />
       <span className="font-mono text-[10px] tabular-nums text-ink/60">
         <RelativeTime value={updatedMs} intervalMs={15_000} />
@@ -404,7 +416,15 @@ function Sparkline({ data }: { data: number[] }) {
   );
 }
 
-function DotGrid({ count, max = 25 }: { count: number; max?: number }) {
+function DotGrid({
+  count,
+  max = 25,
+  t,
+}: {
+  count: number;
+  max?: number;
+  t: TFn;
+}) {
   const filled = Math.min(max, count);
   return (
     <div className="mt-4">
@@ -422,7 +442,7 @@ function DotGrid({ count, max = 25 }: { count: number; max?: number }) {
       </div>
       {count > max && (
         <span className="mt-2 inline-block font-mono text-[10px] text-ink/45">
-          +{count - max} more
+          {t("moreOverflow", { count: count - max })}
         </span>
       )}
     </div>

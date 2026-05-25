@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Nav } from "@/components/nav";
 import { Container } from "@/components/primitives/container";
 import { AccentRule } from "@/components/primitives/accent-rule";
@@ -13,7 +14,9 @@ import { ProjectCardSkeletonGrid } from "@/components/project/project-card-skele
  * Next.js drops this in automatically during navigation to /explore — no
  * wiring needed in `page.tsx`.
  */
-export default function ExploreLoading() {
+export default async function ExploreLoading() {
+  const t = await getTranslations("explore");
+  const skeletonLabels = [t("all"), t("live"), t("ended")] as const;
   return (
     <>
       <Nav />
@@ -23,14 +26,13 @@ export default function ExploreLoading() {
           <Container className="flex flex-col gap-4 py-10 md:flex-row md:items-end md:justify-between md:py-12">
             <div className="max-w-3xl">
               <AccentRule color="saffron">
-                <MonoLabel>Explore</MonoLabel>
+                <MonoLabel>{t("title")}</MonoLabel>
               </AccentRule>
               <h1 className="mt-3 font-display text-3xl leading-[1.05] md:text-5xl">
-                Funded right now.
+                {t("headline")}
               </h1>
               <p className="mt-4 max-w-prose text-[15px] text-ink/65">
-                Every active token sale on Pandabox, read directly from the
-                Sui mainnet package — no indexer in between.
+                {t("subtitle")}
               </p>
             </div>
             <ul
@@ -46,7 +48,7 @@ export default function ExploreLoading() {
                 <span className="inline-block h-2.5 w-14 animate-pulse bg-ink/10" />
               </li>
               <li className="text-ink/20">·</li>
-              <li>cached 60s</li>
+              <li>{t("cachedHint")}</li>
             </ul>
           </Container>
         </section>
@@ -59,7 +61,7 @@ export default function ExploreLoading() {
         >
           <Container className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap items-center gap-1.5">
-              {(["All", "Live", "Ended"] as const).map((label, i) => (
+              {skeletonLabels.map((label, i) => (
                 <span
                   key={label}
                   className={
@@ -75,11 +77,11 @@ export default function ExploreLoading() {
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <MonoLabel className="text-[10px]">Search</MonoLabel>
+                <MonoLabel className="text-[10px]">{t("searchLabel")}</MonoLabel>
                 <div className="h-9 w-56 border border-ink/25 bg-ink/[0.03]" />
               </div>
               <div className="flex items-center gap-2">
-                <MonoLabel className="text-[10px]">Sort</MonoLabel>
+                <MonoLabel className="text-[10px]">{t("sortLabel")}</MonoLabel>
                 <div className="h-9 w-32 border border-ink/25 bg-ink/[0.03]" />
               </div>
               <span className="inline-block h-2.5 w-12 animate-pulse bg-ink/10" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 
 /**
@@ -40,6 +41,7 @@ export function MiniSparkline({
   width?: number;
   height?: number;
 }) {
+  const t = useTranslations("dashboard.sparkline");
   const [state, setState] = useState<State>({ kind: "loading" });
 
   useEffect(() => {
@@ -136,7 +138,7 @@ export function MiniSparkline({
             : "text-ink/30",
         )}
       >
-        {state.kind === "live" ? formatDelta(state.deltaPct) : "24h"}
+        {state.kind === "live" ? formatDelta(state.deltaPct) : t("placeholder")}
       </span>
     </div>
   );

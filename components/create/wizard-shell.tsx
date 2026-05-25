@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useWizard } from "@/lib/store/wizard";
 import { computeWizardProgress } from "@/lib/store/wizard-progress";
 import { ArrowDiag, Modal } from "@pandasui/ui";
@@ -26,6 +27,7 @@ const CTA_BASE =
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
 export function WizardShell() {
+  const t = useTranslations("create.wizard");
   const step = useWizard((s) => s.draft.step);
   const setStep = useWizard((s) => s.setStep);
   const goNext = useWizard((s) => s.goNext);
@@ -57,7 +59,7 @@ export function WizardShell() {
           <StepNav current={step} onChange={setStep} />
           <div className="flex items-center gap-3">
             <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45 md:inline">
-              {pct}% complete
+              {t("percentComplete", { pct })}
             </span>
             <button
               type="button"
@@ -73,7 +75,7 @@ export function WizardShell() {
                 aria-hidden
                 className="block h-1 w-1 rounded-full bg-poppy/70"
               />
-              reset draft
+              {t("resetDraft")}
             </button>
           </div>
         </Container>
@@ -129,7 +131,7 @@ export function WizardShell() {
                 : "text-ink/70 hover:text-ink",
             )}
           >
-            <ArrowDiag size={12} className="rotate-180" /> Back
+            <ArrowDiag size={12} className="rotate-180" /> {t("back")}
           </button>
           {step < TOTAL_STEPS ? (
             <button
@@ -138,13 +140,13 @@ export function WizardShell() {
               className={cn(CTA_BASE, "bg-ink text-bone")}
             >
               <span>
-                Continue · step {String(step + 1).padStart(2, "0")}
+                {t("continueStep", { num: String(step + 1).padStart(2, "0") })}
               </span>
               <ArrowDiag size={12} />
             </button>
           ) : (
             <MonoLabel className="text-[10px] text-ink/45">
-              review &amp; deploy above
+              {t("reviewAndDeployAbove")}
             </MonoLabel>
           )}
         </div>
@@ -153,26 +155,24 @@ export function WizardShell() {
       <Modal
         open={resetOpen}
         onClose={() => setResetOpen(false)}
-        title="Reset draft?"
+        title={t("resetModalTitle")}
       >
         <div className="space-y-5">
           <p className="text-sm text-ink/75">
-            This clears every field in the wizard and removes the saved draft
-            from your browser. Nothing on-chain is affected — you just start
-            from a blank form.
+            {t("resetModalBody")}
           </p>
           <ul className="space-y-1.5 border border-ink/15 bg-bone/60 px-4 py-3 font-mono text-[11px] text-ink/65">
             <li className="flex items-baseline gap-2">
               <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
-              identity, coin, sale, deploy — all wiped
+              {t("resetBullet1")}
             </li>
             <li className="flex items-baseline gap-2">
               <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
-              <code>pandabox:draft:v3</code> removed from localStorage
+              <code>pandabox:draft:v3</code> {t("resetBullet2")}
             </li>
             <li className="flex items-baseline gap-2">
               <span aria-hidden className="block h-1 w-1 rounded-full bg-ink/40" />
-              this cannot be undone
+              {t("resetBullet3")}
             </li>
           </ul>
           <div className="flex flex-wrap items-center justify-end gap-2">
@@ -186,7 +186,7 @@ export function WizardShell() {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
               )}
             >
-              Keep draft
+              {t("keepDraft")}
             </button>
             <button
               type="button"
@@ -203,7 +203,7 @@ export function WizardShell() {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
               )}
             >
-              <span>Reset draft</span>
+              <span>{t("resetDraftButton")}</span>
               <ArrowDiag size={12} />
             </button>
           </div>

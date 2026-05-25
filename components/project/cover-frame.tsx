@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 
 type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
@@ -63,13 +64,18 @@ export function CoverFrame({
   const scope = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const t = useTranslations("project.detail.cover");
+  const tStatus = useTranslations("project.status");
+  const tDetailStatus = useTranslations("project.detail.status");
 
   const accent: Accent = forcedAccent ?? STATUS_ACCENT[status];
   const accentHex = ACCENT_HEX[accent];
 
   const showImage = !!src && !errored;
   const initial = (name?.[0] ?? "P").toUpperCase();
-  const tickerLabel = (ticker ?? "PROJECT").toUpperCase();
+  const tickerLabel = (ticker ?? t("defaultTickerFallback")).toUpperCase();
+  const statusLabel =
+    status === "ended" ? tDetailStatus("ended") : tStatus(status);
 
   // Motion choreography:
   //   • Mount   — matte rises, spec strips fade, accent bar paints, stamp
@@ -273,10 +279,10 @@ export function CoverFrame({
               className="block h-[3px] w-5 shrink-0 origin-left"
               style={{ background: accentHex }}
             />
-            cover · {tickerLabel}
+            {t("specCover", { ticker: tickerLabel })}
           </span>
           <span className="shrink-0 tabular-nums text-ink/40">
-            fig.01 · {ratioLabel}
+            {t("specFig", { ratio: ratioLabel })}
           </span>
         </div>
 
@@ -311,7 +317,7 @@ export function CoverFrame({
             <Image
               data-cover-img
               src={src as string}
-              alt={`${name} cover`}
+              alt={t("imgAlt", { name })}
               fill
               sizes="(min-width:1024px) 50vw, 100vw"
               priority={priority}
@@ -351,7 +357,7 @@ export function CoverFrame({
               className="block h-1 w-1 rounded-full"
               style={{ background: accentHex }}
             />
-            artwork
+            {t("artwork")}
           </span>
         </div>
 
@@ -371,14 +377,14 @@ export function CoverFrame({
           }}
         >
           <span className="font-mono text-[8px] font-semibold uppercase leading-none tracking-[0.2em]">
-            {status}
+            {statusLabel}
           </span>
           <span
             data-stamp-line
             className="mt-1 block h-[1px] w-6 origin-left bg-bone/45"
           />
           <span className="mt-1 font-mono text-[7.5px] leading-none tracking-[0.16em] opacity-80">
-            sui · mainnet
+            {t("suiMainnet")}
           </span>
         </span>
 
@@ -388,7 +394,7 @@ export function CoverFrame({
           className="flex items-baseline justify-between gap-3 pt-2.5 font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink/55"
         >
           <span className="truncate tabular-nums text-ink/60">
-            obj · {projectId ? shortMid(projectId) : "—"}
+            {t("specObj", { id: projectId ? shortMid(projectId) : "—" })}
           </span>
           <span className="shrink-0 tabular-nums text-ink/40">
             {createdAtMs ? formatPrintedDate(createdAtMs) : "—"}

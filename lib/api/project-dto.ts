@@ -1,7 +1,6 @@
 import type {
   Accent,
   Category,
-  Cycle,
   Holder,
   NftTier,
   Payment,
@@ -15,23 +14,13 @@ export type NftTierDTO = Omit<NftTier, "priceMist"> & {
 
 export type ProjectDTO = Omit<
   Project,
-  "raisedMist" | "params" | "tiers" | "queuedReconfiguration"
+  "raisedMist" | "weight" | "allocationTokens" | "alreadyMinted" | "tiers"
 > & {
   raisedMist: string;
-  params: {
-    weight: string;
-    reservedRate: number;
-    cashOutTax: number;
-    issuanceReduction: number;
-    payoutLimitMist: string;
-    ballotDelayHours: number;
-  };
+  weight: string;
+  allocationTokens: string;
+  alreadyMinted: string;
   tiers: NftTierDTO[];
-  queuedReconfiguration:
-    | (Omit<NonNullable<Project["queuedReconfiguration"]>, "params"> & {
-        params: Record<string, never>;
-      })
-    | null;
 };
 
 export function toProjectDTO(p: Project): ProjectDTO {
@@ -51,25 +40,13 @@ export function toProjectDTO(p: Project): ProjectDTO {
     deployedAt: p.deployedAt,
     raisedMist: p.raisedMist.toString(),
     supporters: p.supporters,
-    cycleNumber: p.cycleNumber,
-    cycleStart: p.cycleStart,
-    cycleEnd: p.cycleEnd,
-    params: {
-      weight: p.params.weight.toString(),
-      reservedRate: p.params.reservedRate,
-      cashOutTax: p.params.cashOutTax,
-      issuanceReduction: p.params.issuanceReduction,
-      payoutLimitMist: p.params.payoutLimitMist.toString(),
-      ballotDelayHours: p.params.ballotDelayHours,
-    },
+    coinType: p.coinType,
+    weight: p.weight.toString(),
+    allocationTokens: p.allocationTokens.toString(),
+    alreadyMinted: p.alreadyMinted.toString(),
+    unsoldAction: p.unsoldAction,
+    endTimeMs: p.endTimeMs,
     tiers: p.tiers.map((t) => ({ ...t, priceMist: t.priceMist.toString() })),
-    queuedReconfiguration: p.queuedReconfiguration
-      ? {
-          takesEffectAt: p.queuedReconfiguration.takesEffectAt,
-          summary: p.queuedReconfiguration.summary,
-          params: {},
-        }
-      : null,
     socials: p.socials,
   };
 }
@@ -78,44 +55,6 @@ export type ProjectListDTO = {
   items: ProjectDTO[];
   nextCursor?: string;
 };
-
-export type CycleDTO = Omit<
-  Cycle,
-  "raisedMist" | "payoutsMist" | "reservedTokensRaw" | "params"
-> & {
-  raisedMist: string;
-  payoutsMist: string;
-  reservedTokensRaw: string;
-  params: {
-    weight: string;
-    reservedRate: number;
-    cashOutTax: number;
-    issuanceReduction: number;
-    payoutLimitMist: string;
-    ballotDelayHours: number;
-  };
-};
-
-export function toCycleDTO(c: Cycle): CycleDTO {
-  return {
-    projectId: c.projectId,
-    number: c.number,
-    start: c.start,
-    end: c.end,
-    raisedMist: c.raisedMist.toString(),
-    payoutsMist: c.payoutsMist.toString(),
-    reservedTokensRaw: c.reservedTokensRaw.toString(),
-    status: c.status,
-    params: {
-      weight: c.params.weight.toString(),
-      reservedRate: c.params.reservedRate,
-      cashOutTax: c.params.cashOutTax,
-      issuanceReduction: c.params.issuanceReduction,
-      payoutLimitMist: c.params.payoutLimitMist.toString(),
-      ballotDelayHours: c.params.ballotDelayHours,
-    },
-  };
-}
 
 export type PaymentDTO = Omit<Payment, "amountMist" | "tokensRaw"> & {
   amountMist: string;

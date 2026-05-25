@@ -6,6 +6,7 @@ import {
   useSignAndExecuteTransaction,
   useSuiClient,
 } from "@mysten/dapp-kit";
+import { useTranslations } from "next-intl";
 import { Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -45,6 +46,7 @@ export function SeedLiquidityModal({
   const account = useCurrentAccount();
   const client = useSuiClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const t = useTranslations("project.detail.seedLiquidity");
 
   const [poolId, setPoolId] = useState(project.poolId ?? "");
   const [verify, setVerify] = useState<VerifyState>({ kind: "idle" });
@@ -85,7 +87,7 @@ export function SeedLiquidityModal({
     } catch (err) {
       setVerify({
         kind: "fail",
-        reason: err instanceof Error ? err.message : "Verification failed.",
+        reason: err instanceof Error ? err.message : t("verificationFailed"),
       });
     }
   };
@@ -114,9 +116,9 @@ export function SeedLiquidityModal({
     } catch (err) {
       setTx({
         kind: "error",
-        message:
-          "Pinning to IPFS failed — " +
-          (err instanceof Error ? err.message : "unknown error"),
+        message: t("pinningFailed", {
+          reason: err instanceof Error ? err.message : t("unknownError"),
+        }),
       });
       return;
     }
@@ -146,7 +148,7 @@ export function SeedLiquidityModal({
     } catch (err) {
       setTx({
         kind: "error",
-        message: err instanceof Error ? err.message : "Transaction failed.",
+        message: err instanceof Error ? err.message : t("txFailed"),
       });
     }
   };
@@ -155,36 +157,36 @@ export function SeedLiquidityModal({
     <Modal
       open
       onClose={busy ? () => {} : onClose}
-      title="Seed Cetus liquidity"
+      title={t("title")}
     >
       {tx.kind === "success" ? (
         <SuccessView digest={tx.digest} cid={tx.cid} />
       ) : (
         <div className="space-y-5 text-xs">
           <p className="text-[13px] leading-relaxed text-ink/65">
-            Marks this project as having paired liquidity on{" "}
-            <strong>Cetus</strong>. Once saved, the price chart on the project
-            page will start reading live OHLCV data from GeckoTerminal.
+            {t.rich("intro", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
 
           <p className="font-mono text-[11px] leading-relaxed text-ink/55">
-            We verify your pool object on Sui before pinning. The pool must be
-            a real{" "}
-            <code className="text-ink/75">pool::Pool&lt;A, B&gt;</code> with
-            one side SUI and the other your project's coin —{" "}
-            <code className="text-ink/75">{shortCoin(project.tokenType)}</code>
-            . You can't flip the flag without an actual pool.
+            {t.rich("verifyExplainer", {
+              code: (chunks) => (
+                <code className="text-ink/75">{chunks}</code>
+              ),
+              coin: shortCoin(project.tokenType),
+            })}
           </p>
 
           {/* Pool input + Verify */}
           <label className="block">
-            <MonoLabel className="text-[10px]">Cetus pool address</MonoLabel>
+            <MonoLabel className="text-[10px]">{t("poolAddressLabel")}</MonoLabel>
             <div className="mt-2 flex items-stretch gap-2">
               <input
                 type="text"
                 value={poolId}
                 onChange={(e) => setPoolId(e.target.value.trim())}
-                placeholder="0x… (Cetus Pool object ID)"
+                placeholder={t("poolPlaceholder")}
                 disabled={busy}
                 className={cn(
                   "h-11 flex-1 border border-ink/25 bg-bone px-3 font-mono text-[12px]",
@@ -206,15 +208,15 @@ export function SeedLiquidityModal({
                 )}
               >
                 {verify.kind === "verifying"
-                  ? "Verifying…"
+                  ? t("verifying")
                   : verified
-                    ? "Verified ✓"
-                    : "Verify"}
+                    ? t("verifiedOk")
+                    : t("verify")}
               </button>
             </div>
             {poolId && !poolValid && (
               <span className="mt-1 block font-mono text-[10px] text-poppy">
-                Not a valid Sui object ID
+                {t("invalidObjectId")}
               </span>
             )}
           </label>
@@ -223,7 +225,7 @@ export function SeedLiquidityModal({
           {verify.kind === "fail" && (
             <div className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2.5 text-poppy">
               <MonoLabel className="text-[10px]" accent="poppy">
-                Verification failed
+                {t("verificationFailedTitle")}
               </MonoLabel>
               <p className="mt-1 text-[12px] leading-snug">{verify.reason}</p>
             </div>
@@ -232,16 +234,16 @@ export function SeedLiquidityModal({
             <div className="border border-jade/40 bg-jade/[0.06]">
               <div className="flex items-baseline justify-between border-b border-jade/20 px-3 py-2">
                 <MonoLabel className="text-[10px]" accent="jade">
-                  Pool verified
+                  {t("poolVerified")}
                 </MonoLabel>
                 <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-jade">
-                  Cetus
+                  {t("cetus")}
                 </span>
               </div>
               <dl className="divide-y divide-jade/15 text-[12px]">
-                <Row k="Pool" v={shortMid(verify.poolId)} />
-                <Row k="Side A" v={shortCoin(verify.coinA)} />
-                <Row k="Side B" v={shortCoin(verify.coinB)} />
+                <Row k={t("rowPool")} v={shortMid(verify.poolId)} />
+                <Row k={t("rowSideA")} v={shortCoin(verify.coinA)} />
+                <Row k={t("rowSideB")} v={shortCoin(verify.coinB)} />
               </dl>
             </div>
           )}
@@ -268,7 +270,7 @@ export function SeedLiquidityModal({
                 "disabled:cursor-not-allowed disabled:opacity-40",
               )}
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               type="button"
@@ -283,10 +285,10 @@ export function SeedLiquidityModal({
               )}
             >
               {tx.kind === "pinning"
-                ? "Pinning…"
+                ? t("pinning")
                 : tx.kind === "signing"
-                  ? "Signing…"
-                  : "Sign & save"}
+                  ? t("signing")
+                  : t("signAndSave")}
             </button>
           </div>
         </div>
@@ -323,22 +325,22 @@ type TxState =
 /* ─────────────────────────── views ─────────────────────────── */
 
 function SuccessView({ digest, cid }: { digest: string; cid: string }) {
+  const t = useTranslations("project.detail.seedLiquidity");
   return (
     <div className="space-y-3 text-xs">
       <div className="border border-jade/40 bg-jade/[0.06] px-3 py-3 text-jade">
         <MonoLabel className="text-[11px]" accent="jade">
-          Liquidity marked seeded
+          {t("seededTitle")}
         </MonoLabel>
         <p className="mt-1 text-ink/75">
-          The project page will pick up the new pool and start rendering the
-          live chart within ~30s of cache revalidation.
+          {t("seededBody")}
         </p>
       </div>
       <p className="break-all font-mono text-[11px] text-ink/55">
-        details cid · {cid}
+        {t("detailsCid", { cid })}
       </p>
       <p className="break-all font-mono text-[11px] text-ink/55">
-        digest · {digest}
+        {t("digest", { digest })}
       </p>
     </div>
   );

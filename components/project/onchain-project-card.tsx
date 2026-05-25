@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { RelativeTime } from "@/components/identity/relative-time";
@@ -72,6 +73,7 @@ export function OnchainProjectCard({
   const a: Accent = accent ?? "plum";
   const scope = useRef<HTMLElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
+  const t = useTranslations("explore");
 
   const validParams = hasValidParams(project);
   const safeBaseRate = BigInt(project.baseRate || 1);
@@ -223,10 +225,10 @@ export function OnchainProjectCard({
           {!validParams && (
             <span
               className="inline-flex items-center gap-1 border border-poppy/60 bg-poppy/15 px-2 py-1 backdrop-blur-[2px]"
-              title="Deployed before 9-decimal scaling fix — numbers are unreliable."
+              title={t("legacyHint")}
             >
               <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
-              <MonoLabel className="text-[9px] text-poppy">legacy</MonoLabel>
+              <MonoLabel className="text-[9px] text-poppy">{t("legacy")}</MonoLabel>
             </span>
           )}
 
@@ -254,7 +256,7 @@ export function OnchainProjectCard({
                 live ? "text-jade" : ended ? "text-poppy" : "text-ink/65",
               )}
             >
-              {live ? "live" : ended ? "ended" : "idle"}
+              {live ? t("live") : ended ? t("ended") : t("idle")}
             </MonoLabel>
           </span>
 
@@ -274,7 +276,7 @@ export function OnchainProjectCard({
               >
                 <path d="M2 6.5l3 3 5-6" />
               </svg>
-              <MonoLabel className="text-[9px]">verified</MonoLabel>
+              <MonoLabel className="text-[9px]">{t("verified")}</MonoLabel>
             </span>
           )}
         </div>
@@ -285,7 +287,7 @@ export function OnchainProjectCard({
           underline-on-hover hint on the title. */}
       <Link
         href={`/projects/${project.id}`}
-        aria-label={`View ${project.name || "project"}`}
+        aria-label={t("viewProject", { name: project.name || t("unnamed") })}
         className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       />
 
@@ -310,7 +312,7 @@ export function OnchainProjectCard({
 
         <div className="mt-1.5 flex items-center justify-between gap-2">
           <h3 className="truncate text-base font-medium leading-tight tracking-tight text-ink group-hover:underline group-hover:underline-offset-4">
-            {project.name || "Unnamed project"}
+            {project.name || t("unnamed")}
           </h3>
           <span data-arrow className="inline-block shrink-0 text-ink/30 group-hover:text-ink">
             <ArrowGlyph />
@@ -318,7 +320,7 @@ export function OnchainProjectCard({
         </div>
 
         <p className="mt-0.5 font-mono text-[11px] tabular-nums text-ink/50">
-          by {shortAddr(project.creator)}
+          {t("byCreator", { addr: shortAddr(project.creator) })}
         </p>
 
         {/* Progress meter — the one signal that drives the click */}
@@ -367,7 +369,7 @@ export function OnchainProjectCard({
           {urgent && (
             <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
           )}
-          {ended ? "ended " : "ends "}
+          {ended ? t("endedAt") : t("endsNow")}
           <RelativeTime
             value={project.endTimeMs}
             className={cn(

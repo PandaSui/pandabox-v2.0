@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -12,6 +13,7 @@ import {
   getStateVisuals,
   getTimeLabel,
 } from "./state";
+import { useTimeLabel } from "./use-time-label";
 import { formatSui, formatToken, lastSegment, shortMid } from "./format";
 import { MiniSparkline } from "./mini-sparkline";
 import type { DashboardOwnedRow } from "@/app/api/dashboard/[address]/route";
@@ -46,6 +48,8 @@ export function OwnedCard({
   row: DashboardOwnedRow;
   onManage: () => void;
 }) {
+  const t = useTranslations("dashboard");
+  const formatTimeLabel = useTimeLabel();
   const p = row.project;
   const ticker = lastSegment(p.tokenType).toUpperCase() || "TOK";
   const state = getProjectState(p);
@@ -100,7 +104,7 @@ export function OwnedCard({
               className="block truncate font-display text-lg leading-tight hover:underline hover:underline-offset-4"
               title={p.name}
             >
-              {p.name || "Untitled project"}
+              {p.name || t("untitledProject")}
             </Link>
           </div>
           <div className="mt-0.5 flex items-center gap-2 text-[11px]">
@@ -132,9 +136,9 @@ export function OwnedCard({
       {/* ── Hero treasury metric ───────────────────────────────── */}
       <div className="border-t border-ink/10 px-5 py-4">
         <div className="flex items-baseline justify-between">
-          <MonoLabel className="text-[10px]">Treasury</MonoLabel>
+          <MonoLabel className="text-[10px]">{t("owned.card.treasury")}</MonoLabel>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-            withdrawable
+            {t("owned.card.withdrawable")}
           </span>
         </div>
         <div className="mt-1 flex items-baseline gap-2">
@@ -150,9 +154,12 @@ export function OwnedCard({
       {/* ── Meter — raised pct + supporting facts on one line ──── */}
       <div className="border-t border-ink/10 px-5 py-3">
         <div className="flex items-baseline justify-between font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/55">
-          <span>raised {pct.toFixed(2)}%</span>
+          <span>{t("owned.card.raisedPct", { pct: pct.toFixed(2) })}</span>
           <span className="text-ink/40">
-            {formatToken(BigInt(p.sold), PROJECT_COIN_DECIMALS)} {ticker} sold
+            {t("owned.card.tokensSold", {
+              amount: formatToken(BigInt(p.sold), PROJECT_COIN_DECIMALS),
+              ticker,
+            })}
           </span>
         </div>
         <div className="relative mt-2 h-[3px] overflow-hidden bg-ink/10">
@@ -169,7 +176,7 @@ export function OwnedCard({
       {/* ── Time-aware row + Manage CTA ────────────────────────── */}
       <div className="flex items-center justify-between gap-3 border-t border-ink/10 px-5 py-3">
         <span className="min-w-0 truncate font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/60">
-          {timeLabel}
+          {formatTimeLabel(timeLabel)}
         </span>
         <button
           type="button"
@@ -183,14 +190,14 @@ export function OwnedCard({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink",
           )}
         >
-          Manage
+          {t("owned.card.manage")}
           <ArrowDiag size={12} />
         </button>
       </div>
 
       {/* ── Bottom mono spec line — cap id + creator hint ──────── */}
       <div className="border-t border-ink/10 px-5 py-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink/40">
-        cap {shortMid(row.capId)}
+        {t("owned.card.capPrefix", { id: shortMid(row.capId) })}
       </div>
     </article>
   );
@@ -201,6 +208,7 @@ function StatePill({
 }: {
   visuals: ReturnType<typeof getStateVisuals>;
 }) {
+  const tState = useTranslations("dashboard.state");
   return (
     <span
       className={cn(
@@ -214,12 +222,32 @@ function StatePill({
         aria-hidden
         className={cn("block h-1.5 w-1.5 rounded-full", visuals.dotClass)}
         style={
-          visuals.pillLabel === "live"
+          visuals.pillKey === "live"
             ? { animation: "stat-live-dot 1.4s ease-in-out infinite" }
             : undefined
         }
       />
-      {visuals.pillLabel}
+      {tState(stateMessageKey(visuals.pillKey))}
     </span>
   );
+}
+
+function stateMessageKey(key: ReturnType<typeof getStateVisuals>["pillKey"]):
+  | "live"
+  | "endingSoon"
+  | "endedAwaiting"
+  | "closed"
+  | "unknown" {
+  switch (key) {
+    case "live":
+      return "live";
+    case "ending-soon":
+      return "endingSoon";
+    case "ended-awaiting":
+      return "endedAwaiting";
+    case "closed":
+      return "closed";
+    default:
+      return "unknown";
+  }
 }

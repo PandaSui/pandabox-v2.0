@@ -1,0 +1,1147 @@
+{
+  "metadata": {
+    "title": "Pandabox — Финансируйте то, что достойно финансирования. На Sui.",
+    "description": "Программируемая площадка для финансирования на Sui. Запустите проект, задайте курс, проведите ончейн-продажу — каждый параметр и каждая транзакция в блокчейне.",
+    "ogImageAlt": "Pandabox — программируемая площадка для финансирования на Sui.",
+    "notFound": {
+      "title": "404 · Не найдено",
+      "description": "На этом маршруте нет сигнала."
+    }
+  },
+  "common": {
+    "skipToContent": "Перейти к содержимому",
+    "language": "Язык"
+  },
+  "nav": {
+    "homeAria": "Главная Pandabox",
+    "primaryAria": "Основное",
+    "mobileAria": "Мобильное",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "links": {
+      "explore": "Обзор",
+      "create": "Создать",
+      "dashboard": "Панель",
+      "docs": "Документация",
+      "admin": "Админ"
+    }
+  },
+  "wallet": {
+    "connect": "Подключить кошелёк",
+    "pickerTitle": "Подключите кошелёк Sui",
+    "pickerDescription": "Выберите кошелёк для входа. Мы не храним ключи — они остаются в вашем кошельке.",
+    "noWallets": "В этом браузере не обнаружены кошельки Sui.",
+    "installSuiWallet": "Установить Sui Wallet →",
+    "walletStandard": "Стандарт кошелька Sui",
+    "connectError": "Не удалось подключиться.",
+    "fallbackName": "Кошелёк",
+    "balanceLabel": "Баланс",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Скопировать адрес",
+    "copied": "СКОПИРОВАНО",
+    "viewOnSuiscan": "Открыть в Suiscan",
+    "disconnect": "Отключить"
+  },
+  "pulse": {
+    "totalRaised": "Всего собрано на Pandabox",
+    "mostRecent": "Последнее",
+    "flatlinedAria": "Treasury Pulse — без сигнала",
+    "flatlinedCaption": "На этом маршруте нет событий оплаты. Pandabox не может показать пульс для несуществующей страницы."
+  },
+  "notFound": {
+    "eyebrow": "404 · МАРШРУТ НЕ НАЙДЕН",
+    "rowStatus": "СТАТУС",
+    "rowStatusValue": "НЕ НАЙДЕНО",
+    "rowSignal": "СИГНАЛ",
+    "rowCycle": "ЦИКЛ",
+    "headline": "На этом маршруте нет сигнала.",
+    "body": "Pandabox не смог найти то, что вы искали. Возможно, URL сместился между циклами, или этой страницы никогда не было в блокчейне. Выберите один из живых маршрутов ниже — все они подают сигнал.",
+    "ctaExplore": "Обзор проектов",
+    "ctaLaunch": "Запустить проект",
+    "ctaDocs": "Читать документацию",
+    "backHome": "обратно на pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "В сети Sui {network}",
+      "titleFund": "Финансируйте",
+      "titleWorth": "то, что",
+      "titleFunding": "достойно.",
+      "titleOnSui": "На Sui",
+      "tagline": "Pandabox — программируемая платформа финансирования для Sui. Запустите проект за минуты. Принимайте SUI, выпускайте токены, задавайте выплаты — всё в блокчейне, прозрачно и в ваших руках.",
+      "ctaLaunch": "Запустить проект",
+      "ctaExplore": "Обзор проектов",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · финал",
+      "marginSpec": "спецификация проекта — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "В путь",
+      "titleYourProject": "Ваш проект,",
+      "titleOnchain": "в блокчейне",
+      "titleInMinutes": "за 3 минуты.",
+      "subhead": "Настройте циклы, выплаты и токены. Подпишите одну транзакцию Sui. AdminCap остаётся у вас.",
+      "ctaLaunch": "Запустить проект",
+      "ctaDocs": "Читать документацию",
+      "tileSign": "Подпись",
+      "tileSignValue": "1 транзакция",
+      "tileGas": "Газ",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Настройка",
+      "tileSetupValue": "6 шагов",
+      "tileKeys": "Ключи",
+      "tileKeysValue": "AdminCap у вас",
+      "marginLive": "pandabox.sui · в эфире",
+      "marginRevalidate": "обновление 60 с"
+    },
+    "featured": {
+      "title": "Избранные проекты",
+      "subtitle": "Отобранные вручную, сбор идёт сейчас.",
+      "viewAll": "Все проекты",
+      "eyebrow": "Избранное",
+      "headline": "Финансируются прямо сейчас",
+      "watermark": "ПРОФИНАНСИРОВАНО",
+      "sectionRail": "раздел · 02 / избранное",
+      "statOnchain": "в блокчейне",
+      "statProjects": "проектов",
+      "statRaisedAcross": "собрано в топ-3",
+      "exploreAll": "Смотреть все проекты",
+      "dataMeta": "данные: sui mainnet · обновление 60 с",
+      "empty": {
+        "label": "Нет проектов",
+        "heading": "Ожидаем первый проект в блокчейне.",
+        "description": "События ProjectCreated из <code>pandabox::project</code> появятся здесь."
+      },
+      "tape": {
+        "live": "в эфире",
+        "onchain": "в блокчейне",
+        "backedAgo": "поддержан · 2 мин назад",
+        "verified": "подтверждён",
+        "cycle01": "цикл 01",
+        "supportingNow": "поддерживают · 12 сейчас",
+        "txConfirmed": "транзакция подтверждена",
+        "freshRaise": "свежий сбор",
+        "unnamed": "Без названия"
+      },
+      "skeleton": {
+        "ariaLoading": "Загрузка избранных проектов",
+        "srLoading": "Загрузка избранных проектов…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Как это работает",
+      "eyebrowSpec": "03 шага · идея → блокчейн",
+      "title": "Три шага от идеи до ончейн-финансирования.",
+      "subtitle": "Каждый параметр, который вы здесь настраиваете, становится вызовом Move. Каждое действие сторонника — транзакцией. Pandabox — это всё, что между ними.",
+      "nowViewing": "Сейчас",
+      "progressDeploy": "Деплой",
+      "progressReconfigure": "Перенастройка",
+      "ctaLaunch": "Запустить проект",
+      "ctaDocs": "Читать документацию",
+      "stepLabel": "Шаг {number} · {phase}",
+      "onchainSuiMove": "в блокчейне · sui move",
+      "live": "В эфире",
+      "steps": {
+        "0": {
+          "phase": "Настройка",
+          "heading": "Деплой",
+          "body": "Настройте циклы, выплаты, токены и опциональные уровни NFT. Подпишите одну транзакцию Sui. Проект запустится, а объект AdminCap останется у вас.",
+          "outcome": "AdminCap выпущен"
+        },
+        "1": {
+          "phase": "Поступления",
+          "heading": "Приём",
+          "body": "Сторонники платят SUI напрямую в вашу казну. Они получают токены проекта по курсу цикла, а также NFT-уровни, если они заданы.",
+          "outcome": "Токены выпущены"
+        },
+        "2": {
+          "phase": "Управление",
+          "heading": "Перенастройка",
+          "body": "Предлагайте изменения на следующий цикл. После задержки голосования новые параметры фиксируются. Держатели могут в любой момент вывести излишки.",
+          "outcome": "Цикл в очереди"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "Почему Sui",
+      "title": "Построено для блокчейна, созданного для этого.",
+      "subtitle": "Три вещи, которые Sui делает нативно, делают Pandabox особенным — платежи дешевле цента, реальное владение правами админа и onboarding без трения.",
+      "nativeStamp": "sui-native",
+      "cards": {
+        "gas": {
+          "tag": "Газ",
+          "heading": "Газ дешевле цента",
+          "body": "Сторонники не платят $30 за поддержку проекта. Платежи Pandabox стоят доли цента — небольшие, но важные взносы реально доходят.",
+          "meta": "медианная транзакция · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "Владение",
+          "heading": "Объектно-ориентированное владение",
+          "body": "Ваш ProjectAdminCap — это настоящий объект Sui. Передайте его в мультисиг, отдайте DAO, заблокируйте в эскроу — это всего лишь объект."
+        },
+        "onboarding": {
+          "tag": "Onboarding",
+          "heading": "Спонсируемые транзакции",
+          "body": "Подключайте сторонников, у которых пока нет SUI. Pandabox может оплатить газ, чтобы новый кошелёк смог поддержать проект сразу.",
+          "meta": "газ спонсируется · подписывает только плательщик"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "Цифры",
+      "title": "На реальных ончейн-данных.",
+      "subtitle": "Каждая цифра здесь вычисляется по событиям Move-пакета Pandabox и обновляется каждые 60 секунд.",
+      "sourceFootnote": "источник · события pandabox::project · sum / count / set",
+      "computedAt": "вычислено",
+      "liveLabel": "В эфире · sui mainnet",
+      "totalRaised": "Всего собрано",
+      "totalRaisedHint": "сумма sold ÷ base_rate по всем проектам",
+      "delta24h": "24 ч",
+      "substat": {
+        "across": "По",
+        "projects": "проектам",
+        "tokensMinted": "Выпущено токенов",
+        "platformFees": "Комиссия платформы",
+        "feeRate": "Ставка комиссии"
+      },
+      "activeProjects": "Активные проекты",
+      "liveCount": "{count} в эфире",
+      "closedCount": "{count} закрыто",
+      "deployedAllTime": "развёрнуто за всё время",
+      "uniqueBackers": "Уникальные сторонники",
+      "addr": "адр.",
+      "contribsPerBacker": "взносов / сторонник",
+      "moreOverflow": "+{count} ещё",
+      "latestActivity": "Последняя активность",
+      "lastContribution": "последний взнос",
+      "largest": "Крупнейший",
+      "paymentsWindow": "{count} платежей · 24 ч"
+    },
+    "heroConsole": {
+      "liveConsole": "Живая консоль",
+      "streamSequenceAria": "Последовательность потока",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← окно 5 с · самые ранние",
+      "pulseWindowNow": "сейчас →",
+      "stream": "Поток",
+      "recentPayments": "недавние платежи",
+      "listeningEvents": "Ожидание событий…",
+      "viewProjectAria": "Открыть проект {name}",
+      "stat": {
+        "projects": "Проекты",
+        "platformFee": "Комиссия платформы",
+        "treasury": "Казна"
+      }
+    }
+  },
+  "footer": {
+    "homeAria": "Главная Pandabox",
+    "blurb": "Программируемая платформа финансирования для Sui. Построена в блокчейне, открыта по умолчанию.",
+    "navigate": "Навигация",
+    "ecosystem": "Экосистема",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Техническое",
+    "movePackage": "Move-пакет",
+    "network": "Сеть",
+    "commit": "Коммит",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · сборка Mainnet"
+  },
+  "explore": {
+    "title": "Обзор",
+    "headline": "Финансируются прямо сейчас.",
+    "subtitle": "Каждая активная продажа токенов на Pandabox, считанная напрямую из пакета Sui mainnet — без посредников.",
+    "liveCount": "{count} в эфире",
+    "totalCount": "{count} всего",
+    "cachedHint": "кэш 60 с",
+    "all": "Все",
+    "live": "В эфире",
+    "ended": "Завершено",
+    "idle": "простой",
+    "verified": "подтверждён",
+    "legacy": "legacy",
+    "legacyHint": "Развёрнут до исправления масштабирования с 9 знаками — числа ненадёжны.",
+    "filterByCategory": "Фильтр по категории",
+    "sortLabel": "Сортировка",
+    "searchLabel": "Поиск",
+    "sort": {
+      "trending": "Популярные",
+      "newest": "Новые",
+      "mostFunded": "Самые финансируемые",
+      "endingSoonest": "Скоро завершатся"
+    },
+    "searchPlaceholder": "поиск проектов",
+    "searchAria": "Поиск проектов",
+    "sortAria": "Сортировка проектов",
+    "loadMore": "Показать ещё",
+    "empty": "Под эти фильтры пока нет проектов.",
+    "emptyTitle": "Ничего не найдено",
+    "resetFilters": "Сбросить фильтры",
+    "byCreator": "от {addr}",
+    "endsNow": "завершается ",
+    "endedAt": "завершилось ",
+    "unnamed": "Проект без названия",
+    "viewProject": "Открыть {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Мемы",
+      "art": "Искусство",
+      "infra": "Инфра",
+      "dao": "DAO",
+      "research": "Исследования",
+      "gaming": "Гейминг",
+      "music": "Музыка",
+      "social": "Социальное",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Собрано",
+      "supporters": "Сторонники"
+    },
+    "hero": {
+      "raised": "Собрано",
+      "supporters": "Сторонники",
+      "heldBy": "у держателя",
+      "backThis": "Поддержать проект"
+    },
+    "status": {
+      "live": "в эфире",
+      "paused": "приостановлен",
+      "closed": "закрыт"
+    },
+    "detail": {
+      "backToExplore": "назад к обзору",
+      "legacyBadge": "Legacy · неверные параметры",
+      "legacyBody": "Этот проект был развёрнут до того, как мастер применял масштабирование с 9 знаками к <code>base_rate</code>. Курс, цель и собранные суммы ниже неверны — не доверяйте им и не поддерживайте эту продажу.",
+      "creator": "Создатель",
+      "contractAddressShort": "CA",
+      "verified": "Подтверждён",
+      "statusLabel": "Статус",
+      "statusLive": "В эфире",
+      "statusEnded": "Завершён",
+      "statusClosed": "Закрыт",
+      "endsIn": "Завершится через",
+      "cap": "Лимит",
+      "sale": "Продажа",
+      "ended": "Завершено",
+      "noCap": "без лимита",
+      "finished": "завершено",
+      "closed": "закрыто",
+      "rate": "Курс",
+      "perSui": "/SUI",
+      "maxSupply": "макс. эмиссия",
+      "unsold": "непроданные",
+      "unsoldToCreator": "→ создатель",
+      "unsoldBurn": "сжечь",
+      "remaining": "осталось",
+      "treasury": "казна",
+      "beFirstSupporter": "поддержите проект первым",
+      "supporterOne": "{count} сторонник",
+      "supporterOther": "{count} сторонников",
+      "lastBy": "последний:",
+      "justNow": "только что",
+      "agoMinutes": "{n} мин назад",
+      "agoHours": "{n} ч назад",
+      "agoDays": "{n} дн назад",
+      "aboutTitle": "О проекте",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "Описание ещё не опубликовано — создатель может опубликовать его в любой момент. См. панель оплаты для деталей продажи.",
+      "status": {
+        "ended": "завершено"
+      },
+      "meta": {
+        "notFoundTitle": "Проект не найден",
+        "descriptionFallback": "{name} ({ticker}) — ончейн-финансирование на Sui от Pandabox."
+      },
+      "tabs": {
+        "about": "О проекте",
+        "activity": "Активность"
+      },
+      "activity": {
+        "title": "Активность",
+        "empty": "В этом проекте пока нет ончейн-активности. Взносы, клеймы и выводы появятся здесь.",
+        "eventCount": "{count, plural, one {# событие} few {# события} many {# событий} other {# события}}",
+        "revalidates": "обновление 30 с",
+        "colTime": "Время",
+        "colEvent": "Событие",
+        "colActor": "Участник",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "Внёс",
+          "claim": "Получил",
+          "withdraw": "Вывел",
+          "close": "Закрыл"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "Получить токены",
+        "finalizeSale": "Финализировать продажу",
+        "receiptCount": "{count, plural, one {# квитанция} few {# квитанции} many {# квитанций} other {# квитанции}}",
+        "anyone": "любой",
+        "claimIntroOne": "Продажа закрыта. Сожгите объект <code>ContributionReceipt&lt;T&gt;</code> и получите свою долю {ticker}.",
+        "claimIntroMany": "Продажа закрыта. Сожгите объекты <code>ContributionReceipt&lt;T&gt;</code> и получите свою долю {ticker}.",
+        "youllReceive": "Вы получите",
+        "from": "Из",
+        "contributed": "внесено",
+        "finalizeIntro": "Время продажи истекло. Любой может финализировать, чтобы зафиксировать итоговую сумму и разблокировать клейм и вывод для всех.",
+        "sold": "Продано",
+        "treasury": "Казна",
+        "claimCta": "Получить → {amount}",
+        "claimAllCta": "Получить всё → {amount}",
+        "receiptsSummary": "квитанции ({count})",
+        "modalClaimTitle": "Получить токены",
+        "modalFinalizeTitle": "Финализировать продажу",
+        "backToProject": "Назад к проекту",
+        "youBurn": "Вы сжигаете",
+        "receiptOne": "квитанцию",
+        "receiptOther": "квитанций",
+        "originallyContributed": "изначально внесено {amount}",
+        "youReceive": "Вы получаете",
+        "coinSentToWallet": "Coin<{ticker}> отправлен в ваш кошелёк",
+        "cancel": "Отмена",
+        "signing": "Подпись…",
+        "confirmClaim": "Подтвердить и получить",
+        "confirmFinalize": "Подтвердить и финализировать",
+        "finalizePreviewIntro": "Окно продажи закрылось. Любой может финализировать, чтобы зафиксировать итоговую сумму — это разблокирует клейм токенов для сторонников и вывод SUI для владельца проекта.",
+        "finalizeFootnote": "no-op, если продажа не готова · только газ · продажа становится доступной для клейма держателями {ticker}",
+        "saleFinalized": "продажа финализирована",
+        "finalizeSuccessBody": "Проект закрыт. Клейм токенов и вывод средств администратором разблокированы.",
+        "txLabel": "tx",
+        "txFailed": "Транзакция не удалась.",
+        "tweetText": "Только что получил мои {ticker} от {projectName} на Pandabox — программируемое ончейн-финансирование на Sui.",
+        "stampClaimed": "получено",
+        "stampInYourWallet": "в вашем кошельке",
+        "tokensDeliveredEyebrow": "· токены доставлены ·",
+        "fromLabel": "из",
+        "receiptsBurnedOne": "{count} квитанция сожжена",
+        "receiptsBurnedOther": "{count} квитанций сожжено",
+        "statReceived": "Получено",
+        "statReceipts": "Квитанции",
+        "burnedCount": "{count} сожжено",
+        "shareOnX": "поделиться в x"
+      },
+      "share": {
+        "tweetText": "Поддерживаю {projectName} ({ticker}) на Pandabox — программируемое ончейн-финансирование на Sui.",
+        "copyAria": "Скопировать URL проекта",
+        "shareAria": "Поделиться в X",
+        "copy": "копировать",
+        "copied": "скопировано",
+        "share": "поделиться"
+      },
+      "cover": {
+        "specCover": "обложка · {ticker}",
+        "specFig": "рис.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "иллюстрация",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "обложка {name}",
+        "iconAlt": "иконка {name}"
+      },
+      "meter": {
+        "ofLabel": "из",
+        "target": "цель"
+      },
+      "onchain": {
+        "title": "Ончейн-запись",
+        "specSheet": "спецификация",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Объект Project",
+        "sharedObject": "общий объект",
+        "coinType": "Тип монеты",
+        "contractAddress": "адрес контракта",
+        "deployed": "Развёрнут",
+        "links": "Ссылки",
+        "social": "соцсеть",
+        "site": "сайт",
+        "discord": "discord",
+        "noneProvided": "не указано",
+        "copy": "копировать",
+        "copied": "скопировано",
+        "copyAria": "Скопировать в буфер",
+        "explorer": "explorer",
+        "justNow": "только что",
+        "agoSeconds": "{n} с назад",
+        "agoMinutes": "{n} мин назад",
+        "agoHours": "{n} ч назад",
+        "agoDays": "{n} дн назад",
+        "agoMonths": "{n} мес назад",
+        "agoYears": "{n} г назад"
+      },
+      "rail": {
+        "connectTitle": "Подключите кошелёк",
+        "connectBody": "Подключитесь, чтобы поддержать проект, получить токены или управлять им, если вы создатель.",
+        "loadingTitle": "Чтение активов",
+        "loadingBody": "Проверка ваших AdminCap и квитанций…",
+        "saleClosedTitle": "Продажа закрыта",
+        "saleClosedBody": "Эта продажа финализирована. У вас нет квитанции о взносе для {token}, поэтому из этого кошелька получать нечего.",
+        "thisProjectFallback": "этот проект"
+      },
+      "seedLiquidity": {
+        "title": "Засеять ликвидность Cetus",
+        "intro": "Отмечает этот проект как имеющий парную ликвидность на <strong>Cetus</strong>. После сохранения график цены на странице проекта начнёт читать живые данные OHLCV из GeckoTerminal.",
+        "verifyExplainer": "Мы проверяем объект пула на Sui перед закреплением. Пул должен быть реальным <code>pool::Pool&lt;A, B&gt;</code>, где одна сторона — SUI, а другая — монета вашего проекта <code>{coin}</code>. Без настоящего пула флаг не переключить.",
+        "poolAddressLabel": "Адрес пула Cetus",
+        "poolPlaceholder": "0x… (ID объекта Cetus Pool)",
+        "verify": "Проверить",
+        "verifying": "Проверка…",
+        "verifiedOk": "Проверено ✓",
+        "invalidObjectId": "Некорректный ID объекта Sui",
+        "verificationFailedTitle": "Проверка не удалась",
+        "verificationFailed": "Проверка не удалась.",
+        "poolVerified": "Пул проверен",
+        "cetus": "Cetus",
+        "rowPool": "Пул",
+        "rowSideA": "Сторона A",
+        "rowSideB": "Сторона B",
+        "cancel": "Отмена",
+        "pinning": "Закрепление…",
+        "signing": "Подпись…",
+        "signAndSave": "Подписать и сохранить",
+        "pinningFailed": "Закрепление в IPFS не удалось — {reason}",
+        "unknownError": "неизвестная ошибка",
+        "txFailed": "Транзакция не удалась.",
+        "seededTitle": "Ликвидность отмечена как засеянная",
+        "seededBody": "Страница проекта подхватит новый пул и начнёт показывать живой график в течение ~30 с после обновления кэша.",
+        "detailsCid": "details cid · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
+  },
+  "pay": {
+    "heading": "Поддержать проект",
+    "youReceive": "Вы получаете",
+    "remainingHint": "Доступно к выпуску {amount}, излишек возвращается автоматически.",
+    "memo": "Заметка (необязательно)",
+    "memoPlaceholder": "записывается в блокчейн вместе с платежом",
+    "enterAmount": "Введите сумму",
+    "payAmount": "Оплатить {amount} SUI",
+    "shareOfSupply": "Доля от эмиссии",
+    "remainingMintable": "Доступно к выпуску",
+    "unsold": "Непроданные",
+    "unsoldBurn": "Сжечь",
+    "unsoldTransfer": "Передать создателю",
+    "inspectorTitle": "Инспектор транзакции",
+    "inspectorPreview": "Предпросмотр перед подписью. Ваш кошелёк запросит подпись для этого вызова Move.",
+    "inspectorNotDeployed": "Move-пакет ещё не развёрнут — отправка моделируется локально, пока не задана переменная NEXT_PUBLIC_PACKAGE_ID.",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + возвратная монета → отправителю"
+    },
+    "cancel": "Отмена",
+    "signSubmit": "Подписать и отправить",
+    "signing": "Подпись…",
+    "confirmed": "Платёж подтверждён",
+    "backToProject": "Назад к проекту",
+    "connectFirst": "Подключите кошелёк, чтобы внести взнос.",
+    "txFailed": "Транзакция не удалась."
+  },
+  "create": {
+    "page": {
+      "metaTitle": "Создать проект",
+      "metaDescription": "Настройте циклы, токены, выплаты и уровни. Разверните на Sui.",
+      "headline": "Настройте проект и разверните одной транзакцией.",
+      "intro": "Шесть шагов. Черновики автосохраняются в браузере. Правая панель показывает, что увидят сторонники на странице проекта.",
+      "badgeOneTransaction": "одна транзакция",
+      "badgeAutoSaving": "автосохранение черновика",
+      "badgeIpfs": "активы в ipfs"
+    },
+    "wizard": {
+      "stepsAria": "Шаги мастера",
+      "stepLabel": "Шаг {num}",
+      "stepLabels": {
+        "identity": "Идентификация",
+        "coin": "Монета",
+        "sale": "Продажа",
+        "deploy": "Деплой"
+      },
+      "percentComplete": "{pct}% готово",
+      "resetDraft": "сбросить черновик",
+      "back": "Назад",
+      "continueStep": "Продолжить · шаг {num}",
+      "reviewAndDeployAbove": "проверьте и разверните выше",
+      "resetModalTitle": "Сбросить черновик?",
+      "resetModalBody": "Это очистит все поля мастера и удалит сохранённый черновик из браузера. На ончейн-данные это не повлияет — вы просто начнёте с пустой формы.",
+      "resetBullet1": "идентификация, монета, продажа, деплой — всё стирается",
+      "resetBullet2": "удаляется из localStorage",
+      "resetBullet3": "отменить нельзя",
+      "keepDraft": "Оставить черновик",
+      "resetDraftButton": "Сбросить черновик"
+    },
+    "imageUpload": {
+      "defaultLabel": "Обложка",
+      "cidLabel": "cid",
+      "errorOnlyImages": "Допустимы только графические файлы.",
+      "errorTooLarge": "Изображение слишком большое ({size} MiB). Макс. {max} MiB.",
+      "errorUploadFailed": "Загрузка неожиданно завершилась ошибкой.",
+      "dropToPin": "Отпустите, чтобы закрепить",
+      "dragOrClick": "Перетащите изображение или нажмите для загрузки",
+      "maxSize": "макс. {max} MiB",
+      "loadingFromIpfs": "загрузка из ipfs",
+      "gatewayRetry": "повтор шлюза {attempt}/4",
+      "gatewayWarmup": "прогрев шлюза",
+      "replace": "заменить",
+      "remove": "удалить",
+      "uploading": "загрузка",
+      "pinningToIpfs": "закрепление в ipfs",
+      "cancelUploadAria": "Отменить загрузку",
+      "cancel": "отмена",
+      "sendingBytes": "отправка байтов в сервис закрепления",
+      "pinataReplicating": "pinata реплицирует по узлам ipfs — для больших изображений это может занять несколько секунд",
+      "pasteCidToggle": "или вставьте существующий CID / URL",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "Идентификация",
+      "body": "Кто и что финансирует. Это то, что увидят сторонники в кошельке и на странице проекта.",
+      "meta": "хранится в блокчейне",
+      "basicsTitle": "Основное",
+      "basicsMeta": "неизменно после деплоя",
+      "projectName": "Название проекта",
+      "projectNamePlaceholder": "напр. Atelier Ono",
+      "ticker": "Тикер",
+      "tickerHint": "Заглавные буквы/цифры, 2–10 символов",
+      "category": "Категория",
+      "storyTitle": "История",
+      "storyMeta": "редактируется в любой момент",
+      "tagline": "Слоган",
+      "taglineHint": "Одна строка, 8–160 симв. · {len}/160",
+      "taglinePlaceholder": "Фотозин-коллектив с еженедельными дропами на Sui.",
+      "description": "Описание",
+      "descriptionHint": "Поддержка Markdown · 20–4000 симв. · {len}/4000",
+      "descriptionPlaceholder": "Расскажите сторонникам, что вы создаёте и зачем нужен их SUI.",
+      "coverTitle": "Обложка",
+      "coverMeta": "закреплена в ipfs",
+      "coverHint": "Размещается вверху страницы проекта. Лучше всего смотрится широкий формат 16:10. При загрузке закрепляется в IPFS — CID попадает в блокчейн.",
+      "socialsTitle": "Соцсети",
+      "socialsMeta": "необязательно",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "ник",
+      "website": "Сайт",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "ссылка-приглашение"
+    },
+    "step2": {
+      "title": "Монета",
+      "body": "Pandabox нужна монета Sui, которой вы владеете. Можно опубликовать её прямо сейчас в браузере по нашему аудированному шаблону или вставить существующий TreasuryCap + CoinMetadata, если они у вас уже есть.",
+      "meta": "9 знаков · создаётся через sui::coin::create_currency",
+      "modeLabel": "Режим",
+      "modePublish": "Опубликовать новую монету",
+      "modePaste": "У меня уже есть монета",
+      "untitledCoin": "Монета без названия",
+      "howThisWorks": "Как это работает",
+      "howThisWorksBody": "Мы начинаем с предкомпилированного <code>coin_template.move</code> с <strong>9 знаками</strong>, переписываем его идентификаторы и константы метаданных в вашем браузере через <code>@mysten/move-bytecode-template</code>, затем публикуем из вашего кошелька. Сгенерированный исходник Move закрепляется в IPFS, чтобы любой мог проверить, что именно было развёрнуто.",
+      "coinMetadataTitle": "Метаданные монеты",
+      "coinMetadataMeta": "идёт в CoinMetadata<T>",
+      "symbol": "Символ",
+      "symbolHint": "2–10 симв. · заглавные буквы / цифры",
+      "name": "Название",
+      "namePlaceholder": "Panda Token",
+      "description": "Описание",
+      "descriptionHint": "≤240 симв. · ASCII",
+      "descriptionPlaceholder": "Что представляет эта монета.",
+      "iconUrl": "URL иконки",
+      "iconUrlHint": "Используйте обложку проекта или вставьте URL хостинга",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "Публикация",
+      "publishMetaComplete": "готово",
+      "publishMetaStep": "шаг 1 из 2 деплоев",
+      "coinPublishedConfirm": "Монета опубликована. TreasuryCap и CoinMetadata сохранены в черновик.",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "Переписываем байт-код…",
+      "publishStateSigning": "Подпись…",
+      "publishStateFetching": "Ожидание блокчейна…",
+      "publishStatePinning": "Закрепление исходника…",
+      "publishCoin": "Опубликовать монету",
+      "publishCaption": "одна транзакция · передаваемый upgrade cap возвращается вам",
+      "errorNoDigest": "Кошелёк не вернул digest для транзакции публикации.",
+      "errorPublishFailed": "Публикация не удалась.",
+      "strandedTitle": "Опубликовано — но RPC замолчал",
+      "openOnSuiExplorer": "Открыть в Sui Explorer",
+      "switchToPasteMode": "Перейти в режим вставки",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 симв. · A-Z, 0-9, _ · должно начинаться с буквы",
+      "validateName": "Добавьте название (2–32 симв.)",
+      "validateDescriptionLength": "Не более 240 символов",
+      "validateDescriptionAscii": "Только ASCII (без эмодзи и типографских кавычек)",
+      "validateIconUrl": "Используйте полный https:// URL",
+      "validateInvalidIdentifier": "Некорректный идентификатор",
+      "objectIdsTitle": "ID объектов",
+      "objectIdsMeta": "должны принадлежать вам",
+      "treasuryCapLabel": "ID объекта TreasuryCap<T>",
+      "treasuryCapHint": "Из createdObjects вашей транзакции публикации.",
+      "metadataLabel": "ID объекта CoinMetadata<T>",
+      "metadataHint": "Мы считываем это из блокчейна, чтобы определить тип монеты и количество знаков.",
+      "coinInfoTitle": "Сведения о монете",
+      "coinInfoMetaReading": "чтение…",
+      "coinInfoMetaDetected": "обнаружено",
+      "coinInfoMetaNotFound": "не найдено",
+      "statName": "Название",
+      "statSymbol": "Символ",
+      "statDecimals": "Знаков",
+      "resolvedCoinType": "Определённый тип монеты",
+      "wrongDecimals": "Эта монета использует {decimals} знаков. Pandabox требует {required} — переразверните монету с верным значением.",
+      "readingFromChain": "Чтение из блокчейна…",
+      "pasteMetadataHint": "Вставьте ID CoinMetadata выше, чтобы определить монету.",
+      "errorObjectNotFound": "Объект не найден.",
+      "errorNotCoinMetadata": "Объект не является CoinMetadata<T>.",
+      "errorUnexpectedContent": "Неожиданное содержимое объекта.",
+      "errorLookupFailed": "Поиск не удался."
+    },
+    "step3": {
+      "title": "Условия продажи",
+      "body": "Сторонники вносят SUI в обмен на квитанцию. После завершения продажи или распродажи всех токенов они получают свою долю. Непроданные токены сжигаются или возвращаются вам — на ваш выбор.",
+      "meta": "неизменно после деплоя",
+      "pricingTitle": "Цена",
+      "pricingMeta": "токены ↔ SUI",
+      "tokensPerSui": "Токенов за SUI",
+      "tokensPerSuiHint": "Сколько {ticker} получает сторонник за каждый 1 SUI.",
+      "targetRaise": "Целевой сбор (SUI)",
+      "targetRaiseHint": "Изменение этого поля пересчитывает «Токены за SUI».",
+      "baseRateLabel": "base_rate (масштабированный, в блокчейне)",
+      "allocationTitle": "Аллокация",
+      "allocationMeta": "всего токенов на продажу",
+      "tokensForSale": "Токенов на продажу",
+      "tokensForSaleHint": "Всего {ticker}, зарезервированных под продажу. TreasuryCap выпускает не более этого количества.",
+      "fundingAllocationLabel": "funding_allocation (raw u64)",
+      "maxSupplyLabel": "Макс. эмиссия · {ticker}",
+      "mintedAtLaunch": "Выпущено при запуске",
+      "mintedAtLaunchValue": "0 — выпускаются при клейме",
+      "supplyNote": "Монета стартует с <zeroSupply>нулевой эмиссией</zeroSupply>. Токены выпускаются лениво, когда сторонники вызывают <code>claim</code> на своих квитанциях. Итоговая обращающаяся эмиссия = <claimed>заклеймлено</claimed>",
+      "supplyNoteReturn": " + непроданные (возвращаются в ваш кошелёк)",
+      "supplyNoteBurn": " (непроданная часть сжигается)",
+      "saleWindowTitle": "Окно продажи",
+      "durationDays": "{days} дн",
+      "noTimeCap": "без ограничения по времени",
+      "ends": "Завершается",
+      "inDays": "через {days} дн",
+      "unsoldTitle": "Непроданная эмиссия",
+      "unsoldMeta": "после закрытия продажи",
+      "actionLabel": "Действие",
+      "unsoldBurnTitle": "Сжечь",
+      "unsoldBurnBody": "Непроданные токены безвозвратно уничтожаются, уменьшая общую эмиссию.",
+      "unsoldReturnTitle": "Вернуть создателю",
+      "unsoldReturnBody": "Непроданные токены чеканятся на ваш адрес. Используйте для вестинга или засева DEX."
+    },
+    "step4": {
+      "title": "Проверка и деплой",
+      "body": "Pandabox закрепит описание и project_details в IPFS, затем отправит одну транзакцию Sui, которая создаст проект, поглотит ваш TreasuryCap и передаст вам ProjectAdminCap.",
+      "metaChecks": "{ok}/{total} проверок · {status}",
+      "statusReady": "готово",
+      "statusBlocked": "заблокировано",
+      "headsUp": "Внимание",
+      "headsUpBody": "<strong>Поглощается при деплое:</strong> ваши <code>TreasuryCap<T></code> и <code>CoinMetadata<T></code> переходят во владение объекта Project и не могут быть возвращены. <strong>Неизменно после деплоя:</strong> название, монета, базовый курс, аллокация, время окончания, действие с непроданными. <strong>Можно изменить позже:</strong> описание, иконка, blob исходного кода, project_details (через <code>update_metadata</code>).",
+      "sourceCodeTitle": "Необязательно · исходный код",
+      "sourceCodeMetaSet": "задано",
+      "sourceCodeMetaSkipped": "пропущено",
+      "sourceCodeLabel": "Blob исходного кода (CID в IPFS)",
+      "sourceCodePlaceholder": "Qm… / bafy… (необязательно)",
+      "sourceCodeHint": "Закрепите архив репозитория отдельно и вставьте CID. Или оставьте пустым и обновите позже.",
+      "preflightTitle": "Предполётные проверки",
+      "preflightAllGreen": "все зелёные",
+      "preflightBlocking": "{count} блокирующих",
+      "fixInStep": "исправить на шаге {num}",
+      "deployTitle": "Деплой",
+      "deployMetaLive": "в эфире · sui mainnet",
+      "deployMetaSimulated": "симуляция",
+      "deployToSui": "Развернуть в Sui",
+      "deployCaption": "поглощает treasury cap и metadata · admin cap возвращается вам",
+      "draftAutoSaves": "Черновик автосохраняется в браузере как <code>pandabox:draft:v3</code>.",
+      "modalSuccessTitle": "Проект развёрнут",
+      "modalInspectorTitle": "Инспектор транзакции",
+      "openProjectPage": "Открыть страницу проекта",
+      "seeItOnExplore": "Посмотреть в Обзоре",
+      "inspectorIntroLive": "Проверьте, что вы собираетесь опубликовать. Pandabox закрепит описание и детали в IPFS, затем ваш кошелёк подпишет одну транзакцию, которая создаст проект на Sui.",
+      "inspectorIntroSimulated": "Move-пакет не настроен — отправка будет смоделирована локально.",
+      "sectionProject": "Проект",
+      "sectionYourCoin": "Ваша монета",
+      "sectionSaleTerms": "Условия продажи",
+      "editLink": "изменить",
+      "summaryName": "Название",
+      "summaryTicker": "Тикер",
+      "summaryCategory": "Категория",
+      "summaryTagline": "Слоган",
+      "summarySymbol": "Символ",
+      "summaryDecimals": "Знаков",
+      "summaryRate": "Курс",
+      "tokensWord": "токенов",
+      "summaryTotalForSale": "Всего на продажу",
+      "summaryMaxSupply": "Макс. эмиссия",
+      "summaryMintedAtLaunch": "Выпущено при запуске",
+      "summaryMintedAtLaunchValue": "0 — лениво выпускаются при клейме",
+      "summaryMaxRaise": "Макс. сбор",
+      "summarySaleEnds": "Продажа завершается",
+      "summaryOpenEnded": "Без срока",
+      "summaryUnsoldTokens": "Непроданные токены",
+      "summaryUnsoldReturn": "Возвращаются в ваш кошелёк",
+      "summaryUnsoldBurn": "Сжигаются (уменьшает итоговую эмиссию)",
+      "youllKeepLabel": "У вас остаётся ·",
+      "youllKeepBody": "<strong>ProjectAdminCap</strong> в вашем кошельке — права админа для этого проекта. Позже его можно передать в мультисиг.",
+      "youllGiveUpLabel": "Вы отдаёте ·",
+      "youllGiveUpBody": "ваши <strong>TreasuryCap</strong> и <strong>CoinMetadata</strong>. Проект получает их во владение, вернуть нельзя.",
+      "lockedOnDeployLabel": "Фиксируется при деплое ·",
+      "lockedOnDeployBody": "название, монета, курс, аллокация, время окончания, действие с непроданными. Описание, иконка и ссылки остаются редактируемыми.",
+      "advancedToggle": "расширенно · сырой вызов move",
+      "rawPinning": "закрепление…",
+      "rawSetAtSubmit": "задаётся при отправке",
+      "cancel": "Отмена",
+      "submitPinningDescription": "Закрепляем описание…",
+      "submitPinningDetails": "Закрепляем детали…",
+      "submitSigning": "Подпись…",
+      "submitPinAndDeploy": "Закрепить и развернуть",
+      "errorDeployFailed": "Деплой не удался.",
+      "untitledProject": "Проект без названия",
+      "coverWord": "обложка",
+      "noCover": "без обложки",
+      "projectCoverPreviewAlt": "Предпросмотр обложки проекта",
+      "checkIdentityOk": "Идентификация заполнена",
+      "checkIdentityErr": "Идентификация: {msg}",
+      "checkCoinOk": "Монета проверена · {symbol} · {decimals} знаков",
+      "checkCoinWrongDecimals": "Монета использует {decimals} знаков — протокол требует {required}",
+      "checkCoinErr": "Монета: {msg}",
+      "checkSaleOk": "Условия продажи корректны",
+      "checkSaleErr": "Продажа: {msg}",
+      "checkIncomplete": "не заполнено"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "Панель",
+      "description": "Ваши собственные и поддержанные проекты Pandabox."
+    },
+    "title": "Панель",
+    "headline": "Ваша активность",
+    "untitledProject": "Проект без названия",
+    "connectGate": {
+      "eyebrow": "Подключите кошелёк",
+      "headline": "Ваша активность в блокчейне.",
+      "body": "Подключите кошелёк Sui, чтобы увидеть созданные вами проекты и те, что вы поддержали."
+    },
+    "refresh": {
+      "label": "обновить",
+      "busy": "обновление",
+      "aria": "Обновить панель",
+      "ariaRefreshing": "Обновление панели"
+    },
+    "kpi": {
+      "raised": "Собрано",
+      "treasury": "Казна",
+      "live": "В эфире",
+      "backing": "Поддерживаете"
+    },
+    "owned": {
+      "title": "Ваши проекты",
+      "subtitle": "Проекты, чей ProjectAdminCap у вас. Нажмите «Управлять», чтобы открыть рабочее пространство.",
+      "noMatchLabel": "Под этот фильтр нет проектов",
+      "noMatchBody": "Попробуйте другой статус или очистите фильтр, чтобы увидеть все {count, plural, one {# проект} few {# проекта} many {# проектов} other {# проекта}}.",
+      "empty": {
+        "label": "Пока нет проектов",
+        "body": "Запустите продажу токенов за минуты. Предварительно разверните монету, настройте условия и опубликуйте одной подписью.",
+        "cta": "Запустить проект"
+      },
+      "card": {
+        "treasury": "Казна",
+        "withdrawable": "доступно к выводу",
+        "raisedPct": "собрано {pct}%",
+        "tokensSold": "продано {amount} {ticker}",
+        "manage": "Управлять",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "Проекты, которые вы поддерживаете",
+      "subtitle": "Ваши ContributionReceipt. Клеймите после финализации продажи.",
+      "receipts": "{count, plural, one {# квитанция} few {# квитанции} many {# квитанций} other {# квитанции}}",
+      "contributed": "Внесено",
+      "claimable": "Доступно к клейму",
+      "yourShare": "Ваша доля",
+      "action": {
+        "claim": "Получить токены",
+        "finalize": "Финализировать продажу",
+        "open": "Открыть проект"
+      },
+      "empty": {
+        "label": "Вы пока никого не поддерживаете",
+        "body": "Поддержите проект в Обзоре — ваши квитанции и доступная доля появятся здесь.",
+        "cta": "Обзор проектов"
+      }
+    },
+    "loading": {
+      "aria": "Загрузка проектов",
+      "sr": "Загрузка проектов…"
+    },
+    "filter": {
+      "all": "Все",
+      "live": "В эфире",
+      "endingSoon": "Скоро завершатся",
+      "needsFinalize": "Требуют финализации",
+      "closed": "Закрыты",
+      "disabledTitle": "Нет проектов «{label}»"
+    },
+    "sort": {
+      "label": "Сортировка",
+      "aria": "Сортировка проектов",
+      "newest": "Новые",
+      "mostRaised": "Больше всего собрано",
+      "endingSoonest": "Скоро завершатся"
+    },
+    "state": {
+      "live": "в эфире",
+      "endingSoon": "скоро завершится",
+      "endedAwaiting": "требует финализации",
+      "closed": "закрыт",
+      "unknown": "неизвестно"
+    },
+    "time": {
+      "noCap": "без ограничения по времени",
+      "endedJustNow": "только что завершилось",
+      "endsIn": "завершится через {duration}",
+      "endedAgoFinalize": "завершилось {duration} назад · финализируйте для разблокировки",
+      "closedAgo": "закрыт · {duration} назад",
+      "closed": "закрыт",
+      "durationDH": "{days} дн {hours} ч",
+      "durationHM": "{hours} ч {mins} мин",
+      "durationM": "{mins} мин"
+    },
+    "sparkline": {
+      "placeholder": "24 ч"
+    },
+    "manage": {
+      "backToDashboard": "назад к панели",
+      "openPublicPage": "открыть публичную страницу",
+      "untitledProject": "Проект без названия",
+      "status": {
+        "live": "в эфире",
+        "ended": "завершён",
+        "closed": "закрыт"
+      },
+      "stats": {
+        "treasury": "Казна",
+        "sold": "Продано",
+        "creator": "Создатель",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "Ликвидность засеяна · график в эфире",
+        "noPoolLabel": "Пула пока нет · график в заглушке",
+        "poolLink": "пул {id}",
+        "seedViaPanel": "засеять через панель →"
+      },
+      "info": {
+        "whatLabel": "Что здесь можно делать",
+        "whatBody": "Каждое действие администратора — финализация, вывод, обновление метаданных, засев ликвидности, передача или отказ от cap — выполняется через те же ончейн entry-функции, что и на странице проекта. Кнопки находятся в правой панели; предполётные проверки появляются внутри каждого окна."
+      },
+      "supply": {
+        "label": "Эмиссия",
+        "allocation": "Аллокация",
+        "sold": "Продано",
+        "remaining": "Осталось",
+        "unsoldAction": "Действие с непроданными",
+        "unsoldCreator": "→ создатель",
+        "unsoldBurn": "сжечь"
+      },
+      "error": {
+        "label": "Не удалось загрузить проект",
+        "retry": "Повторить"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "Документация",
+      "description": "Как Pandabox работает на Sui: окно продажи, базовый курс и аллокация, взносы и клейм, непроданная эмиссия, финализация и вывод, плюс прохождение мастера."
+    },
+    "eyebrow": "Документация",
+    "heading": "Как Pandabox действительно работает.",
+    "subhead": "Три вкладки. «Механика» — это протокол; «Пройти мастер» — поток создания; «Справочник» содержит глоссарий и FAQ.",
+    "toc": {
+      "ariaLabel": "Разделы документации",
+      "onThisPage": "На этой странице"
+    },
+    "tabs": {
+      "ariaLabel": "Разделы документации",
+      "mechanics": {
+        "label": "Механика",
+        "sections": {
+          "how": "01 / Как это работает",
+          "window": "02 / Окно продажи",
+          "rate": "03 / Базовый курс и аллокация",
+          "claim": "04 / Взнос и клейм",
+          "unsold": "05 / Непроданная эмиссия",
+          "finalize": "06 / Финализация и вывод"
+        }
+      },
+      "wizard": {
+        "label": "Пройти мастер",
+        "sections": {
+          "intro": "Четыре шага",
+          "identity": "01 · Идентификация",
+          "coin": "02 · Монета",
+          "sale": "03 · Условия продажи",
+          "deploy": "04 · Проверка и деплой"
+        }
+      },
+      "reference": {
+        "label": "Справочник",
+        "sections": {
+          "glossary": "Глоссарий",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / Как это работает",
+        "p1": "Pandabox — это Move-пакет на Sui. Создатель разворачивает <term>Project</term> — объект Sui, владеющий казной SUI и заблокированным <term>TreasuryCap</term> для собственной монеты проекта. Затем проект проводит одну продажу по фиксированному курсу: сторонники вносят SUI и получают право заклеймить токены проекта по заданной цене.",
+        "p2": "Сторонники не получают токены напрямую. Они получают <term>ContributionReceipt</term> — передаваемую NFT Sui, фиксирующую их права. Они <term>клеймят</term> свои токены, сжигая квитанцию после закрытия продажи. Платёж, превышающий оставшуюся аллокацию, возвращается в той же транзакции.",
+        "p3": "Продажа завершается одним из трёх способов: наступает заданное время окончания, аллокация полностью распродаётся, либо администратор платформы её закрывает. После закрытия создатель выводит собранный SUI (за вычетом комиссии платформы) и обрабатывает непроданные токены согласно выбранной при деплое политике.",
+        "cta": "Начать черновик проекта →"
+      },
+      "window": {
+        "label": "02 / Окно продажи",
+        "p1": "У каждой продажи одно зафиксированное окно. Вы задаёте <term>время окончания</term> при деплое — либо оставляете его открытым и закрываете продажу вручную как администратор. Пока продажа не финализирована, любой может вносить взнос по фиксированному курсу.",
+        "p2": "Финализировать продажу могут три события: истекает время окончания (<term>Time</term>), распродаётся аллокация (<term>Sellout</term>) или администратор принудительно закрывает её (<term>Admin</term>). Финализация — это ворота для клейма токенов, вывода SUI и обработки непроданной эмиссии — пока продажа активна, ничего из этого не работает.",
+        "p3": "Финализацию может запустить администратор (<code>try_finalize</code>) или любой желающий после выполнения условий (<code>permissionless_finalize</code>) — чтобы застоявшийся создатель не мог удерживать клеймы сторонников после истечения времени.",
+        "cta": "Смотреть на шаге 03 →"
+      },
+      "rate": {
+        "label": "03 / Базовый курс и аллокация",
+        "p1": "Продажу определяют два числа: <term>базовый курс</term> (токенов проекта за 1 SUI) и <term>funding allocation</term> (всего токенов проекта на продажу). Оба задаются при деплое и фиксируются на всё время жизни проекта — их нельзя изменить через обновление метаданных или действия администратора.",
+        "p2": "Если взнос превышает оставшуюся аллокацию, принимается только посильная часть, остальное возвращается в той же транзакции. Сторонники никогда не переплачивают.",
+        "cta": "Смотреть на шаге 03 →"
+      },
+      "claim": {
+        "label": "04 / Взнос и клейм",
+        "p1": "<term>Взнос.</term> Сторонник вызывает <code>contribute</code> с монетой SUI. Проект записывает взнос на его адрес и возвращает NFT <term>ContributionReceipt</term> — плюс возвратную монету, если платёж превысил доступную аллокацию.",
+        "p2": "<term>Клейм.</term> После финализации продажи сторонник сжигает свою квитанцию через <code>claim</code> и получает токены проекта. Несколько квитанций (от нескольких взносов) можно сжечь одним вызовом через <code>claim_multiple</code>, получив одну объединённую монету.",
+        "p3": "Квитанции — обычные объекты Sui: передаваемые, продаваемые на вторичных рынках, не имеют срока. Клеймы остаются открытыми, пока существует объект Project.",
+        "cta": "Смотреть свои квитанции в Панели →"
+      },
+      "unsold": {
+        "label": "05 / Непроданная эмиссия",
+        "p1": "Если продажа закрывается с непроданными токенами, создатель вызывает <code>process_unsold</code>, чтобы исполнить выбранную при деплое политику:",
+        "p2": "<term>Сжечь</term> — непроданная эмиссия уничтожается, повышая подразумеваемую цену каждого заклеймленного токена. Сигнализирует о редкости: float равен ровно тому, что собрала продажа.",
+        "p3": "<term>Передать создателю</term> — непроданная эмиссия переходит создателю обычным балансом монеты. Полезно, если планируется засев ликвидности, вторичная продажа или удержание казначейской позиции. Страница проекта показывает это как <code>UNSOLD → CREATOR</code> в строке спецификации, чтобы сторонники видели политику до оплаты.",
+        "cta": "Смотреть на шаге 03 →"
+      },
+      "finalize": {
+        "label": "06 / Финализация и вывод",
+        "p1": "После финализации создатель вызывает <code>withdraw_sui</code>, чтобы забрать собранный SUI из казны проекта. Комиссия платформы (в базисных пунктах, задаётся Pandabox) удерживается автоматически — создатель получает чистую сумму, комиссия идёт в казну платформы. Выводы могут быть частичными; держатель cap может вывести остаток позже.",
+        "p2": "<term>ProjectAdminCap</term>, выпущенный при деплое, — обычный объект Sui. Передаётся через <code>transfer_project_admin</code> (что эмитирует событие, на которое полагается индексер — предпочтительнее, чем сырая передача объекта) или уничтожает себя через <code>renounce_project_admin</code>, оставляя проект навсегда без администратора — полезно для общественных проектов, которые хотят убрать себя из-под контроля создателя.",
+        "p3": "Метаданные проекта — название, описание, URL иконки, blob исходного кода и off-chain JSON с деталями (слоган, категория, соцсети) — остаются редактируемыми через <code>update_metadata</code> независимо от того, активна продажа или закрыта."
+      }
+    },
+    "wizard": {
+      "stepWord": "Шаг",
+      "intro": {
+        "label": "Четыре шага",
+        "p1": "Поток создания состоит из четырёх шагов. Всё, что вы заполняете, попадает либо в блокчейн (параметры продажи, название, CID блобов), либо в JSON project_details, закреплённый в IPFS (слоган, категория, соцсети). Живой предпросмотр справа показывает, что увидят сторонники.",
+        "cta": "Открыть мастер "
+      },
+      "steps": {
+        "identity": {
+          "alt": "Шаг 01 мастера создания — поля идентификации рядом с живым предпросмотром страницы проекта.",
+          "title": "Идентификация",
+          "caption": "Название проекта, тикер, категория, слоган, обложка, описание. Тикер здесь информационный — настоящий символ монеты берётся из CoinMetadata, который вы подключите на следующем шаге."
+        },
+        "coin": {
+          "alt": "Шаг 02 мастера создания — подключить или опубликовать монету Sui.",
+          "title": "Монета",
+          "caption": "Pandabox нужна собственная монета Sui. Опубликуйте её из предкомпилированного coin_template.move (переписанного под ваши идентификаторы в браузере и закреплённого в IPFS для аудита) — или вставьте существующие TreasuryCap + CoinMetadata, если они у вас уже есть. Знаков должно быть 9."
+        },
+        "sale": {
+          "alt": "Шаг 03 мастера создания — условия продажи: курс токенов за SUI, общая аллокация, время окончания, политика непроданных.",
+          "title": "Условия продажи",
+          "caption": "Четыре числа, которые фиксируются при деплое: базовый курс (токенов за 1 SUI), общая аллокация, опциональное время окончания и действие с непроданными (сжечь или передать создателю). Подразумеваемый максимальный сбор пересчитывается на лету."
+        },
+        "deploy": {
+          "alt": "Шаг 04 мастера создания — проверка и деплой.",
+          "title": "Проверка и деплой",
+          "caption": "Одна транзакция Sui создаёт объект Project, поглощает в него ваши TreasuryCap и CoinMetadata и возвращает ProjectAdminCap в ваш кошелёк. Яркое уведомление поясняет, что становится неизменным при отправке, а что остаётся редактируемым через update_metadata."
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "Глоссарий",
+        "termLabels": {
+          "baseRate": "Базовый курс",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "Действие с непроданными",
+          "endTime": "Время окончания",
+          "finalize": "Финализация",
+          "closeTrigger": "Триггер закрытия",
+          "projectStatus": "Статус проекта",
+          "platformFee": "Комиссия платформы"
+        },
+        "terms": {
+          "project": "Общий объект Sui, удерживающий казну SUI, заблокированный TreasuryCap<T> и параметры продажи.",
+          "projectAdminCap": "Личный объект Sui, дающий права админа: вывод SUI, обработка непроданных, обновление метаданных, финализация, передача, отказ.",
+          "contributionReceipt": "NFT, выпускаемая при взносе. Сжигается ради токенов после финализации. Передаётся, как любой объект Sui.",
+          "baseRate": "Токены проекта, выпускаемые за 1 SUI взноса. Фиксируется при деплое.",
+          "fundingAllocation": "Всего токенов проекта на продажу. По достижении срабатывает sellout. Фиксируется при деплое.",
+          "unsoldAction": "Политика для оставшихся при закрытии токенов: Сжечь или Передать создателю. Фиксируется при деплое.",
+          "endTime": "Опциональный таймстемп окончания продажи. Если null, финализировать могут только закрытие админом или sellout.",
+          "finalize": "Зафиксировать продажу. Требуется до клеймов, вывода SUI или обработки непроданных. Permissionless после выполнения условий.",
+          "closeTrigger": "Причина окончания продажи: Time, Sellout или Admin. Записывается в блокчейн.",
+          "projectStatus": "Active (идёт продажа), Closed (финализирован) или Compromised (помечен платформой).",
+          "platformFee": "Доля выводимого SUI в базисных пунктах, удерживаемая Pandabox. Устанавливается админом платформы, применяется при withdraw_sui.",
+          "mist": "Наименьшая единица SUI. 1 SUI = 1 000 000 000 MIST."
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "Это проходило аудит?",
+            "a": "Пока нет. Pandabox находится в testnet. Формальный аудит будет проведён до перехода в mainnet."
+          },
+          "editAfterDeploy": {
+            "q": "Можно ли редактировать проект после деплоя?",
+            "a": "Да для off-chain идентификации: название, описание, обложка (URL иконки), blob исходного кода, слоган, категория и социальные ссылки обновляются через <code>update_metadata</code> в любой момент. Нет для экономики продажи: базовый курс, funding allocation, время окончания и политика непроданной эмиссии фиксируются при деплое. Символ и количество знаков монеты задаются модулем монеты, который вы развернули до Pandabox — их здесь тоже нельзя изменить."
+          },
+          "gas": {
+            "q": "Как работает газ?",
+            "a": "Каждая транзакция оплачивается подписывающим кошельком. Создание, взнос, клейм, вывод — всё оплачивает подписант. Газ на Sui обычно меньше цента по тарифам mainnet, так что практическая стоимость поддержки проекта — это вносимый SUI, а не газ."
+          },
+          "neverClaims": {
+            "q": "Что если сторонник так и не заклеймит?",
+            "a": "Квитанции не имеют срока. Токены остаются заперты в TreasuryCap проекта, пока держатель не сожжёт квитанцию через <code>claim</code>. Квитанция — реальный объект Sui, поэтому её можно передать или продать тому, кто заклеймит её."
+          },
+          "transferCap": {
+            "q": "Можно ли передать ProjectAdminCap?",
+            "a": "Да — используйте <code>transfer_project_admin</code>, чтобы событие попало в индексер. Cap не содержит ни токенов проекта, ни собранных SUI; это чисто ключ администратора. Также можно вызвать <code>renounce_project_admin</code>, чтобы навсегда уничтожить его — тогда проект работает вообще без администратора."
+          },
+          "compromised": {
+            "q": "Что означает статус «Compromised»?",
+            "a": "Администратор платформы может пометить проект как Compromised при явных доказательствах злоупотребления (rug, выдача себя за других, вредоносное ПО в обещанных бонусах). Это односторонний сигнал модерации — страница проекта остаётся доступной, чтобы сторонники видели метку и могли действовать, но она ясно предупреждает. Средства не изымаются."
+          },
+          "featured": {
+            "q": "Как попасть в строку «избранное» на главной?",
+            "a": "Избранное — это просто сортировка по собранному SUI, топ-3. Соберите достаточно — и попадёте автоматически."
+          }
+        }
+      }
+    }
+  }
+}

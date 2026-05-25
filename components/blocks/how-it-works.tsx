@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowDiag } from "@pandasui/ui";
 import { gsap, ScrollTrigger, registerGsap } from "@pandasui/ui/lib";
 import { cn } from "@pandasui/ui/lib";
@@ -47,14 +48,15 @@ type Step = {
   GlyphIcon: (props: { color: string }) => React.ReactElement;
 };
 
-const STEPS: Step[] = [
+// Static (non-translated) per-step shape: number, accent, on-chain meta call,
+// diagram + glyph references. Translatable copy is merged in inside the
+// component via useTranslations.
+const STEP_SHAPE: Array<
+  Pick<Step, "number" | "accent" | "meta" | "Diagram" | "GlyphIcon">
+> = [
   {
     number: "01",
     accent: "saffron",
-    phase: "Configure",
-    heading: "Deploy",
-    body: "Configure cycles, payouts, tokens, and optional NFT tiers. Sign one Sui transaction. Your project goes live with an admin cap object you own.",
-    outcome: "AdminCap minted",
     meta: "pandabox::create_project",
     Diagram: DeployDiagram,
     GlyphIcon: GlyphStamp,
@@ -62,10 +64,6 @@ const STEPS: Step[] = [
   {
     number: "02",
     accent: "poppy",
-    phase: "Inflow",
-    heading: "Receive",
-    body: "Supporters pay SUI directly to your treasury. They receive project tokens at your cycle's weight, plus tier NFTs if you defined any.",
-    outcome: "Tokens minted",
     meta: "pandabox::pay → Paid event",
     Diagram: ReceiveDiagram,
     GlyphIcon: GlyphInflow,
@@ -73,10 +71,6 @@ const STEPS: Step[] = [
   {
     number: "03",
     accent: "jade",
-    phase: "Govern",
-    heading: "Reconfigure",
-    body: "Propose changes for the next cycle. After the ballot delay, the new parameters lock in. Holders can cash out surplus at any time.",
-    outcome: "Cycle queued",
     meta: "queue_reconfiguration · ballot 4d 12h",
     Diagram: ReconfigureDiagram,
     GlyphIcon: GlyphLedger,
@@ -90,6 +84,15 @@ export function HowItWorks() {
   const cardsRef = useRef<(HTMLElement | null)[]>([]);
   const activeNumRef = useRef<HTMLSpanElement | null>(null);
   const [activeStep, setActiveStep] = useState(0);
+  const t = useTranslations("home.howItWorks");
+
+  const STEPS: Step[] = STEP_SHAPE.map((shape, i) => ({
+    ...shape,
+    phase: t(`steps.${i}.phase`),
+    heading: t(`steps.${i}.heading`),
+    body: t(`steps.${i}.body`),
+    outcome: t(`steps.${i}.outcome`),
+  }));
 
   useEffect(() => {
     registerGsap();
@@ -360,11 +363,11 @@ export function HowItWorks() {
         {/* Eyebrow band — matches the section's voice across the landing */}
         <div className="mb-12 flex items-center gap-4 md:mb-16">
           <AccentRule color="saffron" className="!pt-0">
-            <MonoLabel>How it works</MonoLabel>
+            <MonoLabel>{t("eyebrow")}</MonoLabel>
           </AccentRule>
           <span aria-hidden className="h-px flex-1 bg-ink/10" />
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/40 md:inline">
-            03 moves · idea → on-chain
+            {t("eyebrowSpec")}
           </span>
         </div>
 
@@ -375,12 +378,10 @@ export function HowItWorks() {
             className="col-span-12 lg:col-span-5 will-change-transform"
           >
             <h2 className="text-balance font-display text-[clamp(2.25rem,4.6vw,4rem)] leading-[0.95] tracking-tight">
-              Three steps from idea to on-chain funding.
+              {t("title")}
             </h2>
             <p className="mt-5 max-w-prose text-pretty text-base text-ink/65 md:text-[1.0625rem]">
-              Every parameter you configure here becomes a Move call. Every
-              interaction your supporters take becomes a transaction. Pandabox
-              is what's between.
+              {t("subtitle")}
             </p>
 
             {/* Now-viewing panel — light, hairline-bordered, ink-on-bone */}
@@ -402,7 +403,7 @@ export function HowItWorks() {
                       className="block h-1.5 w-1.5 rounded-full transition-colors duration-500"
                       style={{ background: ACCENT_HEX[active.accent] }}
                     />
-                    Now viewing
+                    {t("nowViewing")}
                   </span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/45">
                     {String(activeStep + 1).padStart(2, "0")} / 03
@@ -449,8 +450,8 @@ export function HowItWorks() {
                   ))}
                 </div>
                 <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-                  <span>Deploy</span>
-                  <span>Reconfigure</span>
+                  <span>{t("progressDeploy")}</span>
+                  <span>{t("progressReconfigure")}</span>
                 </div>
               </div>
             </div>
@@ -467,7 +468,7 @@ export function HowItWorks() {
                   "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
                 )}
               >
-                <span>Launch a project</span>
+                <span>{t("ctaLaunch")}</span>
                 <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
                   <ArrowDiag size={12} />
                 </span>
@@ -481,7 +482,7 @@ export function HowItWorks() {
                   "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
                 )}
               >
-                <span>Read the docs</span>
+                <span>{t("ctaDocs")}</span>
                 <span className="inline-flex shrink-0 transition-transform duration-300 group-hover:translate-x-[2px]">
                   <ArrowDiag size={12} />
                 </span>
@@ -524,6 +525,7 @@ const StepCard = ({
   const accentHex = ACCENT_HEX[accent];
   const tint = ACCENT_TINT[accent];
   const tintDeep = ACCENT_TINT_DEEP[accent];
+  const t = useTranslations("home.howItWorks");
 
   return (
     <article
@@ -639,10 +641,10 @@ const StepCard = ({
               className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em]"
               style={{ color: accentHex }}
             >
-              Step {number} · {phase}
+              {t("stepLabel", { number, phase })}
             </span>
             <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-              on-chain · sui move
+              {t("onchainSuiMove")}
             </span>
           </div>
         </div>
@@ -742,7 +744,7 @@ const StepCard = ({
                 animation: "stat-live-dot 1.4s ease-in-out infinite",
               }}
             />
-            Live
+            {t("live")}
           </span>
         </div>
       </div>

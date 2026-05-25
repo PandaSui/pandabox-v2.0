@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Marker } from "@/components/primitives/marker";
@@ -14,30 +15,31 @@ type Sort = "trending" | "newest" | "most-funded" | "ending-soonest";
 type Status = "all" | "live" | "ended";
 type CategoryFilter = Category | "all";
 
-const SORTS: { key: Sort; label: string }[] = [
-  { key: "trending", label: "Trending" },
-  { key: "newest", label: "Newest" },
-  { key: "most-funded", label: "Most funded" },
-  { key: "ending-soonest", label: "Ending soonest" },
+const SORTS: { key: Sort; labelKey: "trending" | "newest" | "mostFunded" | "endingSoonest" }[] = [
+  { key: "trending", labelKey: "trending" },
+  { key: "newest", labelKey: "newest" },
+  { key: "most-funded", labelKey: "mostFunded" },
+  { key: "ending-soonest", labelKey: "endingSoonest" },
 ];
 
-const STATUSES: { key: Status; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "live", label: "Live" },
-  { key: "ended", label: "Ended" },
+const STATUSES: { key: Status; labelKey: "all" | "live" | "ended" }[] = [
+  { key: "all", labelKey: "all" },
+  { key: "live", labelKey: "live" },
+  { key: "ended", labelKey: "ended" },
 ];
 
-const CATEGORIES: { key: CategoryFilter; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "meme", label: "Meme" },
-  { key: "art", label: "Art" },
-  { key: "infra", label: "Infra" },
-  { key: "dao", label: "DAO" },
-  { key: "gaming", label: "Gaming" },
-  { key: "music", label: "Music" },
-  { key: "social", label: "Social" },
-  { key: "research", label: "Research" },
-  { key: "rwa", label: "RWA" },
+const CATEGORIES: { key: CategoryFilter; labelKey: string }[] = [
+  { key: "all", labelKey: "all" },
+  { key: "opc", labelKey: "opc" },
+  { key: "meme", labelKey: "meme" },
+  { key: "art", labelKey: "art" },
+  { key: "infra", labelKey: "infra" },
+  { key: "dao", labelKey: "dao" },
+  { key: "gaming", labelKey: "gaming" },
+  { key: "music", labelKey: "music" },
+  { key: "social", labelKey: "social" },
+  { key: "research", labelKey: "research" },
+  { key: "rwa", labelKey: "rwa" },
 ];
 
 const PAGE = 12;
@@ -49,6 +51,7 @@ const ACCENT_ROTATION = ["saffron", "poppy", "jade", "sky", "sun", "plum"] as co
 // Three creative-register categories (art / music / meme) share saffron by
 // design; the rest each get their own accent.
 const CATEGORY_PILL: Record<Category, string> = {
+  opc: "bg-sky/12 border-sky/45",
   art: "bg-saffron/12 border-saffron/45",
   music: "bg-saffron/12 border-saffron/45",
   meme: "bg-saffron/12 border-saffron/45",
@@ -71,6 +74,9 @@ export function OnchainExploreGrid({
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(PAGE);
   const deferredQuery = useDeferredValue(query);
+  const t = useTranslations("explore");
+  const tSort = useTranslations("explore.sort");
+  const tCat = useTranslations("explore.categories");
 
   const filtered = useMemo(() => {
     const now = Date.now();
@@ -174,6 +180,7 @@ export function OnchainExploreGrid({
             <div className="flex flex-wrap items-center gap-1.5">
               {STATUSES.map((s) => {
                 const active = s.key === status;
+                const label = t(s.labelKey);
                 return (
                   <button
                     key={s.key}
@@ -192,10 +199,10 @@ export function OnchainExploreGrid({
                   >
                     {active ? (
                       <Marker color="saffron">
-                        <span>{s.label}</span>
+                        <span>{label}</span>
                       </Marker>
                     ) : (
-                      s.label
+                      label
                     )}
                   </button>
                 );
@@ -210,7 +217,7 @@ export function OnchainExploreGrid({
             <div
               className="-mx-4 flex items-center gap-1 overflow-x-auto px-4 pb-0.5 sm:-mx-6 sm:px-6 lg:-mx-0 lg:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               role="tablist"
-              aria-label="Filter by category"
+              aria-label={t("filterByCategory")}
               style={{
                 maskImage:
                   "linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%)",
@@ -247,7 +254,7 @@ export function OnchainExploreGrid({
                               ),
                     )}
                   >
-                    <span>{c.label}</span>
+                    <span>{c.key === "all" ? t("all") : tCat(c.labelKey)}</span>
                     <span
                       className={cn(
                         "font-mono tabular-nums text-[9px]",
@@ -271,31 +278,33 @@ export function OnchainExploreGrid({
               On lg+: everything collapses back to a single wrap row. */}
           <div className="flex w-full flex-col gap-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:gap-3">
             <label className="flex items-center gap-2">
-              <MonoLabel className="shrink-0 text-[10px]">Search</MonoLabel>
+              <MonoLabel className="shrink-0 text-[10px]">{t("searchLabel")}</MonoLabel>
               <input
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   setShown(PAGE);
                 }}
-                placeholder="name, ticker or id"
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchAria")}
                 className="h-9 w-full min-w-0 border border-ink/25 bg-bone px-3 font-mono text-[12px] placeholder:text-ink/30 focus:border-ink focus:outline-none focus:shadow-offset-sm lg:w-56"
               />
             </label>
             <div className="flex items-center justify-between gap-3 lg:justify-start">
               <label className="flex min-w-0 items-center gap-2">
-                <MonoLabel className="shrink-0 text-[10px]">Sort</MonoLabel>
+                <MonoLabel className="shrink-0 text-[10px]">{t("sortLabel")}</MonoLabel>
                 <select
                   value={sort}
                   onChange={(e) => {
                     setSort(e.target.value as Sort);
                     setShown(PAGE);
                   }}
+                  aria-label={t("sortAria")}
                   className="h-9 min-w-0 border border-ink/25 bg-bone px-2 font-mono-label text-[11px] focus:border-ink focus:outline-none focus:shadow-offset-sm"
                 >
                   {SORTS.map((s) => (
                     <option key={s.key} value={s.key}>
-                      {s.label}
+                      {tSort(s.labelKey)}
                     </option>
                   ))}
                 </select>
@@ -345,7 +354,7 @@ export function OnchainExploreGrid({
                 "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
               )}
             >
-              Load more
+              {t("loadMore")}
               <span className="font-mono text-[10px] text-ink/55">
                 +{Math.min(PAGE, filtered.length - shown)}
               </span>
@@ -358,12 +367,11 @@ export function OnchainExploreGrid({
 }
 
 function EmptyState({ onReset }: { onReset: () => void }) {
+  const t = useTranslations("explore");
   return (
     <div className="mx-auto max-w-xl border border-ink/15 bg-bone p-6 text-center shadow-offset-sm md:p-10">
-      <MonoLabel className="block">Nothing matches</MonoLabel>
-      <p className="mt-2 text-sm text-ink/70">
-        No on-chain projects match your filters yet. Try clearing or widening.
-      </p>
+      <MonoLabel className="block">{t("emptyTitle")}</MonoLabel>
+      <p className="mt-2 text-sm text-ink/70">{t("empty")}</p>
       <button
         type="button"
         onClick={onReset}
@@ -374,7 +382,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
           "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
         )}
       >
-        Reset filters
+        {t("resetFilters")}
       </button>
     </div>
   );

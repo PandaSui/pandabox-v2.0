@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 
 type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
@@ -37,6 +38,7 @@ export function CoverStrip({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const t = useTranslations("project.detail.cover");
   const showImage = !!src && !errored;
   const initial = (name?.[0] ?? "P").toUpperCase();
 
@@ -60,7 +62,7 @@ export function CoverStrip({
       {showImage ? (
         <Image
           src={src as string}
-          alt={`${name} cover`}
+          alt={t("imgAlt", { name })}
           fill
           sizes="(min-width:1024px) 60vw, 100vw"
           priority={priority}

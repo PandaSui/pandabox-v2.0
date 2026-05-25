@@ -16,6 +16,7 @@ export type Filters = {
 
 const CATS: { key: Category | null; label: string }[] = [
   { key: null, label: "All" },
+  { key: "opc", label: "OPC" },
   { key: "art", label: "Art" },
   { key: "infra", label: "Infra" },
   { key: "dao", label: "DAO" },

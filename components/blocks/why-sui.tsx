@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { Container } from "@/components/primitives/container";
@@ -12,52 +13,54 @@ const ACCENT_HEX: Record<Accent, string> = {
   sun: "#D9C57A",
 };
 
-export function WhySui() {
+export async function WhySui() {
+  const t = await getTranslations("home.whySui");
   return (
     <section className="relative border-t border-ink/15">
       <Container className="py-20 lg:py-28">
         <div className="mb-12 max-w-2xl">
           <AccentRule color="poppy">
-            <MonoLabel>Why Sui</MonoLabel>
+            <MonoLabel>{t("eyebrow")}</MonoLabel>
           </AccentRule>
           <h2 className="mt-3 text-3xl md:text-4xl">
-            Built for the chain that's built for this.
+            {t("title")}
           </h2>
           <p className="mt-4 max-w-prose text-base text-ink/65">
-            Three things Sui does natively that make Pandabox feel different in
-            the hand — sub-cent payments, real ownership of admin rights, and
-            zero-friction onboarding.
+            {t("subtitle")}
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-5 lg:gap-6">
           <RevealOnView delayMs={0}>
             <WhyCard
-              tag="Gas"
+              tag={t("cards.gas.tag")}
               accent="poppy"
-              heading="Sub-cent gas"
-              body="Supporters don't pay $30 to back a project. Pandabox payments cost fractions of a cent — the small contributions that matter actually go through."
-              meta="median pay tx · 0.00018 SUI"
+              heading={t("cards.gas.heading")}
+              body={t("cards.gas.body")}
+              meta={t("cards.gas.meta")}
+              nativeStamp={t("nativeStamp")}
               diagram={<GasCompareDiagram />}
             />
           </RevealOnView>
           <RevealOnView delayMs={80}>
             <WhyCard
-              tag="Ownership"
+              tag={t("cards.ownership.tag")}
               accent="sky"
-              heading="Object-centric ownership"
-              body="Your ProjectAdminCap is a real Sui object. Transfer it to a multisig, hand it to a DAO, lock it in escrow — it's just an object."
+              heading={t("cards.ownership.heading")}
+              body={t("cards.ownership.body")}
               meta="0x2::transfer::transfer<AdminCap>"
+              nativeStamp={t("nativeStamp")}
               diagram={<AdminCapHandoffDiagram />}
             />
           </RevealOnView>
           <RevealOnView delayMs={160}>
             <WhyCard
-              tag="Onboarding"
+              tag={t("cards.onboarding.tag")}
               accent="sun"
-              heading="Sponsored transactions"
-              body="Onboard supporters who don't yet hold SUI. Pandabox can sponsor the gas, so a first-time wallet can back a project on its first interaction."
-              meta="gas sponsored · payer signs only"
+              heading={t("cards.onboarding.heading")}
+              body={t("cards.onboarding.body")}
+              meta={t("cards.onboarding.meta")}
+              nativeStamp={t("nativeStamp")}
               diagram={<SponsoredGasDiagram />}
             />
           </RevealOnView>
@@ -73,6 +76,7 @@ function WhyCard({
   heading,
   body,
   meta,
+  nativeStamp,
   diagram,
 }: {
   tag: string;
@@ -80,6 +84,7 @@ function WhyCard({
   heading: string;
   body: string;
   meta: string;
+  nativeStamp: string;
   diagram: React.ReactNode;
 }) {
   const accentDot: Record<Accent, string> = {
@@ -107,7 +112,7 @@ function WhyCard({
           </MonoLabel>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-          sui-native
+          {nativeStamp}
         </span>
       </header>
 

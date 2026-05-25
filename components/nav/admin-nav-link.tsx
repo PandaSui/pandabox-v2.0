@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { PACKAGE_ID } from "@/lib/contracts/pandabox";
 import { cn } from "@pandasui/ui/lib";
@@ -20,6 +21,7 @@ export function AdminNavLink() {
   const account = useCurrentAccount();
   const client = useSuiClient();
   const [show, setShow] = useState(false);
+  const t = useTranslations("nav.links");
 
   useEffect(() => {
     if (!account) {
@@ -65,7 +67,7 @@ export function AdminNavLink() {
         active ? "text-ink" : "text-sky hover:text-ink",
       )}
     >
-      Admin
+      {t("admin")}
       <span
         aria-hidden
         className={cn(

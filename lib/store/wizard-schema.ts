@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const CATEGORY = z.enum([
+  "opc",
   "art",
   "infra",
   "dao",

@@ -15,6 +15,7 @@ import type { Accent, Category } from "@/types/pandabox";
 const DEBOUNCE_MS = 250;
 
 const CATEGORY_ACCENT: Record<Category, Accent> = {
+  opc: "sky",
   art: "saffron",
   infra: "poppy",
   dao: "jade",

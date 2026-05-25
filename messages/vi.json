@@ -1,0 +1,1147 @@
+{
+  "metadata": {
+    "title": "Pandabox — Tài trợ những gì đáng được tài trợ. Trên Sui.",
+    "description": "Bệ phóng tài trợ có thể lập trình trên Sui. Khởi chạy dự án, đặt tỷ giá, mở đợt bán on-chain — mọi tham số, mọi giao dịch, đều on-chain.",
+    "ogImageAlt": "Pandabox — bệ phóng tài trợ có thể lập trình cho Sui.",
+    "notFound": {
+      "title": "404 · Không tìm thấy",
+      "description": "Không có tín hiệu trên tuyến đường này."
+    }
+  },
+  "common": {
+    "skipToContent": "Bỏ qua đến nội dung",
+    "language": "Ngôn ngữ"
+  },
+  "nav": {
+    "homeAria": "Trang chủ Pandabox",
+    "primaryAria": "Chính",
+    "mobileAria": "Di động",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu",
+    "links": {
+      "explore": "Khám phá",
+      "create": "Tạo",
+      "dashboard": "Bảng điều khiển",
+      "docs": "Tài liệu",
+      "admin": "Quản trị"
+    }
+  },
+  "wallet": {
+    "connect": "Kết nối ví",
+    "pickerTitle": "Kết nối ví Sui",
+    "pickerDescription": "Chọn ví để đăng nhập. Chúng tôi không bao giờ giữ tài sản — khóa của bạn luôn nằm trong ví của bạn.",
+    "noWallets": "Không phát hiện ví Sui nào trong trình duyệt này.",
+    "installSuiWallet": "Cài đặt Sui Wallet →",
+    "walletStandard": "Tiêu chuẩn ví Sui",
+    "connectError": "Không thể kết nối.",
+    "fallbackName": "Ví",
+    "balanceLabel": "Số dư",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Sao chép địa chỉ",
+    "copied": "ĐÃ SAO CHÉP",
+    "viewOnSuiscan": "Xem trên Suiscan",
+    "disconnect": "Ngắt kết nối"
+  },
+  "pulse": {
+    "totalRaised": "Tổng số đã huy động trên Pandabox",
+    "mostRecent": "Mới nhất",
+    "flatlinedAria": "Nhịp ngân quỹ — đường phẳng",
+    "flatlinedCaption": "Không có sự kiện thanh toán trên tuyến này. Pandabox không thể vẽ nhịp cho một trang không tồn tại."
+  },
+  "notFound": {
+    "eyebrow": "404 · KHÔNG TÌM THẤY TUYẾN",
+    "rowStatus": "TRẠNG THÁI",
+    "rowStatusValue": "KHÔNG TÌM THẤY",
+    "rowSignal": "TÍN HIỆU",
+    "rowCycle": "CHU KỲ",
+    "headline": "Không có tín hiệu trên tuyến này.",
+    "body": "Pandabox không tìm thấy thứ bạn đang tìm. Hoặc URL đã trôi giữa các chu kỳ, hoặc trang này chưa bao giờ xuất hiện on-chain. Hãy chọn một trong các tuyến đang hoạt động bên dưới — tất cả đều đang phát tín hiệu.",
+    "ctaExplore": "Khám phá dự án",
+    "ctaLaunch": "Khởi chạy dự án",
+    "ctaDocs": "Đọc tài liệu",
+    "backHome": "quay lại pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Đang hoạt động trên Sui {network}",
+      "titleFund": "Tài trợ những gì",
+      "titleWorth": "đáng",
+      "titleFunding": "được tài trợ.",
+      "titleOnSui": "Trên Sui",
+      "tagline": "Pandabox là nền tảng tài trợ có thể lập trình cho Sui. Khởi chạy dự án trong vài phút. Nhận SUI, phát hành token, định nghĩa các khoản chi — tất cả on-chain, tất cả minh bạch, tất cả là của bạn.",
+      "ctaLaunch": "Khởi chạy dự án",
+      "ctaExplore": "Khám phá dự án",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · cuối",
+      "marginSpec": "thông số dự án — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Triển khai",
+      "titleYourProject": "Dự án của bạn,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "trong 3 phút.",
+      "subhead": "Cấu hình chu kỳ, các khoản chi và token. Ký một giao dịch Sui. Bạn nắm giữ admin cap.",
+      "ctaLaunch": "Khởi chạy dự án",
+      "ctaDocs": "Đọc tài liệu",
+      "tileSign": "Ký",
+      "tileSignValue": "1 giao dịch",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Thiết lập",
+      "tileSetupValue": "6 bước",
+      "tileKeys": "Khóa",
+      "tileKeysValue": "AdminCap của bạn",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "làm mới sau 60 giây"
+    },
+    "featured": {
+      "title": "Dự án nổi bật",
+      "subtitle": "Được tuyển chọn, đang huy động.",
+      "viewAll": "Xem tất cả",
+      "eyebrow": "Nổi bật",
+      "headline": "Đang được tài trợ ngay bây giờ",
+      "watermark": "ĐÃ TÀI TRỢ",
+      "sectionRail": "phần · 02 / nổi bật",
+      "statOnchain": "on-chain",
+      "statProjects": "dự án",
+      "statRaisedAcross": "đã huy động trong top 3",
+      "exploreAll": "Khám phá tất cả dự án",
+      "dataMeta": "dữ liệu: sui mainnet · làm mới sau 60 giây",
+      "empty": {
+        "label": "Không có dự án",
+        "heading": "Đang lắng nghe dự án đầu tiên on-chain.",
+        "description": "Sự kiện ProjectCreated từ <code>pandabox::project</code> sẽ xuất hiện ở đây."
+      },
+      "tape": {
+        "live": "trực tiếp",
+        "onchain": "on-chain",
+        "backedAgo": "đã hỗ trợ · 2 phút trước",
+        "verified": "đã xác minh",
+        "cycle01": "chu kỳ 01",
+        "supportingNow": "đang hỗ trợ · 12 hiện tại",
+        "txConfirmed": "tx đã xác nhận",
+        "freshRaise": "huy động mới",
+        "unnamed": "Không tên"
+      },
+      "skeleton": {
+        "ariaLoading": "Đang tải dự án nổi bật",
+        "srLoading": "Đang tải dự án nổi bật…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Cách hoạt động",
+      "eyebrowSpec": "03 bước · ý tưởng → on-chain",
+      "title": "Ba bước từ ý tưởng đến tài trợ on-chain.",
+      "subtitle": "Mỗi tham số bạn cấu hình ở đây trở thành một Move call. Mỗi tương tác từ người ủng hộ trở thành một giao dịch. Pandabox là cầu nối giữa chúng.",
+      "nowViewing": "Đang xem",
+      "progressDeploy": "Triển khai",
+      "progressReconfigure": "Cấu hình lại",
+      "ctaLaunch": "Khởi chạy dự án",
+      "ctaDocs": "Đọc tài liệu",
+      "stepLabel": "Bước {number} · {phase}",
+      "onchainSuiMove": "on-chain · sui move",
+      "live": "Trực tiếp",
+      "steps": {
+        "0": {
+          "phase": "Cấu hình",
+          "heading": "Triển khai",
+          "body": "Cấu hình chu kỳ, các khoản chi, token và các bậc NFT tùy chọn. Ký một giao dịch Sui. Dự án của bạn đi vào hoạt động với một admin cap object thuộc sở hữu của bạn.",
+          "outcome": "Đã tạo AdminCap"
+        },
+        "1": {
+          "phase": "Dòng vào",
+          "heading": "Nhận",
+          "body": "Người ủng hộ thanh toán SUI trực tiếp vào ngân quỹ của bạn. Họ nhận token dự án theo trọng số chu kỳ, cộng với NFT bậc nếu bạn có định nghĩa.",
+          "outcome": "Đã đúc token"
+        },
+        "2": {
+          "phase": "Quản trị",
+          "heading": "Cấu hình lại",
+          "body": "Đề xuất thay đổi cho chu kỳ kế tiếp. Sau thời gian chờ bỏ phiếu, các tham số mới được khóa. Người nắm giữ có thể rút phần thặng dư bất cứ lúc nào.",
+          "outcome": "Chu kỳ đã xếp hàng"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "Tại sao chọn Sui",
+      "title": "Xây dựng cho chuỗi được xây dựng cho điều này.",
+      "subtitle": "Ba điều Sui hỗ trợ nguyên gốc giúp Pandabox khác biệt khi sử dụng — thanh toán dưới một cent, quyền sở hữu thật sự đối với quyền quản trị, và onboarding không ma sát.",
+      "nativeStamp": "sui-native",
+      "cards": {
+        "gas": {
+          "tag": "Gas",
+          "heading": "Gas dưới một cent",
+          "body": "Người ủng hộ không phải trả 30 đô để hỗ trợ một dự án. Thanh toán Pandabox chỉ tốn vài phần của một cent — những đóng góp nhỏ quan trọng thực sự được thực hiện.",
+          "meta": "tx thanh toán trung vị · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "Sở hữu",
+          "heading": "Sở hữu theo đối tượng",
+          "body": "ProjectAdminCap của bạn là một Sui object thật. Chuyển nó cho ví multisig, trao cho DAO, khóa trong escrow — nó chỉ đơn giản là một object."
+        },
+        "onboarding": {
+          "tag": "Onboarding",
+          "heading": "Giao dịch được tài trợ gas",
+          "body": "Onboard người ủng hộ chưa có SUI. Pandabox có thể tài trợ gas, nên ví lần đầu sử dụng có thể hỗ trợ dự án ngay trong tương tác đầu tiên.",
+          "meta": "gas được tài trợ · người trả chỉ cần ký"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "Các con số",
+      "title": "Dựa trên dữ liệu on-chain thực tế.",
+      "subtitle": "Mọi con số ở đây được tính từ các sự kiện trên Move package của Pandabox, làm mới mỗi 60 giây.",
+      "sourceFootnote": "nguồn · sự kiện pandabox::project · sum / count / set",
+      "computedAt": "tính lúc",
+      "liveLabel": "Trực tiếp · sui mainnet",
+      "totalRaised": "Tổng đã huy động",
+      "totalRaisedHint": "tổng đã bán ÷ base_rate, tất cả dự án",
+      "delta24h": "24 giờ",
+      "substat": {
+        "across": "Trên",
+        "projects": "dự án",
+        "tokensMinted": "Token đã đúc",
+        "platformFees": "Phí nền tảng",
+        "feeRate": "Tỷ lệ phí"
+      },
+      "activeProjects": "Dự án đang hoạt động",
+      "liveCount": "{count} đang hoạt động",
+      "closedCount": "{count} đã đóng",
+      "deployedAllTime": "tổng đã triển khai",
+      "uniqueBackers": "Người ủng hộ duy nhất",
+      "addr": "địa chỉ",
+      "contribsPerBacker": "đóng góp / người ủng hộ",
+      "moreOverflow": "+{count} nữa",
+      "latestActivity": "Hoạt động mới nhất",
+      "lastContribution": "đóng góp cuối",
+      "largest": "Lớn nhất",
+      "paymentsWindow": "{count} thanh toán · 24 giờ"
+    },
+    "heroConsole": {
+      "liveConsole": "Console trực tiếp",
+      "streamSequenceAria": "Chuỗi luồng",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← cửa sổ 5 giây · cũ nhất",
+      "pulseWindowNow": "hiện tại →",
+      "stream": "Luồng",
+      "recentPayments": "thanh toán gần đây",
+      "listeningEvents": "Đang lắng nghe sự kiện…",
+      "viewProjectAria": "Xem dự án {name}",
+      "stat": {
+        "projects": "Dự án",
+        "platformFee": "Phí nền tảng",
+        "treasury": "Ngân quỹ"
+      }
+    }
+  },
+  "footer": {
+    "homeAria": "Trang chủ Pandabox",
+    "blurb": "Nền tảng tài trợ có thể lập trình cho Sui. Xây dựng on-chain, mở theo mặc định.",
+    "navigate": "Điều hướng",
+    "ecosystem": "Hệ sinh thái",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Kỹ thuật",
+    "movePackage": "Move package",
+    "network": "Mạng",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Bản build Mainnet"
+  },
+  "explore": {
+    "title": "Khám phá",
+    "headline": "Đang được tài trợ ngay bây giờ.",
+    "subtitle": "Mọi đợt bán token đang hoạt động trên Pandabox, đọc trực tiếp từ package trên Sui mainnet — không thông qua indexer.",
+    "liveCount": "{count} đang hoạt động",
+    "totalCount": "{count} tổng cộng",
+    "cachedHint": "cache 60 giây",
+    "all": "Tất cả",
+    "live": "Đang hoạt động",
+    "ended": "Đã kết thúc",
+    "idle": "nhàn rỗi",
+    "verified": "đã xác minh",
+    "legacy": "cũ",
+    "legacyHint": "Được triển khai trước khi sửa scaling 9 chữ số thập phân — các số không đáng tin.",
+    "filterByCategory": "Lọc theo danh mục",
+    "sortLabel": "Sắp xếp",
+    "searchLabel": "Tìm kiếm",
+    "sort": {
+      "trending": "Xu hướng",
+      "newest": "Mới nhất",
+      "mostFunded": "Được tài trợ nhiều nhất",
+      "endingSoonest": "Sắp kết thúc nhất"
+    },
+    "searchPlaceholder": "tìm dự án",
+    "searchAria": "Tìm dự án",
+    "sortAria": "Sắp xếp dự án",
+    "loadMore": "Tải thêm",
+    "empty": "Chưa có dự án nào khớp với các bộ lọc này.",
+    "emptyTitle": "Không có kết quả khớp",
+    "resetFilters": "Đặt lại bộ lọc",
+    "byCreator": "bởi {addr}",
+    "endsNow": "kết thúc ",
+    "endedAt": "đã kết thúc ",
+    "unnamed": "Dự án không tên",
+    "viewProject": "Xem {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Nghệ thuật",
+      "infra": "Hạ tầng",
+      "dao": "DAO",
+      "research": "Nghiên cứu",
+      "gaming": "Game",
+      "music": "Âm nhạc",
+      "social": "Xã hội",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Đã huy động",
+      "supporters": "Người ủng hộ"
+    },
+    "hero": {
+      "raised": "Đã huy động",
+      "supporters": "Người ủng hộ",
+      "heldBy": "nắm giữ bởi",
+      "backThis": "Hỗ trợ dự án này"
+    },
+    "status": {
+      "live": "đang hoạt động",
+      "paused": "tạm dừng",
+      "closed": "đã đóng"
+    },
+    "detail": {
+      "backToExplore": "quay lại khám phá",
+      "legacyBadge": "Cũ · tham số xấu",
+      "legacyBody": "Dự án này được triển khai trước khi wizard áp dụng scaling 9 chữ số thập phân cho <code>base_rate</code>. Các con số tỷ giá, mục tiêu và đã huy động bên dưới đều sai — đừng tin chúng hoặc hỗ trợ đợt bán này.",
+      "creator": "Người tạo",
+      "contractAddressShort": "CA",
+      "verified": "Đã xác minh",
+      "statusLabel": "Trạng thái",
+      "statusLive": "Đang hoạt động",
+      "statusEnded": "Đã kết thúc",
+      "statusClosed": "Đã đóng",
+      "endsIn": "Kết thúc sau",
+      "cap": "Trần",
+      "sale": "Đợt bán",
+      "ended": "Đã kết thúc",
+      "noCap": "không có trần",
+      "finished": "hoàn tất",
+      "closed": "đã đóng",
+      "rate": "Tỷ giá",
+      "perSui": "/SUI",
+      "maxSupply": "tổng cung tối đa",
+      "unsold": "chưa bán",
+      "unsoldToCreator": "→ người tạo",
+      "unsoldBurn": "đốt",
+      "remaining": "còn lại",
+      "treasury": "ngân quỹ",
+      "beFirstSupporter": "hãy là người đầu tiên hỗ trợ dự án này",
+      "supporterOne": "{count} người ủng hộ",
+      "supporterOther": "{count} người ủng hộ",
+      "lastBy": "gần nhất bởi",
+      "justNow": "vừa xong",
+      "agoMinutes": "{n} phút trước",
+      "agoHours": "{n} giờ trước",
+      "agoDays": "{n} ngày trước",
+      "aboutTitle": "Giới thiệu",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "Chưa có mô tả nào được pin — người tạo có thể đăng bất cứ lúc nào. Xem panel thanh toán để biết cơ chế bán.",
+      "status": {
+        "ended": "đã kết thúc"
+      },
+      "meta": {
+        "notFoundTitle": "Không tìm thấy dự án",
+        "descriptionFallback": "{name} ({ticker}) — tài trợ on-chain trên Sui, được hỗ trợ bởi Pandabox."
+      },
+      "tabs": {
+        "about": "Giới thiệu",
+        "activity": "Hoạt động"
+      },
+      "activity": {
+        "title": "Hoạt động",
+        "empty": "Chưa có hoạt động on-chain nào cho dự án này. Các đóng góp, claim và rút sẽ hiển thị ở đây.",
+        "eventCount": "{count, plural, one {# sự kiện} other {# sự kiện}}",
+        "revalidates": "làm mới sau 30 giây",
+        "colTime": "Thời gian",
+        "colEvent": "Sự kiện",
+        "colActor": "Tác nhân",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "Đã đóng góp",
+          "claim": "Đã claim",
+          "withdraw": "Đã rút",
+          "close": "Đã đóng"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "Claim token của bạn",
+        "finalizeSale": "Hoàn tất đợt bán",
+        "receiptCount": "{count, plural, one {# biên nhận} other {# biên nhận}}",
+        "anyone": "bất kỳ ai",
+        "claimIntroOne": "Đợt bán đã kết thúc. Đốt đối tượng <code>ContributionReceipt&lt;T&gt;</code> của bạn và nhận phần {ticker} của bạn.",
+        "claimIntroMany": "Đợt bán đã kết thúc. Đốt các đối tượng <code>ContributionReceipt&lt;T&gt;</code> của bạn và nhận phần {ticker} của bạn.",
+        "youllReceive": "Bạn sẽ nhận",
+        "from": "Từ",
+        "contributed": "đã đóng góp",
+        "finalizeIntro": "Thời điểm kết thúc đợt bán đã trôi qua. Bất kỳ ai cũng có thể hoàn tất để chốt số lượng đã bán cuối cùng và mở khóa claim + rút cho mọi người.",
+        "sold": "Đã bán",
+        "treasury": "Ngân quỹ",
+        "claimCta": "Claim → {amount}",
+        "claimAllCta": "Claim tất cả → {amount}",
+        "receiptsSummary": "biên nhận ({count})",
+        "modalClaimTitle": "Claim token",
+        "modalFinalizeTitle": "Hoàn tất đợt bán",
+        "backToProject": "Quay lại dự án",
+        "youBurn": "Bạn đốt",
+        "receiptOne": "biên nhận",
+        "receiptOther": "biên nhận",
+        "originallyContributed": "{amount} đã đóng góp ban đầu",
+        "youReceive": "Bạn nhận",
+        "coinSentToWallet": "Coin<{ticker}> đã gửi đến ví của bạn",
+        "cancel": "Hủy",
+        "signing": "Đang ký…",
+        "confirmClaim": "Xác nhận & claim",
+        "confirmFinalize": "Xác nhận & hoàn tất",
+        "finalizePreviewIntro": "Cửa sổ bán đã đóng. Bất kỳ ai cũng có thể hoàn tất để chốt số lượng đã bán cuối cùng — điều này mở khóa claim token cho người ủng hộ và rút SUI cho chủ dự án.",
+        "finalizeFootnote": "không có tác dụng nếu đợt bán chưa sẵn sàng · chỉ tốn gas · đợt bán trở nên có thể claim cho người nắm giữ {ticker}",
+        "saleFinalized": "đợt bán đã hoàn tất",
+        "finalizeSuccessBody": "Dự án hiện đã đóng. Claim token và rút quản trị đã được mở khóa.",
+        "txLabel": "tx",
+        "txFailed": "Giao dịch thất bại.",
+        "tweetText": "Vừa claim {ticker} của tôi từ {projectName} trên Pandabox — tài trợ on-chain có thể lập trình trên Sui.",
+        "stampClaimed": "đã claim",
+        "stampInYourWallet": "trong ví của bạn",
+        "tokensDeliveredEyebrow": "· token đã giao ·",
+        "fromLabel": "từ",
+        "receiptsBurnedOne": "{count} biên nhận đã đốt",
+        "receiptsBurnedOther": "{count} biên nhận đã đốt",
+        "statReceived": "Đã nhận",
+        "statReceipts": "Biên nhận",
+        "burnedCount": "{count} đã đốt",
+        "shareOnX": "chia sẻ trên x"
+      },
+      "share": {
+        "tweetText": "Đang hỗ trợ {projectName} ({ticker}) trên Pandabox — tài trợ on-chain có thể lập trình trên Sui.",
+        "copyAria": "Sao chép URL dự án",
+        "shareAria": "Chia sẻ trên X",
+        "copy": "sao chép",
+        "copied": "đã sao chép",
+        "share": "chia sẻ"
+      },
+      "cover": {
+        "specCover": "bìa · {ticker}",
+        "specFig": "hình.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "tác phẩm",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "DỰ ÁN",
+        "imgAlt": "Bìa {name}",
+        "iconAlt": "Biểu tượng {name}"
+      },
+      "meter": {
+        "ofLabel": "trên",
+        "target": "mục tiêu"
+      },
+      "onchain": {
+        "title": "Bản ghi on-chain",
+        "specSheet": "bảng thông số",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Đối tượng dự án",
+        "sharedObject": "đối tượng chia sẻ",
+        "coinType": "Loại coin",
+        "contractAddress": "địa chỉ hợp đồng",
+        "deployed": "Đã triển khai",
+        "links": "Liên kết",
+        "social": "mạng xã hội",
+        "site": "trang web",
+        "discord": "discord",
+        "noneProvided": "chưa cung cấp",
+        "copy": "sao chép",
+        "copied": "đã sao chép",
+        "copyAria": "Sao chép vào clipboard",
+        "explorer": "explorer",
+        "justNow": "vừa xong",
+        "agoSeconds": "{n} giây trước",
+        "agoMinutes": "{n} phút trước",
+        "agoHours": "{n} giờ trước",
+        "agoDays": "{n} ngày trước",
+        "agoMonths": "{n} tháng trước",
+        "agoYears": "{n} năm trước"
+      },
+      "rail": {
+        "connectTitle": "Kết nối ví",
+        "connectBody": "Kết nối để hỗ trợ dự án này, claim token, hoặc quản lý nếu bạn là người tạo.",
+        "loadingTitle": "Đang đọc tài sản",
+        "loadingBody": "Đang kiểm tra admin cap + biên nhận sở hữu…",
+        "saleClosedTitle": "Đợt bán đã đóng",
+        "saleClosedBody": "Đợt bán này đã hoàn tất. Bạn không nắm giữ biên nhận đóng góp nào cho {token}, nên không có gì để claim từ ví này.",
+        "thisProjectFallback": "dự án này"
+      },
+      "seedLiquidity": {
+        "title": "Tạo thanh khoản Cetus",
+        "intro": "Đánh dấu dự án này có thanh khoản được ghép cặp trên <strong>Cetus</strong>. Sau khi lưu, biểu đồ giá trên trang dự án sẽ bắt đầu đọc dữ liệu OHLCV trực tiếp từ GeckoTerminal.",
+        "verifyExplainer": "Chúng tôi xác minh đối tượng pool của bạn trên Sui trước khi pin. Pool phải là một <code>pool::Pool&lt;A, B&gt;</code> thật với một bên là SUI và bên kia là coin của dự án — <code>{coin}</code>. Bạn không thể bật cờ này nếu không có pool thực sự.",
+        "poolAddressLabel": "Địa chỉ pool Cetus",
+        "poolPlaceholder": "0x… (Cetus Pool object ID)",
+        "verify": "Xác minh",
+        "verifying": "Đang xác minh…",
+        "verifiedOk": "Đã xác minh ✓",
+        "invalidObjectId": "Không phải Sui object ID hợp lệ",
+        "verificationFailedTitle": "Xác minh thất bại",
+        "verificationFailed": "Xác minh thất bại.",
+        "poolVerified": "Đã xác minh pool",
+        "cetus": "Cetus",
+        "rowPool": "Pool",
+        "rowSideA": "Bên A",
+        "rowSideB": "Bên B",
+        "cancel": "Hủy",
+        "pinning": "Đang pin…",
+        "signing": "Đang ký…",
+        "signAndSave": "Ký & lưu",
+        "pinningFailed": "Pin lên IPFS thất bại — {reason}",
+        "unknownError": "lỗi không xác định",
+        "txFailed": "Giao dịch thất bại.",
+        "seededTitle": "Đã đánh dấu thanh khoản",
+        "seededBody": "Trang dự án sẽ nhận pool mới và bắt đầu hiển thị biểu đồ trực tiếp trong khoảng 30 giây sau khi cache làm mới.",
+        "detailsCid": "cid chi tiết · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
+  },
+  "pay": {
+    "heading": "Hỗ trợ dự án này",
+    "youReceive": "Bạn nhận",
+    "remainingHint": "Còn có thể đúc {amount}, phần thừa sẽ được hoàn lại tự động.",
+    "memo": "Ghi chú (tùy chọn)",
+    "memoPlaceholder": "ghi lại on-chain cùng thanh toán của bạn",
+    "enterAmount": "Nhập số lượng",
+    "payAmount": "Thanh toán {amount} SUI",
+    "shareOfSupply": "Phần trong tổng cung",
+    "remainingMintable": "Còn có thể đúc",
+    "unsold": "Chưa bán",
+    "unsoldBurn": "Đốt",
+    "unsoldTransfer": "Chuyển cho người tạo",
+    "inspectorTitle": "Trình kiểm tra giao dịch",
+    "inspectorPreview": "Xem trước trước khi ký. Ví của bạn sẽ yêu cầu chữ ký cho Move call này.",
+    "inspectorNotDeployed": "Move package chưa được triển khai — gửi sẽ được mô phỏng cục bộ cho đến khi NEXT_PUBLIC_PACKAGE_ID được đặt.",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "trả về",
+      "returnsValue": "ContributionReceipt + coin hoàn lại → người gửi"
+    },
+    "cancel": "Hủy",
+    "signSubmit": "Ký & gửi",
+    "signing": "Đang ký…",
+    "confirmed": "Đã xác nhận thanh toán",
+    "backToProject": "Quay lại dự án",
+    "connectFirst": "Kết nối ví để đóng góp.",
+    "txFailed": "Giao dịch thất bại."
+  },
+  "create": {
+    "page": {
+      "metaTitle": "Tạo dự án",
+      "metaDescription": "Cấu hình chu kỳ, token, các khoản chi và các bậc. Triển khai lên Sui.",
+      "headline": "Cấu hình dự án của bạn, triển khai trong một giao dịch.",
+      "intro": "Sáu bước. Bản nháp tự động lưu vào trình duyệt. Thanh bên phải hiển thị chính xác những gì người ủng hộ sẽ thấy trên trang dự án của bạn.",
+      "badgeOneTransaction": "một giao dịch",
+      "badgeAutoSaving": "tự động lưu bản nháp",
+      "badgeIpfs": "tài sản được pin trên ipfs"
+    },
+    "wizard": {
+      "stepsAria": "Các bước wizard",
+      "stepLabel": "Bước {num}",
+      "stepLabels": {
+        "identity": "Nhận diện",
+        "coin": "Coin",
+        "sale": "Bán",
+        "deploy": "Triển khai"
+      },
+      "percentComplete": "{pct}% hoàn tất",
+      "resetDraft": "đặt lại bản nháp",
+      "back": "Quay lại",
+      "continueStep": "Tiếp tục · bước {num}",
+      "reviewAndDeployAbove": "xem lại & triển khai ở trên",
+      "resetModalTitle": "Đặt lại bản nháp?",
+      "resetModalBody": "Việc này xóa mọi trường trong wizard và xóa bản nháp đã lưu khỏi trình duyệt của bạn. Không ảnh hưởng đến bất cứ thứ gì on-chain — bạn chỉ bắt đầu lại từ một biểu mẫu trống.",
+      "resetBullet1": "nhận diện, coin, bán, triển khai — xóa sạch",
+      "resetBullet2": "xóa khỏi localStorage",
+      "resetBullet3": "không thể hoàn tác",
+      "keepDraft": "Giữ bản nháp",
+      "resetDraftButton": "Đặt lại bản nháp"
+    },
+    "imageUpload": {
+      "defaultLabel": "Ảnh bìa",
+      "cidLabel": "cid",
+      "errorOnlyImages": "Chỉ chấp nhận file ảnh.",
+      "errorTooLarge": "Ảnh quá lớn ({size} MiB). Tối đa {max} MiB.",
+      "errorUploadFailed": "Tải lên thất bại bất ngờ.",
+      "dropToPin": "Thả để pin",
+      "dragOrClick": "Kéo một ảnh vào hoặc nhấn để tải lên",
+      "maxSize": "tối đa {max} MiB",
+      "loadingFromIpfs": "đang tải từ ipfs",
+      "gatewayRetry": "thử lại gateway {attempt}/4",
+      "gatewayWarmup": "khởi động gateway",
+      "replace": "thay thế",
+      "remove": "xóa",
+      "uploading": "đang tải lên",
+      "pinningToIpfs": "đang pin lên ipfs",
+      "cancelUploadAria": "Hủy tải lên",
+      "cancel": "hủy",
+      "sendingBytes": "đang gửi byte tới dịch vụ pin",
+      "pinataReplicating": "pinata đang nhân bản trên các node ipfs — có thể mất vài giây với ảnh lớn",
+      "pasteCidToggle": "hoặc dán CID / URL hiện có",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "Nhận diện",
+      "body": "Ai đang tài trợ cái gì. Đây là những gì người ủng hộ thấy trong ví và trên trang dự án.",
+      "meta": "lưu on-chain",
+      "basicsTitle": "Thông tin cơ bản",
+      "basicsMeta": "bất biến khi triển khai",
+      "projectName": "Tên dự án",
+      "projectNamePlaceholder": "ví dụ: Atelier Ono",
+      "ticker": "Mã ticker",
+      "tickerHint": "Chữ in hoa/số, 2–10 ký tự",
+      "category": "Danh mục",
+      "storyTitle": "Câu chuyện",
+      "storyMeta": "có thể chỉnh sửa bất cứ lúc nào",
+      "tagline": "Khẩu hiệu",
+      "taglineHint": "Một dòng, 8–160 ký tự · {len}/160",
+      "taglinePlaceholder": "Một tập thể tạp chí ảnh phát hành các đợt hàng tuần trên Sui.",
+      "description": "Mô tả",
+      "descriptionHint": "Hỗ trợ Markdown · 20–4000 ký tự · {len}/4000",
+      "descriptionPlaceholder": "Hãy kể cho người ủng hộ biết bạn đang xây dựng gì và tại sao SUI của họ quan trọng.",
+      "coverTitle": "Ảnh bìa",
+      "coverMeta": "đã pin lên ipfs",
+      "coverHint": "Hiển thị ở đầu trang dự án. Tỷ lệ 16:10 trông đẹp nhất. Pin lên IPFS khi tải lên — CID đi on-chain.",
+      "socialsTitle": "Mạng xã hội",
+      "socialsMeta": "tùy chọn",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "handle",
+      "website": "Website",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "URL lời mời"
+    },
+    "step2": {
+      "title": "Coin",
+      "body": "Pandabox cần một Sui coin do bạn sở hữu. Bạn có thể phát hành ngay trong trình duyệt bằng template đã được kiểm toán của chúng tôi, hoặc dán TreasuryCap + CoinMetadata hiện có nếu bạn đã có.",
+      "meta": "9 chữ số thập phân · được tạo bằng sui::coin::create_currency",
+      "modeLabel": "Chế độ",
+      "modePublish": "Phát hành coin mới",
+      "modePaste": "Tôi đã có coin",
+      "untitledCoin": "Coin không tên",
+      "howThisWorks": "Cách hoạt động",
+      "howThisWorksBody": "Chúng tôi bắt đầu từ một <code>coin_template.move</code> đã biên dịch sẵn với <strong>9 chữ số thập phân</strong>, viết lại các định danh + hằng số metadata trong trình duyệt của bạn qua <code>@mysten/move-bytecode-template</code>, sau đó phát hành từ ví của bạn. Mã nguồn Move đã render được pin lên IPFS để bất kỳ ai cũng có thể kiểm tra chính xác những gì đã được triển khai.",
+      "coinMetadataTitle": "Metadata của coin",
+      "coinMetadataMeta": "đi vào CoinMetadata<T>",
+      "symbol": "Symbol",
+      "symbolHint": "2–10 ký tự · chữ in hoa / số",
+      "name": "Tên",
+      "namePlaceholder": "Panda Token",
+      "description": "Mô tả",
+      "descriptionHint": "≤240 ký tự · ASCII",
+      "descriptionPlaceholder": "Coin này đại diện cho điều gì.",
+      "iconUrl": "URL biểu tượng",
+      "iconUrlHint": "Dùng lại ảnh bìa dự án hoặc dán URL đã host",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "Phát hành",
+      "publishMetaComplete": "hoàn tất",
+      "publishMetaStep": "bước 1 trong 2 lần triển khai",
+      "coinPublishedConfirm": "Đã phát hành coin. TreasuryCap + CoinMetadata đã được ghi vào bản nháp.",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "Đang viết lại bytecode…",
+      "publishStateSigning": "Đang ký…",
+      "publishStateFetching": "Đang đợi chain…",
+      "publishStatePinning": "Đang pin mã nguồn…",
+      "publishCoin": "Phát hành coin",
+      "publishCaption": "một giao dịch · upgrade cap có thể chuyển nhượng được trả về bạn",
+      "errorNoDigest": "Ví không trả về digest cho giao dịch phát hành.",
+      "errorPublishFailed": "Phát hành thất bại.",
+      "strandedTitle": "Đã phát hành — nhưng RPC im lặng",
+      "openOnSuiExplorer": "Mở trên Sui Explorer",
+      "switchToPasteMode": "Chuyển sang chế độ dán",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 ký tự · A-Z, 0-9, _ · phải bắt đầu bằng chữ cái",
+      "validateName": "Thêm tên (2–32 ký tự)",
+      "validateDescriptionLength": "Tối đa 240 ký tự",
+      "validateDescriptionAscii": "Chỉ ASCII (không emoji / smart quote)",
+      "validateIconUrl": "Dùng URL https:// đầy đủ",
+      "validateInvalidIdentifier": "Định danh không hợp lệ",
+      "objectIdsTitle": "Object ID",
+      "objectIdsMeta": "phải thuộc sở hữu của bạn",
+      "treasuryCapLabel": "TreasuryCap<T> object ID",
+      "treasuryCapHint": "Từ createdObjects của giao dịch phát hành của bạn.",
+      "metadataLabel": "CoinMetadata<T> object ID",
+      "metadataHint": "Chúng tôi đọc từ chain để phát hiện coin type + số chữ số thập phân.",
+      "coinInfoTitle": "Thông tin coin",
+      "coinInfoMetaReading": "đang đọc…",
+      "coinInfoMetaDetected": "đã phát hiện",
+      "coinInfoMetaNotFound": "không tìm thấy",
+      "statName": "Tên",
+      "statSymbol": "Symbol",
+      "statDecimals": "Chữ số thập phân",
+      "resolvedCoinType": "Coin type đã giải quyết",
+      "wrongDecimals": "Coin này có {decimals} chữ số thập phân. Pandabox yêu cầu {required} chữ số — hãy triển khai lại coin với giá trị đúng.",
+      "readingFromChain": "Đang đọc từ chain…",
+      "pasteMetadataHint": "Dán CoinMetadata ID phía trên để phát hiện coin.",
+      "errorObjectNotFound": "Không tìm thấy object.",
+      "errorNotCoinMetadata": "Object không phải là CoinMetadata<T>.",
+      "errorUnexpectedContent": "Nội dung object không như mong đợi.",
+      "errorLookupFailed": "Tra cứu thất bại."
+    },
+    "step3": {
+      "title": "Điều khoản bán",
+      "body": "Người ủng hộ đóng góp SUI để đổi lấy Biên nhận. Sau khi đợt bán kết thúc hoặc bán hết, họ claim phần token được phân bổ. Phần chưa bán sẽ bị đốt hoặc trả lại cho bạn, tùy bạn chọn.",
+      "meta": "bất biến khi triển khai",
+      "pricingTitle": "Định giá",
+      "pricingMeta": "token ↔ SUI",
+      "tokensPerSui": "Token trên mỗi SUI",
+      "tokensPerSuiHint": "Bao nhiêu {ticker} một người ủng hộ nhận được trên mỗi 1 SUI.",
+      "targetRaise": "Mục tiêu huy động (SUI)",
+      "targetRaiseHint": "Chỉnh sửa giá trị này sẽ tính ngược Token trên mỗi SUI.",
+      "baseRateLabel": "base_rate (đã scale, on-chain)",
+      "allocationTitle": "Phân bổ",
+      "allocationMeta": "tổng token để bán",
+      "tokensForSale": "Token để bán",
+      "tokensForSaleHint": "Tổng {ticker} dành cho đợt bán này. TreasuryCap đúc tối đa đến số lượng này.",
+      "fundingAllocationLabel": "funding_allocation (u64 thô)",
+      "maxSupplyLabel": "Tổng cung tối đa · {ticker}",
+      "mintedAtLaunch": "Đã đúc khi ra mắt",
+      "mintedAtLaunchValue": "0 — đúc khi claim",
+      "supplyNote": "Coin bắt đầu ở <zeroSupply>0 supply</zeroSupply>. Token được đúc lười khi người ủng hộ gọi <code>claim</code> trên biên nhận của họ. Tổng cung lưu thông cuối cùng = <claimed>claimed</claimed>",
+      "supplyNoteReturn": " + chưa bán (trả lại ví của bạn)",
+      "supplyNoteBurn": " (phần chưa bán bị đốt)",
+      "saleWindowTitle": "Cửa sổ bán",
+      "durationDays": "{days} ngày",
+      "noTimeCap": "không giới hạn thời gian",
+      "ends": "Kết thúc",
+      "inDays": "trong {days} ngày",
+      "unsoldTitle": "Phần chưa bán",
+      "unsoldMeta": "sau khi đợt bán đóng",
+      "actionLabel": "Hành động",
+      "unsoldBurnTitle": "Đốt",
+      "unsoldBurnBody": "Token chưa bán bị phá hủy vĩnh viễn, giảm tổng cung.",
+      "unsoldReturnTitle": "Trả lại cho người tạo",
+      "unsoldReturnBody": "Token chưa bán được đúc về địa chỉ của bạn. Dùng cho vesting hoặc seed DEX."
+    },
+    "step4": {
+      "title": "Xem lại & triển khai",
+      "body": "Pandabox pin mô tả và project_details của bạn lên IPFS, sau đó gửi một giao dịch Sui duy nhất tạo dự án, tiêu thụ TreasuryCap của bạn, và chuyển một ProjectAdminCap đến ví của bạn.",
+      "metaChecks": "{ok}/{total} kiểm tra · {status}",
+      "statusReady": "sẵn sàng",
+      "statusBlocked": "bị chặn",
+      "headsUp": "Lưu ý",
+      "headsUpBody": "<strong>Bị tiêu thụ khi triển khai:</strong> <code>TreasuryCap<T></code> và <code>CoinMetadata<T></code> của bạn trở thành thuộc sở hữu của Project object và không thể lấy lại. <strong>Bất biến khi triển khai:</strong> tên, coin, base rate, phân bổ, thời gian kết thúc, hành động cho phần chưa bán. <strong>Có thể chỉnh sửa sau:</strong> mô tả, biểu tượng, blob mã nguồn, project_details (qua <code>update_metadata</code>).",
+      "sourceCodeTitle": "Tùy chọn · mã nguồn",
+      "sourceCodeMetaSet": "đã đặt",
+      "sourceCodeMetaSkipped": "đã bỏ qua",
+      "sourceCodeLabel": "Blob mã nguồn (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy… (tùy chọn)",
+      "sourceCodeHint": "Pin archive repo của bạn riêng và dán CID. Hoặc để trống và cập nhật sau.",
+      "preflightTitle": "Kiểm tra tiền điều kiện",
+      "preflightAllGreen": "tất cả xanh",
+      "preflightBlocking": "{count} đang chặn",
+      "fixInStep": "sửa ở bước {num}",
+      "deployTitle": "Triển khai",
+      "deployMetaLive": "trực tiếp · sui mainnet",
+      "deployMetaSimulated": "mô phỏng",
+      "deployToSui": "Triển khai lên Sui",
+      "deployCaption": "tiêu thụ treasury cap + metadata · admin cap được trả về bạn",
+      "draftAutoSaves": "Bản nháp tự động lưu vào trình duyệt dưới tên <code>pandabox:draft:v3</code>.",
+      "modalSuccessTitle": "Đã triển khai dự án",
+      "modalInspectorTitle": "Trình kiểm tra giao dịch",
+      "openProjectPage": "Mở trang dự án",
+      "seeItOnExplore": "Xem trên Khám phá",
+      "inspectorIntroLive": "Xem lại những gì bạn sắp xuất bản. Pandabox sẽ pin mô tả và chi tiết của bạn lên IPFS, sau đó ví của bạn sẽ ký một giao dịch tạo dự án trên Sui.",
+      "inspectorIntroSimulated": "Move package chưa được cấu hình — lần gửi này sẽ được mô phỏng cục bộ.",
+      "sectionProject": "Dự án",
+      "sectionYourCoin": "Coin của bạn",
+      "sectionSaleTerms": "Điều khoản bán",
+      "editLink": "chỉnh sửa",
+      "summaryName": "Tên",
+      "summaryTicker": "Ticker",
+      "summaryCategory": "Danh mục",
+      "summaryTagline": "Khẩu hiệu",
+      "summarySymbol": "Symbol",
+      "summaryDecimals": "Chữ số thập phân",
+      "summaryRate": "Tỷ giá",
+      "tokensWord": "token",
+      "summaryTotalForSale": "Tổng để bán",
+      "summaryMaxSupply": "Tổng cung tối đa",
+      "summaryMintedAtLaunch": "Đã đúc khi ra mắt",
+      "summaryMintedAtLaunchValue": "0 — đúc lười khi claim",
+      "summaryMaxRaise": "Huy động tối đa",
+      "summarySaleEnds": "Đợt bán kết thúc",
+      "summaryOpenEnded": "Không giới hạn thời gian",
+      "summaryUnsoldTokens": "Token chưa bán",
+      "summaryUnsoldReturn": "Trả lại ví của bạn",
+      "summaryUnsoldBurn": "Đốt (giảm tổng cung cuối cùng)",
+      "youllKeepLabel": "Bạn sẽ giữ ·",
+      "youllKeepBody": "một <strong>ProjectAdminCap</strong> trong ví — quyền quản trị của bạn đối với dự án này. Bạn có thể chuyển nó cho multisig sau.",
+      "youllGiveUpLabel": "Bạn sẽ từ bỏ ·",
+      "youllGiveUpBody": "<strong>TreasuryCap</strong> và <strong>CoinMetadata</strong> của bạn. Dự án nhận quyền sở hữu và chúng không thể khôi phục.",
+      "lockedOnDeployLabel": "Khóa khi triển khai ·",
+      "lockedOnDeployBody": "tên, coin, tỷ giá, phân bổ, thời gian kết thúc, hành động chưa bán. Mô tả, biểu tượng và liên kết vẫn có thể chỉnh sửa.",
+      "advancedToggle": "nâng cao · move call thô",
+      "rawPinning": "đang pin…",
+      "rawSetAtSubmit": "đặt khi gửi",
+      "cancel": "Hủy",
+      "submitPinningDescription": "Đang pin mô tả…",
+      "submitPinningDetails": "Đang pin chi tiết…",
+      "submitSigning": "Đang ký…",
+      "submitPinAndDeploy": "Pin & triển khai",
+      "errorDeployFailed": "Triển khai thất bại.",
+      "untitledProject": "Dự án không tên",
+      "coverWord": "bìa",
+      "noCover": "không có bìa",
+      "projectCoverPreviewAlt": "Xem trước bìa dự án",
+      "checkIdentityOk": "Nhận diện hoàn tất",
+      "checkIdentityErr": "Nhận diện: {msg}",
+      "checkCoinOk": "Đã xác minh coin · {symbol} · {decimals} chữ số thập phân",
+      "checkCoinWrongDecimals": "Coin dùng {decimals} chữ số thập phân — giao thức yêu cầu {required}",
+      "checkCoinErr": "Coin: {msg}",
+      "checkSaleOk": "Điều khoản bán hợp lệ",
+      "checkSaleErr": "Bán: {msg}",
+      "checkIncomplete": "chưa hoàn tất"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "Bảng điều khiển",
+      "description": "Các dự án Pandabox bạn sở hữu và đang hỗ trợ."
+    },
+    "title": "Bảng điều khiển",
+    "headline": "Hoạt động của bạn",
+    "untitledProject": "Dự án không tên",
+    "connectGate": {
+      "eyebrow": "Kết nối ví của bạn",
+      "headline": "Hoạt động của bạn, on-chain.",
+      "body": "Kết nối ví Sui để xem các dự án bạn đã tạo và những dự án bạn đã đóng góp."
+    },
+    "refresh": {
+      "label": "làm mới",
+      "busy": "đang làm mới",
+      "aria": "Làm mới bảng điều khiển",
+      "ariaRefreshing": "Đang làm mới bảng điều khiển"
+    },
+    "kpi": {
+      "raised": "Đã huy động",
+      "treasury": "Ngân quỹ",
+      "live": "Đang hoạt động",
+      "backing": "Đang hỗ trợ"
+    },
+    "owned": {
+      "title": "Dự án của bạn",
+      "subtitle": "Các dự án mà bạn nắm giữ ProjectAdminCap. Nhấn quản lý để mở workspace.",
+      "noMatchLabel": "Không có dự án nào khớp với bộ lọc này",
+      "noMatchBody": "Thử trạng thái khác hoặc xóa bộ lọc để xem toàn bộ {count, plural, one {# dự án} other {# dự án}}.",
+      "empty": {
+        "label": "Chưa có dự án nào",
+        "body": "Khởi tạo một đợt bán token trong vài phút. Triển khai coin trước, cấu hình các điều khoản bán, và đẩy đi bằng một chữ ký.",
+        "cta": "Khởi chạy dự án"
+      },
+      "card": {
+        "treasury": "Ngân quỹ",
+        "withdrawable": "có thể rút",
+        "raisedPct": "huy động {pct}%",
+        "tokensSold": "đã bán {amount} {ticker}",
+        "manage": "Quản lý",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "Dự án bạn ủng hộ",
+      "subtitle": "Các ContributionReceipt của bạn. Claim khi đợt bán hoàn tất.",
+      "receipts": "{count, plural, one {# biên nhận} other {# biên nhận}}",
+      "contributed": "Đã đóng góp",
+      "claimable": "Có thể claim",
+      "yourShare": "Phần của bạn",
+      "action": {
+        "claim": "Claim token",
+        "finalize": "Hoàn tất đợt bán",
+        "open": "Mở dự án"
+      },
+      "empty": {
+        "label": "Chưa hỗ trợ ai cả",
+        "body": "Hỗ trợ một dự án trên Khám phá — biên nhận và phần có thể claim của bạn sẽ hiển thị ở đây.",
+        "cta": "Khám phá dự án"
+      }
+    },
+    "loading": {
+      "aria": "Đang tải dự án",
+      "sr": "Đang tải dự án…"
+    },
+    "filter": {
+      "all": "Tất cả",
+      "live": "Đang hoạt động",
+      "endingSoon": "Sắp kết thúc",
+      "needsFinalize": "Cần hoàn tất",
+      "closed": "Đã đóng",
+      "disabledTitle": "Không có dự án {label}"
+    },
+    "sort": {
+      "label": "Sắp xếp",
+      "aria": "Sắp xếp dự án",
+      "newest": "Mới nhất",
+      "mostRaised": "Huy động nhiều nhất",
+      "endingSoonest": "Sắp kết thúc nhất"
+    },
+    "state": {
+      "live": "đang hoạt động",
+      "endingSoon": "sắp kết thúc",
+      "endedAwaiting": "cần hoàn tất",
+      "closed": "đã đóng",
+      "unknown": "không xác định"
+    },
+    "time": {
+      "noCap": "không giới hạn thời gian",
+      "endedJustNow": "vừa kết thúc",
+      "endsIn": "kết thúc sau {duration}",
+      "endedAgoFinalize": "kết thúc {duration} trước · hoàn tất để mở khóa",
+      "closedAgo": "đã đóng · {duration} trước",
+      "closed": "đã đóng",
+      "durationDH": "{days} ngày {hours} giờ",
+      "durationHM": "{hours} giờ {mins} phút",
+      "durationM": "{mins} phút"
+    },
+    "sparkline": {
+      "placeholder": "24 giờ"
+    },
+    "manage": {
+      "backToDashboard": "quay lại bảng điều khiển",
+      "openPublicPage": "mở trang công khai",
+      "untitledProject": "Dự án không tên",
+      "status": {
+        "live": "đang hoạt động",
+        "ended": "đã kết thúc",
+        "closed": "đã đóng"
+      },
+      "stats": {
+        "treasury": "Ngân quỹ",
+        "sold": "Đã bán",
+        "creator": "Người tạo",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "Đã tạo thanh khoản · biểu đồ trực tiếp",
+        "noPoolLabel": "Chưa có pool · biểu đồ tạm thay thế",
+        "poolLink": "pool {id}",
+        "seedViaPanel": "tạo qua panel →"
+      },
+      "info": {
+        "whatLabel": "Bạn có thể làm gì ở đây",
+        "whatBody": "Mọi hành động quản trị — hoàn tất, rút, cập nhật metadata, tạo thanh khoản, chuyển hoặc từ bỏ cap — đều chạy qua cùng các entry function on-chain như trang dự án. Các nút nằm trong panel bên phải; kiểm tra tiền điều kiện xuất hiện trong từng modal."
+      },
+      "supply": {
+        "label": "Tổng cung",
+        "allocation": "Phân bổ",
+        "sold": "Đã bán",
+        "remaining": "Còn lại",
+        "unsoldAction": "Hành động cho phần chưa bán",
+        "unsoldCreator": "→ người tạo",
+        "unsoldBurn": "đốt"
+      },
+      "error": {
+        "label": "Không thể tải dự án",
+        "retry": "Thử lại"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "Tài liệu",
+      "description": "Cách Pandabox hoạt động trên Sui: cửa sổ bán, base rate & phân bổ, đóng góp & claim, phần chưa bán, hoàn tất & rút, cùng hướng dẫn wizard."
+    },
+    "eyebrow": "Tài liệu",
+    "heading": "Pandabox thực sự hoạt động như thế nào.",
+    "subhead": "Ba tab. Cơ chế là giao thức; Đi qua wizard là luồng tạo; Tham khảo chứa bảng thuật ngữ và FAQ.",
+    "toc": {
+      "ariaLabel": "Các phần tài liệu",
+      "onThisPage": "Trên trang này"
+    },
+    "tabs": {
+      "ariaLabel": "Các phần tài liệu",
+      "mechanics": {
+        "label": "Cơ chế",
+        "sections": {
+          "how": "01 / Cách hoạt động",
+          "window": "02 / Cửa sổ bán",
+          "rate": "03 / Base rate & phân bổ",
+          "claim": "04 / Đóng góp & claim",
+          "unsold": "05 / Phần chưa bán",
+          "finalize": "06 / Hoàn tất & rút"
+        }
+      },
+      "wizard": {
+        "label": "Đi qua wizard",
+        "sections": {
+          "intro": "Bốn bước",
+          "identity": "01 · Nhận diện",
+          "coin": "02 · Coin",
+          "sale": "03 · Điều khoản bán",
+          "deploy": "04 · Xem lại & triển khai"
+        }
+      },
+      "reference": {
+        "label": "Tham khảo",
+        "sections": {
+          "glossary": "Bảng thuật ngữ",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / Cách hoạt động",
+        "p1": "Pandabox là một Move package trên Sui. Người tạo triển khai một <term>Project</term> — một Sui object sở hữu ngân quỹ SUI và một <term>TreasuryCap</term> bị khóa cho coin riêng của dự án. Dự án sau đó chạy một đợt bán duy nhất ở tỷ giá cố định: người ủng hộ đóng góp SUI và nhận quyền claim token dự án tại giá đã cấu hình.",
+        "p2": "Người ủng hộ không nhận token trực tiếp. Họ nhận một <term>ContributionReceipt</term> — một Sui NFT có thể chuyển nhượng nắm quyền hưởng của họ. Họ <term>claim</term> token bằng cách đốt biên nhận sau khi đợt bán đóng. Bất kỳ khoản thanh toán nào vượt quá phân bổ còn lại sẽ được hoàn lại trong cùng giao dịch.",
+        "p3": "Đợt bán kết thúc theo một trong ba cách: thời gian kết thúc đã cấu hình đến, toàn bộ phân bổ được bán hết, hoặc admin nền tảng đóng nó. Sau khi đóng, người tạo rút SUI đã huy động (trừ phí nền tảng) và xử lý token chưa bán theo chính sách họ chọn khi triển khai.",
+        "cta": "Bắt đầu một dự án nháp →"
+      },
+      "window": {
+        "label": "02 / Cửa sổ bán",
+        "p1": "Mỗi đợt bán có một cửa sổ bị khóa duy nhất. Bạn đặt <term>thời gian kết thúc</term> khi triển khai — hoặc để mở và đóng đợt bán thủ công với vai trò admin. Cho đến khi đợt bán hoàn tất, bất kỳ ai cũng có thể đóng góp ở tỷ giá cố định.",
+        "p2": "Ba điều có thể hoàn tất một đợt bán: thời gian kết thúc trôi qua (<term>Time</term>), phân bổ bán hết (<term>Sellout</term>), hoặc admin buộc đóng (<term>Admin</term>). Hoàn tất là cánh cổng cho claim token, rút SUI và xử lý phần chưa bán — không có thao tác nào trong số đó hoạt động khi đợt bán vẫn đang hoạt động.",
+        "p3": "Hoàn tất có thể được kích hoạt bởi admin (<code>try_finalize</code>) hoặc bởi bất kỳ ai khi các điều kiện đã thỏa mãn (<code>permissionless_finalize</code>) — vì vậy một người tạo bị kẹt không thể chặn claim của người ủng hộ sau khi thời gian kết thúc đã trôi qua.",
+        "cta": "Xem ở bước 03 →"
+      },
+      "rate": {
+        "label": "03 / Base rate & phân bổ",
+        "p1": "Hai con số chi phối đợt bán: <term>base rate</term> (token dự án phát hành trên mỗi 1 SUI) và <term>funding allocation</term> (tổng token dự án để bán). Cả hai được đặt khi triển khai và đóng băng suốt vòng đời của dự án — chúng không thể bị thay đổi bằng cập nhật metadata hay hành động admin.",
+        "p2": "Nếu một khoản đóng góp vượt quá phân bổ còn lại, chỉ phần có thể chấp nhận được nhận và phần còn lại được hoàn trong cùng giao dịch. Người ủng hộ không bao giờ trả quá.",
+        "cta": "Xem ở bước 03 →"
+      },
+      "claim": {
+        "label": "04 / Đóng góp & claim",
+        "p1": "<term>Đóng góp.</term> Một người ủng hộ gọi <code>contribute</code> với một SUI coin. Dự án ghi lại đóng góp theo địa chỉ của họ và trả lại một NFT <term>ContributionReceipt</term> — cộng với một coin hoàn lại nếu khoản thanh toán vượt quá những gì có thể phân bổ.",
+        "p2": "<term>Claim.</term> Sau khi đợt bán hoàn tất, người ủng hộ đốt biên nhận bằng <code>claim</code> và nhận token dự án. Nhiều biên nhận (từ nhiều đóng góp) có thể được đốt cùng lúc trong một lệnh gọi qua <code>claim_multiple</code>, trả về một coin gộp duy nhất.",
+        "p3": "Biên nhận là các Sui object thông thường: có thể chuyển nhượng, có thể bán trên thị trường thứ cấp và không hết hạn. Claim vẫn mở miễn là project object còn tồn tại.",
+        "cta": "Xem biên nhận của bạn trên Bảng điều khiển →"
+      },
+      "unsold": {
+        "label": "05 / Phần chưa bán",
+        "p1": "Nếu đợt bán đóng mà phân bổ còn token, người tạo chạy <code>process_unsold</code> để thực thi chính sách họ chọn khi triển khai:",
+        "p2": "<term>Đốt</term> — phần chưa bán bị phá hủy, làm tăng giá ngụ ý của mỗi token đã claim. Báo hiệu sự khan hiếm: lượng lưu thông đúng bằng những gì đợt bán huy động được.",
+        "p3": "<term>Chuyển cho người tạo</term> — phần chưa bán chuyển cho người tạo dưới dạng số dư coin thông thường. Hữu ích nếu bạn dự định seed thanh khoản, chạy đợt bán thứ cấp, hoặc nắm giữ vị thế ngân quỹ. Trang dự án hiển thị điều này thành <code>UNSOLD → CREATOR</code> trên dòng thông số để người ủng hộ thấy chính sách trước khi thanh toán.",
+        "cta": "Xem ở bước 03 →"
+      },
+      "finalize": {
+        "label": "06 / Hoàn tất & rút",
+        "p1": "Sau khi hoàn tất, người tạo gọi <code>withdraw_sui</code> để rút SUI đã huy động khỏi ngân quỹ dự án. Phí nền tảng (theo basis point, do Pandabox đặt) bị trừ tự động — người tạo nhận số tịnh, phí được cộng vào ngân quỹ nền tảng. Có thể rút từng phần; người nắm cap có thể rút phần còn lại sau.",
+        "p2": "<term>ProjectAdminCap</term> được đúc khi triển khai là một Sui object thông thường. Nó di chuyển qua <code>transfer_project_admin</code> (phát ra sự kiện mà indexer dựa vào — ưu tiên cái này hơn là chuyển object thô) hoặc tự hủy qua <code>renounce_project_admin</code>, để dự án vĩnh viễn không có người quản trị — hữu ích cho các dự án cộng đồng muốn loại bỏ quyền quyết định của người tạo.",
+        "p3": "Metadata của dự án — tên, mô tả, URL biểu tượng, blob mã nguồn, và JSON chi tiết off-chain (khẩu hiệu, danh mục, mạng xã hội) — vẫn có thể chỉnh sửa qua <code>update_metadata</code> dù đợt bán đang hoạt động hay đã đóng."
+      }
+    },
+    "wizard": {
+      "stepWord": "Bước",
+      "intro": {
+        "label": "Bốn bước",
+        "p1": "Luồng tạo gồm bốn bước. Mọi thứ bạn điền ở đây sẽ hoặc đi on-chain (tham số bán, tên, CID blob) hoặc vào JSON project_details được pin lên IPFS (khẩu hiệu, danh mục, mạng xã hội). Bản xem trước trực tiếp ở bên phải hiển thị chính xác những gì người ủng hộ sẽ thấy.",
+        "cta": "Mở wizard "
+      },
+      "steps": {
+        "identity": {
+          "alt": "Bước 01 của wizard tạo — các trường nhận diện bên cạnh bản xem trước trang dự án trực tiếp.",
+          "title": "Nhận diện",
+          "caption": "Tên dự án, ticker, danh mục, khẩu hiệu, ảnh bìa, mô tả. Ticker hiển thị ở đây mang tính tham khảo — symbol coin thật đến từ CoinMetadata mà bạn kết nối ở bước tiếp theo."
+        },
+        "coin": {
+          "alt": "Bước 02 của wizard tạo — kết nối hoặc phát hành một Sui coin.",
+          "title": "Coin",
+          "caption": "Pandabox cần coin Sui riêng. Phát hành một coin từ coin_template.move đã biên dịch sẵn (được viết lại với định danh của bạn trong trình duyệt, pin lên IPFS để có thể kiểm toán) — hoặc dán TreasuryCap + CoinMetadata hiện có nếu bạn đã có. Số chữ số thập phân phải là 9."
+        },
+        "sale": {
+          "alt": "Bước 03 của wizard tạo — điều khoản bán: tỷ giá token-trên-SUI, tổng phân bổ, thời gian kết thúc, chính sách phần chưa bán.",
+          "title": "Điều khoản bán",
+          "caption": "Bốn con số bị khóa khi triển khai: base rate (token trên 1 SUI), tổng phân bổ, thời gian kết thúc tùy chọn và hành động chưa bán (đốt hoặc chuyển cho người tạo). Mức huy động tối đa ngụ ý được tính trực tiếp khi bạn gõ."
+        },
+        "deploy": {
+          "alt": "Bước 04 của wizard tạo — xem lại và triển khai.",
+          "title": "Xem lại & triển khai",
+          "caption": "Một giao dịch Sui tạo Project object, tiêu thụ TreasuryCap + CoinMetadata của bạn vào đó, và trả lại ProjectAdminCap cho ví của bạn. Thông báo nổi bật nêu rõ những gì trở thành bất biến khi gửi và những gì vẫn có thể chỉnh sửa qua update_metadata."
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "Bảng thuật ngữ",
+        "termLabels": {
+          "baseRate": "Base rate",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "Hành động chưa bán",
+          "endTime": "Thời gian kết thúc",
+          "finalize": "Hoàn tất",
+          "closeTrigger": "Trigger đóng",
+          "projectStatus": "Trạng thái dự án",
+          "platformFee": "Phí nền tảng"
+        },
+        "terms": {
+          "project": "Một Sui object dùng chung nắm giữ ngân quỹ SUI, TreasuryCap<T> bị khóa và các tham số bán.",
+          "projectAdminCap": "Sui object thuộc sở hữu cấp quyền quản trị: rút SUI, xử lý phần chưa bán, cập nhật metadata, hoàn tất, chuyển nhượng, từ bỏ.",
+          "contributionReceipt": "NFT được đúc khi đóng góp. Có thể đốt để nhận token được hưởng sau khi hoàn tất. Có thể chuyển nhượng như bất kỳ Sui object nào.",
+          "baseRate": "Token dự án phát hành trên mỗi 1 SUI đóng góp. Đóng băng khi triển khai.",
+          "fundingAllocation": "Tổng token dự án để bán. Khi đạt tới, kích hoạt sellout. Đóng băng khi triển khai.",
+          "unsoldAction": "Chính sách cho token còn lại khi đóng đợt bán: Đốt, hoặc Chuyển cho người tạo. Đóng băng khi triển khai.",
+          "endTime": "Timestamp kết thúc đợt bán tùy chọn. Nếu null, chỉ admin đóng hoặc sellout mới có thể hoàn tất.",
+          "finalize": "Khóa đợt bán. Bắt buộc trước khi claim, rút SUI hoặc xử lý phần chưa bán. Không cần quyền sau khi điều kiện thỏa mãn.",
+          "closeTrigger": "Lý do đợt bán kết thúc: Time, Sellout, hoặc Admin. Được ghi on-chain.",
+          "projectStatus": "Active (đang bán), Closed (đã hoàn tất), hoặc Compromised (bị nền tảng đánh dấu).",
+          "platformFee": "Phần cắt theo basis point từ SUI rút mà Pandabox lấy. Do admin nền tảng đặt, áp dụng tại withdraw_sui.",
+          "mist": "Đơn vị SUI nhỏ nhất. 1 SUI = 1.000.000.000 MIST."
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "Đã được kiểm toán chưa?",
+            "a": "Chưa. Pandabox đang ở testnet. Một cuộc kiểm toán chính thức sẽ diễn ra trước khi triển khai mainnet."
+          },
+          "editAfterDeploy": {
+            "q": "Tôi có thể chỉnh sửa dự án sau khi triển khai không?",
+            "a": "Có với nhận diện off-chain: tên, mô tả, ảnh bìa (URL biểu tượng), blob mã nguồn, khẩu hiệu, danh mục và liên kết mạng xã hội đều cập nhật qua <code>update_metadata</code> bất cứ lúc nào. Không với kinh tế bán: base rate, funding allocation, thời gian kết thúc và chính sách phần chưa bán bị đóng băng khi triển khai. Symbol và số chữ số thập phân của coin được đặt bởi coin module bạn đã triển khai trước Pandabox — những thứ đó cũng không thể thay đổi ở đây."
+          },
+          "gas": {
+            "q": "Gas hoạt động như thế nào?",
+            "a": "Mỗi giao dịch do ví ký nó trả. Tạo, đóng góp, claim, rút — tất cả đều do người ký trả. Gas Sui thường dưới một cent ở tỷ giá mainnet, nên chi phí thực tế để hỗ trợ một dự án là SUI bạn đóng góp, không phải gas."
+          },
+          "neverClaims": {
+            "q": "Sẽ ra sao nếu người ủng hộ không bao giờ claim?",
+            "a": "Biên nhận không hết hạn. Token vẫn bị khóa trong TreasuryCap của dự án cho đến khi người nắm giữ đốt biên nhận bằng <code>claim</code>. Biên nhận là một Sui object thật, nên nó cũng có thể được chuyển hoặc bán cho người khác claim."
+          },
+          "transferCap": {
+            "q": "Tôi có thể chuyển ProjectAdminCap không?",
+            "a": "Có — dùng <code>transfer_project_admin</code> để sự kiện đi vào indexer. Cap không mang theo token dự án hay SUI đã huy động; nó chỉ là khóa quản trị. Bạn cũng có thể gọi <code>renounce_project_admin</code> để hủy nó vĩnh viễn — dự án sau đó chạy mà không có admin nào cả."
+          },
+          "compromised": {
+            "q": "Trạng thái 'Compromised' nghĩa là gì?",
+            "a": "Admin nền tảng có thể đánh dấu một dự án là Compromised khi có bằng chứng rõ ràng về việc lạm dụng (rug, mạo danh, malware trong các phần thưởng được hứa). Đây là tín hiệu kiểm duyệt một chiều — trang dự án vẫn truy cập được để người ủng hộ thấy cờ này và hành động, nhưng cảnh báo rõ ràng. Nó không tịch thu quỹ."
+          },
+          "featured": {
+            "q": "Làm sao để được liệt kê trên hàng nổi bật của trang chủ?",
+            "a": "Nổi bật chỉ là sắp xếp theo SUI đã huy động, top ba. Huy động đủ và bạn xuất hiện tự động."
+          }
+        }
+      }
+    }
+  }
+}

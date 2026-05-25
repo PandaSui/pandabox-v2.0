@@ -52,8 +52,8 @@ export type StateVisuals = {
   pillTextClass: string;
   /** Status pill border class. */
   pillBorderClass: string;
-  /** Short, human label for the status pill. */
-  pillLabel: string;
+  /** Stable, locale-independent key for the status pill — translated at render. */
+  pillKey: ProjectState;
 };
 
 /**
@@ -72,7 +72,7 @@ export function getStateVisuals(state: ProjectState): StateVisuals {
         dotClass: "bg-jade",
         pillTextClass: "text-jade",
         pillBorderClass: "border-jade/40",
-        pillLabel: "live",
+        pillKey: "live",
       };
     case "ending-soon":
       return {
@@ -82,7 +82,7 @@ export function getStateVisuals(state: ProjectState): StateVisuals {
         dotClass: "bg-poppy",
         pillTextClass: "text-poppy",
         pillBorderClass: "border-poppy/40",
-        pillLabel: "ending soon",
+        pillKey: "ending-soon",
       };
     case "ended-awaiting":
       return {
@@ -92,7 +92,7 @@ export function getStateVisuals(state: ProjectState): StateVisuals {
         dotClass: "bg-sky",
         pillTextClass: "text-sky",
         pillBorderClass: "border-sky/40",
-        pillLabel: "needs finalize",
+        pillKey: "ended-awaiting",
       };
     case "closed":
       return {
@@ -102,7 +102,7 @@ export function getStateVisuals(state: ProjectState): StateVisuals {
         dotClass: "bg-plum",
         pillTextClass: "text-plum",
         pillBorderClass: "border-plum/40",
-        pillLabel: "closed",
+        pillKey: "closed",
       };
     default:
       return {
@@ -112,50 +112,66 @@ export function getStateVisuals(state: ProjectState): StateVisuals {
         dotClass: "bg-ink/35",
         pillTextClass: "text-ink/55",
         pillBorderClass: "border-ink/30",
-        pillLabel: "unknown",
+        pillKey: "unknown",
       };
   }
 }
 
 /**
- * Time-aware label for the card footer row. Live sales surface
+ * Time-aware label descriptor for the card footer row. Live sales surface
  * "ends in 2d 14h"; ended-awaiting nudges toward finalize; closed shows
  * how long since wrap. Quiet, mono, ink/60 — never the headline.
+ *
+ * Returns a structured shape so call-sites can format with `next-intl`
+ * messages — keeping all human text out of this module.
  */
+export type TimeLabelDescriptor =
+  | { kind: "noCap" }
+  | { kind: "endedJustNow" }
+  | { kind: "endsIn"; duration: DurationParts }
+  | { kind: "endedAgoFinalize"; duration: DurationParts }
+  | { kind: "closedAgo"; duration: DurationParts }
+  | { kind: "closed" }
+  | { kind: "empty" };
+
+export type DurationParts = {
+  days: number;
+  hours: number;
+  mins: number;
+};
+
 export function getTimeLabel(
   p: OnChainProjectJSON,
   state: ProjectState,
-): string {
+): TimeLabelDescriptor {
   const now = Date.now();
   if (state === "live" || state === "ending-soon") {
-    if (p.endTimeMs <= 0) return "no time cap";
+    if (p.endTimeMs <= 0) return { kind: "noCap" };
     const ms = p.endTimeMs - now;
-    if (ms <= 0) return "ended just now";
-    return `ends in ${formatDuration(ms)}`;
+    if (ms <= 0) return { kind: "endedJustNow" };
+    return { kind: "endsIn", duration: durationParts(ms) };
   }
   if (state === "ended-awaiting") {
     const ms = now - p.endTimeMs;
-    if (ms < 0) return "ended just now";
-    return `ended ${formatDuration(ms)} ago · finalize to unlock`;
+    if (ms < 0) return { kind: "endedJustNow" };
+    return { kind: "endedAgoFinalize", duration: durationParts(ms) };
   }
   if (state === "closed") {
     // We don't have an explicit close timestamp on the JSON; fall back to
     // end-time if it's set, otherwise stay silent.
     if (p.endTimeMs > 0) {
       const ms = now - p.endTimeMs;
-      if (ms > 0) return `closed · ${formatDuration(ms)} ago`;
+      if (ms > 0) return { kind: "closedAgo", duration: durationParts(ms) };
     }
-    return "closed";
+    return { kind: "closed" };
   }
-  return "—";
+  return { kind: "empty" };
 }
 
-function formatDuration(ms: number): string {
+function durationParts(ms: number): DurationParts {
   const absMs = Math.max(0, Math.abs(ms));
   const days = Math.floor(absMs / 86_400_000);
   const hours = Math.floor((absMs % 86_400_000) / 3_600_000);
   const mins = Math.floor((absMs % 3_600_000) / 60_000);
-  if (days > 0) return `${days}d ${hours}h`;
-  if (hours > 0) return `${hours}h ${mins}m`;
-  return `${mins}m`;
+  return { days, hours, mins };
 }

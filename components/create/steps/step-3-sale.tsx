@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { useWizard } from "@/lib/store/wizard";
@@ -23,6 +24,7 @@ function fromLocalInput(s: string): number {
 }
 
 export function StepSaleForm() {
+  const t = useTranslations("create.step3");
   const sale = useWizard((s) => s.draft.sale);
   const ticker = useWizard((s) => s.draft.identity.ticker) ?? "TOK";
   const patch = useWizard((s) => s.patchSale);
@@ -30,6 +32,52 @@ export function StepSaleForm() {
 
   const tokensPerSui = sale.tokensPerSui ?? "";
   const allocation = sale.allocationTokens ?? "";
+
+  // Bidirectional editing for `tokens per SUI` ↔ `target raise`.
+  // Tracking which side the user touched last lets us decide which value
+  // is authoritative when the other (or `allocation`) changes.
+  const [lastEdited, setLastEdited] = useState<"rate" | "raise">("rate");
+  const [raiseInput, setRaiseInput] = useState<string>(() => {
+    const r = safeBN(tokensPerSui);
+    const a = safeBN(allocation);
+    if (r.isZero() || a.isZero()) return "";
+    return a.dividedBy(r).toFixed(4, BigNumber.ROUND_DOWN);
+  });
+  // Guard the effect against syncing back the value we just wrote.
+  const skipNextSync = useRef(false);
+
+  // When the rate side is authoritative, mirror raise from rate × allocation.
+  useEffect(() => {
+    if (lastEdited !== "rate") return;
+    if (skipNextSync.current) {
+      skipNextSync.current = false;
+      return;
+    }
+    const r = safeBN(tokensPerSui);
+    const a = safeBN(allocation);
+    if (r.isZero() || a.isZero()) {
+      setRaiseInput("");
+      return;
+    }
+    setRaiseInput(a.dividedBy(r).toFixed(4, BigNumber.ROUND_DOWN));
+  }, [tokensPerSui, allocation, lastEdited]);
+
+  // When the raise side is authoritative and allocation changes, recompute
+  // rate so the raise input the user typed stays put.
+  useEffect(() => {
+    if (lastEdited !== "raise") return;
+    const raise = safeBN(raiseInput);
+    const a = safeBN(allocation);
+    if (raise.isZero() || a.isZero()) return;
+    const newRate = a.dividedBy(raise).toFixed(6, BigNumber.ROUND_DOWN);
+    if (newRate !== tokensPerSui) {
+      skipNextSync.current = true;
+      patch({ tokensPerSui: newRate });
+    }
+    // We deliberately omit `tokensPerSui` and `patch` from deps — we only
+    // want to react to allocation changes here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allocation, lastEdited, raiseInput]);
 
   // Live derived figures.
   const baseRateScaled = useMemo(() => {
@@ -42,57 +90,87 @@ export function StepSaleForm() {
     return v.multipliedBy(new BigNumber(10).pow(PROJECT_COIN_DECIMALS));
   }, [allocation]);
 
-  const targetSuiRaise = useMemo(() => {
-    const r = safeBN(tokensPerSui);
-    const a = safeBN(allocation);
-    if (r.isZero()) return null;
-    return a.dividedBy(r);
-  }, [tokensPerSui, allocation]);
-
   const now = Date.now();
   const endMs = sale.endTimeMs ?? null;
   const durationDays = endMs ? Math.max(0, Math.round((endMs - now) / DAY)) : null;
+
+  const unsoldOptions = [
+    {
+      key: "burn" as const,
+      title: t("unsoldBurnTitle"),
+      body: t("unsoldBurnBody"),
+    },
+    {
+      key: "transfer_to_creator" as const,
+      title: t("unsoldReturnTitle"),
+      body: t("unsoldReturnBody"),
+    },
+  ];
 
   return (
     <div className="space-y-8">
       <StepHeader
         n={3}
         accent="jade"
-        title="Sale terms"
-        body="Supporters contribute SUI in exchange for a Receipt. After the sale ends or sells out, they claim their token allocation. Anything unsold is burned or returned to you, per your choice."
-        meta="immutable on deploy"
+        title={t("title")}
+        body={t("body")}
+        meta={t("meta")}
       />
 
-      <StepCard
-        title="Issuance"
-        meta="tokens per 1 SUI"
-      >
-        <Field
-          label="Tokens per SUI"
-          hint={`How many ${ticker} a supporter receives for each 1 SUI contributed.`}
-          error={errors.tokensPerSui}
-        >
-          {(id) => (
-            <TextField
-              id={id}
-              value={tokensPerSui}
-              onChange={(v) =>
-                patch({ tokensPerSui: v.replace(/[^0-9.]/g, "") })
-              }
-              placeholder="100"
-            />
-          )}
-        </Field>
+      <StepCard title={t("pricingTitle")} meta={t("pricingMeta")}>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Field
+            label={t("tokensPerSui")}
+            hint={t("tokensPerSuiHint", { ticker })}
+            error={errors.tokensPerSui}
+          >
+            {(id) => (
+              <TextField
+                id={id}
+                value={tokensPerSui}
+                onChange={(v) => {
+                  setLastEdited("rate");
+                  patch({ tokensPerSui: v.replace(/[^0-9.]/g, "") });
+                }}
+                placeholder="100"
+              />
+            )}
+          </Field>
+          <Field
+            label={t("targetRaise")}
+            hint={t("targetRaiseHint")}
+          >
+            {(id) => (
+              <TextField
+                id={id}
+                value={raiseInput}
+                onChange={(v) => {
+                  const clean = v.replace(/[^0-9.]/g, "");
+                  setLastEdited("raise");
+                  setRaiseInput(clean);
+                  const raise = safeBN(clean);
+                  const a = safeBN(allocation);
+                  if (raise.isZero() || a.isZero()) return;
+                  skipNextSync.current = true;
+                  patch({
+                    tokensPerSui: a.dividedBy(raise).toFixed(6, BigNumber.ROUND_DOWN),
+                  });
+                }}
+                placeholder="10000"
+              />
+            )}
+          </Field>
+        </div>
         <DerivedRow
-          label="base_rate (scaled, on-chain)"
+          label={t("baseRateLabel")}
           value={baseRateScaled.isFinite() ? baseRateScaled.toFixed(0) : "—"}
         />
       </StepCard>
 
-      <StepCard title="Allocation" meta="total tokens for sale">
+      <StepCard title={t("allocationTitle")} meta={t("allocationMeta")}>
         <Field
-          label="Tokens for sale"
-          hint={`Total ${ticker} reserved for this sale. The TreasuryCap mints up to this amount.`}
+          label={t("tokensForSale")}
+          hint={t("tokensForSaleHint", { ticker })}
           error={errors.allocationTokens}
         >
           {(id) => (
@@ -108,21 +186,13 @@ export function StepSaleForm() {
         </Field>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <DerivedRow
-            label="funding_allocation (raw u64)"
+            label={t("fundingAllocationLabel")}
             value={
               allocationScaled.isFinite() ? allocationScaled.toFixed(0) : "—"
             }
           />
           <DerivedRow
-            label="Target raise"
-            value={
-              targetSuiRaise && targetSuiRaise.isFinite()
-                ? `${targetSuiRaise.toFormat(2, BigNumber.ROUND_DOWN)} SUI`
-                : "—"
-            }
-          />
-          <DerivedRow
-            label={`Max supply · ${ticker}`}
+            label={t("maxSupplyLabel", { ticker })}
             value={
               allocation
                 ? `${new BigNumber(allocation).toFormat(0)} ${ticker}`
@@ -130,25 +200,32 @@ export function StepSaleForm() {
             }
           />
           <DerivedRow
-            label="Minted at launch"
-            value="0 — minted on claim"
+            label={t("mintedAtLaunch")}
+            value={t("mintedAtLaunchValue")}
           />
         </div>
         <p className="mt-2 font-mono text-[10px] leading-relaxed text-ink/55">
-          The coin starts at <span className="text-ink/75">0 supply</span>.
-          Tokens are minted lazily when supporters call{" "}
-          <code className="font-mono">claim</code> on their receipts. Final
-          circulating supply ={" "}
-          <span className="text-ink/75">claimed</span>
+          {t.rich("supplyNote", {
+            zeroSupply: (chunks) => <span className="text-ink/75">{chunks}</span>,
+            code: (chunks) => <code className="font-mono">{chunks}</code>,
+            claimed: (chunks) => <span className="text-ink/75">{chunks}</span>,
+          })}
           {sale.unsoldAction === "transfer_to_creator"
-            ? " + unsold (returned to your wallet)"
-            : " (unsold portion is burned)"}
+            ? t("supplyNoteReturn")
+            : t("supplyNoteBurn")}
           .
         </p>
       </StepCard>
 
-      <StepCard title="Sale window" meta={durationDays != null ? `${durationDays}d` : "no time cap"}>
-        <Field label="Ends">
+      <StepCard
+        title={t("saleWindowTitle")}
+        meta={
+          durationDays != null
+            ? t("durationDays", { days: durationDays })
+            : t("noTimeCap")
+        }
+      >
+        <Field label={t("ends")}>
           {() => (
             <div className="space-y-3">
               <div className="flex flex-wrap gap-1.5">
@@ -169,7 +246,7 @@ export function StepSaleForm() {
                           : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
                       )}
                     >
-                      in {d} days
+                      {t("inDays", { days: d })}
                     </button>
                   );
                 })}
@@ -184,7 +261,7 @@ export function StepSaleForm() {
                       : "border-ink/25 hover:border-ink hover:-translate-y-[1px]",
                   )}
                 >
-                  no time cap
+                  {t("noTimeCap")}
                 </button>
               </div>
               <input
@@ -202,24 +279,11 @@ export function StepSaleForm() {
         </Field>
       </StepCard>
 
-      <StepCard title="Unsold supply" meta="after sale closes">
-        <Field label="Action">
+      <StepCard title={t("unsoldTitle")} meta={t("unsoldMeta")}>
+        <Field label={t("actionLabel")}>
           {() => (
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {(
-                [
-                  {
-                    key: "burn",
-                    title: "Burn",
-                    body: "Unsold tokens are permanently destroyed, reducing total supply.",
-                  },
-                  {
-                    key: "transfer_to_creator",
-                    title: "Return to creator",
-                    body: "Unsold tokens are minted to your address. Use for vesting or DEX seeding.",
-                  },
-                ] as const
-              ).map((opt) => {
+              {unsoldOptions.map((opt) => {
                 const active = sale.unsoldAction === opt.key;
                 return (
                   <button
@@ -279,4 +343,3 @@ function parseErrors(sale: Partial<SaleV>) {
   }
   return out;
 }
-

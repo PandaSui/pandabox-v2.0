@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
@@ -29,6 +30,7 @@ import {
   getStateVisuals,
   getTimeLabel,
 } from "./state";
+import { useTimeLabel } from "./use-time-label";
 import { formatSui, formatToken, lastSegment, shortMid } from "./format";
 import type {
   DashboardOwnedRow,
@@ -65,6 +67,7 @@ const CTA_BASE =
  * the param is present.
  */
 export function DashboardShell() {
+  const t = useTranslations("dashboard");
   const account = useCurrentAccount();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -135,13 +138,12 @@ export function DashboardShell() {
     return (
       <Container className="py-16">
         <div className="mx-auto max-w-xl border border-ink/15 bg-bone p-8 text-center shadow-offset-sm">
-          <MonoLabel>Connect your wallet</MonoLabel>
+          <MonoLabel>{t("connectGate.eyebrow")}</MonoLabel>
           <h1 className="mt-3 font-display text-3xl leading-[1.05]">
-            Your activity, on-chain.
+            {t("connectGate.headline")}
           </h1>
           <p className="mt-3 text-sm text-ink/65">
-            Connect a Sui wallet to see the projects you've created and the
-            ones you've contributed to.
+            {t("connectGate.body")}
           </p>
           <div className="mt-5 flex justify-center">
             <ConnectWallet />
@@ -158,7 +160,7 @@ export function DashboardShell() {
         <div>
           <AccentRule color="saffron">
             <MonoLabel>
-              Dashboard
+              {t("title")}
               <span className="ml-2 text-ink/30">·</span>
               <span className="ml-2 inline-block">
                 <Address value={account.address} link />
@@ -166,14 +168,14 @@ export function DashboardShell() {
             </MonoLabel>
           </AccentRule>
           <h1 className="mt-3 font-display text-3xl leading-[1.05] md:text-4xl">
-            Your activity
+            {t("headline")}
           </h1>
         </div>
         <button
           type="button"
           onClick={onRefresh}
           disabled={loading}
-          aria-label={loading ? "Refreshing dashboard" : "Refresh dashboard"}
+          aria-label={loading ? t("refresh.ariaRefreshing") : t("refresh.aria")}
           className={cn(
             "group inline-flex h-9 items-center gap-2 self-start border border-ink/25 bg-bone px-3 shadow-offset-sm md:self-auto",
             "font-mono-label text-[10px] text-ink/70",
@@ -185,7 +187,7 @@ export function DashboardShell() {
           )}
         >
           <RefreshGlyph spinning={loading} />
-          <span>{loading ? "refreshing" : "refresh"}</span>
+          <span>{loading ? t("refresh.busy") : t("refresh.label")}</span>
         </button>
       </header>
 
@@ -238,6 +240,7 @@ function OwnedSection({
   onSortChange: (s: SortKey) => void;
   onManage: (projectId: string) => void;
 }) {
+  const t = useTranslations("dashboard");
   // Per-state counts feed both the filter pills and the section's
   // empty-state copy. Compute once and pass down.
   const counts = useMemo(() => {
@@ -288,11 +291,10 @@ function OwnedSection({
       <div className="mb-5 flex flex-col gap-3">
         <div>
           <h2 className="font-display text-2xl leading-tight">
-            Your projects
+            {t("owned.title")}
           </h2>
           <p className="mt-1 max-w-prose text-sm text-ink/60">
-            Projects whose ProjectAdminCap you hold. Click manage to open the
-            workspace.
+            {t("owned.subtitle")}
           </p>
         </div>
         {rows && rows.length > 0 && (
@@ -322,20 +324,19 @@ function OwnedSection({
         ) : (
           <div className="border border-dashed border-ink/25 bg-bone/40 p-8 text-center">
             <MonoLabel className="text-[10px]">
-              No projects match this filter
+              {t("owned.noMatchLabel")}
             </MonoLabel>
             <p className="mx-auto mt-2 max-w-md text-sm text-ink/60">
-              Try a different state or clear the filter to see all{" "}
-              {rows.length} {rows.length === 1 ? "project" : "projects"}.
+              {t("owned.noMatchBody", { count: rows.length })}
             </p>
           </div>
         )
       ) : (
         <EmptyState
-          label="No projects yet"
-          body="Spin up a token sale in minutes. Pre-deploy your coin, configure the sale terms, and ship in one signature."
+          label={t("owned.empty.label")}
+          body={t("owned.empty.body")}
           href="/create"
-          cta="Launch a project"
+          cta={t("owned.empty.cta")}
         />
       )}
     </section>
@@ -358,15 +359,16 @@ function SupportedSection({
   rows: DashboardSupportedRow[] | undefined;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard");
   return (
     <section className="py-10">
       <div className="mb-5 flex items-baseline justify-between">
         <div>
           <h2 className="font-display text-2xl leading-tight">
-            Projects you back
+            {t("supported.title")}
           </h2>
           <p className="mt-1 max-w-prose text-sm text-ink/60">
-            Your ContributionReceipts. Claim once the sale finalizes.
+            {t("supported.subtitle")}
           </p>
         </div>
         {typeof rows?.length === "number" && (
@@ -385,10 +387,10 @@ function SupportedSection({
         </div>
       ) : (
         <EmptyState
-          label="Not backing anyone yet"
-          body="Back a project on Explore — your receipts and claimable share will surface here."
+          label={t("supported.empty.label")}
+          body={t("supported.empty.body")}
           href="/explore"
-          cta="Explore projects"
+          cta={t("supported.empty.cta")}
         />
       )}
     </section>
@@ -396,6 +398,8 @@ function SupportedSection({
 }
 
 function SupportedCard({ row }: { row: DashboardSupportedRow }) {
+  const t = useTranslations("dashboard");
+  const formatTimeLabel = useTimeLabel();
   const p = row.project;
   const ticker = lastSegment(p.tokenType).toUpperCase() || "TOK";
   const state = getProjectState(p);
@@ -404,10 +408,10 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
   const endedAwaiting = state === "ended-awaiting";
 
   const action = closed
-    ? { label: "Claim tokens", href: `/projects/${p.id}#pay`, accent: "saffron" as const }
+    ? { label: t("supported.action.claim"), href: `/projects/${p.id}#pay`, accent: "saffron" as const }
     : endedAwaiting
-      ? { label: "Finalize sale", href: `/projects/${p.id}#pay`, accent: "saffron" as const }
-      : { label: "Open project", href: `/projects/${p.id}`, accent: "bone" as const };
+      ? { label: t("supported.action.finalize"), href: `/projects/${p.id}#pay`, accent: "saffron" as const }
+      : { label: t("supported.action.open"), href: `/projects/${p.id}`, accent: "bone" as const };
 
   return (
     <article
@@ -430,7 +434,7 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
             href={`/projects/${p.id}`}
             className="block truncate font-display text-lg leading-tight hover:underline hover:underline-offset-4"
           >
-            {p.name || "Untitled project"}
+            {p.name || t("untitledProject")}
           </Link>
           <div className="mt-0.5 flex items-center gap-2 text-[11px]">
             <span className="font-mono uppercase tracking-[0.14em] text-ink/45">
@@ -462,18 +466,18 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
               visuals.dotClass,
             )}
           />
-          {row.receipts.length} {row.receipts.length === 1 ? "receipt" : "receipts"}
+          {t("supported.receipts", { count: row.receipts.length })}
         </span>
       </header>
 
       {/* Hero metric pair — Contributed + Claimable */}
       <div className="grid grid-cols-2 border-t border-ink/10">
         <HeroCell
-          label="Contributed"
+          label={t("supported.contributed")}
           value={`${formatSui(BigInt(row.totalSui))} SUI`}
         />
         <HeroCell
-          label={closed ? "Claimable" : "Your share"}
+          label={closed ? t("supported.claimable") : t("supported.yourShare")}
           value={`${formatToken(BigInt(row.totalTokens), PROJECT_COIN_DECIMALS)} ${ticker}`}
           border
         />
@@ -481,7 +485,7 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
 
       <div className="flex items-center justify-between gap-3 border-t border-ink/10 px-5 py-3">
         <span className="min-w-0 truncate font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/60">
-          {getTimeLabel(p, state)}
+          {formatTimeLabel(getTimeLabel(p, state))}
         </span>
         <Link
           href={action.href}
@@ -575,16 +579,17 @@ function EmptyState({
 }
 
 function Loading() {
+  const t = useTranslations("dashboard");
   return (
     <div
       className="grid grid-cols-1 gap-4 md:grid-cols-2"
       role="status"
       aria-busy="true"
-      aria-label="Loading projects"
+      aria-label={t("loading.aria")}
     >
       <CardSkeleton />
       <CardSkeleton />
-      <span className="sr-only">Loading projects…</span>
+      <span className="sr-only">{t("loading.sr")}</span>
     </div>
   );
 }

@@ -1,0 +1,1147 @@
+{
+  "metadata": {
+    "title": "Pandabox — Fund what's worth funding. On Sui.",
+    "description": "A programmable funding launchpad on Sui. Launch a project, set the rate, run an on-chain sale — every parameter, every transaction, on-chain.",
+    "ogImageAlt": "Pandabox — programmable funding launchpad for Sui.",
+    "notFound": {
+      "title": "404 · Not found",
+      "description": "No signal on this route."
+    }
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "language": "Language"
+  },
+  "nav": {
+    "homeAria": "Pandabox home",
+    "primaryAria": "Primary",
+    "mobileAria": "Mobile",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "links": {
+      "explore": "Explore",
+      "create": "Create",
+      "dashboard": "Dashboard",
+      "docs": "Docs",
+      "admin": "Admin"
+    }
+  },
+  "wallet": {
+    "connect": "Connect wallet",
+    "pickerTitle": "Connect a Sui wallet",
+    "pickerDescription": "Pick a wallet to sign in. We never hold custody — your keys stay in your wallet.",
+    "noWallets": "No Sui wallets detected in this browser.",
+    "installSuiWallet": "Install Sui Wallet →",
+    "walletStandard": "Sui wallet standard",
+    "connectError": "Could not connect.",
+    "fallbackName": "Wallet",
+    "balanceLabel": "Balance",
+    "networkMainnet": "Mainnet",
+    "copyAddress": "Copy address",
+    "copied": "COPIED",
+    "viewOnSuiscan": "View on Suiscan",
+    "disconnect": "Disconnect"
+  },
+  "pulse": {
+    "totalRaised": "Total raised across Pandabox",
+    "mostRecent": "Most recent",
+    "flatlinedAria": "Treasury Pulse — flatlined",
+    "flatlinedCaption": "No payment events on this route. Pandabox cannot render a pulse for a page that does not exist."
+  },
+  "notFound": {
+    "eyebrow": "404 · ROUTE NOT FOUND",
+    "rowStatus": "STATUS",
+    "rowStatusValue": "NOT FOUND",
+    "rowSignal": "SIGNAL",
+    "rowCycle": "CYCLE",
+    "headline": "No signal on this route.",
+    "body": "Pandabox couldn't find what you were looking for. Either the URL drifted between cycles, or this page was never on-chain to begin with. Pick one of the live routes below — they're all paying out signal.",
+    "ctaExplore": "Explore projects",
+    "ctaLaunch": "Launch a project",
+    "ctaDocs": "Read the docs",
+    "backHome": "back to pandabox.money"
+  },
+  "home": {
+    "hero": {
+      "live": "Live on Sui {network}",
+      "titleFund": "Fund what's",
+      "titleWorth": "worth",
+      "titleFunding": "funding.",
+      "titleOnSui": "On Sui",
+      "tagline": "Pandabox is the programmable funding platform for Sui. Launch a project in minutes. Receive SUI, issue tokens, define payouts, all on-chain, all transparent, all yours.",
+      "ctaLaunch": "Launch a project",
+      "ctaExplore": "Explore projects",
+      "specVersion": "v1 · pandabox",
+      "specNetwork": "sui {network}",
+      "specPkg": "pkg"
+    },
+    "finalCta": {
+      "marginTop": "Nº 04 · final",
+      "marginSpec": "project spec — pandabox",
+      "marginYear": "2026 · Sui mainnet",
+      "shipIt": "Ship it",
+      "titleYourProject": "Your project,",
+      "titleOnchain": "on-chain",
+      "titleInMinutes": "in 3 minutes.",
+      "subhead": "Configure cycles, payouts, and tokens. Sign one Sui transaction. You hold the admin cap.",
+      "ctaLaunch": "Launch a project",
+      "ctaDocs": "Read the docs",
+      "tileSign": "Sign",
+      "tileSignValue": "1 transaction",
+      "tileGas": "Gas",
+      "tileGasValue": "< $0.001",
+      "tileSetup": "Setup",
+      "tileSetupValue": "6 steps",
+      "tileKeys": "Keys",
+      "tileKeysValue": "AdminCap yours",
+      "marginLive": "pandabox.sui · live",
+      "marginRevalidate": "revalidates 60s"
+    },
+    "featured": {
+      "title": "Featured projects",
+      "subtitle": "Hand-picked, currently raising.",
+      "viewAll": "View all",
+      "eyebrow": "Featured",
+      "headline": "Funded right now",
+      "watermark": "FUNDED",
+      "sectionRail": "section · 02 / featured",
+      "statOnchain": "on-chain",
+      "statProjects": "projects",
+      "statRaisedAcross": "raised across top 3",
+      "exploreAll": "Explore all projects",
+      "dataMeta": "data: sui mainnet · revalidates 60s",
+      "empty": {
+        "label": "No projects",
+        "heading": "Listening for the first project on-chain.",
+        "description": "ProjectCreated events from <code>pandabox::project</code> will show up here."
+      },
+      "tape": {
+        "live": "live",
+        "onchain": "on-chain",
+        "backedAgo": "backed · 2m ago",
+        "verified": "verified",
+        "cycle01": "cycle 01",
+        "supportingNow": "supporting · 12 now",
+        "txConfirmed": "tx confirmed",
+        "freshRaise": "fresh raise",
+        "unnamed": "Unnamed"
+      },
+      "skeleton": {
+        "ariaLoading": "Loading featured projects",
+        "srLoading": "Loading featured projects…"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "eyebrowSpec": "03 moves · idea → on-chain",
+      "title": "Three steps from idea to on-chain funding.",
+      "subtitle": "Every parameter you configure here becomes a Move call. Every interaction your supporters take becomes a transaction. Pandabox is what's between.",
+      "nowViewing": "Now viewing",
+      "progressDeploy": "Deploy",
+      "progressReconfigure": "Reconfigure",
+      "ctaLaunch": "Launch a project",
+      "ctaDocs": "Read the docs",
+      "stepLabel": "Step {number} · {phase}",
+      "onchainSuiMove": "on-chain · sui move",
+      "live": "Live",
+      "steps": {
+        "0": {
+          "phase": "Configure",
+          "heading": "Deploy",
+          "body": "Configure cycles, payouts, tokens, and optional NFT tiers. Sign one Sui transaction. Your project goes live with an admin cap object you own.",
+          "outcome": "AdminCap minted"
+        },
+        "1": {
+          "phase": "Inflow",
+          "heading": "Receive",
+          "body": "Supporters pay SUI directly to your treasury. They receive project tokens at your cycle's weight, plus tier NFTs if you defined any.",
+          "outcome": "Tokens minted"
+        },
+        "2": {
+          "phase": "Govern",
+          "heading": "Reconfigure",
+          "body": "Propose changes for the next cycle. After the ballot delay, the new parameters lock in. Holders can cash out surplus at any time.",
+          "outcome": "Cycle queued"
+        }
+      }
+    },
+    "whySui": {
+      "eyebrow": "Why Sui",
+      "title": "Built for the chain that's built for this.",
+      "subtitle": "Three things Sui does natively that make Pandabox feel different in the hand — sub-cent payments, real ownership of admin rights, and zero-friction onboarding.",
+      "nativeStamp": "sui-native",
+      "cards": {
+        "gas": {
+          "tag": "Gas",
+          "heading": "Sub-cent gas",
+          "body": "Supporters don't pay $30 to back a project. Pandabox payments cost fractions of a cent — the small contributions that matter actually go through.",
+          "meta": "median pay tx · 0.00018 SUI"
+        },
+        "ownership": {
+          "tag": "Ownership",
+          "heading": "Object-centric ownership",
+          "body": "Your ProjectAdminCap is a real Sui object. Transfer it to a multisig, hand it to a DAO, lock it in escrow — it's just an object."
+        },
+        "onboarding": {
+          "tag": "Onboarding",
+          "heading": "Sponsored transactions",
+          "body": "Onboard supporters who don't yet hold SUI. Pandabox can sponsor the gas, so a first-time wallet can back a project on its first interaction.",
+          "meta": "gas sponsored · payer signs only"
+        }
+      }
+    },
+    "theNumbers": {
+      "eyebrow": "The numbers",
+      "title": "Built on real on-chain data.",
+      "subtitle": "Every figure here is computed from events on the Pandabox Move package, refreshed every 60 seconds.",
+      "sourceFootnote": "source · pandabox::project events · sum / count / set",
+      "computedAt": "computed at",
+      "liveLabel": "Live · sui mainnet",
+      "totalRaised": "Total raised",
+      "totalRaisedHint": "sum of sold ÷ base_rate, all projects",
+      "delta24h": "24h",
+      "substat": {
+        "across": "Across",
+        "projects": "projects",
+        "tokensMinted": "Tokens minted",
+        "platformFees": "Platform fees",
+        "feeRate": "Fee rate"
+      },
+      "activeProjects": "Active projects",
+      "liveCount": "{count} live",
+      "closedCount": "{count} closed",
+      "deployedAllTime": "deployed all-time",
+      "uniqueBackers": "Unique backers",
+      "addr": "addr",
+      "contribsPerBacker": "contribs / backer",
+      "moreOverflow": "+{count} more",
+      "latestActivity": "Latest activity",
+      "lastContribution": "last contribution",
+      "largest": "Largest",
+      "paymentsWindow": "{count} payments · 24h"
+    },
+    "heroConsole": {
+      "liveConsole": "Live console",
+      "streamSequenceAria": "Stream sequence",
+      "seq": "SEQ {value}",
+      "suiMainnet": "Sui mainnet",
+      "suiTestnet": "Sui testnet",
+      "pulseWindowOldest": "← 5s window · oldest",
+      "pulseWindowNow": "now →",
+      "stream": "Stream",
+      "recentPayments": "recent payments",
+      "listeningEvents": "Listening for events…",
+      "viewProjectAria": "View project {name}",
+      "stat": {
+        "projects": "Projects",
+        "platformFee": "Platform fee",
+        "treasury": "Treasury"
+      }
+    }
+  },
+  "footer": {
+    "homeAria": "Pandabox home",
+    "blurb": "The programmable funding platform for Sui. Built on-chain, open by default.",
+    "navigate": "Navigate",
+    "ecosystem": "Ecosystem",
+    "ecoSuiExplorer": "Sui Explorer",
+    "ecoSuiNetwork": "Sui Network",
+    "ecoTwitter": "Twitter",
+    "technical": "Technical",
+    "movePackage": "Move package",
+    "network": "Network",
+    "commit": "Commit",
+    "copyright": "© Pandabox",
+    "buildTag": "v2 · Mainnet build"
+  },
+  "explore": {
+    "title": "Explore",
+    "headline": "Funded right now.",
+    "subtitle": "Every active token sale on Pandabox, read directly from the Sui mainnet package — no indexer in between.",
+    "liveCount": "{count} live",
+    "totalCount": "{count} total",
+    "cachedHint": "cached 60s",
+    "all": "All",
+    "live": "Live",
+    "ended": "Ended",
+    "idle": "idle",
+    "verified": "verified",
+    "legacy": "legacy",
+    "legacyHint": "Deployed before 9-decimal scaling fix — numbers are unreliable.",
+    "filterByCategory": "Filter by category",
+    "sortLabel": "Sort",
+    "searchLabel": "Search",
+    "sort": {
+      "trending": "Trending",
+      "newest": "Newest",
+      "mostFunded": "Most funded",
+      "endingSoonest": "Ending soonest"
+    },
+    "searchPlaceholder": "search projects",
+    "searchAria": "Search projects",
+    "sortAria": "Sort projects",
+    "loadMore": "Load more",
+    "empty": "No projects match these filters yet.",
+    "emptyTitle": "Nothing matches",
+    "resetFilters": "Reset filters",
+    "byCreator": "by {addr}",
+    "endsNow": "ends ",
+    "endedAt": "ended ",
+    "unnamed": "Unnamed project",
+    "viewProject": "View {name}",
+    "categories": {
+      "opc": "OPC",
+      "meme": "Meme",
+      "art": "Art",
+      "infra": "Infra",
+      "dao": "DAO",
+      "research": "Research",
+      "gaming": "Gaming",
+      "music": "Music",
+      "social": "Social",
+      "rwa": "RWA"
+    }
+  },
+  "project": {
+    "card": {
+      "raised": "Raised",
+      "supporters": "Supporters"
+    },
+    "hero": {
+      "raised": "Raised",
+      "supporters": "Supporters",
+      "heldBy": "held by",
+      "backThis": "Back this project"
+    },
+    "status": {
+      "live": "live",
+      "paused": "paused",
+      "closed": "closed"
+    },
+    "detail": {
+      "backToExplore": "back to explore",
+      "legacyBadge": "Legacy · bad params",
+      "legacyBody": "This project was deployed before the wizard applied 9-decimal scaling to <code>base_rate</code>. The rate, target, and raised numbers below are off — don't trust them or back this sale.",
+      "creator": "Creator",
+      "contractAddressShort": "CA",
+      "verified": "Verified",
+      "statusLabel": "Status",
+      "statusLive": "Live",
+      "statusEnded": "Ended",
+      "statusClosed": "Closed",
+      "endsIn": "Ends in",
+      "cap": "Cap",
+      "sale": "Sale",
+      "ended": "Ended",
+      "noCap": "no cap",
+      "finished": "finished",
+      "closed": "closed",
+      "rate": "Rate",
+      "perSui": "/SUI",
+      "maxSupply": "max supply",
+      "unsold": "unsold",
+      "unsoldToCreator": "→ creator",
+      "unsoldBurn": "burn",
+      "remaining": "remaining",
+      "treasury": "treasury",
+      "beFirstSupporter": "be the first to back this project",
+      "supporterOne": "{count} supporter",
+      "supporterOther": "{count} supporters",
+      "lastBy": "last by",
+      "justNow": "just now",
+      "agoMinutes": "{n}m ago",
+      "agoHours": "{n}h ago",
+      "agoDays": "{n}d ago",
+      "aboutTitle": "About",
+      "ipfsPrefix": "ipfs ·",
+      "aboutEmpty": "No description pinned yet — the creator can publish one any time. See the pay panel for sale mechanics.",
+      "status": {
+        "ended": "ended"
+      },
+      "meta": {
+        "notFoundTitle": "Project not found",
+        "descriptionFallback": "{name} ({ticker}) — on-chain funding on Sui, powered by Pandabox."
+      },
+      "tabs": {
+        "about": "About",
+        "activity": "Activity"
+      },
+      "activity": {
+        "title": "Activity",
+        "empty": "No on-chain activity for this project yet. Contributions, claims, and withdrawals will surface here.",
+        "eventCount": "{count, plural, one {# event} other {# events}}",
+        "revalidates": "revalidates 30s",
+        "colTime": "Time",
+        "colEvent": "Event",
+        "colActor": "Actor",
+        "colTx": "Tx",
+        "kind": {
+          "contribute": "Contributed",
+          "claim": "Claimed",
+          "withdraw": "Withdrawn",
+          "close": "Closed"
+        }
+      },
+      "claim": {
+        "claimYourTokens": "Claim your tokens",
+        "finalizeSale": "Finalize sale",
+        "receiptCount": "{count, plural, one {# receipt} other {# receipts}}",
+        "anyone": "anyone",
+        "claimIntroOne": "The sale has closed. Burn your <code>ContributionReceipt&lt;T&gt;</code> object and receive your share of {ticker}.",
+        "claimIntroMany": "The sale has closed. Burn your <code>ContributionReceipt&lt;T&gt;</code> objects and receive your share of {ticker}.",
+        "youllReceive": "You'll receive",
+        "from": "From",
+        "contributed": "contributed",
+        "finalizeIntro": "The sale end-time has passed. Anyone can finalize to lock in the final sold amount and unlock claim + withdraw for everyone.",
+        "sold": "Sold",
+        "treasury": "Treasury",
+        "claimCta": "Claim → {amount}",
+        "claimAllCta": "Claim all → {amount}",
+        "receiptsSummary": "receipts ({count})",
+        "modalClaimTitle": "Claim tokens",
+        "modalFinalizeTitle": "Finalize sale",
+        "backToProject": "Back to project",
+        "youBurn": "You burn",
+        "receiptOne": "receipt",
+        "receiptOther": "receipts",
+        "originallyContributed": "{amount} originally contributed",
+        "youReceive": "You receive",
+        "coinSentToWallet": "Coin<{ticker}> sent to your wallet",
+        "cancel": "Cancel",
+        "signing": "Signing…",
+        "confirmClaim": "Confirm & claim",
+        "confirmFinalize": "Confirm & finalize",
+        "finalizePreviewIntro": "The sale window has closed. Anyone can finalize to lock in the final sold amount — this unlocks token claims for supporters and SUI withdrawals for the project owner.",
+        "finalizeFootnote": "no-op if the sale isn't ready · gas only · sale becomes claimable for {ticker} holders",
+        "saleFinalized": "sale finalized",
+        "finalizeSuccessBody": "The project is now closed. Token claims and admin withdrawals are unlocked.",
+        "txLabel": "tx",
+        "txFailed": "Transaction failed.",
+        "tweetText": "Just claimed my {ticker} from {projectName} on Pandabox — programmable on-chain funding on Sui.",
+        "stampClaimed": "claimed",
+        "stampInYourWallet": "in your wallet",
+        "tokensDeliveredEyebrow": "· tokens delivered ·",
+        "fromLabel": "from",
+        "receiptsBurnedOne": "{count} receipt burned",
+        "receiptsBurnedOther": "{count} receipts burned",
+        "statReceived": "Received",
+        "statReceipts": "Receipts",
+        "burnedCount": "{count} burned",
+        "shareOnX": "share on x"
+      },
+      "share": {
+        "tweetText": "Backing {projectName} ({ticker}) on Pandabox — programmable on-chain funding on Sui.",
+        "copyAria": "Copy project URL",
+        "shareAria": "Share on X",
+        "copy": "copy",
+        "copied": "copied",
+        "share": "share"
+      },
+      "cover": {
+        "specCover": "cover · {ticker}",
+        "specFig": "fig.01 · {ratio}",
+        "specObj": "obj · {id}",
+        "artwork": "artwork",
+        "suiMainnet": "sui · mainnet",
+        "defaultTickerFallback": "PROJECT",
+        "imgAlt": "{name} cover",
+        "iconAlt": "{name} icon"
+      },
+      "meter": {
+        "ofLabel": "of",
+        "target": "target"
+      },
+      "onchain": {
+        "title": "On-chain record",
+        "specSheet": "spec sheet",
+        "suiMainnet": "sui · mainnet",
+        "projectObject": "Project object",
+        "sharedObject": "shared object",
+        "coinType": "Coin type",
+        "contractAddress": "contract address",
+        "deployed": "Deployed",
+        "links": "Links",
+        "social": "social",
+        "site": "site",
+        "discord": "discord",
+        "noneProvided": "none provided",
+        "copy": "copy",
+        "copied": "copied",
+        "copyAria": "Copy to clipboard",
+        "explorer": "explorer",
+        "justNow": "just now",
+        "agoSeconds": "{n}s ago",
+        "agoMinutes": "{n}m ago",
+        "agoHours": "{n}h ago",
+        "agoDays": "{n}d ago",
+        "agoMonths": "{n}mo ago",
+        "agoYears": "{n}y ago"
+      },
+      "rail": {
+        "connectTitle": "Connect a wallet",
+        "connectBody": "Connect to back this project, claim tokens, or manage it if you're the creator.",
+        "loadingTitle": "Reading holdings",
+        "loadingBody": "Checking owned admin caps + receipts…",
+        "saleClosedTitle": "Sale closed",
+        "saleClosedBody": "This sale is finalized. You don't hold a contribution receipt for {token}, so there's nothing to claim from this wallet.",
+        "thisProjectFallback": "this project"
+      },
+      "seedLiquidity": {
+        "title": "Seed Cetus liquidity",
+        "intro": "Marks this project as having paired liquidity on <strong>Cetus</strong>. Once saved, the price chart on the project page will start reading live OHLCV data from GeckoTerminal.",
+        "verifyExplainer": "We verify your pool object on Sui before pinning. The pool must be a real <code>pool::Pool&lt;A, B&gt;</code> with one side SUI and the other your project's coin — <code>{coin}</code>. You can't flip the flag without an actual pool.",
+        "poolAddressLabel": "Cetus pool address",
+        "poolPlaceholder": "0x… (Cetus Pool object ID)",
+        "verify": "Verify",
+        "verifying": "Verifying…",
+        "verifiedOk": "Verified ✓",
+        "invalidObjectId": "Not a valid Sui object ID",
+        "verificationFailedTitle": "Verification failed",
+        "verificationFailed": "Verification failed.",
+        "poolVerified": "Pool verified",
+        "cetus": "Cetus",
+        "rowPool": "Pool",
+        "rowSideA": "Side A",
+        "rowSideB": "Side B",
+        "cancel": "Cancel",
+        "pinning": "Pinning…",
+        "signing": "Signing…",
+        "signAndSave": "Sign & save",
+        "pinningFailed": "Pinning to IPFS failed — {reason}",
+        "unknownError": "unknown error",
+        "txFailed": "Transaction failed.",
+        "seededTitle": "Liquidity marked seeded",
+        "seededBody": "The project page will pick up the new pool and start rendering the live chart within ~30s of cache revalidation.",
+        "detailsCid": "details cid · {cid}",
+        "digest": "digest · {digest}"
+      }
+    }
+  },
+  "pay": {
+    "heading": "Back this project",
+    "youReceive": "You receive",
+    "remainingHint": "Remaining mintable {amount}, excess refunded automatically.",
+    "memo": "Memo (optional)",
+    "memoPlaceholder": "recorded on-chain with your payment",
+    "enterAmount": "Enter an amount",
+    "payAmount": "Pay {amount} SUI",
+    "shareOfSupply": "Share of supply",
+    "remainingMintable": "Remaining mintable",
+    "unsold": "Unsold",
+    "unsoldBurn": "Burn",
+    "unsoldTransfer": "Transfer to creator",
+    "inspectorTitle": "Transaction inspector",
+    "inspectorPreview": "Pre-sign preview. Your wallet will request a signature for this Move call.",
+    "inspectorNotDeployed": "Move package not deployed yet — submission is simulated locally until NEXT_PUBLIC_PACKAGE_ID is set.",
+    "inspector": {
+      "package": "package",
+      "module": "module",
+      "function": "function",
+      "projectId": "arg.project_id",
+      "amountMist": "arg.amount_mist",
+      "returns": "returns",
+      "returnsValue": "ContributionReceipt + refund coin → sender"
+    },
+    "cancel": "Cancel",
+    "signSubmit": "Sign & submit",
+    "signing": "Signing…",
+    "confirmed": "Payment confirmed",
+    "backToProject": "Back to project",
+    "connectFirst": "Connect a wallet to contribute.",
+    "txFailed": "Transaction failed."
+  },
+  "create": {
+    "page": {
+      "metaTitle": "Create a project",
+      "metaDescription": "Configure cycles, tokens, payouts, and tiers. Deploy to Sui.",
+      "headline": "Configure your project, deploy in one transaction.",
+      "intro": "Six steps. Drafts auto-save to your browser. The right rail shows exactly what supporters will see on your project page.",
+      "badgeOneTransaction": "one transaction",
+      "badgeAutoSaving": "auto-saving draft",
+      "badgeIpfs": "ipfs-pinned assets"
+    },
+    "wizard": {
+      "stepsAria": "Wizard steps",
+      "stepLabel": "Step {num}",
+      "stepLabels": {
+        "identity": "Identity",
+        "coin": "Coin",
+        "sale": "Sale",
+        "deploy": "Deploy"
+      },
+      "percentComplete": "{pct}% complete",
+      "resetDraft": "reset draft",
+      "back": "Back",
+      "continueStep": "Continue · step {num}",
+      "reviewAndDeployAbove": "review & deploy above",
+      "resetModalTitle": "Reset draft?",
+      "resetModalBody": "This clears every field in the wizard and removes the saved draft from your browser. Nothing on-chain is affected — you just start from a blank form.",
+      "resetBullet1": "identity, coin, sale, deploy — all wiped",
+      "resetBullet2": "removed from localStorage",
+      "resetBullet3": "this cannot be undone",
+      "keepDraft": "Keep draft",
+      "resetDraftButton": "Reset draft"
+    },
+    "imageUpload": {
+      "defaultLabel": "Cover image",
+      "cidLabel": "cid",
+      "errorOnlyImages": "Only image files are allowed.",
+      "errorTooLarge": "Image too large ({size} MiB). Max {max} MiB.",
+      "errorUploadFailed": "Upload failed unexpectedly.",
+      "dropToPin": "Drop to pin",
+      "dragOrClick": "Drag an image or click to upload",
+      "maxSize": "max {max} MiB",
+      "loadingFromIpfs": "loading from ipfs",
+      "gatewayRetry": "gateway retry {attempt}/4",
+      "gatewayWarmup": "gateway warm-up",
+      "replace": "replace",
+      "remove": "remove",
+      "uploading": "uploading",
+      "pinningToIpfs": "pinning to ipfs",
+      "cancelUploadAria": "Cancel upload",
+      "cancel": "cancel",
+      "sendingBytes": "sending bytes to the pinning service",
+      "pinataReplicating": "pinata is replicating across ipfs nodes — this can take a few seconds for large images",
+      "pasteCidToggle": "or paste an existing CID / URL",
+      "pasteCidPlaceholder": "Qm… / bafy… / ipfs://… / https://gateway/ipfs/…"
+    },
+    "step1": {
+      "title": "Identity",
+      "body": "Who is funding what. This is what supporters see in their wallet and on the project page.",
+      "meta": "stored on-chain",
+      "basicsTitle": "Basics",
+      "basicsMeta": "immutable on deploy",
+      "projectName": "Project name",
+      "projectNamePlaceholder": "e.g. Atelier Ono",
+      "ticker": "Ticker",
+      "tickerHint": "Uppercase letters/digits, 2–10 chars",
+      "category": "Category",
+      "storyTitle": "Story",
+      "storyMeta": "editable any time",
+      "tagline": "Tagline",
+      "taglineHint": "One line, 8–160 chars · {len}/160",
+      "taglinePlaceholder": "A photo-zine collective minting weekly drops on Sui.",
+      "description": "Description",
+      "descriptionHint": "Markdown supported · 20–4000 chars · {len}/4000",
+      "descriptionPlaceholder": "Tell supporters what you're building and why their SUI matters.",
+      "coverTitle": "Cover image",
+      "coverMeta": "pinned to ipfs",
+      "coverHint": "Lands at the top of your project page. Wide 16:10 crops look best. Pinned to IPFS on upload — the CID goes on-chain.",
+      "socialsTitle": "Socials",
+      "socialsMeta": "optional",
+      "twitter": "X / Twitter",
+      "twitterPlaceholder": "handle",
+      "website": "Website",
+      "websitePlaceholder": "domain.com",
+      "discord": "Discord",
+      "discordPlaceholder": "invite URL"
+    },
+    "step2": {
+      "title": "Coin",
+      "body": "Pandabox needs a Sui coin you own. You can publish one now in the browser using our audited template, or paste an existing TreasuryCap + CoinMetadata if you already have one.",
+      "meta": "9 decimals · created with sui::coin::create_currency",
+      "modeLabel": "Mode",
+      "modePublish": "Publish a new coin",
+      "modePaste": "I already have a coin",
+      "untitledCoin": "Untitled coin",
+      "howThisWorks": "How this works",
+      "howThisWorksBody": "We start from a pre-compiled <code>coin_template.move</code> with <strong>9 decimals</strong>, rewrite its identifiers + metadata constants in your browser via <code>@mysten/move-bytecode-template</code>, then publish it from your wallet. The rendered Move source is pinned to IPFS so anyone can audit exactly what was deployed.",
+      "coinMetadataTitle": "Coin metadata",
+      "coinMetadataMeta": "goes into CoinMetadata<T>",
+      "symbol": "Symbol",
+      "symbolHint": "2–10 chars · uppercase letters / digits",
+      "name": "Name",
+      "namePlaceholder": "Panda Token",
+      "description": "Description",
+      "descriptionHint": "≤240 chars · ASCII",
+      "descriptionPlaceholder": "What this coin represents.",
+      "iconUrl": "Icon URL",
+      "iconUrlHint": "Reuse your project cover or paste a hosted URL",
+      "moduleLabel": "module",
+      "witnessLabel": "witness",
+      "publishTitle": "Publish",
+      "publishMetaComplete": "complete",
+      "publishMetaStep": "step 1 of 2 deploys",
+      "coinPublishedConfirm": "Coin published. TreasuryCap + CoinMetadata captured to draft.",
+      "rowPackage": "package",
+      "rowCoinType": "coin type",
+      "rowTreasuryCap": "treasury cap",
+      "rowMetadata": "metadata",
+      "rowDigest": "digest",
+      "publishStateRewriting": "Rewriting bytecode…",
+      "publishStateSigning": "Signing…",
+      "publishStateFetching": "Waiting for chain…",
+      "publishStatePinning": "Pinning source…",
+      "publishCoin": "Publish coin",
+      "publishCaption": "one transaction · transferable upgrade cap returned to you",
+      "errorNoDigest": "Wallet returned no digest for the publish tx.",
+      "errorPublishFailed": "Publish failed.",
+      "strandedTitle": "Published — but the RPC went quiet",
+      "openOnSuiExplorer": "Open on Sui Explorer",
+      "switchToPasteMode": "Switch to paste mode",
+      "digestLabel": "digest",
+      "validateSymbol": "2–10 chars · A-Z, 0-9, _ · must start with a letter",
+      "validateName": "Add a name (2–32 chars)",
+      "validateDescriptionLength": "Max 240 characters",
+      "validateDescriptionAscii": "ASCII only (no emoji / smart quotes)",
+      "validateIconUrl": "Use a full https:// URL",
+      "validateInvalidIdentifier": "Invalid identifier",
+      "objectIdsTitle": "Object IDs",
+      "objectIdsMeta": "must be owned by you",
+      "treasuryCapLabel": "TreasuryCap<T> object ID",
+      "treasuryCapHint": "From your publish transaction's createdObjects.",
+      "metadataLabel": "CoinMetadata<T> object ID",
+      "metadataHint": "We read this from chain to detect the coin type + decimals.",
+      "coinInfoTitle": "Coin info",
+      "coinInfoMetaReading": "reading…",
+      "coinInfoMetaDetected": "detected",
+      "coinInfoMetaNotFound": "not found",
+      "statName": "Name",
+      "statSymbol": "Symbol",
+      "statDecimals": "Decimals",
+      "resolvedCoinType": "Resolved coin type",
+      "wrongDecimals": "This coin is {decimals}-decimal. Pandabox requires {required} decimals — redeploy your coin with the correct value.",
+      "readingFromChain": "Reading from chain…",
+      "pasteMetadataHint": "Paste a CoinMetadata ID above to detect the coin.",
+      "errorObjectNotFound": "Object not found.",
+      "errorNotCoinMetadata": "Object is not a CoinMetadata<T>.",
+      "errorUnexpectedContent": "Unexpected object content.",
+      "errorLookupFailed": "Lookup failed."
+    },
+    "step3": {
+      "title": "Sale terms",
+      "body": "Supporters contribute SUI in exchange for a Receipt. After the sale ends or sells out, they claim their token allocation. Anything unsold is burned or returned to you, per your choice.",
+      "meta": "immutable on deploy",
+      "pricingTitle": "Pricing",
+      "pricingMeta": "tokens ↔ SUI",
+      "tokensPerSui": "Tokens per SUI",
+      "tokensPerSuiHint": "How many {ticker} a supporter receives for each 1 SUI.",
+      "targetRaise": "Target raise (SUI)",
+      "targetRaiseHint": "Editing this back-calculates Tokens per SUI.",
+      "baseRateLabel": "base_rate (scaled, on-chain)",
+      "allocationTitle": "Allocation",
+      "allocationMeta": "total tokens for sale",
+      "tokensForSale": "Tokens for sale",
+      "tokensForSaleHint": "Total {ticker} reserved for this sale. The TreasuryCap mints up to this amount.",
+      "fundingAllocationLabel": "funding_allocation (raw u64)",
+      "maxSupplyLabel": "Max supply · {ticker}",
+      "mintedAtLaunch": "Minted at launch",
+      "mintedAtLaunchValue": "0 — minted on claim",
+      "supplyNote": "The coin starts at <zeroSupply>0 supply</zeroSupply>. Tokens are minted lazily when supporters call <code>claim</code> on their receipts. Final circulating supply = <claimed>claimed</claimed>",
+      "supplyNoteReturn": " + unsold (returned to your wallet)",
+      "supplyNoteBurn": " (unsold portion is burned)",
+      "saleWindowTitle": "Sale window",
+      "durationDays": "{days}d",
+      "noTimeCap": "no time cap",
+      "ends": "Ends",
+      "inDays": "in {days} days",
+      "unsoldTitle": "Unsold supply",
+      "unsoldMeta": "after sale closes",
+      "actionLabel": "Action",
+      "unsoldBurnTitle": "Burn",
+      "unsoldBurnBody": "Unsold tokens are permanently destroyed, reducing total supply.",
+      "unsoldReturnTitle": "Return to creator",
+      "unsoldReturnBody": "Unsold tokens are minted to your address. Use for vesting or DEX seeding."
+    },
+    "step4": {
+      "title": "Review & deploy",
+      "body": "Pandabox pins your description and project_details to IPFS, then submits a single Sui transaction that creates the project, consumes your TreasuryCap, and transfers a ProjectAdminCap to your wallet.",
+      "metaChecks": "{ok}/{total} checks · {status}",
+      "statusReady": "ready",
+      "statusBlocked": "blocked",
+      "headsUp": "Heads up",
+      "headsUpBody": "<strong>Consumed on deploy:</strong> your <code>TreasuryCap<T></code> and <code>CoinMetadata<T></code> become owned by the Project object and can't be retrieved. <strong>Immutable on deploy:</strong> name, coin, base rate, allocation, end time, unsold-action. <strong>Editable later:</strong> description, icon, source-code blob, project_details (via <code>update_metadata</code>).",
+      "sourceCodeTitle": "Optional · source code",
+      "sourceCodeMetaSet": "set",
+      "sourceCodeMetaSkipped": "skipped",
+      "sourceCodeLabel": "Source code blob (IPFS CID)",
+      "sourceCodePlaceholder": "Qm… / bafy… (optional)",
+      "sourceCodeHint": "Pin your repo archive separately and paste the CID. Or leave blank and update later.",
+      "preflightTitle": "Pre-flight checks",
+      "preflightAllGreen": "all green",
+      "preflightBlocking": "{count} blocking",
+      "fixInStep": "fix in step {num}",
+      "deployTitle": "Deploy",
+      "deployMetaLive": "live · sui mainnet",
+      "deployMetaSimulated": "simulated",
+      "deployToSui": "Deploy to Sui",
+      "deployCaption": "consumes treasury cap + metadata · admin cap returned to you",
+      "draftAutoSaves": "Draft auto-saves to your browser as <code>pandabox:draft:v3</code>.",
+      "modalSuccessTitle": "Project deployed",
+      "modalInspectorTitle": "Transaction inspector",
+      "openProjectPage": "Open project page",
+      "seeItOnExplore": "See it on Explore",
+      "inspectorIntroLive": "Review what you're about to publish. Pandabox will pin your description and details to IPFS, then your wallet will sign one transaction that creates the project on Sui.",
+      "inspectorIntroSimulated": "Move package not configured — this submission will be simulated locally.",
+      "sectionProject": "Project",
+      "sectionYourCoin": "Your coin",
+      "sectionSaleTerms": "Sale terms",
+      "editLink": "edit",
+      "summaryName": "Name",
+      "summaryTicker": "Ticker",
+      "summaryCategory": "Category",
+      "summaryTagline": "Tagline",
+      "summarySymbol": "Symbol",
+      "summaryDecimals": "Decimals",
+      "summaryRate": "Rate",
+      "tokensWord": "tokens",
+      "summaryTotalForSale": "Total for sale",
+      "summaryMaxSupply": "Max supply",
+      "summaryMintedAtLaunch": "Minted at launch",
+      "summaryMintedAtLaunchValue": "0 — lazily minted on claim",
+      "summaryMaxRaise": "Max raise",
+      "summarySaleEnds": "Sale ends",
+      "summaryOpenEnded": "Open-ended",
+      "summaryUnsoldTokens": "Unsold tokens",
+      "summaryUnsoldReturn": "Returned to your wallet",
+      "summaryUnsoldBurn": "Burned (reduces final supply)",
+      "youllKeepLabel": "You'll keep ·",
+      "youllKeepBody": "a <strong>ProjectAdminCap</strong> in your wallet — your admin rights for this project. You can transfer it to a multisig later.",
+      "youllGiveUpLabel": "You'll give up ·",
+      "youllGiveUpBody": "your <strong>TreasuryCap</strong> and <strong>CoinMetadata</strong>. The project takes ownership and they can't be recovered.",
+      "lockedOnDeployLabel": "Locked on deploy ·",
+      "lockedOnDeployBody": "name, coin, rate, allocation, end time, unsold-action. Description, icon and links stay editable.",
+      "advancedToggle": "advanced · raw move call",
+      "rawPinning": "pinning…",
+      "rawSetAtSubmit": "set at submit",
+      "cancel": "Cancel",
+      "submitPinningDescription": "Pinning description…",
+      "submitPinningDetails": "Pinning details…",
+      "submitSigning": "Signing…",
+      "submitPinAndDeploy": "Pin & deploy",
+      "errorDeployFailed": "Deploy failed.",
+      "untitledProject": "Untitled project",
+      "coverWord": "cover",
+      "noCover": "no cover",
+      "projectCoverPreviewAlt": "Project cover preview",
+      "checkIdentityOk": "Identity complete",
+      "checkIdentityErr": "Identity: {msg}",
+      "checkCoinOk": "Coin verified · {symbol} · {decimals} decimals",
+      "checkCoinWrongDecimals": "Coin uses {decimals} decimals — protocol requires {required}",
+      "checkCoinErr": "Coin: {msg}",
+      "checkSaleOk": "Sale terms valid",
+      "checkSaleErr": "Sale: {msg}",
+      "checkIncomplete": "incomplete"
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "Dashboard",
+      "description": "Your owned and supported Pandabox projects."
+    },
+    "title": "Dashboard",
+    "headline": "Your activity",
+    "untitledProject": "Untitled project",
+    "connectGate": {
+      "eyebrow": "Connect your wallet",
+      "headline": "Your activity, on-chain.",
+      "body": "Connect a Sui wallet to see the projects you've created and the ones you've contributed to."
+    },
+    "refresh": {
+      "label": "refresh",
+      "busy": "refreshing",
+      "aria": "Refresh dashboard",
+      "ariaRefreshing": "Refreshing dashboard"
+    },
+    "kpi": {
+      "raised": "Raised",
+      "treasury": "Treasury",
+      "live": "Live",
+      "backing": "Backing"
+    },
+    "owned": {
+      "title": "Your projects",
+      "subtitle": "Projects whose ProjectAdminCap you hold. Click manage to open the workspace.",
+      "noMatchLabel": "No projects match this filter",
+      "noMatchBody": "Try a different state or clear the filter to see all {count, plural, one {# project} other {# projects}}.",
+      "empty": {
+        "label": "No projects yet",
+        "body": "Spin up a token sale in minutes. Pre-deploy your coin, configure the sale terms, and ship in one signature.",
+        "cta": "Launch a project"
+      },
+      "card": {
+        "treasury": "Treasury",
+        "withdrawable": "withdrawable",
+        "raisedPct": "raised {pct}%",
+        "tokensSold": "{amount} {ticker} sold",
+        "manage": "Manage",
+        "capPrefix": "cap {id}"
+      }
+    },
+    "supported": {
+      "title": "Projects you back",
+      "subtitle": "Your ContributionReceipts. Claim once the sale finalizes.",
+      "receipts": "{count, plural, one {# receipt} other {# receipts}}",
+      "contributed": "Contributed",
+      "claimable": "Claimable",
+      "yourShare": "Your share",
+      "action": {
+        "claim": "Claim tokens",
+        "finalize": "Finalize sale",
+        "open": "Open project"
+      },
+      "empty": {
+        "label": "Not backing anyone yet",
+        "body": "Back a project on Explore — your receipts and claimable share will surface here.",
+        "cta": "Explore projects"
+      }
+    },
+    "loading": {
+      "aria": "Loading projects",
+      "sr": "Loading projects…"
+    },
+    "filter": {
+      "all": "All",
+      "live": "Live",
+      "endingSoon": "Ending soon",
+      "needsFinalize": "Needs finalize",
+      "closed": "Closed",
+      "disabledTitle": "No {label} projects"
+    },
+    "sort": {
+      "label": "Sort",
+      "aria": "Sort projects",
+      "newest": "Newest",
+      "mostRaised": "Most raised",
+      "endingSoonest": "Ending soonest"
+    },
+    "state": {
+      "live": "live",
+      "endingSoon": "ending soon",
+      "endedAwaiting": "needs finalize",
+      "closed": "closed",
+      "unknown": "unknown"
+    },
+    "time": {
+      "noCap": "no time cap",
+      "endedJustNow": "ended just now",
+      "endsIn": "ends in {duration}",
+      "endedAgoFinalize": "ended {duration} ago · finalize to unlock",
+      "closedAgo": "closed · {duration} ago",
+      "closed": "closed",
+      "durationDH": "{days}d {hours}h",
+      "durationHM": "{hours}h {mins}m",
+      "durationM": "{mins}m"
+    },
+    "sparkline": {
+      "placeholder": "24h"
+    },
+    "manage": {
+      "backToDashboard": "back to dashboard",
+      "openPublicPage": "open public page",
+      "untitledProject": "Untitled project",
+      "status": {
+        "live": "live",
+        "ended": "ended",
+        "closed": "closed"
+      },
+      "stats": {
+        "treasury": "Treasury",
+        "sold": "Sold",
+        "creator": "Creator",
+        "cap": "Cap"
+      },
+      "liquidity": {
+        "seededLabel": "Liquidity seeded · chart live",
+        "noPoolLabel": "No pool yet · chart in placeholder",
+        "poolLink": "pool {id}",
+        "seedViaPanel": "seed via the panel →"
+      },
+      "info": {
+        "whatLabel": "What you can do here",
+        "whatBody": "Every admin action — finalize, withdraw, update metadata, seed liquidity, transfer or renounce the cap — runs through the same on-chain entry functions as the project page. The buttons live in the panel on the right; pre-flight checks are surfaced inside each modal."
+      },
+      "supply": {
+        "label": "Supply",
+        "allocation": "Allocation",
+        "sold": "Sold",
+        "remaining": "Remaining",
+        "unsoldAction": "Unsold action",
+        "unsoldCreator": "→ creator",
+        "unsoldBurn": "burn"
+      },
+      "error": {
+        "label": "Couldn't load project",
+        "retry": "Retry"
+      }
+    }
+  },
+  "docs": {
+    "metadata": {
+      "title": "Docs",
+      "description": "How Pandabox works on Sui: sale window, base rate & allocation, contribute & claim, unsold supply, finalize & withdraw, plus a wizard walkthrough."
+    },
+    "eyebrow": "Docs",
+    "heading": "How Pandabox actually works.",
+    "subhead": "Three tabs. Mechanics is the protocol; Walk the wizard is the create flow; Reference holds the glossary and FAQ.",
+    "toc": {
+      "ariaLabel": "Docs sections",
+      "onThisPage": "On this page"
+    },
+    "tabs": {
+      "ariaLabel": "Docs sections",
+      "mechanics": {
+        "label": "Mechanics",
+        "sections": {
+          "how": "01 / How it works",
+          "window": "02 / Sale window",
+          "rate": "03 / Base rate & allocation",
+          "claim": "04 / Contribute & claim",
+          "unsold": "05 / Unsold supply",
+          "finalize": "06 / Finalize & withdraw"
+        }
+      },
+      "wizard": {
+        "label": "Walk the wizard",
+        "sections": {
+          "intro": "The four steps",
+          "identity": "01 · Identity",
+          "coin": "02 · Coin",
+          "sale": "03 · Sale terms",
+          "deploy": "04 · Review & deploy"
+        }
+      },
+      "reference": {
+        "label": "Reference",
+        "sections": {
+          "glossary": "Glossary",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "mechanics": {
+      "how": {
+        "label": "01 / How it works",
+        "p1": "Pandabox is a Move package on Sui. A creator deploys a <term>Project</term> — a Sui object that owns a SUI treasury and a locked <term>TreasuryCap</term> for the project's own coin. The project then runs a single sale at a fixed rate: supporters contribute SUI and earn the right to claim project tokens at the configured price.",
+        "p2": "Supporters don't receive tokens directly. They receive a <term>ContributionReceipt</term> — a transferable Sui NFT holding their entitlement. They <term>claim</term> their tokens by burning the receipt after the sale closes. Any payment that would exceed the remaining allocation is refunded in the same transaction.",
+        "p3": "The sale ends in one of three ways: the configured end time arrives, the full allocation sells out, or the platform admin closes it. After close, the creator withdraws the raised SUI (minus a platform fee) and processes any unsold tokens per the policy they chose at deploy.",
+        "cta": "Start a draft project →"
+      },
+      "window": {
+        "label": "02 / Sale window",
+        "p1": "Every sale has a single locked window. You set an <term>end time</term> at deploy — or leave it open and close the sale manually as admin. Until the sale finalizes, anyone can contribute at the fixed rate.",
+        "p2": "Three things finalize a sale: the end time elapses (<term>Time</term>), the allocation sells out (<term>Sellout</term>), or the admin force-closes it (<term>Admin</term>). Finalization is the gate for token claims, SUI withdrawal, and unsold-supply processing — none of those work while the sale is still active.",
+        "p3": "Finalization can be triggered by the admin (<code>try_finalize</code>) or by anyone once the conditions are met (<code>permissionless_finalize</code>) — so a stalled creator can't trap supporters' claims after an end time has passed.",
+        "cta": "See it in step 03 →"
+      },
+      "rate": {
+        "label": "03 / Base rate & allocation",
+        "p1": "Two numbers govern the sale: the <term>base rate</term> (project tokens issued per 1 SUI) and the <term>funding allocation</term> (total project tokens to sell). Both are set at deploy and frozen for the life of the project — they can't be changed by metadata updates or admin actions.",
+        "p2": "If a contribution would push past the remaining allocation, only the affordable portion is accepted and the rest is refunded in the same transaction. Supporters never overpay.",
+        "cta": "See it in step 03 →"
+      },
+      "claim": {
+        "label": "04 / Contribute & claim",
+        "p1": "<term>Contribute.</term> A supporter calls <code>contribute</code> with a SUI coin. The project records the contribution against their address and returns a <term>ContributionReceipt</term> NFT — plus a refund coin if the payment exceeded what could be allocated.",
+        "p2": "<term>Claim.</term> After the sale finalizes, the supporter burns their receipt with <code>claim</code> and receives the project tokens. Multiple receipts (from several contributions) can be burned together in one call via <code>claim_multiple</code>, returning a single merged coin.",
+        "p3": "Receipts are regular Sui objects: transferable, sellable on secondary markets, and they don't expire. Claims remain open as long as the project object lives.",
+        "cta": "View your receipts on Dashboard →"
+      },
+      "unsold": {
+        "label": "05 / Unsold supply",
+        "p1": "If the sale closes with tokens left in the allocation, the creator runs <code>process_unsold</code> to execute the policy they picked at deploy:",
+        "p2": "<term>Burn</term> — the unsold supply is destroyed, raising the implied price of every claimed token. Signals scarcity: the float is exactly what the sale raised.",
+        "p3": "<term>Transfer to creator</term> — the unsold supply moves to the creator as a normal coin balance. Useful if you intend to seed liquidity, run a secondary sale, or hold a treasury position. The project page surfaces this as <code>UNSOLD → CREATOR</code> in the spec line so supporters see the policy before paying.",
+        "cta": "See it in step 03 →"
+      },
+      "finalize": {
+        "label": "06 / Finalize & withdraw",
+        "p1": "Once finalized, the creator calls <code>withdraw_sui</code> to pull raised SUI from the project treasury. The platform fee (in basis points, set by Pandabox) is skimmed automatically — the creator receives the net amount, the fee accrues to the platform treasury. Withdrawals can be partial; the cap holder can withdraw the rest later.",
+        "p2": "The <term>ProjectAdminCap</term> minted at deploy is a regular Sui object. It moves via <code>transfer_project_admin</code> (which emits the event the indexer relies on — prefer this over a raw object transfer) or destroys itself via <code>renounce_project_admin</code>, leaving the project permanently un-administered — useful for community projects that want to remove themselves from the creator's discretion.",
+        "p3": "Project metadata — name, description, icon URL, source-code blob, and the off-chain details JSON (tagline, category, socials) — stays editable via <code>update_metadata</code> whether the sale is active or closed."
+      }
+    },
+    "wizard": {
+      "stepWord": "Step",
+      "intro": {
+        "label": "The four steps",
+        "p1": "The create flow is four steps. Everything you fill in here lands either on-chain (sale params, name, blob CIDs) or in the project_details JSON pinned to IPFS (tagline, category, socials). A live preview on the right shows exactly what supporters will see.",
+        "cta": "Open the wizard "
+      },
+      "steps": {
+        "identity": {
+          "alt": "Step 01 of the create wizard — identity fields next to a live project-page preview.",
+          "title": "Identity",
+          "caption": "Project name, ticker, category, tagline, cover image, description. The ticker shown here is informational — the real coin symbol comes from the CoinMetadata you connect in the next step."
+        },
+        "coin": {
+          "alt": "Step 02 of the create wizard — connect or publish a Sui coin.",
+          "title": "Coin",
+          "caption": "Pandabox needs its own Sui coin. Publish one from a pre-compiled coin_template.move (rewritten to your identifiers in-browser, pinned to IPFS for auditability) — or paste an existing TreasuryCap + CoinMetadata if you already have one. Decimals must be 9."
+        },
+        "sale": {
+          "alt": "Step 03 of the create wizard — sale terms: tokens-per-SUI rate, total allocation, end time, unsold policy.",
+          "title": "Sale terms",
+          "caption": "The four numbers that get locked at deploy: base rate (tokens per 1 SUI), total allocation, optional end time, and unsold action (burn or transfer to creator). The implied max raise is derived live as you type."
+        },
+        "deploy": {
+          "alt": "Step 04 of the create wizard — review and deploy.",
+          "title": "Review & deploy",
+          "caption": "One Sui transaction creates the Project object, consumes your TreasuryCap + CoinMetadata into it, and returns a ProjectAdminCap to your wallet. The poppy notice spells out what becomes immutable on submit and what stays editable via update_metadata."
+        }
+      }
+    },
+    "reference": {
+      "glossary": {
+        "label": "Glossary",
+        "termLabels": {
+          "baseRate": "Base rate",
+          "fundingAllocation": "Funding allocation",
+          "unsoldAction": "Unsold action",
+          "endTime": "End time",
+          "finalize": "Finalize",
+          "closeTrigger": "Close trigger",
+          "projectStatus": "Project status",
+          "platformFee": "Platform fee"
+        },
+        "terms": {
+          "project": "A shared Sui object holding the SUI treasury, the locked TreasuryCap<T>, and the sale parameters.",
+          "projectAdminCap": "Owned Sui object granting admin rights: withdraw SUI, process unsold, update metadata, finalize, transfer, renounce.",
+          "contributionReceipt": "NFT minted on contribute. Burnable for the entitled tokens after finalize. Transferable like any Sui object.",
+          "baseRate": "Project tokens issued per 1 SUI of contribution. Frozen at deploy.",
+          "fundingAllocation": "Total project tokens to sell. Once reached, sellout triggers. Frozen at deploy.",
+          "unsoldAction": "Policy for tokens left at sale close: Burn, or Transfer to creator. Frozen at deploy.",
+          "endTime": "Optional sale end timestamp. If null, only admin close or sellout can finalize.",
+          "finalize": "Lock the sale. Required before claims, SUI withdrawal, or unsold processing. Permissionless once conditions are met.",
+          "closeTrigger": "Why the sale ended: Time, Sellout, or Admin. Recorded on-chain.",
+          "projectStatus": "Active (selling), Closed (finalized), or Compromised (platform-flagged).",
+          "platformFee": "Basis-point cut of withdrawn SUI taken by Pandabox. Set by the platform admin, applied at withdraw_sui.",
+          "mist": "Smallest SUI unit. 1 SUI = 1,000,000,000 MIST."
+        }
+      },
+      "faq": {
+        "label": "FAQ",
+        "items": {
+          "audited": {
+            "q": "Is this audited?",
+            "a": "Not yet. Pandabox is in testnet. A formal audit will land before the mainnet ramp."
+          },
+          "editAfterDeploy": {
+            "q": "Can I edit my project after deploy?",
+            "a": "Yes for off-chain identity: name, description, cover image (icon URL), source-code blob, tagline, category, and social links all update via <code>update_metadata</code> at any time. No for sale economics: base rate, funding allocation, end time, and the unsold-supply policy are frozen at deploy. The coin's symbol and decimals are set by the coin module you deployed before Pandabox — those can't be changed here either."
+          },
+          "gas": {
+            "q": "How does gas work?",
+            "a": "Every transaction is paid by the wallet that signs it. Create, contribute, claim, withdraw — all signer-paid. Sui gas is typically sub-cent at mainnet rates, so the practical cost to back a project is the SUI you contribute, not the gas."
+          },
+          "neverClaims": {
+            "q": "What if a supporter never claims?",
+            "a": "Receipts don't expire. The tokens stay locked in the project's TreasuryCap until the holder burns the receipt with <code>claim</code>. A receipt is a real Sui object, so it can also be transferred or sold to someone else who'll claim it."
+          },
+          "transferCap": {
+            "q": "Can I transfer the ProjectAdminCap?",
+            "a": "Yes — use <code>transfer_project_admin</code> so the event lands in the indexer. The cap doesn't carry any project tokens or raised SUI; it's purely the admin key. You can also call <code>renounce_project_admin</code> to destroy it permanently — the project then runs without any admin at all."
+          },
+          "compromised": {
+            "q": "What does the 'Compromised' status mean?",
+            "a": "The platform admin can flag a project as Compromised when there's clear evidence of misuse (rug, impersonation, malware in claimed perks). It's a one-way moderation signal — the project page stays accessible so supporters can see the flag and act, but it warns clearly. It does not seize funds."
+          },
+          "featured": {
+            "q": "How do I get listed on the landing's featured row?",
+            "a": "Featured is just sort by SUI raised, top three. Raise enough and you appear automatically."
+          }
+        }
+      }
+    }
+  }
+}

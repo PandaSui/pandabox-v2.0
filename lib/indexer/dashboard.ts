@@ -6,7 +6,6 @@ export type SupportEntry = {
   project: Project;
   balanceRaw: bigint;
   pctSupply: number;
-  cashOutMist: bigint;
   lastPayment: Payment | null;
 };
 
@@ -43,21 +42,10 @@ export async function getDashboard(address: string): Promise<DashboardData> {
         (pay) => pay.payer.toLowerCase() === address.toLowerCase(),
       ) ?? null;
 
-    // Heuristic cash-out preview: holder share * (surplus available) * (1 - tax)
-    const surplus =
-      p.raisedMist > p.params.payoutLimitMist
-        ? p.raisedMist - p.params.payoutLimitMist
-        : 0n;
-    const grossMist =
-      (surplus * BigInt(Math.round(hit.pctSupply * 10000))) / 1_000_000n;
-    const netMist =
-      (grossMist * BigInt(100 - p.params.cashOutTax)) / 100n;
-
     supported.push({
       project: p,
       balanceRaw: hit.balanceRaw,
       pctSupply: hit.pctSupply,
-      cashOutMist: netMist,
       lastPayment: last,
     });
   }

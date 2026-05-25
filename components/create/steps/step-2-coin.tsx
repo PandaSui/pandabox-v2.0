@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -37,6 +38,7 @@ const CTA_BASE =
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
 
 export function StepCoinForm() {
+  const t = useTranslations("create.step2");
   const coin = useWizard((s) => s.draft.coin);
   const identity = useWizard((s) => s.draft.identity);
   const patch = useWizard((s) => s.patchCoin);
@@ -53,24 +55,24 @@ export function StepCoinForm() {
       : "publish",
   );
 
+  const modeOptions = [
+    { key: "publish" as const, label: t("modePublish") },
+    { key: "paste" as const, label: t("modePaste") },
+  ];
+
   return (
     <div className="space-y-8">
       <StepHeader
         n={2}
         accent="poppy"
-        title="Coin"
-        body="Pandabox needs a Sui coin you own. You can publish one now in the browser using our audited template, or paste an existing TreasuryCap + CoinMetadata if you already have one."
-        meta="9 decimals · created with sui::coin::create_currency"
+        title={t("title")}
+        body={t("body")}
+        meta={t("meta")}
       />
 
       <div className="flex flex-wrap items-center gap-2 border border-ink/15 bg-bone px-4 py-3">
-        <span className="font-mono-label text-[10px] text-ink/55">Mode</span>
-        {(
-          [
-            { key: "publish", label: "Publish a new coin" },
-            { key: "paste", label: "I already have a coin" },
-          ] as const
-        ).map((opt) => {
+        <span className="font-mono-label text-[10px] text-ink/55">{t("modeLabel")}</span>
+        {modeOptions.map((opt) => {
           const active = mode === opt.key;
           return (
             <button
@@ -140,10 +142,11 @@ function PublishCoinPanel({
   signAndExecute: ReturnType<typeof useSignAndExecuteTransaction>["mutateAsync"];
   onSwitchToPaste: () => void;
 }) {
+  const t = useTranslations("create.step2");
   // Derive sensible defaults from the identity step.
   const defaultTicker = (identity.ticker ?? "").trim();
   const initialSymbol = defaultTicker || "TOK";
-  const initialName = (identity.name ?? "").trim() || "Untitled coin";
+  const initialName = (identity.name ?? "").trim() || t("untitledCoin");
   const initialDesc = (identity.tagline ?? "").trim().slice(0, 240);
   const initialIcon = (identity.coverImage ?? "").trim();
 
@@ -162,14 +165,17 @@ function PublishCoinPanel({
     [symbol],
   );
 
-  const errors = validatePublish({
-    symbol,
-    name,
-    description,
-    iconUrl,
-    moduleName,
-    witnessName,
-  });
+  const errors = validatePublish(
+    {
+      symbol,
+      name,
+      description,
+      iconUrl,
+      moduleName,
+      witnessName,
+    },
+    t,
+  );
   const ready = Object.keys(errors).length === 0 && !!account;
   const busy =
     state.kind === "rewriting" ||
@@ -198,7 +204,7 @@ function PublishCoinPanel({
           ? result.digest
           : undefined;
       if (!digest) {
-        throw new Error("Wallet returned no digest for the publish tx.");
+        throw new Error(t("errorNoDigest"));
       }
 
       setState({ kind: "fetching", digest });
@@ -247,7 +253,7 @@ function PublishCoinPanel({
       }
       setState({
         kind: "error",
-        message: err instanceof Error ? err.message : "Publish failed.",
+        message: err instanceof Error ? err.message : t("errorPublishFailed"),
       });
     }
   };
@@ -256,21 +262,19 @@ function PublishCoinPanel({
     <>
       <Frame className="border-poppy bg-poppy/8 [&::after]:bg-poppy/15 [&::before]:bg-poppy/15">
         <div className="flex flex-col gap-2 text-sm text-ink/80">
-          <span className="font-mono-label text-poppy">How this works</span>
+          <span className="font-mono-label text-poppy">{t("howThisWorks")}</span>
           <p>
-            We start from a pre-compiled <code className="font-mono">coin_template.move</code> with{" "}
-            <strong>9 decimals</strong>, rewrite its identifiers + metadata
-            constants in your browser via{" "}
-            <code className="font-mono">@mysten/move-bytecode-template</code>,
-            then publish it from your wallet. The rendered Move source is pinned
-            to IPFS so anyone can audit exactly what was deployed.
+            {t.rich("howThisWorksBody", {
+              code: (chunks) => <code className="font-mono">{chunks}</code>,
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
       </Frame>
 
-      <StepCard title="Coin metadata" meta="goes into CoinMetadata<T>">
+      <StepCard title={t("coinMetadataTitle")} meta={t("coinMetadataMeta")}>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <Field label="Symbol" hint="2–10 chars · uppercase letters / digits" error={errors.symbol}>
+          <Field label={t("symbol")} hint={t("symbolHint")} error={errors.symbol}>
             {(id) => (
               <TextField
                 id={id}
@@ -284,30 +288,30 @@ function PublishCoinPanel({
               />
             )}
           </Field>
-          <Field label="Name" error={errors.name}>
+          <Field label={t("name")} error={errors.name}>
             {(id) => (
               <TextField
                 id={id}
                 value={name}
                 onChange={setName}
-                placeholder="Panda Token"
+                placeholder={t("namePlaceholder")}
                 maxLength={32}
               />
             )}
           </Field>
         </div>
-        <Field label="Description" hint="≤240 chars · ASCII" error={errors.description}>
+        <Field label={t("description")} hint={t("descriptionHint")} error={errors.description}>
           {(id) => (
             <TextField
               id={id}
               value={description}
               onChange={setDescription}
-              placeholder="What this coin represents."
+              placeholder={t("descriptionPlaceholder")}
               maxLength={240}
             />
           )}
         </Field>
-        <Field label="Icon URL" hint="Reuse your project cover or paste a hosted URL" error={errors.iconUrl}>
+        <Field label={t("iconUrl")} hint={t("iconUrlHint")} error={errors.iconUrl}>
           {(id) => (
             <TextField
               id={id}
@@ -320,7 +324,7 @@ function PublishCoinPanel({
         <div className="grid grid-cols-2 gap-3 border-t border-ink/10 pt-3 font-mono text-[11px] text-ink/55">
           <div>
             <div className="font-mono-label text-[10px] text-ink/45">
-              module
+              {t("moduleLabel")}
             </div>
             <div className="mt-1 break-all text-ink/80">
               {moduleName || "—"}
@@ -328,7 +332,7 @@ function PublishCoinPanel({
           </div>
           <div>
             <div className="font-mono-label text-[10px] text-ink/45">
-              witness
+              {t("witnessLabel")}
             </div>
             <div className="mt-1 break-all text-ink/80">
               {witnessName || "—"}
@@ -337,24 +341,24 @@ function PublishCoinPanel({
         </div>
       </StepCard>
 
-      <StepCard title="Publish" meta={state.kind === "ok" ? "complete" : "step 1 of 2 deploys"}>
+      <StepCard title={t("publishTitle")} meta={state.kind === "ok" ? t("publishMetaComplete") : t("publishMetaStep")}>
         {state.kind === "ok" ? (
           <div className="space-y-3 text-sm">
             <div className="flex items-center gap-2 text-jade">
               <span className="inline-flex h-5 w-5 items-center justify-center border border-jade/40 bg-jade/10 font-mono text-[10px]">
                 ✓
               </span>
-              Coin published. TreasuryCap + CoinMetadata captured to draft.
+              {t("coinPublishedConfirm")}
             </div>
             <div className="grid grid-cols-1 gap-2 font-mono text-[11px] md:grid-cols-2">
-              <SmallRow k="package" v={state.packageId} />
+              <SmallRow k={t("rowPackage")} v={state.packageId} />
               <SmallRow
-                k="coin type"
+                k={t("rowCoinType")}
                 v={`${state.packageId}::${moduleName}::${witnessName}`}
               />
-              <SmallRow k="treasury cap" v={coin.treasuryCapId ?? ""} />
-              <SmallRow k="metadata" v={coin.coinMetadataId ?? ""} />
-              <SmallRow k="digest" v={state.digest} />
+              <SmallRow k={t("rowTreasuryCap")} v={coin.treasuryCapId ?? ""} />
+              <SmallRow k={t("rowMetadata")} v={coin.coinMetadataId ?? ""} />
+              <SmallRow k={t("rowDigest")} v={state.digest} />
             </div>
           </div>
         ) : (
@@ -368,14 +372,14 @@ function PublishCoinPanel({
               >
                 <span>
                   {state.kind === "rewriting"
-                    ? "Rewriting bytecode…"
+                    ? t("publishStateRewriting")
                     : state.kind === "signing"
-                      ? "Signing…"
+                      ? t("publishStateSigning")
                       : state.kind === "fetching"
-                        ? "Waiting for chain…"
+                        ? t("publishStateFetching")
                         : state.kind === "pinning"
-                          ? "Pinning source…"
-                          : "Publish coin"}
+                          ? t("publishStatePinning")
+                          : t("publishCoin")}
                 </span>
                 <ArrowDiag size={14} />
               </button>
@@ -383,7 +387,7 @@ function PublishCoinPanel({
               <ConnectWallet />
             )}
             <span className="font-mono-label text-[10px] text-ink/45">
-              one transaction · transferable upgrade cap returned to you
+              {t("publishCaption")}
             </span>
           </div>
         )}
@@ -404,7 +408,7 @@ function PublishCoinPanel({
                   className="block h-1.5 w-1.5 rounded-full bg-sun"
                 />
                 <span className="font-mono-label text-ink">
-                  Published — but the RPC went quiet
+                  {t("strandedTitle")}
                 </span>
               </div>
               <p>{state.message}</p>
@@ -420,7 +424,7 @@ function PublishCoinPanel({
                     "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
                   )}
                 >
-                  <span>Open on Sui Explorer</span>
+                  <span>{t("openOnSuiExplorer")}</span>
                   <ArrowDiag size={12} />
                 </a>
                 <button
@@ -433,12 +437,12 @@ function PublishCoinPanel({
                     "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
                   )}
                 >
-                  <span>Switch to paste mode</span>
+                  <span>{t("switchToPasteMode")}</span>
                   <ArrowDiag size={12} />
                 </button>
               </div>
               <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                digest · {state.digest}
+                {t("digestLabel")} · {state.digest}
               </p>
             </div>
           </Frame>
@@ -475,33 +479,36 @@ function normalizeWitnessName(symbol: string): string {
   return s;
 }
 
-function validatePublish(p: {
-  symbol: string;
-  name: string;
-  description: string;
-  iconUrl: string;
-  moduleName: string;
-  witnessName: string;
-}): Record<string, string> {
+function validatePublish(
+  p: {
+    symbol: string;
+    name: string;
+    description: string;
+    iconUrl: string;
+    moduleName: string;
+    witnessName: string;
+  },
+  t: (key: string) => string,
+): Record<string, string> {
   const out: Record<string, string> = {};
   if (!/^[A-Z][A-Z0-9_]{1,9}$/.test(p.symbol)) {
-    out.symbol = "2–10 chars · A-Z, 0-9, _ · must start with a letter";
+    out.symbol = t("validateSymbol");
   }
   if (!p.name || p.name.length < 2 || p.name.length > 32) {
-    out.name = "Add a name (2–32 chars)";
+    out.name = t("validateName");
   }
   if (p.description.length > 240) {
-    out.description = "Max 240 characters";
+    out.description = t("validateDescriptionLength");
   }
   // eslint-disable-next-line no-control-regex
   if (!/^[\x20-\x7e]*$/.test(p.description)) {
-    out.description = "ASCII only (no emoji / smart quotes)";
+    out.description = t("validateDescriptionAscii");
   }
   if (!/^https?:\/\/\S+$/.test(p.iconUrl)) {
-    out.iconUrl = "Use a full https:// URL";
+    out.iconUrl = t("validateIconUrl");
   }
-  if (!p.moduleName) out.symbol = out.symbol ?? "Invalid identifier";
-  if (!p.witnessName) out.symbol = out.symbol ?? "Invalid identifier";
+  if (!p.moduleName) out.symbol = out.symbol ?? t("validateInvalidIdentifier");
+  if (!p.witnessName) out.symbol = out.symbol ?? t("validateInvalidIdentifier");
   return out;
 }
 
@@ -528,6 +535,7 @@ function PasteCoinPanel({
   patch: ReturnType<typeof useWizard.getState>["patchCoin"];
   client: ReturnType<typeof useSuiClient>;
 }) {
+  const t = useTranslations("create.step2");
   const [state, setState] = useState<CoinMetaState>({ kind: "idle" });
   const abortRef = useRef<AbortController | null>(null);
   const metadataId = coin.coinMetadataId ?? "";
@@ -554,7 +562,7 @@ function PasteCoinPanel({
         });
         if (ac.signal.aborted) return;
         if (obj.error || !obj.data) {
-          setState({ kind: "error", message: "Object not found." });
+          setState({ kind: "error", message: t("errorObjectNotFound") });
           return;
         }
         const fullType = obj.data.type ?? "";
@@ -562,14 +570,14 @@ function PasteCoinPanel({
         if (!m) {
           setState({
             kind: "error",
-            message: "Object is not a CoinMetadata<T>.",
+            message: t("errorNotCoinMetadata"),
           });
           return;
         }
         const coinType = m[1];
         const content = obj.data.content;
         if (!content || content.dataType !== "moveObject") {
-          setState({ kind: "error", message: "Unexpected object content." });
+          setState({ kind: "error", message: t("errorUnexpectedContent") });
           return;
         }
         const fields = (
@@ -595,7 +603,7 @@ function PasteCoinPanel({
         if (ac.signal.aborted) return;
         setState({
           kind: "error",
-          message: err instanceof Error ? err.message : "Lookup failed.",
+          message: err instanceof Error ? err.message : t("errorLookupFailed"),
         });
       }
     })();
@@ -605,10 +613,10 @@ function PasteCoinPanel({
 
   return (
     <>
-      <StepCard title="Object IDs" meta="must be owned by you">
+      <StepCard title={t("objectIdsTitle")} meta={t("objectIdsMeta")}>
         <Field
-          label="TreasuryCap<T> object ID"
-          hint="From your publish transaction's createdObjects."
+          label={t("treasuryCapLabel")}
+          hint={t("treasuryCapHint")}
           error={errors.treasuryCapId}
         >
           {(id) => (
@@ -622,8 +630,8 @@ function PasteCoinPanel({
           )}
         </Field>
         <Field
-          label="CoinMetadata<T> object ID"
-          hint="We read this from chain to detect the coin type + decimals."
+          label={t("metadataLabel")}
+          hint={t("metadataHint")}
           error={errors.coinMetadataId}
         >
           {(id) => (
@@ -639,24 +647,24 @@ function PasteCoinPanel({
       </StepCard>
 
       <StepCard
-        title="Coin info"
+        title={t("coinInfoTitle")}
         meta={
           state.kind === "loading"
-            ? "reading…"
+            ? t("coinInfoMetaReading")
             : state.kind === "ok"
-              ? "detected"
+              ? t("coinInfoMetaDetected")
               : state.kind === "error"
-                ? "not found"
+                ? t("coinInfoMetaNotFound")
                 : "—"
         }
       >
         {state.kind === "ok" ? (
           <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <Stat label="Name" value={state.name || "—"} />
-              <Stat label="Symbol" value={state.symbol || "—"} mono />
+              <Stat label={t("statName")} value={state.name || "—"} />
+              <Stat label={t("statSymbol")} value={state.symbol || "—"} mono />
               <Stat
-                label="Decimals"
+                label={t("statDecimals")}
                 value={String(state.decimals)}
                 mono
                 bad={state.decimals !== PROJECT_COIN_DECIMALS}
@@ -664,7 +672,7 @@ function PasteCoinPanel({
             </div>
             <div className="border-t border-ink/10 pt-3">
               <span className="font-mono-label text-[10px] text-ink/55">
-                Resolved coin type
+                {t("resolvedCoinType")}
               </span>
               <p className="mt-1 break-all font-mono text-[11px] text-ink/80">
                 {state.coinType}
@@ -675,9 +683,10 @@ function PasteCoinPanel({
                 role="alert"
                 className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2 font-mono text-[11px] text-poppy"
               >
-                This coin is {state.decimals}-decimal. Pandabox requires{" "}
-                {PROJECT_COIN_DECIMALS} decimals — redeploy your coin with the
-                correct value.
+                {t("wrongDecimals", {
+                  decimals: state.decimals,
+                  required: PROJECT_COIN_DECIMALS,
+                })}
               </p>
             )}
           </>
@@ -690,11 +699,11 @@ function PasteCoinPanel({
           </p>
         ) : state.kind === "loading" ? (
           <p className="font-mono text-[11px] text-ink/50">
-            Reading from chain…
+            {t("readingFromChain")}
           </p>
         ) : (
           <p className="font-mono text-[11px] text-ink/45">
-            Paste a CoinMetadata ID above to detect the coin.
+            {t("pasteMetadataHint")}
           </p>
         )}
       </StepCard>

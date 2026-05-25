@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -30,18 +31,6 @@ import { resolveBlobRef, uploadBlob, uploadJson } from "@/lib/ipfs";
 import { bustProjectsCache } from "@/lib/server-actions/projects-cache";
 import { formatAmount } from "@/lib/amount";
 import { StepCard, StepHeader } from "../step-header";
-
-const CATEGORY_LABEL: Record<string, string> = {
-  art: "Art",
-  infra: "Infra",
-  dao: "DAO",
-  research: "Research",
-  gaming: "Gaming",
-  music: "Music",
-  social: "Social",
-  rwa: "RWA",
-  meme: "Meme",
-};
 
 const CTA_BASE =
   "group relative inline-flex items-center justify-center gap-2 h-12 px-6 font-sans font-medium uppercase tracking-[0.12em] text-[0.78rem] " +
@@ -73,6 +62,8 @@ type SubmitState =
   | { kind: "error"; message: string };
 
 export function StepDeployForm() {
+  const t = useTranslations("create.step4");
+  const tCat = useTranslations("explore.categories");
   const draft = useWizard((s) => s.draft);
   const reset = useWizard((s) => s.reset);
   const setStep = useWizard((s) => s.setStep);
@@ -93,7 +84,7 @@ export function StepDeployForm() {
     };
   }, []);
 
-  const checks = useMemo(() => validate(draft), [draft]);
+  const checks = useMemo(() => validate(draft, t), [draft, t]);
   const ready = checks.every((c) => c.ok);
   const okCount = checks.filter((c) => c.ok).length;
 
@@ -152,7 +143,7 @@ export function StepDeployForm() {
       if (!IS_DEPLOYED) {
         // No package — local-only simulated success.
         await new Promise((r) => setTimeout(r, 600));
-        const snapshot = snapshotDraft(draft);
+        const snapshot = snapshotDraft(draft, t);
         clearPersistedDraft();
         // Simulated path — still bust the cache so any mocked listing reads
         // refresh, matching the real-deploy behaviour.
@@ -187,7 +178,7 @@ export function StepDeployForm() {
       patchDeploy({ sourceCodeBlobId: draft.deploy.sourceCodeBlobId ?? "" });
 
       const result = await signAndExecute({ transaction: tx });
-      const snapshot = snapshotDraft(draft);
+      const snapshot = snapshotDraft(draft, t);
       clearPersistedDraft();
       // Bust the cached project lists used by /, /explore, and /dashboard so
       // the freshly-deployed project surfaces the moment the user navigates,
@@ -209,7 +200,7 @@ export function StepDeployForm() {
     } catch (err) {
       setState({
         kind: "error",
-        message: err instanceof Error ? err.message : "Deploy failed.",
+        message: err instanceof Error ? err.message : t("errorDeployFailed"),
       });
     }
   };
@@ -240,35 +231,34 @@ export function StepDeployForm() {
       <StepHeader
         n={4}
         accent="saffron"
-        title="Review & deploy"
-        body="Pandabox pins your description and project_details to IPFS, then submits a single Sui transaction that creates the project, consumes your TreasuryCap, and transfers a ProjectAdminCap to your wallet."
-        meta={`${okCount}/${checks.length} checks · ${ready ? "ready" : "blocked"}`}
+        title={t("title")}
+        body={t("body")}
+        meta={t("metaChecks", {
+          ok: okCount,
+          total: checks.length,
+          status: ready ? t("statusReady") : t("statusBlocked"),
+        })}
       />
 
       <Frame className="border-poppy bg-poppy/8 [&::after]:bg-poppy/15 [&::before]:bg-poppy/15">
         <div className="flex items-start gap-3">
-          <span className="font-mono-label text-poppy">Heads up</span>
+          <span className="font-mono-label text-poppy">{t("headsUp")}</span>
           <p className="text-sm text-ink/80">
-            <strong>Consumed on deploy:</strong> your{" "}
-            <code className="font-mono">TreasuryCap&lt;T&gt;</code> and{" "}
-            <code className="font-mono">CoinMetadata&lt;T&gt;</code> become
-            owned by the Project object and can't be retrieved.{" "}
-            <strong>Immutable on deploy:</strong> name, coin, base rate,
-            allocation, end time, unsold-action.{" "}
-            <strong>Editable later:</strong> description, icon, source-code
-            blob, project_details (via{" "}
-            <code className="font-mono">update_metadata</code>).
+            {t.rich("headsUpBody", {
+              code: (chunks) => <code className="font-mono">{chunks}</code>,
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
       </Frame>
 
       <StepCard
-        title="Optional · source code"
-        meta={draft.deploy.sourceCodeBlobId ? "set" : "skipped"}
+        title={t("sourceCodeTitle")}
+        meta={draft.deploy.sourceCodeBlobId ? t("sourceCodeMetaSet") : t("sourceCodeMetaSkipped")}
       >
         <label className="block">
           <span className="font-mono-label text-[10px] text-ink/55 block">
-            Source code blob (IPFS CID)
+            {t("sourceCodeLabel")}
           </span>
           <input
             type="text"
@@ -276,19 +266,18 @@ export function StepDeployForm() {
             onChange={(e) =>
               patchDeploy({ sourceCodeBlobId: e.target.value.trim() })
             }
-            placeholder="Qm… / bafy… (optional)"
+            placeholder={t("sourceCodePlaceholder")}
             className="mt-2 h-12 w-full border border-ink/25 bg-bone px-3 font-mono text-[12px] placeholder:text-ink/30 focus:border-ink focus:outline-none focus:shadow-offset-sm"
           />
           <span className="mt-2 block font-mono text-[10px] text-ink/45">
-            Pin your repo archive separately and paste the CID. Or leave blank
-            and update later.
+            {t("sourceCodeHint")}
           </span>
         </label>
       </StepCard>
 
       <StepCard
-        title="Pre-flight checks"
-        meta={ready ? "all green" : `${checks.length - okCount} blocking`}
+        title={t("preflightTitle")}
+        meta={ready ? t("preflightAllGreen") : t("preflightBlocking", { count: checks.length - okCount })}
       >
         <ul className="-mt-1 divide-y divide-ink/10">
           {checks.map((c) => (
@@ -319,7 +308,7 @@ export function StepDeployForm() {
                   onClick={() => setStep(c.step!)}
                   className="font-mono-label text-[10px] text-poppy underline-offset-4 hover:underline"
                 >
-                  fix in step {String(c.step).padStart(2, "0")}
+                  {t("fixInStep", { num: String(c.step).padStart(2, "0") })}
                 </button>
               )}
             </li>
@@ -328,8 +317,8 @@ export function StepDeployForm() {
       </StepCard>
 
       <StepCard
-        title="Deploy"
-        meta={IS_DEPLOYED ? "live · sui mainnet" : "simulated"}
+        title={t("deployTitle")}
+        meta={IS_DEPLOYED ? t("deployMetaLive") : t("deployMetaSimulated")}
       >
         <div className="flex flex-wrap items-center gap-3">
           {account ? (
@@ -339,18 +328,20 @@ export function StepDeployForm() {
               disabled={!ready}
               className={cn(CTA_BASE, "bg-saffron text-ink")}
             >
-              <span>Deploy to Sui</span>
+              <span>{t("deployToSui")}</span>
               <ArrowDiag size={14} />
             </button>
           ) : (
             <ConnectWallet />
           )}
           <span className="font-mono-label text-[10px] text-ink/45">
-            consumes treasury cap + metadata · admin cap returned to you
+            {t("deployCaption")}
           </span>
         </div>
         <p className="font-mono text-[10px] text-ink/40">
-          Draft auto-saves to your browser as <code>pandabox:draft:v3</code>.
+          {t.rich("draftAutoSaves", {
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </p>
       </StepCard>
 
@@ -365,7 +356,7 @@ export function StepDeployForm() {
           setInspectorOpen(false);
         }}
         title={
-          state.kind === "success" ? "Project deployed" : "Transaction inspector"
+          state.kind === "success" ? t("modalSuccessTitle") : t("modalInspectorTitle")
         }
         className={state.kind === "success" ? undefined : "max-w-3xl"}
       >
@@ -383,15 +374,15 @@ export function StepDeployForm() {
             txDigest={state.digest}
             onContinue={onFinishSuccess}
             continueLabel={
-              state.snapshot.projectId ? "Open project page" : "See it on Explore"
+              state.snapshot.projectId ? t("openProjectPage") : t("seeItOnExplore")
             }
           />
         ) : (
           <div className="space-y-4 text-xs">
             <p className="text-sm text-ink/70">
               {IS_DEPLOYED
-                ? "Review what you're about to publish. Pandabox will pin your description and details to IPFS, then your wallet will sign one transaction that creates the project on Sui."
-                : "Move package not configured — this submission will be simulated locally."}
+                ? t("inspectorIntroLive")
+                : t("inspectorIntroSimulated")}
             </p>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
@@ -399,7 +390,7 @@ export function StepDeployForm() {
             <section className="border border-ink/15">
               <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
                 <span className="font-mono-label text-[10px] text-ink/55">
-                  Project
+                  {t("sectionProject")}
                 </span>
                 <button
                   type="button"
@@ -409,31 +400,31 @@ export function StepDeployForm() {
                   }}
                   className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
                 >
-                  edit
+                  {t("editLink")}
                 </button>
               </div>
               <CoverPreview
                 src={draft.identity.coverImage}
                 label={draft.identity.ticker || draft.coin.coinSymbol}
+                t={t}
               />
               <dl className="divide-y divide-ink/10">
-                <SummaryRow label="Name" value={draft.identity.name || "—"} />
+                <SummaryRow label={t("summaryName")} value={draft.identity.name || "—"} />
                 <SummaryRow
-                  label="Ticker"
+                  label={t("summaryTicker")}
                   value={draft.identity.ticker || "—"}
                   mono
                 />
                 <SummaryRow
-                  label="Category"
+                  label={t("summaryCategory")}
                   value={
                     draft.identity.category
-                      ? (CATEGORY_LABEL[draft.identity.category] ??
-                        draft.identity.category)
+                      ? tCat(draft.identity.category)
                       : "—"
                   }
                 />
                 <SummaryRow
-                  label="Tagline"
+                  label={t("summaryTagline")}
                   value={draft.identity.tagline || "—"}
                 />
               </dl>
@@ -442,7 +433,7 @@ export function StepDeployForm() {
             <section className="border border-ink/15">
               <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
                 <span className="font-mono-label text-[10px] text-ink/55">
-                  Your coin
+                  {t("sectionYourCoin")}
                 </span>
                 <button
                   type="button"
@@ -452,18 +443,18 @@ export function StepDeployForm() {
                   }}
                   className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
                 >
-                  edit
+                  {t("editLink")}
                 </button>
               </div>
               <dl className="divide-y divide-ink/10">
                 <SummaryRow
-                  label="Symbol"
+                  label={t("summarySymbol")}
                   value={draft.coin.coinSymbol || "—"}
                   mono
                 />
-                <SummaryRow label="Name" value={draft.coin.coinName || "—"} />
+                <SummaryRow label={t("summaryName")} value={draft.coin.coinName || "—"} />
                 <SummaryRow
-                  label="Decimals"
+                  label={t("summaryDecimals")}
                   value={String(draft.coin.coinDecimals ?? 9)}
                   mono
                 />
@@ -475,7 +466,7 @@ export function StepDeployForm() {
             <section className="border border-ink/15">
               <div className="flex items-baseline justify-between border-b border-ink/15 px-3 py-2">
                 <span className="font-mono-label text-[10px] text-ink/55">
-                  Sale terms
+                  {t("sectionSaleTerms")}
                 </span>
                 <button
                   type="button"
@@ -485,44 +476,44 @@ export function StepDeployForm() {
                   }}
                   className="font-mono-label text-[9px] text-ink/45 hover:text-ink"
                 >
-                  edit
+                  {t("editLink")}
                 </button>
               </div>
               <dl className="divide-y divide-ink/10">
                 <SummaryRow
-                  label="Rate"
-                  value={`1 SUI → ${formatAmount(draft.sale.tokensPerSui ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                  label={t("summaryRate")}
+                  value={`1 SUI → ${formatAmount(draft.sale.tokensPerSui ?? "0")} ${draft.coin.coinSymbol || t("tokensWord")}`}
                 />
                 <SummaryRow
-                  label="Total for sale"
-                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                  label={t("summaryTotalForSale")}
+                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || t("tokensWord")}`}
                 />
                 <SummaryRow
-                  label="Max supply"
-                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || "tokens"}`}
+                  label={t("summaryMaxSupply")}
+                  value={`${formatAmount(draft.sale.allocationTokens ?? "0")} ${draft.coin.coinSymbol || t("tokensWord")}`}
                 />
                 <SummaryRow
-                  label="Minted at launch"
-                  value="0 — lazily minted on claim"
+                  label={t("summaryMintedAtLaunch")}
+                  value={t("summaryMintedAtLaunchValue")}
                 />
                 <SummaryRow
-                  label="Max raise"
+                  label={t("summaryMaxRaise")}
                   value={`${formatAmount(maxRaiseSui(draft.sale.tokensPerSui, draft.sale.allocationTokens), { maxFractionDigits: 4 })} SUI`}
                 />
                 <SummaryRow
-                  label="Sale ends"
+                  label={t("summarySaleEnds")}
                   value={
                     draft.sale.endTimeMs == null
-                      ? "Open-ended"
+                      ? t("summaryOpenEnded")
                       : formatEndsAt(draft.sale.endTimeMs)
                   }
                 />
                 <SummaryRow
-                  label="Unsold tokens"
+                  label={t("summaryUnsoldTokens")}
                   value={
                     draft.sale.unsoldAction === "transfer_to_creator"
-                      ? "Returned to your wallet"
-                      : "Burned (reduces final supply)"
+                      ? t("summaryUnsoldReturn")
+                      : t("summaryUnsoldBurn")
                   }
                 />
               </dl>
@@ -532,26 +523,25 @@ export function StepDeployForm() {
               <div className="space-y-2 text-xs text-ink/80">
                 <p>
                   <span className="font-mono-label text-poppy">
-                    You'll keep ·
+                    {t("youllKeepLabel")}
                   </span>{" "}
-                  a <strong>ProjectAdminCap</strong> in your wallet — your admin
-                  rights for this project. You can transfer it to a multisig
-                  later.
+                  {t.rich("youllKeepBody", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                  })}
                 </p>
                 <p>
                   <span className="font-mono-label text-poppy">
-                    You'll give up ·
+                    {t("youllGiveUpLabel")}
                   </span>{" "}
-                  your <strong>TreasuryCap</strong> and{" "}
-                  <strong>CoinMetadata</strong>. The project takes ownership and
-                  they can't be recovered.
+                  {t.rich("youllGiveUpBody", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                  })}
                 </p>
                 <p>
                   <span className="font-mono-label text-poppy">
-                    Locked on deploy ·
+                    {t("lockedOnDeployLabel")}
                   </span>{" "}
-                  name, coin, rate, allocation, end time, unsold-action.
-                  Description, icon and links stay editable.
+                  {t("lockedOnDeployBody")}
                 </p>
               </div>
             </Frame>
@@ -560,7 +550,7 @@ export function StepDeployForm() {
 
             <details className="group">
               <summary className="cursor-pointer font-mono-label text-[10px] text-ink/45 hover:text-ink">
-                advanced · raw move call
+                {t("advancedToggle")}
               </summary>
               <div className="mt-2 border border-ink/15 bg-bone/40 p-3 font-mono text-[11px]">
                 <Row k="package">{PACKAGE_ID.slice(0, 18)}…</Row>
@@ -577,13 +567,13 @@ export function StepDeployForm() {
                 </Row>
                 <Row k="arg.description_blob_id">
                   {state.kind === "pinning" && state.step === "description"
-                    ? "pinning…"
-                    : "set at submit"}
+                    ? t("rawPinning")
+                    : t("rawSetAtSubmit")}
                 </Row>
                 <Row k="arg.project_details_blob_id">
                   {state.kind === "pinning" && state.step === "details"
-                    ? "pinning…"
-                    : "set at submit"}
+                    ? t("rawPinning")
+                    : t("rawSetAtSubmit")}
                 </Row>
                 <Row k="arg.base_rate">
                   {new BigNumber(draft.sale.tokensPerSui ?? "0")
@@ -618,7 +608,7 @@ export function StepDeployForm() {
                 onClick={() => setInspectorOpen(false)}
                 className={cn(CTA_BASE, "bg-bone text-ink h-10 px-4")}
               >
-                <span>Cancel</span>
+                <span>{t("cancel")}</span>
               </button>
               <button
                 type="button"
@@ -628,12 +618,12 @@ export function StepDeployForm() {
               >
                 <span>
                   {state.kind === "pinning" && state.step === "description"
-                    ? "Pinning description…"
+                    ? t("submitPinningDescription")
                     : state.kind === "pinning" && state.step === "details"
-                      ? "Pinning details…"
+                      ? t("submitPinningDetails")
                       : state.kind === "signing"
-                        ? "Signing…"
-                        : "Pin & deploy"}
+                        ? t("submitSigning")
+                        : t("submitPinAndDeploy")}
                 </span>
                 <ArrowDiag size={12} />
               </button>
@@ -663,9 +653,10 @@ function clearPersistedDraft() {
 
 function snapshotDraft(
   draft: ReturnType<typeof useWizard.getState>["draft"],
+  t: (key: string) => string,
 ): SuccessSnapshot {
   return {
-    projectName: draft.identity.name || "Untitled project",
+    projectName: draft.identity.name || t("untitledProject"),
     ticker: draft.identity.ticker,
     coinSymbol: draft.coin.coinSymbol,
     coverImage: draft.identity.coverImage,
@@ -734,25 +725,27 @@ function Row({ k, children }: { k: string; children: React.ReactNode }) {
 function CoverPreview({
   src,
   label,
+  t,
 }: {
   src?: string;
   label?: string;
+  t: (key: string) => string;
 }) {
   const url = resolveBlobRef(src ?? "")?.url ?? null;
-  const tag = (label || "cover").toUpperCase();
+  const tag = (label || t("coverWord")).toUpperCase();
   return (
     <div className="relative aspect-[5/2] w-full overflow-hidden border-b border-ink/10 bg-ink/[0.04]">
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={url}
-          alt="Project cover preview"
+          alt={t("projectCoverPreviewAlt")}
           className="h-full w-full object-cover"
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
           <span className="font-mono-label text-[10px] text-ink/40">
-            no cover · {tag}
+            {t("noCover")} · {tag}
           </span>
         </div>
       )}
@@ -761,7 +754,7 @@ function CoverPreview({
         className="absolute left-2 top-2 inline-flex items-center gap-1.5 border border-ink/20 bg-bone/90 px-1.5 py-0.5 font-mono-label text-[9px] text-ink/70 backdrop-blur-[2px]"
       >
         <span className="block h-1 w-1 rounded-full bg-saffron" />
-        cover · {tag}
+        {t("coverWord")} · {tag}
       </span>
     </div>
   );
@@ -830,14 +823,17 @@ function bnScaled(s: string | undefined): BigNumber {
 
 type Check = { label: string; ok: boolean; step?: number };
 
-function validate(draft: ReturnType<typeof useWizard.getState>["draft"]): Check[] {
+function validate(
+  draft: ReturnType<typeof useWizard.getState>["draft"],
+  t: (key: string, params?: Record<string, string | number>) => string,
+): Check[] {
   const out: Check[] = [];
 
   const identity = StepIdentity.safeParse(draft.identity);
   out.push({
     label: identity.success
-      ? "Identity complete"
-      : `Identity: ${identity.error.issues[0]?.message ?? "incomplete"}`,
+      ? t("checkIdentityOk")
+      : t("checkIdentityErr", { msg: identity.error.issues[0]?.message ?? t("checkIncomplete") }),
     ok: identity.success,
     step: 1,
   });
@@ -849,9 +845,15 @@ function validate(draft: ReturnType<typeof useWizard.getState>["draft"]): Check[
   out.push({
     label: coin.success
       ? decimalsOk
-        ? `Coin verified · ${draft.coin.coinSymbol ?? "?"} · ${draft.coin.coinDecimals ?? 9} decimals`
-        : `Coin uses ${draft.coin.coinDecimals} decimals — protocol requires ${PROJECT_COIN_DECIMALS}`
-      : `Coin: ${coin.error.issues[0]?.message ?? "incomplete"}`,
+        ? t("checkCoinOk", {
+            symbol: draft.coin.coinSymbol ?? "?",
+            decimals: draft.coin.coinDecimals ?? 9,
+          })
+        : t("checkCoinWrongDecimals", {
+            decimals: draft.coin.coinDecimals ?? 0,
+            required: PROJECT_COIN_DECIMALS,
+          })
+      : t("checkCoinErr", { msg: coin.error.issues[0]?.message ?? t("checkIncomplete") }),
     ok: coin.success && decimalsOk,
     step: 2,
   });
@@ -859,8 +861,8 @@ function validate(draft: ReturnType<typeof useWizard.getState>["draft"]): Check[
   const sale = StepSale.safeParse(draft.sale);
   out.push({
     label: sale.success
-      ? "Sale terms valid"
-      : `Sale: ${sale.error.issues[0]?.message ?? "incomplete"}`,
+      ? t("checkSaleOk")
+      : t("checkSaleErr", { msg: sale.error.issues[0]?.message ?? t("checkIncomplete") }),
     ok: sale.success,
     step: 3,
   });
