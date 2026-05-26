@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "プールの固定レートでウォレットから {amount} を償還しました。",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "Redeem",
+        "stampRedeemed": "償還済み",
+        "stampRedeemedSub": "Buyback へ送付",
+        "stampBurned": "焼却",
+        "stampBurnedSub": "コインは消却されました",
+        "statBurned": "支払い",
+        "statRouted": "送付先",
+        "routedBurn": "バーンアドレス",
+        "routedBuyback": "Buyback トレジャリー",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Suiscan で表示",
+        "shareOnX": "X でシェア",
+        "tweetText": "Pandabox で {amount} を償還しました 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "トークンをクレーム",
         "finalize": "セールをファイナライズ",
-        "open": "プロジェクトを開く"
+        "open": "プロジェクトを開く",
+        "viewClaim": "プロジェクトを表示"
       },
       "empty": {
         "label": "まだ誰も支援していません",
         "body": "探索でプロジェクトを支援 — レシートとクレーム可能な取り分がここに表示されます。",
         "cta": "プロジェクトを探索"
-      }
+      },
+      "statusClaimed": "請求済み",
+      "contributedPast": "コントリビューション",
+      "received": "受け取り",
+      "alreadyClaimed": "請求済み: {tokens}",
+      "claimedLabel": "請求済み"
     },
     "loading": {
       "aria": "プロジェクトを読み込み中",

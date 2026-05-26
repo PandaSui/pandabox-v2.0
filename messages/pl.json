@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "Wymieniono {amount} z portfela po stałym kursie puli.",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "Wykup",
+        "stampRedeemed": "Wymienione",
+        "stampRedeemedSub": "Skierowane do buyback",
+        "stampBurned": "Spalone",
+        "stampBurnedSub": "Monety zniszczone",
+        "statBurned": "Wpłacono",
+        "statRouted": "Trafiło do",
+        "routedBurn": "Adres burn",
+        "routedBuyback": "Skarbiec buyback",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Zobacz na Suiscan",
+        "shareOnX": "Udostępnij na X",
+        "tweetText": "Właśnie wymieniłem(am) {amount} na Pandabox 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "Odbierz tokeny",
         "finalize": "Sfinalizuj sprzedaż",
-        "open": "Otwórz projekt"
+        "open": "Otwórz projekt",
+        "viewClaim": "Zobacz projekt"
       },
       "empty": {
         "label": "Nie wspierasz jeszcze nikogo",
         "body": "Wesprzyj projekt w sekcji Odkrywaj — twoje pokwitowania i udział do odbioru pojawią się tutaj.",
         "cta": "Odkrywaj projekty"
-      }
+      },
+      "statusClaimed": "Odebrane",
+      "contributedPast": "Wkład",
+      "received": "Otrzymano",
+      "alreadyClaimed": "Już odebrano: {tokens}",
+      "claimedLabel": "Odebrano"
     },
     "loading": {
       "aria": "Ładowanie projektów",

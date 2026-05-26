@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "Обменяли {amount} из кошелька по фиксированному курсу пула.",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "Обмен",
+        "stampRedeemed": "Обменено",
+        "stampRedeemedSub": "Отправлено в выкуп",
+        "stampBurned": "Сожжено",
+        "stampBurnedSub": "Монеты уничтожены",
+        "statBurned": "Внесено",
+        "statRouted": "Адресат",
+        "routedBurn": "Адрес сжигания",
+        "routedBuyback": "Казна выкупа",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Открыть в Suiscan",
+        "shareOnX": "Поделиться в X",
+        "tweetText": "Только что обменял {amount} на Pandabox 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "Получить токены",
         "finalize": "Финализировать продажу",
-        "open": "Открыть проект"
+        "open": "Открыть проект",
+        "viewClaim": "Открыть проект"
       },
       "empty": {
         "label": "Вы пока никого не поддерживаете",
         "body": "Поддержите проект в Обзоре — ваши квитанции и доступная доля появятся здесь.",
         "cta": "Обзор проектов"
-      }
+      },
+      "statusClaimed": "Получено",
+      "contributedPast": "Вклад",
+      "received": "Получено",
+      "alreadyClaimed": "Уже получено: {tokens}",
+      "claimedLabel": "Получено"
     },
     "loading": {
       "aria": "Загрузка проектов",

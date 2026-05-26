@@ -14,6 +14,7 @@ import { Hairline } from "@/components/primitives/hairline";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import { ProjectAvatar } from "@/components/identity/project-avatar";
+import { RelativeTime } from "@/components/identity/relative-time";
 import { explorerUrl } from "@/lib/sui";
 import { PROJECT_COIN_DECIMALS } from "@/lib/contracts/pandabox";
 import { ManageWorkspace } from "./manage-workspace";
@@ -407,28 +408,84 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
   const closed = state === "closed";
   const endedAwaiting = state === "ended-awaiting";
 
-  const action = closed
-    ? { label: t("supported.action.claim"), href: `/projects/${p.id}#pay`, accent: "saffron" as const }
-    : endedAwaiting
-      ? { label: t("supported.action.finalize"), href: `/projects/${p.id}#pay`, accent: "saffron" as const }
-      : { label: t("supported.action.open"), href: `/projects/${p.id}`, accent: "bone" as const };
+  // Three card modes derived from the data shape:
+  //   · `active`   — wallet still holds receipts (current pending balance)
+  //   · `historical` — wallet has fully claimed; no receipts remain
+  //   · `mixed`    — wallet holds some receipts AND has past claims
+  //                  (partial claim of a multi-receipt position)
+  const hasReceipts = row.receipts.length > 0;
+  const hasClaimed = !!row.claimed;
+  const cardMode: "active" | "historical" | "mixed" = !hasReceipts
+    ? "historical"
+    : hasClaimed
+      ? "mixed"
+      : "active";
+
+  // Historical rows use plum (the design system's "archive" accent) to
+  // visually distinguish them from active supports — same convention
+  // we'd want every "this happened in the past" surface to follow.
+  const isHistorical = cardMode === "historical";
+
+  const action =
+    cardMode === "historical"
+      ? {
+          label: t("supported.action.viewClaim"),
+          href: `/projects/${p.id}`,
+          accent: "bone" as const,
+        }
+      : closed
+        ? {
+            label: t("supported.action.claim"),
+            href: `/projects/${p.id}#pay`,
+            accent: "saffron" as const,
+          }
+        : endedAwaiting
+          ? {
+              label: t("supported.action.finalize"),
+              href: `/projects/${p.id}#pay`,
+              accent: "saffron" as const,
+            }
+          : {
+              label: t("supported.action.open"),
+              href: `/projects/${p.id}`,
+              accent: "bone" as const,
+            };
+
+  // Pick the metric the hero cells display. Active / mixed rows show
+  // currently-held receipt totals; historical rows show the locked-in
+  // claim totals so the card still reads as "what you got out of this".
+  const showHistoryTotals = cardMode === "historical";
+  const displaySui = BigInt(showHistoryTotals ? row.claimed!.totalSui : row.totalSui);
+  const displayTokens = BigInt(
+    showHistoryTotals ? row.claimed!.totalTokens : row.totalTokens,
+  );
 
   return (
     <article
       className={cn(
         "relative overflow-hidden border bg-bone shadow-offset-sm transition-all duration-200 ease-atelier",
         "hover:-translate-y-[2px] hover:shadow-offset",
-        visuals.borderClass,
+        isHistorical ? "border-plum/40" : visuals.borderClass,
       )}
-      style={visuals.bgTint ? { background: visuals.bgTint } : undefined}
+      style={
+        isHistorical ? undefined : visuals.bgTint ? { background: visuals.bgTint } : undefined
+      }
     >
       <span
         aria-hidden
-        className={cn("absolute inset-x-0 top-0 h-[3px]", visuals.accentBar)}
+        className={cn(
+          "absolute inset-x-0 top-0 h-[3px]",
+          isHistorical ? "bg-plum" : visuals.accentBar,
+        )}
       />
 
       <header className="flex items-center gap-3 px-5 pb-3 pt-4">
-        <ProjectAvatar src={p.iconUrl} name={p.name} size={40} />
+        <ProjectAvatar
+          src={p.iconUrl}
+          name={p.name}
+          size={40}
+          className={isHistorical ? "opacity-80" : undefined}
+        />
         <div className="min-w-0 flex-1">
           <Link
             href={`/projects/${p.id}`}
@@ -451,42 +508,88 @@ function SupportedCard({ row }: { row: DashboardSupportedRow }) {
             </a>
           </div>
         </div>
-        <span
-          className={cn(
-            "shrink-0 inline-flex items-center gap-1.5 border bg-bone px-2 py-[3px]",
-            "font-mono text-[9.5px] uppercase tracking-[0.16em]",
-            visuals.pillBorderClass,
-            visuals.pillTextClass,
-          )}
-        >
+        {/* Status pill — historical rows get a plum "Claimed" pill;
+            mixed rows show how many receipts remain so the user knows
+            they still have something to claim; active rows keep the
+            existing project-state pill. */}
+        {isHistorical ? (
+          <span className="shrink-0 inline-flex items-center gap-1.5 border border-plum/50 bg-bone px-2 py-[3px] font-mono text-[9.5px] uppercase tracking-[0.16em] text-plum">
+            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-plum" />
+            {t("supported.statusClaimed")}
+          </span>
+        ) : (
           <span
-            aria-hidden
             className={cn(
-              "block h-1.5 w-1.5 rounded-full",
-              visuals.dotClass,
+              "shrink-0 inline-flex items-center gap-1.5 border bg-bone px-2 py-[3px]",
+              "font-mono text-[9.5px] uppercase tracking-[0.16em]",
+              visuals.pillBorderClass,
+              visuals.pillTextClass,
             )}
-          />
-          {t("supported.receipts", { count: row.receipts.length })}
-        </span>
+          >
+            <span
+              aria-hidden
+              className={cn("block h-1.5 w-1.5 rounded-full", visuals.dotClass)}
+            />
+            {t("supported.receipts", { count: row.receipts.length })}
+          </span>
+        )}
       </header>
 
-      {/* Hero metric pair — Contributed + Claimable */}
+      {/* Hero metric pair. Labels adapt to mode so historical rows read
+          as "you contributed X / you received Y" rather than implying
+          there's still something to claim. */}
       <div className="grid grid-cols-2 border-t border-ink/10">
         <HeroCell
-          label={t("supported.contributed")}
-          value={`${formatSui(BigInt(row.totalSui))} SUI`}
+          label={
+            isHistorical
+              ? t("supported.contributedPast")
+              : t("supported.contributed")
+          }
+          value={`${formatSui(displaySui)} SUI`}
         />
         <HeroCell
-          label={closed ? t("supported.claimable") : t("supported.yourShare")}
-          value={`${formatToken(BigInt(row.totalTokens), PROJECT_COIN_DECIMALS)} ${ticker}`}
+          label={
+            isHistorical
+              ? t("supported.received")
+              : closed
+                ? t("supported.claimable")
+                : t("supported.yourShare")
+          }
+          value={`${formatToken(displayTokens, PROJECT_COIN_DECIMALS)} ${ticker}`}
           border
         />
       </div>
 
+      {/* Partial-claim footnote — only on mixed rows. Tells the user
+          how much they've already claimed on top of what's still
+          pending, so the hero pair makes sense in context. */}
+      {cardMode === "mixed" && row.claimed && (
+        <div className="border-t border-ink/10 bg-plum/[0.04] px-5 py-2">
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-plum">
+            {t("supported.alreadyClaimed", {
+              tokens: `${formatToken(BigInt(row.claimed.totalTokens), PROJECT_COIN_DECIMALS)} ${ticker}`,
+            })}
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-3 border-t border-ink/10 px-5 py-3">
-        <span className="min-w-0 truncate font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/60">
-          {formatTimeLabel(getTimeLabel(p, state))}
-        </span>
+        {isHistorical && row.claimed ? (
+          // Parent span stays lowercase so the relative-time text reads
+          // naturally ("3mo ago"); only the leading label is uppercased
+          // to match the project-state pill rhythm on other cards.
+          <span className="inline-flex min-w-0 items-center gap-1.5 truncate font-mono text-[10.5px] tracking-[0.14em] text-ink/60">
+            <span className="uppercase">{t("supported.claimedLabel")}</span>
+            <RelativeTime
+              value={row.claimed.latestClaimAtMs}
+              className="font-mono text-[10.5px] tracking-[0.14em] text-ink/60"
+            />
+          </span>
+        ) : (
+          <span className="min-w-0 truncate font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/60">
+            {formatTimeLabel(getTimeLabel(p, state))}
+          </span>
+        )}
         <Link
           href={action.href}
           className={cn(

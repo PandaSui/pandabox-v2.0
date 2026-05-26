@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "풀의 고정 환율로 지갑에서 {amount} 을(를) 리딤했습니다.",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "리딤",
+        "stampRedeemed": "리딤 완료",
+        "stampRedeemedSub": "바이백으로 전송",
+        "stampBurned": "소각",
+        "stampBurnedSub": "코인이 소각되었습니다",
+        "statBurned": "지불",
+        "statRouted": "전송 대상",
+        "routedBurn": "소각 주소",
+        "routedBuyback": "바이백 트레저리",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Suiscan에서 보기",
+        "shareOnX": "X에 공유",
+        "tweetText": "Pandabox에서 {amount} 을(를) 리딤했습니다 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "토큰 클레임",
         "finalize": "세일 확정",
-        "open": "프로젝트 열기"
+        "open": "프로젝트 열기",
+        "viewClaim": "프로젝트 보기"
       },
       "empty": {
         "label": "아직 후원 중인 프로젝트 없음",
         "body": "탐색에서 프로젝트를 후원하세요 — 영수증과 클레임 가능 점유율이 여기에 표시됩니다.",
         "cta": "프로젝트 탐색"
-      }
+      },
+      "statusClaimed": "수령 완료",
+      "contributedPast": "기여한 금액",
+      "received": "수령",
+      "alreadyClaimed": "이미 수령함: {tokens}",
+      "claimedLabel": "수령 완료"
     },
     "loading": {
       "aria": "프로젝트 로딩 중",

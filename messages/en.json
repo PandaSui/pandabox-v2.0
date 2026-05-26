@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "Burned {amount} from your wallet at the pool's fixed rate.",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "Redeem",
+        "stampRedeemed": "Redeemed",
+        "stampRedeemedSub": "Routed to buyback",
+        "stampBurned": "Burned",
+        "stampBurnedSub": "Coins destroyed",
+        "statBurned": "Sold in",
+        "statRouted": "Routed to",
+        "routedBurn": "Burn address",
+        "routedBuyback": "Buyback treasury",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "View on Suiscan",
+        "shareOnX": "Share on X",
+        "tweetText": "Just redeemed {amount} on Pandabox 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "Claim tokens",
         "finalize": "Finalize sale",
-        "open": "Open project"
+        "open": "Open project",
+        "viewClaim": "View project"
       },
       "empty": {
         "label": "Not backing anyone yet",
         "body": "Back a project on Explore — your receipts and claimable share will surface here.",
         "cta": "Explore projects"
-      }
+      },
+      "statusClaimed": "Claimed",
+      "contributedPast": "Contributed",
+      "received": "Received",
+      "alreadyClaimed": "Previously claimed: {tokens}",
+      "claimedLabel": "Claimed"
     },
     "loading": {
       "aria": "Loading projects",

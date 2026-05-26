@@ -435,10 +435,7 @@
         "redeemAction": "{amount} {symbol} einlösen",
         "enterAmount": "Betrag eingeben",
         "successEyebrow": "Redeem signiert",
-        "successHeadline": "Du hast erhalten",
-        "successBody": "<amount/> aus deinem Wallet zum fixen Kurs des Pools verbrannt.",
-        "successTx": "tx",
-        "successView": "auf suiscan ansehen",
+        "successBody": "{amount} aus deinem Wallet zum festen Pool-Kurs eingelöst.",
         "successAgain": "Erneut einlösen",
         "amountAria": "Betrag {symbol} zum Einlösen",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "Du hältst keine {symbol}",
           "exceedsBalance": "Betrag übersteigt deinen Saldo",
           "exceedsReserve": "Pool-Reserve zu gering für diesen Betrag"
-        }
+        },
+        "modalTitle": "Redeem",
+        "stampRedeemed": "Eingelöst",
+        "stampRedeemedSub": "An Buyback geleitet",
+        "stampBurned": "Verbrannt",
+        "stampBurnedSub": "Coins vernichtet",
+        "statBurned": "Eingebracht",
+        "statRouted": "Weitergeleitet an",
+        "routedBurn": "Burn-Adresse",
+        "routedBuyback": "Buyback-Treasury",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Auf Suiscan ansehen",
+        "shareOnX": "Auf X teilen",
+        "tweetText": "Gerade {amount} auf Pandabox eingelöst 🐼"
       },
       "depositPanel": {
         "title": "Reserve aufladen",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "Tokens beanspruchen",
         "finalize": "Verkauf finalisieren",
-        "open": "Projekt öffnen"
+        "open": "Projekt öffnen",
+        "viewClaim": "Projekt ansehen"
       },
       "empty": {
         "label": "Du unterstützt noch niemanden",
         "body": "Unterstütze ein Projekt auf Entdecken — deine Belege und der beanspruchbare Anteil erscheinen hier.",
         "cta": "Projekte entdecken"
-      }
+      },
+      "statusClaimed": "Eingelöst",
+      "contributedPast": "Beigetragen",
+      "received": "Erhalten",
+      "alreadyClaimed": "Bereits eingelöst: {tokens}",
+      "claimedLabel": "Eingelöst"
     },
     "loading": {
       "aria": "Lade Projekte",

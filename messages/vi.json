@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "Đã đổi {amount} từ ví theo tỷ giá cố định của pool.",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "Đổi",
+        "stampRedeemed": "Đã đổi",
+        "stampRedeemedSub": "Chuyển đến buyback",
+        "stampBurned": "Đã đốt",
+        "stampBurnedSub": "Coin đã bị tiêu hủy",
+        "statBurned": "Đã gửi vào",
+        "statRouted": "Chuyển đến",
+        "routedBurn": "Địa chỉ đốt",
+        "routedBuyback": "Kho buyback",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Xem trên Suiscan",
+        "shareOnX": "Chia sẻ lên X",
+        "tweetText": "Vừa đổi {amount} trên Pandabox 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "Claim token",
         "finalize": "Hoàn tất đợt bán",
-        "open": "Mở dự án"
+        "open": "Mở dự án",
+        "viewClaim": "Xem dự án"
       },
       "empty": {
         "label": "Chưa hỗ trợ ai cả",
         "body": "Hỗ trợ một dự án trên Khám phá — biên nhận và phần có thể claim của bạn sẽ hiển thị ở đây.",
         "cta": "Khám phá dự án"
-      }
+      },
+      "statusClaimed": "Đã nhận",
+      "contributedPast": "Đã đóng góp",
+      "received": "Đã nhận",
+      "alreadyClaimed": "Đã nhận trước đó: {tokens}",
+      "claimedLabel": "Đã nhận"
     },
     "loading": {
       "aria": "Đang tải dự án",

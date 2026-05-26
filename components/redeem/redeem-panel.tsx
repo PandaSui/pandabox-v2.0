@@ -11,12 +11,13 @@ import {
 } from "@mysten/dapp-kit";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
-import { ArrowDiag } from "@pandasui/ui";
+import { ArrowDiag, Modal } from "@pandasui/ui";
 import { ConnectWallet } from "@/components/wallet/connect-wallet";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Spinner } from "@/components/primitives/spinner";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { TxHash } from "@/components/identity/tx-hash";
+import { RedeemSuccess } from "@/components/redeem/redeem-success";
 import { buildRedeemTx, REDEEM_IS_DEPLOYED } from "@/lib/contracts/redeem";
 import { bustRedeemPoolCache } from "@/lib/server-actions/redeem-cache";
 import { quoteRedeem, maxRedeemableCoin } from "@/lib/redeem/quote";
@@ -272,24 +273,13 @@ export function RedeemPanel({
           />
         </header>
 
-        {state.kind === "success" ? (
-          <SuccessView
-            digest={state.digest}
-            suiOutMist={state.suiOutMist}
-            coinIn={state.coinIn}
-            symbol={symbol}
-            decimals={pool.coinDecimals}
-            onReset={resetForm}
-            labels={{
-              eyebrow: t("successEyebrow"),
-              headline: t("successHeadline"),
-              tx: t("successTx"),
-              view: t("successView"),
-              again: t("successAgain"),
-            }}
-          />
-        ) : (
-          <div className="space-y-5 px-5 pb-5 pt-5">
+        {/* Form is always visible — the success state is promoted to a
+            Modal (rendered at the end of this component) so the user
+            can't miss the result. The redeem panel sits in the action
+            column, which can be below the fold on shorter viewports,
+            and the previous inline success view forced the panel to
+            switch its entire chrome — disorienting. */}
+        <div className="space-y-5 px-5 pb-5 pt-5">
             {/* Balance row + MAX */}
             <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
               <span>{t("yourBalance")}</span>
@@ -407,8 +397,38 @@ export function RedeemPanel({
               {t("feeDisclosure", { fee: (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2) })}
             </p>
           </div>
-        )}
       </div>
+
+      {/* Success modal — opens automatically when the tx settles and
+          renders the celebratory `<RedeemSuccess>` (polaroid + stamp +
+          GSAP). On close we reset the panel to idle and clear the
+          input so the user can immediately redeem again from a clean
+          state. Uses the shared `<Modal>` from @pandasui/ui — same
+          chrome (full-height close-button cell) as the Claim and
+          Deposit success modals. */}
+      <Modal
+        open={state.kind === "success"}
+        onClose={resetForm}
+        title={t("modalTitle")}
+      >
+        {state.kind === "success" && (
+          <RedeemSuccess
+            ticker={symbol}
+            iconUrl={data.metadata.iconUrl}
+            // `recipientMode` includes a third "unknown" state on the
+            // type — collapse to "buyback" (the safer copy) when the
+            // reader couldn't classify, so the stamp doesn't read
+            // "BURNED" for a non-burn pool whose recipient wasn't in
+            // the classifier's known set.
+            recipientMode={pool.recipientMode === "burn" ? "burn" : "buyback"}
+            suiOutMist={state.suiOutMist}
+            coinIn={state.coinIn}
+            coinDecimals={pool.coinDecimals}
+            txDigest={state.digest}
+            onAgain={resetForm}
+          />
+        )}
+      </Modal>
     </aside>
   );
 }
@@ -626,84 +646,6 @@ function QuoteRow({
         {label}
       </span>
       {children}
-    </div>
-  );
-}
-
-function SuccessView({
-  digest,
-  suiOutMist,
-  coinIn,
-  symbol,
-  decimals,
-  onReset,
-  labels,
-}: {
-  digest: string;
-  suiOutMist: bigint;
-  coinIn: bigint;
-  symbol: string;
-  decimals: number;
-  onReset: () => void;
-  labels: {
-    eyebrow: string;
-    headline: string;
-    tx: string;
-    view: string;
-    again: string;
-  };
-}) {
-  const t = useTranslations("redeem.detail.redeemPanel");
-  return (
-    <div className="px-5 py-6">
-      <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-jade">
-        <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
-        {labels.eyebrow}
-      </div>
-      <h3 className="mt-3 font-display text-[1.5rem] leading-[1.1]">
-        {labels.headline}{" "}
-        <SuiAmount
-          mist={suiOutMist}
-          maxFractionDigits={6}
-          glyphSize={14}
-          className="text-[1.5rem]"
-        />
-      </h3>
-      <p className="mt-2 text-[13.5px] text-ink/65">
-        {t.rich("successBody", {
-          amount: () => (
-            <span className="font-mono tabular-nums text-ink">
-              {formatAmount(coinIn, {
-                decimals,
-                compact: true,
-                maxFractionDigits: 4,
-              })}{" "}
-              {symbol}
-            </span>
-          ),
-        })}
-      </p>
-      <div className="mt-5 flex flex-wrap items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-        <span>{labels.tx}</span>
-        <TxHash value={digest} copyable />
-        <a
-          href={explorerUrl("tx", digest)}
-          target="_blank"
-          rel="noreferrer"
-          className="group inline-flex items-center gap-1 text-ink/55 transition-colors hover:text-ink"
-        >
-          <span>{labels.view}</span>
-          <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[1px]">↗</span>
-        </a>
-      </div>
-      <button
-        type="button"
-        onClick={onReset}
-        className={cn(CTA_BASE, "mt-6 bg-bone text-ink")}
-      >
-        <span>{labels.again}</span>
-        <ArrowDiag size={12} />
-      </button>
     </div>
   );
 }

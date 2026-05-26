@@ -435,10 +435,7 @@
         "redeemAction": "Redeem {amount} {symbol}",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Redeem signed",
-        "successHeadline": "You received",
-        "successBody": "Burned <amount/> from your wallet at the pool's fixed rate.",
-        "successTx": "tx",
-        "successView": "view on suiscan",
+        "successBody": "已按池的固定汇率将钱包中的 {amount} 兑换。",
         "successAgain": "Redeem again",
         "amountAria": "Amount of {symbol} to redeem",
         "validation": {
@@ -447,7 +444,20 @@
           "noBalance": "You hold no {symbol}",
           "exceedsBalance": "Amount exceeds your balance",
           "exceedsReserve": "Pool reserve too low for this amount"
-        }
+        },
+        "modalTitle": "兑换",
+        "stampRedeemed": "已兑换",
+        "stampRedeemedSub": "已转入回购",
+        "stampBurned": "已销毁",
+        "stampBurnedSub": "代币已被销毁",
+        "statBurned": "已投入",
+        "statRouted": "去向",
+        "routedBurn": "销毁地址",
+        "routedBuyback": "回购金库",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "在 Suiscan 查看",
+        "shareOnX": "在 X 分享",
+        "tweetText": "刚在 Pandabox 兑换了 {amount} 🐼"
       },
       "depositPanel": {
         "title": "Top up reserve",
@@ -1451,13 +1461,19 @@
       "action": {
         "claim": "领取代币",
         "finalize": "结算销售",
-        "open": "打开项目"
+        "open": "打开项目",
+        "viewClaim": "查看项目"
       },
       "empty": {
         "label": "尚未支持任何人",
         "body": "在“探索”中支持一个项目 —— 你的凭证和可领取份额会显示在这里。",
         "cta": "探索项目"
-      }
+      },
+      "statusClaimed": "已领取",
+      "contributedPast": "已贡献",
+      "received": "已收到",
+      "alreadyClaimed": "已领取: {tokens}",
+      "claimedLabel": "已领取"
     },
     "loading": {
       "aria": "正在加载项目",
