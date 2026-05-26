@@ -65,7 +65,6 @@ export function PoolCard({
   data: HydratedPool;
   /** Platform fee in bps, used purely to surface the displayed net rate is gross. */
   feeBps: number;
-  /** Pass true for the first card in the grid to bias LCP towards its image. */
   priority?: boolean;
 }) {
   const { pool, metadata, createdEvent } = data;
