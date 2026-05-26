@@ -382,7 +382,8 @@
         "feeNote": "{fee}% platform fee on every redeem",
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
-        "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged."
+        "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
+        "back": "Back to redeem"
       },
       "meta": {
         "title": "Pool details",
@@ -414,7 +415,10 @@
         "kindDeposit": "Deposit",
         "by": "by",
         "feeShort": "fee {value}",
-        "addReserve": "+ reserve"
+        "addReserve": "+ reserve",
+        "newestFirst": "newest first",
+        "kindCreated": "Created",
+        "initialDeposit": "initial deposit"
       },
       "redeemPanel": {
         "title": "Redeem this pool",
@@ -468,6 +472,10 @@
         "body": "Either the object ID doesn't exist, or it isn't a Pandabox redeem pool. Double-check the address — Sui object IDs are 32 bytes (64 hex). The discovery surface only lists known-good pools.",
         "ctaBack": "Back to redeem",
         "ctaTools": "Onchain tools"
+      },
+      "tabs": {
+        "activity": "Activity",
+        "about": "About"
       }
     },
     "create": {
@@ -479,7 +487,8 @@
         "body": "You'll pick the coin, set the exchange rate, choose where redeemed coins are routed, and seed the reserve. The contract shares the resulting <code>RedeemPool&lt;T&gt;</code> object — and from that moment, its rate and recipient are locked on-chain forever.",
         "traitPermanent": "Permanent terms",
         "traitFee": "{fee}% platform fee",
-        "traitOneTx": "One tx · sub-cent gas"
+        "traitOneTx": "One tx · sub-cent gas",
+        "backToRedeem": "Back to redeem"
       },
       "nav": {
         "aria": "Wizard steps",
@@ -518,7 +527,9 @@
         "errorMeta": "Could not resolve coin metadata.",
         "errorNoMetadata": "No CoinMetadata published for this type.",
         "awaiting": "Awaiting coin type",
-        "decimals": "{n} decimals"
+        "decimals": "{n} decimals",
+        "fromPandabox": "Tokens you've launched on Pandabox",
+        "fromPandaboxLoading": "Looking for your launches…"
       },
       "existingPool": {
         "eyebrow": "A pool for this coin already exists",
@@ -533,11 +544,11 @@
       },
       "rate": {
         "title": "Set the exchange rate.",
-        "body": "How much SUI does one whole {symbol} redeem for? Once you deploy, the contract has no setter for this value — neither you nor a platform admin can change it.",
+        "body": "How much SUI does one whole {symbol} redeem for? Once you deploy, the contract has no setter for this value  neither you nor a platform admin can change it.",
         "fieldLabel": "Rate · SUI per 1 {symbol}",
         "fieldHint": "Whole SUI per whole token. Example: 0.001 means 1,000 tokens redeem for 1 SUI.",
         "rateUnit": "SUI / {symbol}",
-        "validationTooSmall": "Rate too small. With {decimals} decimals, the contract needs at least 1 mist per base unit (≈ {minimum} SUI per token).",
+        "validationTooSmall": "Rate too small. The minimum price the contract can store is 1 mist (0.000000001 SUI) per whole token.",
         "permanentNote": "Permanent — the contract has no setter for <code>price_mist_per_token</code>.",
         "calculator": "Calculator",
         "calcOneToken": "1 {symbol} →",

@@ -18,7 +18,7 @@ export async function PoolMetaPanel({ data }: { data: HydratedPool }) {
   const { pool } = data;
   const t = await getTranslations("redeem.detail.meta");
   return (
-    <aside className="border-y border-ink/15 bg-bone">
+    <aside className="border border-ink/15 bg-bone">
       <header className="border-b border-ink/15 px-5 py-3.5">
         <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
       </header>

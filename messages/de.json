@@ -382,7 +382,8 @@
         "feeNote": "{fee}% Plattformgebühr je Redeem",
         "live": "Live · Sui mainnet",
         "pausedTitle": "Plattform pausiert",
-        "pausedBody": "Redeem und Einzahlung sind durch den Plattform-Admin vorübergehend deaktiviert. Der Pool-Zustand bleibt unverändert."
+        "pausedBody": "Redeem und Einzahlung sind durch den Plattform-Admin vorübergehend deaktiviert. Der Pool-Zustand bleibt unverändert.",
+        "back": "Zurück zu Redeem"
       },
       "meta": {
         "title": "Pool-Details",
@@ -414,7 +415,10 @@
         "kindDeposit": "Einzahlung",
         "by": "von",
         "feeShort": "Gebühr {value}",
-        "addReserve": "+ Reserve"
+        "addReserve": "+ Reserve",
+        "newestFirst": "neueste zuerst",
+        "kindCreated": "Erstellt",
+        "initialDeposit": "Anfangseinlage"
       },
       "redeemPanel": {
         "title": "Diesen Pool einlösen",
@@ -468,6 +472,10 @@
         "body": "Entweder existiert die Objekt-ID nicht, oder es ist kein Pandabox-Redeem-Pool. Überprüfe die Adresse — Sui-Objekt-IDs sind 32 Byte (64 Hex). Die Discovery-Oberfläche listet nur bekannte, gültige Pools.",
         "ctaBack": "Zurück zu Redeem",
         "ctaTools": "Onchain-Tools"
+      },
+      "tabs": {
+        "activity": "Aktivität",
+        "about": "Über"
       }
     },
     "create": {
@@ -479,7 +487,8 @@
         "body": "Du wählst den Coin, setzt den Tauschkurs, entscheidest, wohin eingelöste Coins fließen, und füllst die Reserve. Der Contract gibt das resultierende <code>RedeemPool&lt;T&gt;</code>-Objekt frei — und ab diesem Moment sind Kurs und Empfänger on-chain für immer gesperrt.",
         "traitPermanent": "Permanente Bedingungen",
         "traitFee": "{fee}% Plattformgebühr",
-        "traitOneTx": "Eine tx · Sub-Cent-Gas"
+        "traitOneTx": "Eine tx · Sub-Cent-Gas",
+        "backToRedeem": "Zurück zu Redeem"
       },
       "nav": {
         "aria": "Wizard-Schritte",
@@ -518,7 +527,9 @@
         "errorMeta": "Coin-Metadaten konnten nicht aufgelöst werden.",
         "errorNoMetadata": "Für diesen Typ wurden keine CoinMetadata veröffentlicht.",
         "awaiting": "Warte auf Coin-Typ",
-        "decimals": "{n} Dezimalstellen"
+        "decimals": "{n} Dezimalstellen",
+        "fromPandabox": "Von dir auf Pandabox veröffentlichte Tokens",
+        "fromPandaboxLoading": "Suche deine Veröffentlichungen…"
       },
       "existingPool": {
         "eyebrow": "A pool for this coin already exists",
@@ -537,7 +548,7 @@
         "fieldLabel": "Kurs · SUI pro 1 {symbol}",
         "fieldHint": "Ganzes SUI pro ganzem Token. Beispiel: 0,001 bedeutet, dass 1.000 Tokens 1 SUI einlösen.",
         "rateUnit": "SUI / {symbol}",
-        "validationTooSmall": "Kurs zu klein. Bei {decimals} Dezimalstellen braucht der Contract mindestens 1 mist je Basiseinheit (≈ {minimum} SUI pro Token).",
+        "validationTooSmall": "Rate zu niedrig. Der kleinste Preis, den der Vertrag speichern kann, beträgt 1 Mist (0,000000001 SUI) pro ganzem Token.",
         "permanentNote": "Permanent — der Contract hat keinen Setter für <code>price_mist_per_token</code>.",
         "calculator": "Rechner",
         "calcOneToken": "1 {symbol} →",

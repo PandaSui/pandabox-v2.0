@@ -130,15 +130,19 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
 
   return (
     <section className="border border-ink/15 bg-bone">
-      <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
+      <header className="border-b border-ink/15 px-5 py-3.5">
+        {/* Stacked title + tag — in the narrow left rail the previous
+            `justify-between` row ran the two mono labels into each other.
+            Stacking keeps the title legible at any column width. */}
         <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
+        <span className="mt-1 inline-flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
+          <span aria-hidden className="block h-1 w-1 rounded-full bg-jade/70" />
           {t("anyoneCanDeposit")}
         </span>
       </header>
 
       <div className="space-y-4 px-5 py-5">
-        <p className="text-[13.5px] leading-relaxed text-ink/65">{t("body")}</p>
+        <p className="text-[13px] leading-[1.55] text-ink/65">{t("body")}</p>
 
         {state.kind === "success" ? (
           <div className="border border-jade/40 bg-jade/[0.06] px-4 py-3">

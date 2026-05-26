@@ -35,6 +35,10 @@ import {
 } from "@/lib/contracts/redeem";
 import { findPoolByCoinType } from "@/lib/redeem/find-pool";
 import { parseRedeemAbort } from "@/lib/redeem/abort-codes";
+import {
+  findProjectsByCreator,
+  type CreatedProject,
+} from "@/lib/pandabox/created-projects";
 import { MIST_PER_SUI, explorerUrl } from "@/lib/sui";
 import { formatAmount } from "@/lib/amount";
 
@@ -91,7 +95,8 @@ export function RedeemCreateWizard() {
 
   const [deploy, setDeploy] = useState<DeployState>({ kind: "idle" });
   const [resetOpen, setResetOpen] = useState(false);
-  const stepperLocked = deploy.kind === "submitting" || deploy.kind === "confirming";
+  const stepperLocked =
+    deploy.kind === "submitting" || deploy.kind === "confirming";
 
   if (!hydrated) {
     return (
@@ -214,7 +219,6 @@ function StepNav({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-poppy",
           )}
         >
-          <span aria-hidden>↺</span>
           <span>{t("reset")}</span>
         </button>
       )}
@@ -279,7 +283,10 @@ function ResetConfirmModal({
         <span aria-hidden className="block h-[3px] bg-poppy" />
         <div className="px-6 py-6">
           <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy">
-            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+            <span
+              aria-hidden
+              className="block h-1.5 w-1.5 rounded-full bg-poppy"
+            />
             {t("resetEyebrow")}
           </div>
           <h2
@@ -558,12 +565,43 @@ function StepCoin() {
   const heldTypes = useMemo(() => {
     if (!balances) return [];
     return balances
-      .filter((b) => b.coinType !== "0x2::sui::SUI" && BigInt(b.totalBalance) > 0n)
+      .filter(
+        (b) => b.coinType !== "0x2::sui::SUI" && BigInt(b.totalBalance) > 0n,
+      )
       .slice(0, 8);
   }, [balances]);
 
-  const resolved =
-    !!normalized && !!metadata && metadata.id ? metadata : null;
+  // Pandabox projects the connected wallet has launched. These tend to
+  // be exactly the coins a creator wants to deploy a redeem pool for,
+  // and the wallet may not currently hold a balance of them — so the
+  // "from your wallet" picker above misses them. Surfacing this list
+  // separately means a creator can pick their own token in one tap
+  // without having to copy-paste the type.
+  const [createdProjects, setCreatedProjects] = useState<CreatedProject[]>([]);
+  const [createdProjectsLoading, setCreatedProjectsLoading] = useState(false);
+  useEffect(() => {
+    if (!account?.address) {
+      setCreatedProjects([]);
+      return;
+    }
+    let cancelled = false;
+    setCreatedProjectsLoading(true);
+    findProjectsByCreator({ client, creator: account.address })
+      .then((projects) => {
+        if (!cancelled) setCreatedProjects(projects);
+      })
+      .catch(() => {
+        if (!cancelled) setCreatedProjects([]);
+      })
+      .finally(() => {
+        if (!cancelled) setCreatedProjectsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [account?.address, client]);
+
+  const resolved = !!normalized && !!metadata && metadata.id ? metadata : null;
   // Existing pools for the same coin are allowed by the contract — we no
   // longer block here, just inform. So the requirements for Step 1 are:
   // a resolved coin type, a known metadata object, AND a metadata object
@@ -592,6 +630,59 @@ function StepCoin() {
               />
             )}
           </Field>
+
+          {/* Pandabox-launched-by-you picker — surfaces the creator's
+              own tokens before the generic wallet-balance list. These
+              are usually the coins a creator is most likely to deploy a
+              redeem pool for. */}
+          {account &&
+            (createdProjects.length > 0 || createdProjectsLoading) && (
+              <div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45">
+                    {t("fromPandabox")}
+                  </span>
+                  {createdProjectsLoading && (
+                    <Spinner size={10} className="text-ink/40" />
+                  )}
+                </div>
+                {createdProjects.length > 0 ? (
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {createdProjects.map((p) => {
+                      const ticker = p.coinType.split("::").pop() ?? "";
+                      return (
+                        <li key={p.projectId}>
+                          <button
+                            type="button"
+                            onClick={() => setTyped(p.coinType)}
+                            className={cn(
+                              "group inline-flex max-w-full items-center gap-1.5 border border-ink/25 bg-bone px-2.5 py-1 transition-all",
+                              "hover:-translate-y-[1px] hover:border-sun hover:shadow-offset-sm",
+                            )}
+                            title={`${p.name} — ${p.coinType}`}
+                          >
+                            <span
+                              aria-hidden
+                              className="block h-1.5 w-1.5 shrink-0 bg-sun"
+                            />
+                            <span className="truncate font-mono text-[10.5px] uppercase tracking-[0.06em] text-ink/85 group-hover:text-ink">
+                              {ticker}
+                            </span>
+                            <span className="truncate text-[11px] text-ink/55 group-hover:text-ink/75">
+                              {p.name}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="mt-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/40">
+                    {t("fromPandaboxLoading")}
+                  </p>
+                )}
+              </div>
+            )}
 
           {/* Owned-coins picker — collapsed mono list */}
           {account && heldTypes.length > 0 && (
@@ -644,10 +735,16 @@ function StepCoin() {
           they actually wanted, and a dismiss for the rest. */}
       {existingPool && (
         <div className="mt-8 relative overflow-hidden border border-sun/40 bg-sun/[0.08]">
-          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-sun" />
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-[3px] bg-sun"
+          />
           <div className="px-5 py-5 md:px-6">
             <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/85">
-              <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-sun" />
+              <span
+                aria-hidden
+                className="block h-1.5 w-1.5 rounded-full bg-sun"
+              />
               {tExisting("eyebrow")}
             </div>
             <h3 className="mt-2 font-display text-[1.35rem] leading-[1.1]">
@@ -707,10 +804,16 @@ function StepCoin() {
 
       {resolved && ownership.kind === "blocked" && (
         <div className="mt-8 relative overflow-hidden border border-poppy/40 bg-poppy/[0.06]">
-          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-poppy" />
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-[3px] bg-poppy"
+          />
           <div className="px-5 py-5 md:px-6">
             <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-poppy">
-              <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+              <span
+                aria-hidden
+                className="block h-1.5 w-1.5 rounded-full bg-poppy"
+              />
               {tOwner("eyebrow")}
             </div>
             <h3 className="mt-2 font-display text-[1.35rem] leading-[1.1]">
@@ -747,7 +850,10 @@ function StepCoin() {
       {resolved && ownership.kind === "blocked-no-wallet" && (
         <div className="mt-8 border border-sun/40 bg-sun/[0.08] px-5 py-4">
           <div className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/85">
-            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-sun" />
+            <span
+              aria-hidden
+              className="block h-1.5 w-1.5 rounded-full bg-sun"
+            />
             {tOwner("connectEyebrow")}
           </div>
           <p className="mt-2 max-w-prose text-[13.5px] text-ink/70">
@@ -756,11 +862,7 @@ function StepCoin() {
         </div>
       )}
 
-      <StepFooter
-        canNext={canNext}
-        onNext={() => goNext()}
-        hideBack
-      />
+      <StepFooter canNext={canNext} onNext={() => goNext()} hideBack />
     </>
   );
 }
@@ -773,14 +875,12 @@ function ResolutionPanel({
 }: {
   isFetching: boolean;
   error: string | null;
-  metadata:
-    | {
-        id?: string | null;
-        name?: string | null;
-        symbol?: string | null;
-        decimals?: number | null;
-      }
-    | null;
+  metadata: {
+    id?: string | null;
+    name?: string | null;
+    symbol?: string | null;
+    decimals?: number | null;
+  } | null;
   iconUrl: string | null;
 }) {
   const t = useTranslations("redeem.create.coin");
@@ -826,11 +926,16 @@ function ResolutionPanel({
                 <span className="font-medium uppercase tracking-[0.08em] text-ink/75">
                   {metadata.symbol || "?"}
                 </span>
-                <span aria-hidden className="mx-1.5 text-ink/25">·</span>
+                <span aria-hidden className="mx-1.5 text-ink/25">
+                  ·
+                </span>
                 <span>{t("decimals", { n: metadata.decimals ?? "?" })}</span>
               </div>
               <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-jade">
-                <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
+                <span
+                  aria-hidden
+                  className="block h-1.5 w-1.5 rounded-full bg-jade"
+                />
                 {t("resolved")}
               </div>
             </div>
@@ -851,12 +956,17 @@ function ResolutionPanel({
  * Exchange rate step. The user enters a whole-SUI-per-whole-token rate;
  * we convert to the contract's `price_mist_per_token` (u64) by:
  *
- *   priceMistPerToken = rateSuiPerToken * 1e9 / 10^decimals
+ *   priceMistPerToken = rateSuiPerToken * 1e9
  *
- * For a 9-decimal coin priced at 1 SUI per token, that's 1 mist per
- * base unit — the simplest case. For sub-cent prices on a 9-decimal
- * coin we end up with `priceMistPerToken = 0`, which the contract
- * (correctly) rejects — surfaced as a validation error before deploy.
+ * `price_mist_per_token` is mist of SUI per WHOLE displayed token (see
+ * lib/redeem/quote.ts — proven against live mainnet redeems). The
+ * conversion is decimal-independent: the contract handles the per-
+ * base-unit scaling internally when computing `sui_gross`.
+ *
+ * Floor is one mist per whole token (~1 nano-SUI) — anything smaller
+ * rounds to zero and the contract (correctly) rejects a freebie pool.
+ * That works out to a minimum price of 1e-9 SUI per token regardless of
+ * the coin's decimals.
  */
 function StepRate() {
   const draft = useRedeemWizard((s) => s.draft);
@@ -866,7 +976,6 @@ function StepRate() {
   const t = useTranslations("redeem.create.rate");
 
   const symbol = draft.coin.symbol || "TOKEN";
-  const decimals = draft.coin.decimals || 9;
 
   const rateBn = useMemo(() => {
     const v = draft.rateSuiPerToken.trim();
@@ -877,36 +986,33 @@ function StepRate() {
 
   const priceMistPerToken = useMemo(() => {
     if (rateBn.lte(0)) return 0n;
-    const raw = rateBn
-      .multipliedBy(MIST_PER_SUI.toString())
-      .dividedBy(new BigNumber(10).pow(decimals));
+    const raw = rateBn.multipliedBy(MIST_PER_SUI.toString());
     if (!raw.isFinite() || raw.lte(0)) return 0n;
     return BigInt(raw.integerValue(BigNumber.ROUND_DOWN).toFixed(0));
-  }, [rateBn, decimals]);
+  }, [rateBn]);
 
   const tokensPerSui = useMemo(() => {
     if (rateBn.lte(0)) return new BigNumber(0);
     return new BigNumber(1).dividedBy(rateBn);
   }, [rateBn]);
 
-  // Sample calc — "redeeming N tokens gives X SUI".
+  // Sample calc — "redeeming 1,000,000 tokens gives X SUI".
+  // Mirrors the on-chain formula exactly:
+  //   sui_gross = coin_in * price / 10^decimals
+  //             = (sampleTokens * 10^decimals) * price / 10^decimals
+  //             = sampleTokens * price
   const sampleTokens = 1_000_000n;
-  const sampleSuiMist = useMemo(() => {
-    const base = sampleTokens * BigInt(10) ** BigInt(decimals);
-    return base * priceMistPerToken;
-  }, [decimals, priceMistPerToken]);
+  const sampleSuiMist = useMemo(
+    () => sampleTokens * priceMistPerToken,
+    [priceMistPerToken],
+  );
 
-  // Validation — rate must round to ≥ 1 mist/base-unit, otherwise the
-  // contract would treat the pool as a freebie.
-  const validation =
-    rateBn.lte(0)
-      ? null
-      : priceMistPerToken === 0n
-        ? t("validationTooSmall", {
-            decimals,
-            minimum: new BigNumber(10).pow(decimals - 9).toFixed(decimals - 9),
-          })
-        : null;
+  // Validation — rate must round to ≥ 1 mist per whole token.
+  const validation = rateBn.lte(0)
+    ? null
+    : priceMistPerToken === 0n
+      ? t("validationTooSmall")
+      : null;
 
   const canNext = priceMistPerToken > 0n && !validation;
 
@@ -917,10 +1023,7 @@ function StepRate() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: input + permanent warning */}
         <div className="space-y-5">
-          <Field
-            label={t("fieldLabel", { symbol })}
-            hint={t("fieldHint")}
-          >
+          <Field label={t("fieldLabel", { symbol })} hint={t("fieldHint")}>
             {(id) => (
               <div
                 className={cn(
@@ -972,7 +1075,10 @@ function StepRate() {
             <Row label={t("calcOneSui")}>
               <span className="font-mono tabular-nums">
                 {tokensPerSui.gt(0)
-                  ? new BigNumber(tokensPerSui).toFormat(2, BigNumber.ROUND_DOWN)
+                  ? new BigNumber(tokensPerSui).toFormat(
+                      2,
+                      BigNumber.ROUND_DOWN,
+                    )
                   : "0"}{" "}
                 {symbol}
               </span>
@@ -1165,11 +1271,19 @@ function ModeCard({
           : "border-ink/20 shadow-offset-sm hover:-translate-x-[1px] hover:-translate-y-[1px] hover:border-ink/45 hover:shadow-offset",
       )}
     >
-      <span aria-hidden className={cn("absolute inset-x-0 top-0 h-[3px]", spine)} />
+      <span
+        aria-hidden
+        className={cn("absolute inset-x-0 top-0 h-[3px]", spine)}
+      />
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="font-display text-[1.5rem] leading-[1.05]">{title}</h3>
-          <span className={cn("mt-1 inline-block font-mono text-[10px] uppercase tracking-[0.16em]", tagText)}>
+          <span
+            className={cn(
+              "mt-1 inline-block font-mono text-[10px] uppercase tracking-[0.16em]",
+              tagText,
+            )}
+          >
             {tag}
           </span>
         </div>
@@ -1238,9 +1352,8 @@ function StepReserve() {
   }, [rateBn, reserveMist]);
 
   // Leave at least 0.1 SUI for gas + future ops. Soft warning, not blocking.
-  const reservesGas = spendableMist > 100_000_000n
-    ? spendableMist - 100_000_000n
-    : 0n;
+  const reservesGas =
+    spendableMist > 100_000_000n ? spendableMist - 100_000_000n : 0n;
   const overdraft = reserveMist > spendableMist;
   const tightOnGas = !overdraft && reserveMist > reservesGas;
 
@@ -1266,7 +1379,9 @@ function StepReserve() {
                   type="text"
                   inputMode="decimal"
                   value={draft.initialReserveSui}
-                  onChange={(e) => setInitialReserve(sanitizeDecimal(e.target.value))}
+                  onChange={(e) =>
+                    setInitialReserve(sanitizeDecimal(e.target.value))
+                  }
                   placeholder="0.50"
                   className="h-14 flex-1 bg-transparent px-3 font-mono text-2xl tabular-nums text-ink outline-none placeholder:text-ink/30"
                   aria-label={t("amountAria")}
@@ -1307,15 +1422,20 @@ function StepReserve() {
             <Row label={t("depthLabel")}>
               <span className="font-mono tabular-nums">
                 {reserveMist > 0n
-                  ? formatAmount(reserveMist, { decimals: 9, maxFractionDigits: 4 }) +
-                    " SUI"
+                  ? formatAmount(reserveMist, {
+                      decimals: 9,
+                      maxFractionDigits: 4,
+                    }) + " SUI"
                   : "—"}
               </span>
             </Row>
             <Row label={t("supportsLabel")}>
               <span className="font-mono tabular-nums">
                 {tokensSupported.gt(0)
-                  ? new BigNumber(tokensSupported).toFormat(2, BigNumber.ROUND_DOWN) +
+                  ? new BigNumber(tokensSupported).toFormat(
+                      2,
+                      BigNumber.ROUND_DOWN,
+                    ) +
                     " " +
                     (draft.coin.symbol || "TOKEN")
                   : "—"}
@@ -1363,20 +1483,23 @@ function StepReview({
   const symbol = draft.coin.symbol || "TOKEN";
   const decimals = draft.coin.decimals || 9;
   const rateBn = new BigNumber(draft.rateSuiPerToken || "0");
+  // `priceMistPerToken` is mist per WHOLE token — see Step 2 + quote.ts
+  // for the on-chain formula proof. The conversion is decimal-independent.
   const priceMistPerToken = useMemo(() => {
     if (rateBn.lte(0)) return 0n;
-    const raw = rateBn
-      .multipliedBy(MIST_PER_SUI.toString())
-      .dividedBy(new BigNumber(10).pow(decimals));
+    const raw = rateBn.multipliedBy(MIST_PER_SUI.toString());
     if (!raw.isFinite() || raw.lte(0)) return 0n;
     return BigInt(raw.integerValue(BigNumber.ROUND_DOWN).toFixed(0));
-  }, [rateBn, decimals]);
+  }, [rateBn]);
 
   const reserveMist = useMemo(() => {
     const bn = new BigNumber(draft.initialReserveSui || "0");
     if (!bn.isFinite() || bn.lte(0)) return 0n;
     return BigInt(
-      bn.multipliedBy(MIST_PER_SUI.toString()).integerValue(BigNumber.ROUND_DOWN).toFixed(0),
+      bn
+        .multipliedBy(MIST_PER_SUI.toString())
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toFixed(0),
     );
   }, [draft.initialReserveSui]);
 
@@ -1424,9 +1547,7 @@ function StepReview({
       if (preflight.effects.status.status === "failure") {
         const raw = preflight.effects.status.error ?? "Unknown contract error";
         const parsed = parseRedeemAbort(raw);
-        const friendly = parsed
-          ? parsed.message
-          : `Pre-flight failed: ${raw}`;
+        const friendly = parsed ? parsed.message : `Pre-flight failed: ${raw}`;
         onDeploy({ kind: "error", message: friendly });
         return;
       }
@@ -1446,7 +1567,8 @@ function StepReview({
         (e) => e.type === REDEEM_EVENT_TYPE.PoolCreated,
       );
       const poolId = String(
-        (createdEvent?.parsedJson as { pool_id?: unknown } | undefined)?.pool_id ?? "",
+        (createdEvent?.parsedJson as { pool_id?: unknown } | undefined)
+          ?.pool_id ?? "",
       );
       onDeploy({ kind: "success", digest: result.digest, poolId });
     } catch (err) {
@@ -1488,10 +1610,14 @@ function StepReview({
               </span>
             </Row>
             <Row label={t("fieldCoinType")}>
-              <code className="font-mono text-[11.5px] break-all">{draft.coin.type}</code>
+              <code className="font-mono text-[11.5px] break-all">
+                {draft.coin.type}
+              </code>
             </Row>
             <Row label={t("fieldDecimals")}>
-              <span className="font-mono tabular-nums text-[12.5px]">{decimals}</span>
+              <span className="font-mono tabular-nums text-[12.5px]">
+                {decimals}
+              </span>
             </Row>
             <Row label={t("fieldRate")}>
               <span className="font-mono tabular-nums text-[12.5px]">
@@ -1518,7 +1644,11 @@ function StepReview({
             </Row>
             <Row label={t("fieldInitialReserve")}>
               <span className="font-mono tabular-nums text-[12.5px]">
-                {formatAmount(reserveMist, { decimals: 9, maxFractionDigits: 4 })} SUI
+                {formatAmount(reserveMist, {
+                  decimals: 9,
+                  maxFractionDigits: 4,
+                })}{" "}
+                SUI
               </span>
             </Row>
           </dl>
@@ -1527,7 +1657,10 @@ function StepReview({
         {/* Right: permanence callout */}
         <aside className="border border-poppy bg-poppy/[0.08] p-5">
           <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy">
-            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+            <span
+              aria-hidden
+              className="block h-1.5 w-1.5 rounded-full bg-poppy"
+            />
             {t("permanentEyebrow")}
           </div>
           <h3 className="mt-2 font-display text-[1.5rem] leading-[1.05] text-ink">
@@ -1537,14 +1670,18 @@ function StepReview({
             <li>
               {t.rich("permanentItem1", {
                 code: (chunks) => (
-                  <span className="font-mono text-[12px] text-ink">{chunks}</span>
+                  <span className="font-mono text-[12px] text-ink">
+                    {chunks}
+                  </span>
                 ),
               })}
             </li>
             <li>
               {t.rich("permanentItem2", {
                 code: (chunks) => (
-                  <span className="font-mono text-[12px] text-ink">{chunks}</span>
+                  <span className="font-mono text-[12px] text-ink">
+                    {chunks}
+                  </span>
                 ),
               })}
             </li>
@@ -1556,7 +1693,12 @@ function StepReview({
 
       {/* Deploy button + state */}
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-6">
-        <button type="button" onClick={() => goPrev()} className={CTA_SECONDARY} disabled={isBusy}>
+        <button
+          type="button"
+          onClick={() => goPrev()}
+          className={CTA_SECONDARY}
+          disabled={isBusy}
+        >
           <span aria-hidden>←</span>
           <span>{tActions("back")}</span>
         </button>
@@ -1683,7 +1825,11 @@ function DeploySuccess({
                 <span>{t("viewSuiscan")}</span>
                 <span aria-hidden>↗</span>
               </a>
-              <button type="button" onClick={onAnother} className={cn(CTA_SECONDARY, "ml-auto")}>
+              <button
+                type="button"
+                onClick={onAnother}
+                className={cn(CTA_SECONDARY, "ml-auto")}
+              >
                 <span>{t("deployAnother")}</span>
               </button>
             </div>

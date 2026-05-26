@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks/footer";
@@ -25,9 +26,23 @@ export default async function RedeemCreatePage() {
         <section className="relative border-b border-ink/15">
           <Container className="flex flex-col gap-4 py-10 md:flex-row md:items-end md:justify-between md:py-12">
             <div className="max-w-2xl">
-              <AccentRule color="sun">
-                <MonoLabel>{t("eyebrow")}</MonoLabel>
-              </AccentRule>
+              <Link
+                href="/redeem"
+                className="group inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
+              >
+                <span
+                  aria-hidden
+                  className="inline-block transition-transform duration-300 ease-atelier group-hover:-translate-x-0.5"
+                >
+                  ←
+                </span>
+                <span>{t("backToRedeem")}</span>
+              </Link>
+              <div className="mt-4">
+                <AccentRule color="sun">
+                  <MonoLabel>{t("eyebrow")}</MonoLabel>
+                </AccentRule>
+              </div>
               <h1 className="mt-3 text-balance font-display text-[clamp(2rem,3.6vw,3rem)] leading-[1.02] tracking-tight">
                 {t("headline")}
               </h1>

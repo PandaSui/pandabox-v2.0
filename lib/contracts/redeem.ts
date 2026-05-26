@@ -80,11 +80,18 @@ export type CreatePoolArgs = {
   /** Initial SUI to seed the reserve, in mist. */
   initialDepositMist: bigint;
   /**
-   * Exchange rate: how many mist of SUI one base unit of the project coin
-   * redeems for. Fixed forever once the pool is shared.
+   * Exchange rate: how many mist of SUI one WHOLE displayed token
+   * redeems for. Fixed forever once the pool is shared. Despite the
+   * field name, this is mist-per-whole-token, not mist-per-base-unit —
+   * the contract divides by `10^coin_decimals` internally when
+   * computing `sui_gross` (see lib/redeem/quote.ts for the on-chain
+   * formula proof against live mainnet redeems).
    *
-   * Example: a 9-decimal coin trading at 0.001 SUI per WHOLE coin →
-   * 1 mist of SUI per base unit → `priceMistPerToken = 1n`.
+   * Example: a token priced at 1 SUI per whole token →
+   *   `priceMistPerToken = 1_000_000_000n` (1e9 mist = 1 SUI).
+   *
+   * Example: a memecoin priced at 0.000001 SUI per whole token →
+   *   `priceMistPerToken = 1_000n` (regardless of coin decimals).
    */
   priceMistPerToken: bigint;
   /**

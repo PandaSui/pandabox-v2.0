@@ -1,13 +1,17 @@
 import { getTranslations } from "next-intl/server";
 import { MonoLabel } from "@/components/primitives/mono-label";
+import { AccentRule } from "@/components/primitives/accent-rule";
 import type { HydratedPool } from "@/lib/redeem/discovery";
 
 /**
- * "About this pool" panel — the trust copy holders read before signing.
- * Three short blocks: how it works (mode-aware), permanence, fee. Plain
- * prose, hairline-bordered. Translated copy comes from next-intl; the
- * `<code>` and `<strong>` tags inside the long strings are rendered via
- * `t.rich` so they pick up the right styles in every locale.
+ * "About this pool" — the trust copy holders read before signing. Three
+ * short blocks: how it works (mode-aware), permanence, fee.
+ *
+ * Renders as left-rail editorial prose, *not* a bordered card. The page's
+ * old layout boxed this into a panel with its own header and divider,
+ * which made trust copy compete visually with the activity feed and
+ * redeem form. Stripping the chrome keeps the same information density
+ * but reads as context rather than chrome.
  */
 export async function AboutPool({
   data,
@@ -26,33 +30,30 @@ export async function AboutPool({
     pool.recipientMode === "burn" ? "burnSummary" : "buybackSummary";
 
   return (
-    <section className="border border-ink/15 bg-bone">
-      <header className="flex items-center justify-between border-b border-ink/15 px-5 py-3.5">
+    <section aria-label={t("title")}>
+      <AccentRule color="sun">
         <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/40">
-          {t("permanentTerms")}
-        </span>
-      </header>
+      </AccentRule>
 
-      <div className="space-y-5 px-5 py-5">
+      <div className="mt-5 space-y-6">
         <Block heading={t("howHeading")}>
-          <p className="text-[14px] leading-relaxed text-ink/75">
+          <p className="text-[13.5px] leading-[1.6] text-ink/75">
             {t(summaryKey, { symbol })}
           </p>
         </Block>
 
         <Block heading={t("permanenceHeading")}>
-          <p className="text-[14px] leading-relaxed text-ink/75">
+          <p className="text-[13.5px] leading-[1.6] text-ink/75">
             {t.rich("permanenceBody", {
               code: (chunks) => (
-                <code className="font-mono text-[12.5px] text-ink">{chunks}</code>
+                <code className="font-mono text-[12px] text-ink">{chunks}</code>
               ),
             })}
           </p>
         </Block>
 
         <Block heading={t("feeHeading")}>
-          <p className="text-[14px] leading-relaxed text-ink/75">
+          <p className="text-[13.5px] leading-[1.6] text-ink/75">
             {t.rich("feeBody", {
               fee: feePct,
               strong: (chunks) => (
@@ -77,7 +78,7 @@ function Block({
 }) {
   return (
     <div>
-      <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ink/65">
+      <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/55">
         {heading}
       </h3>
       <div className="mt-2">{children}</div>

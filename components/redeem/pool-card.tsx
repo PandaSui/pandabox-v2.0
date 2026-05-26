@@ -16,22 +16,24 @@ const SUN_HEX = "#D9C57A";
 
 /**
  * Format the pool's exchange rate as a human-readable "1 TICKER ≈ X SUI"
- * string. The contract stores `price_mist_per_token` (mist per ONE base
- * unit of T), so the per-whole-token SUI value is
+ * string. Despite the field name, `price_mist_per_token` is mist per
+ * WHOLE token (see lib/redeem/quote.ts for the on-chain formula proof
+ * against live mainnet redeems), so the conversion is just
  *
- *   sui_per_whole_token = price_mist_per_token * 10^decimals / 1e9
+ *   sui_per_whole_token = price_mist_per_token / 1e9
  *
- * which we evaluate with BigNumber for arbitrary precision rather than
- * coercing to JS numbers.
+ * Coin decimals don't enter — the contract uses them internally when
+ * scaling `coin_in`, but they don't change the price-per-token unit.
  */
 function formatRate(args: {
   priceMistPerToken: bigint;
   decimals: number;
   symbol: string;
 }): { suiPerToken: string; tokensPerSui: string } {
-  const priceMistPerWholeToken = new BigNumber(args.priceMistPerToken.toString())
-    .multipliedBy(new BigNumber(10).pow(args.decimals));
-  const suiPerToken = priceMistPerWholeToken.dividedBy(MIST_PER_SUI.toString());
+  void args.decimals;
+  void args.symbol;
+  const suiPerToken = new BigNumber(args.priceMistPerToken.toString())
+    .dividedBy(MIST_PER_SUI.toString());
 
   // tokens-per-SUI is the natural inverse: how many whole tokens a single
   // SUI redeems for. Surfaced as a hint when the per-token SUI price is

@@ -4,9 +4,18 @@
  *
  * The on-chain formula (paraphrasing pool::redeem):
  *
- *   sui_gross = coin_in * price_mist_per_token
+ *   sui_gross = coin_in * price_mist_per_token / 10^coin_decimals
  *   fee       = sui_gross * fee_bps / 10_000
  *   sui_out   = sui_gross - fee
+ *
+ * The division by `10^coin_decimals` is the key — verified against three
+ * real mainnet redeems on the FOMO pool, e.g. `coin_in = 100 × 10⁹`,
+ * `price_mist_per_token = 1`, `coin_decimals = 9` → `sui_gross = 100`
+ * mist (not 100 SUI). The contract stores `price_mist_per_token` as
+ * **mist of SUI per WHOLE token**, despite the name — the field is the
+ * price tag a creator picks when deploying the pool ("each FOMO token
+ * is worth N mist of SUI"), and the contract handles the decimal scaling
+ * internally.
  *
  * `sui_gross` is bounded by the pool's reserve — if it would exceed
  * `sui_reserve`, the on-chain call aborts. The UI clamps below that
@@ -36,8 +45,13 @@ export type Quote = {
 export type QuoteArgs = {
   /** Amount the user wants to redeem, in base coin units (NOT decimal-formatted). */
   coinIn: bigint;
-  /** Mist of SUI per base unit of the project coin — `pool.price_mist_per_token`. */
+  /** Mist of SUI per WHOLE token — `pool.price_mist_per_token`. The
+   *  contract divides by `10^coin_decimals` internally when computing
+   *  `sui_gross`, so this is effectively the price tag on one displayed
+   *  token (e.g. 500_000_000 = 0.5 SUI per token). */
   priceMistPerToken: bigint;
+  /** Decimals of the project coin — pulled from the pool snapshot. */
+  coinDecimals: number;
   /** Current SUI reserve of the pool, in mist. */
   reserveMist: bigint;
   /** Platform fee in basis points — `platform.fee_bps`. */
@@ -52,13 +66,17 @@ export type QuoteArgs = {
 export function quoteRedeem({
   coinIn,
   priceMistPerToken,
+  coinDecimals,
   reserveMist,
   feeBps,
 }: QuoteArgs): Quote {
   if (coinIn <= 0n || priceMistPerToken <= 0n) {
     return { suiGrossMist: 0n, feeMist: 0n, suiOutMist: 0n, clamped: false };
   }
-  const requestedGross = coinIn * priceMistPerToken;
+  const tokenBaseUnits = 10n ** BigInt(coinDecimals);
+  // Matches the on-chain formula: sui_gross = coin_in * price / 10^decimals.
+  // Bigint division floors — same as the Move contract's u64 arithmetic.
+  const requestedGross = (coinIn * priceMistPerToken) / tokenBaseUnits;
   const clamped = requestedGross > reserveMist;
   const suiGrossMist = clamped ? reserveMist : requestedGross;
 
@@ -74,38 +92,43 @@ export function quoteRedeem({
  * on-chain `pool::max_redeemable_coin` getter so the UI can pre-validate
  * inputs without a roundtrip.
  *
- * Floored to the nearest base unit: `reserve / price`. When `price` is 0
- * (defensive), returns 0 rather than dividing by zero.
+ * Floored to the nearest base unit:
+ *   `max_coin_in = reserve * 10^decimals / price_mist_per_token`
+ *
+ * Derivation: solve `coin_in * price / 10^decimals ≤ reserve` for
+ * `coin_in`. When `price` is 0 (defensive), returns 0 rather than
+ * dividing by zero.
  */
 export function maxRedeemableCoin(args: {
   reserveMist: bigint;
   priceMistPerToken: bigint;
+  coinDecimals: number;
 }): bigint {
   if (args.priceMistPerToken <= 0n) return 0n;
-  return args.reserveMist / args.priceMistPerToken;
+  const tokenBaseUnits = 10n ** BigInt(args.coinDecimals);
+  return (args.reserveMist * tokenBaseUnits) / args.priceMistPerToken;
 }
 
 /**
- * Pretty exchange-rate string: "1 TOKEN ≈ X SUI" using the coin's decimals.
- * Returned as a BigNumber-printable string so the caller can hand it to
- * `tabular-nums` rendering.
+ * Pretty exchange-rate ratio: 1 whole token ⇒ X SUI. Returned as a
+ * (numerator, denominator) pair in mist so the caller can format
+ * precisely with their preferred big-decimal library.
  *
- * Example: a 9-decimal coin with `priceMistPerToken = 1n` →
- *   1 whole token (1e9 base units) ⇒ 1e9 mist ⇒ 1 SUI per token.
+ * Example: a pool with `priceMistPerToken = 1_000_000_000n` (1 SUI per
+ * token) → returns `{ numerator: 1_000_000_000n, denominator: 1_000_000_000n }`
+ * = 1 SUI per token.
  */
 export function rateAsSuiPerToken(args: {
   priceMistPerToken: bigint;
   coinDecimals: number;
 }): { numerator: bigint; denominator: bigint } {
-  // 1 whole token = 10^decimals base units.
-  // sui_per_token (in mist) = price_mist_per_token * 10^decimals
-  // sui_per_token (in SUI)  = sui_per_token (mist) / 1e9
-  // We return a (numerator, denominator) pair in mist/mist so the caller
-  // can format precisely with their preferred big-decimal library.
-  const tokenBaseUnits = 10n ** BigInt(args.coinDecimals);
-  const suiPerTokenMist = args.priceMistPerToken * tokenBaseUnits;
+  // `priceMistPerToken` is already mist-per-whole-token, so the numerator
+  // is just the price. `coinDecimals` no longer participates — kept in
+  // the signature for back-compat and in case callers want to surface it
+  // alongside the rate.
+  void args.coinDecimals;
   const MIST_PER_SUI = 10n ** 9n;
-  return { numerator: suiPerTokenMist, denominator: MIST_PER_SUI };
+  return { numerator: args.priceMistPerToken, denominator: MIST_PER_SUI };
 }
 
 /**

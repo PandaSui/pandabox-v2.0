@@ -11,7 +11,7 @@ import {
 } from "@/lib/redeem/server";
 import type { HydratedPool } from "@/lib/redeem/discovery";
 import { PoolHero } from "@/components/redeem/pool-hero";
-import { PoolMetaPanel } from "@/components/redeem/pool-meta-panel";
+import { PoolMetaStrip } from "@/components/redeem/pool-meta-strip";
 import { AboutPool } from "@/components/redeem/about-pool";
 import { PoolActivityFeed } from "@/components/redeem/pool-activity-feed";
 import { RedeemPanel } from "@/components/redeem/redeem-panel";
@@ -69,33 +69,53 @@ export default async function RedeemPoolPage({ params }: PageProps) {
       <main id="main">
         <PoolHero data={hydrated} feeBps={feeBps} paused={paused} />
 
+        {/*
+          Metadata strip — a full-width band of mono-truncated identifiers
+          (pool, coin, recipient, creator, platform) plus a Suiscan link.
+          Demoting this out of the body grid frees the left rail for trust
+          copy and reads as a transaction-receipt header instead of a
+          competing column.
+        */}
+        <PoolMetaStrip data={hydrated} />
+
         <section className="relative">
           <Container className="py-10 lg:py-14">
             {/*
-              3-column layout on lg+:
-                · Left rail (3/12) — pool meta + deposit panel.
-                · Center (5/12)    — About + Activity.
-                · Right rail (4/12) — Redeem panel (sticky).
-              Mobile / tablet stack: redeem panel first (action above the
-              fold), then about, then activity, then meta + deposit.
+              Two-band body — actions+context above the fold, activity
+              below at full width.
+                · Top band: About (4) · Redeem (4) · Top-up Reserve (4).
+                  Read order: explain → primary action → secondary action.
+                  On mobile they stack with Redeem first so the primary
+                  action is above the fold; About moves to the bottom.
+                · Bottom band: Activity feed, spanning the full row. Gives
+                  the list room to grow horizontally so rows don't have to
+                  wrap when the address column needs space — the previous
+                  5/12 center lane was the constraint that forced single-
+                  line truncation everywhere.
             */}
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-              <div className="lg:order-1 lg:col-span-3 space-y-6">
-                <PoolMetaPanel data={hydrated} />
+            <div className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-12">
+              <div className="order-2 lg:order-1 lg:col-span-4">
+                <AboutPool data={hydrated} feeBps={feeBps} />
+              </div>
+
+              <div className="order-1 lg:order-2 lg:col-span-4">
+                <RedeemPanel
+                  data={hydrated}
+                  feeBps={feeBps}
+                  paused={paused}
+                />
+              </div>
+
+              <div className="order-3 lg:col-span-4">
                 <DepositPanel data={hydrated} />
               </div>
 
-              <div className="lg:order-2 lg:col-span-5 space-y-6">
-                <AboutPool data={hydrated} feeBps={feeBps} />
+              <div className="order-4 lg:col-span-12 lg:mt-2">
                 <PoolActivityFeed
                   items={activity}
                   symbol={metadata.symbol}
                   coinDecimals={pool.coinDecimals}
                 />
-              </div>
-
-              <div className="lg:order-3 lg:col-span-4">
-                <RedeemPanel data={hydrated} feeBps={feeBps} paused={paused} />
               </div>
             </div>
           </Container>

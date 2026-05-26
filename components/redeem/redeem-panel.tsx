@@ -121,10 +121,17 @@ export function RedeemPanel({
       quoteRedeem({
         coinIn: amountBase,
         priceMistPerToken: pool.priceMistPerToken,
+        coinDecimals: pool.coinDecimals,
         reserveMist: pool.suiReserveMist,
         feeBps,
       }),
-    [amountBase, pool.priceMistPerToken, pool.suiReserveMist, feeBps],
+    [
+      amountBase,
+      pool.priceMistPerToken,
+      pool.coinDecimals,
+      pool.suiReserveMist,
+      feeBps,
+    ],
   );
 
   const maxByReserve = useMemo(
@@ -132,8 +139,9 @@ export function RedeemPanel({
       maxRedeemableCoin({
         reserveMist: pool.suiReserveMist,
         priceMistPerToken: pool.priceMistPerToken,
+        coinDecimals: pool.coinDecimals,
       }),
-    [pool.suiReserveMist, pool.priceMistPerToken],
+    [pool.suiReserveMist, pool.priceMistPerToken, pool.coinDecimals],
   );
 
   // The amount the user can actually redeem — bounded by both balance
@@ -238,12 +246,16 @@ export function RedeemPanel({
   const isPanelBusy = state.kind === "submitting" || state.kind === "confirming";
 
   return (
-    <aside id="redeem" className="lg:sticky lg:top-24">
-      <div className="border border-ink bg-bone shadow-offset-sm">
-        {/* Top accent spine */}
-        <span aria-hidden className="block h-[2px] bg-sun" />
+    <aside id="redeem">
+      {/* The sticky wrapper lives one level up so the redeem + deposit
+          pair tracks together on the action column. */}
+      <div className="border border-ink/25 bg-bone shadow-offset-sm">
+        {/* Top accent spine — what marks this as the primary action panel
+            without resorting to a heavy full-ink border that fights the
+            hairlines used across the rest of the page. */}
+        <span aria-hidden className="block h-[3px] bg-sun" />
 
-        <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3">
+        <header className="flex items-baseline justify-between border-b border-ink/15 px-5 py-3.5">
           <MonoLabel className="text-[10px]">{t("title")}</MonoLabel>
           <PanelStatusPill
             paused={paused}
@@ -328,7 +340,14 @@ export function RedeemPanel({
               }}
             />
 
-            {validation && (
+            {/*
+              Show the validation pill ONLY when the user has actually
+              entered an amount that's invalid (exceeds balance / reserve).
+              In baseline empty states (no wallet balance / paused / empty
+              reserve) the disabled CTA carries the same copy — surfacing
+              it twice reads as the panel "yelling" at the user.
+            */}
+            {validation && amountBase > 0n && (
               <p className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-poppy">
                 {validation}
               </p>

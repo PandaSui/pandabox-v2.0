@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import BigNumber from "bignumber.js";
 import { getTranslations } from "next-intl/server";
 import { cn } from "@pandasui/ui/lib";
@@ -6,6 +7,7 @@ import { Container } from "@/components/primitives/container";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Identicon } from "@/components/identity/identicon";
+import { CoinType } from "@/components/identity/coin-type";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { RelativeTime } from "@/components/identity/relative-time";
 import { MIST_PER_SUI } from "@/lib/sui";
@@ -39,14 +41,18 @@ export async function PoolHero({
   const { pool, metadata, createdEvent } = data;
   const symbol = metadata.symbol;
 
-  // Per-whole-token SUI rate — same math as the discovery card so they
-  // visually agree across pages.
+  // Per-whole-token SUI rate. `priceMistPerToken` is mist per WHOLE
+  // token (see lib/redeem/quote.ts), so SUI/token is just price / 1e9.
+  // Coin decimals don't enter — the contract uses them internally to
+  // scale `coin_in`, but they don't change the price-per-token unit.
   const suiPerToken = new BigNumber(pool.priceMistPerToken.toString())
-    .multipliedBy(new BigNumber(10).pow(pool.coinDecimals))
     .dividedBy(MIST_PER_SUI.toString());
-  const rateLabel = suiPerToken.toFixed(
-    Math.min(6, Math.max(2, suiPerToken.lt(0.01) ? 6 : 4)),
-  );
+  // Strip trailing zeros so a whole-number rate reads "1" not "1.0000",
+  // while sub-cent rates still get up to 6 fraction digits of precision.
+  const rateDigits = suiPerToken.lt(0.01) ? 6 : 4;
+  const rateLabel = suiPerToken
+    .toFixed(rateDigits)
+    .replace(/\.?0+$/, "");
 
   const redeemedFormatted = formatAmount(pool.totalCoinRedeemed, {
     decimals: pool.coinDecimals,
@@ -68,94 +74,117 @@ export async function PoolHero({
         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-sun"
       />
 
-      <Container className="relative grid grid-cols-1 gap-10 py-10 lg:grid-cols-12 lg:gap-10 lg:py-14">
-        {/* ── Identity column ─────────────────────────────────────── */}
-        <div className="lg:col-span-7">
+      <Container className="relative py-9 lg:py-12">
+        <Link
+          href="/redeem"
+          className="group inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
+        >
+          <span
+            aria-hidden
+            className="inline-block transition-transform duration-300 ease-atelier group-hover:-translate-x-0.5"
+          >
+            ←
+          </span>
+          <span>{t("back")}</span>
+        </Link>
+        <div className="mt-4">
           <AccentRule color="sun">
             <MonoLabel>{t("eyebrow")}</MonoLabel>
           </AccentRule>
+        </div>
 
-          <div className="mt-4 flex flex-wrap items-start gap-5">
-            <CoinAvatarLarge
-              iconUrl={metadata.iconUrl}
-              symbol={symbol}
-              seed={pool.coinType}
-            />
-            <div className="min-w-0 flex-1">
-              <h1 className="font-display text-balance text-[clamp(1.875rem,3.4vw,3rem)] leading-[1] tracking-tight">
-                {metadata.name}
-              </h1>
-              <p className="mt-1.5 inline-flex items-center gap-2 font-mono text-[12px] text-ink/55">
-                <span className="font-semibold uppercase tracking-[0.08em] text-ink/80">
-                  {symbol}
-                </span>
-                <span aria-hidden className="text-ink/20">·</span>
-                <span className="break-all">{pool.coinType}</span>
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-2.5">
-                <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
-                <span className="inline-flex items-center gap-1.5 border border-ink/20 bg-bone px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/65">
-                  <span aria-hidden className="block h-1.5 w-1.5 bg-sun" />
-                  {t("permanent")}
-                </span>
-                <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/45">
+        <div className="mt-5 grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+          {/* ── Identity column ─────────────────────────────────────── */}
+          <div className="lg:col-span-7">
+            <div className="flex flex-wrap items-start gap-5">
+              <CoinAvatarLarge
+                iconUrl={metadata.iconUrl}
+                symbol={symbol}
+                seed={pool.coinType}
+              />
+              <div className="min-w-0 flex-1">
+                <h1 className="font-display text-balance text-[clamp(1.875rem,3.4vw,3rem)] leading-[1] tracking-tight">
+                  {metadata.name}
+                </h1>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[12px] text-ink/55">
+                  <span className="font-semibold uppercase tracking-[0.08em] text-ink/80">
+                    {symbol}
+                  </span>
+                  <span aria-hidden className="text-ink/20">·</span>
+                  <CoinType value={pool.coinType} className="text-ink/55" />
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                  <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
+                  <span className="inline-flex items-center gap-1.5 border border-ink/20 bg-bone px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/65">
+                    <span aria-hidden className="block h-1.5 w-1.5 bg-sun" />
+                    {t("permanent")}
+                  </span>
                   <span aria-hidden className="text-ink/25">·</span>
-                  {t("deployed")} <RelativeTime value={createdEvent?.timestampMs ?? pool.createdAtMs} />
-                </span>
+                  <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/45">
+                    {t("deployed")}{" "}
+                    <RelativeTime
+                      value={createdEvent?.timestampMs ?? pool.createdAtMs}
+                    />
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ── Stat strip — 4 cells, hairline-divided ────────────────── */}
-        <div className="lg:col-span-5">
-          <div className="grid grid-cols-2 divide-x divide-y divide-ink/15 border border-ink/15 bg-bone sm:grid-cols-4 sm:divide-y-0">
-            <Stat
-              label={tShared("rate")}
-              valueNode={
-                <span className="font-mono tabular-nums">
-                  <span className="text-[15px] text-ink">{rateLabel}</span>
-                  <span className="ml-1 text-[10px] uppercase tracking-[0.12em] text-ink/55">
-                    {t("rateUnit", { symbol })}
+          {/* ── Stat strip — 4 cells, hairline-divided ────────────────── */}
+          <div className="lg:col-span-5">
+            <div className="grid grid-cols-2 divide-x divide-y divide-ink/15 border border-ink/15 bg-bone sm:grid-cols-4 sm:divide-y-0">
+              <Stat
+                label={tShared("rate")}
+                valueNode={
+                  <span className="font-mono tabular-nums">
+                    <span className="text-[15px] text-ink">{rateLabel}</span>
+                    <span className="ml-1 text-[10px] uppercase tracking-[0.12em] text-ink/55">
+                      {t("rateUnit", { symbol })}
+                    </span>
                   </span>
-                </span>
-              }
-            />
-            <Stat
-              label={tShared("reserve")}
-              valueNode={
-                <SuiAmount
-                  mist={pool.suiReserveMist}
-                  compact
-                  maxFractionDigits={3}
-                  glyphSize={10}
-                  className={cn(
-                    "text-[15px]",
-                    pool.suiReserveMist === 0n ? "text-poppy" : "text-ink",
-                  )}
-                />
-              }
-            />
-            <Stat
-              label={tShared("redeemed")}
-              value={`${redeemedFormatted} ${symbol}`}
-            />
-            <Stat
-              label={tShared("paidOut")}
-              valueNode={
-                <SuiAmount
-                  mist={pool.totalSuiPaidOutMist}
-                  compact
-                  maxFractionDigits={3}
-                  glyphSize={10}
-                  className="text-[15px] text-ink"
-                />
-              }
-            />
-          </div>
-          <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-            <span>{t("feeNote", { fee: (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2) })}</span>
-            <span>{t("live")}</span>
+                }
+              />
+              <Stat
+                label={tShared("reserve")}
+                valueNode={
+                  <SuiAmount
+                    mist={pool.suiReserveMist}
+                    compact
+                    maxFractionDigits={3}
+                    glyphSize={10}
+                    className={cn(
+                      "text-[15px]",
+                      pool.suiReserveMist === 0n ? "text-poppy" : "text-ink",
+                    )}
+                  />
+                }
+              />
+              <Stat
+                label={tShared("redeemed")}
+                value={`${redeemedFormatted} ${symbol}`}
+              />
+              <Stat
+                label={tShared("paidOut")}
+                valueNode={
+                  <SuiAmount
+                    mist={pool.totalSuiPaidOutMist}
+                    compact
+                    maxFractionDigits={3}
+                    glyphSize={10}
+                    className="text-[15px] text-ink"
+                  />
+                }
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+              <span>
+                {t("feeNote", {
+                  fee: (feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2),
+                })}
+              </span>
+              <span>{t("live")}</span>
+            </div>
           </div>
         </div>
       </Container>

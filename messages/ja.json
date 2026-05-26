@@ -382,7 +382,8 @@
         "feeNote": "{fee}% platform fee on every redeem",
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
-        "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged."
+        "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
+        "back": "リディームに戻る"
       },
       "meta": {
         "title": "Pool details",
@@ -414,7 +415,10 @@
         "kindDeposit": "Deposit",
         "by": "by",
         "feeShort": "fee {value}",
-        "addReserve": "+ reserve"
+        "addReserve": "+ reserve",
+        "newestFirst": "新しい順",
+        "kindCreated": "作成",
+        "initialDeposit": "初期入金"
       },
       "redeemPanel": {
         "title": "Redeem this pool",
@@ -468,6 +472,10 @@
         "body": "Either the object ID doesn't exist, or it isn't a Pandabox redeem pool. Double-check the address — Sui object IDs are 32 bytes (64 hex). The discovery surface only lists known-good pools.",
         "ctaBack": "Back to redeem",
         "ctaTools": "Onchain tools"
+      },
+      "tabs": {
+        "activity": "アクティビティ",
+        "about": "概要"
       }
     },
     "create": {
@@ -479,7 +487,8 @@
         "body": "You'll pick the coin, set the exchange rate, choose where redeemed coins are routed, and seed the reserve. The contract shares the resulting <code>RedeemPool&lt;T&gt;</code> object — and from that moment, its rate and recipient are locked on-chain forever.",
         "traitPermanent": "Permanent terms",
         "traitFee": "{fee}% platform fee",
-        "traitOneTx": "One tx · sub-cent gas"
+        "traitOneTx": "One tx · sub-cent gas",
+        "backToRedeem": "リディームに戻る"
       },
       "nav": {
         "aria": "Wizard steps",
@@ -518,7 +527,9 @@
         "errorMeta": "Could not resolve coin metadata.",
         "errorNoMetadata": "No CoinMetadata published for this type.",
         "awaiting": "Awaiting coin type",
-        "decimals": "{n} decimals"
+        "decimals": "{n} decimals",
+        "fromPandabox": "Pandaboxで作成したトークン",
+        "fromPandaboxLoading": "ローンチを検索中…"
       },
       "existingPool": {
         "eyebrow": "A pool for this coin already exists",
@@ -537,7 +548,7 @@
         "fieldLabel": "Rate · SUI per 1 {symbol}",
         "fieldHint": "Whole SUI per whole token. Example: 0.001 means 1,000 tokens redeem for 1 SUI.",
         "rateUnit": "SUI / {symbol}",
-        "validationTooSmall": "Rate too small. With {decimals} decimals, the contract needs at least 1 mist per base unit (≈ {minimum} SUI per token).",
+        "validationTooSmall": "レートが小さすぎます。コントラクトが保存できる最小価格は 1 トークンあたり 1 mist（0.000000001 SUI）です。",
         "permanentNote": "Permanent — the contract has no setter for <code>price_mist_per_token</code>.",
         "calculator": "Calculator",
         "calcOneToken": "1 {symbol} →",

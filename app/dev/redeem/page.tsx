@@ -179,7 +179,11 @@ function QuoteSanity({
   feeBps: number;
   decimals: number;
 }) {
-  const cap = maxRedeemableCoin({ reserveMist: reserve, priceMistPerToken: price });
+  const cap = maxRedeemableCoin({
+    reserveMist: reserve,
+    priceMistPerToken: price,
+    coinDecimals: decimals,
+  });
   // Try three sample sizes: 1 whole token, 25% of cap, 110% of cap (to see clamp).
   const oneWhole = 10n ** BigInt(decimals);
   const quarterOfCap = cap > 0n ? cap / 4n : 0n;
@@ -200,6 +204,7 @@ function QuoteSanity({
         const q = quoteRedeem({
           coinIn: c.coinIn,
           priceMistPerToken: price,
+          coinDecimals: decimals,
           reserveMist: reserve,
           feeBps,
         });
