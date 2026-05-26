@@ -171,6 +171,7 @@ export function PoolCard({
             <SuiAmount
               mist={pool.suiReserveMist}
               maxFractionDigits={4}
+              adaptive
               showGlyph
               glyphSize={11}
               className={cn(

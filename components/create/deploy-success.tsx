@@ -286,7 +286,10 @@ export function DeploySuccess({
         <TxHash value={txDigest} head={6} tail={4} />
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+      {/* Vertical stack — primary CTA on top, "Share on X" full-width
+          below as a secondary outlined action. Same layout the Claim
+          success modal uses, so both success surfaces read consistently. */}
+      <div className="mt-5 space-y-2">
         {onContinue && (
           <button
             data-cta
@@ -294,7 +297,7 @@ export function DeploySuccess({
             type="button"
             onClick={onContinue}
             className={cn(
-              "diecut inline-flex h-10 items-center justify-center gap-2 border border-ink bg-ink px-5",
+              "diecut flex h-10 w-full items-center justify-center gap-2 border border-ink bg-ink px-5",
               "font-mono-label text-[11px] text-bone shadow-offset-sm",
               "transition-all duration-200 ease-out hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-offset",
               "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
@@ -311,7 +314,7 @@ export function DeploySuccess({
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex h-10 items-center gap-2 border border-ink/30 px-4",
+            "flex h-10 w-full items-center justify-center gap-2 border border-ink/30 px-4",
             "font-mono-label text-[10px] text-ink/75 transition-colors",
             "hover:border-ink hover:text-ink",
           )}

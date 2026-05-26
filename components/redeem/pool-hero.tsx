@@ -167,6 +167,7 @@ export async function PoolHero({
                   <SuiAmount
                     mist={pool.suiReserveMist}
                     compact
+                    adaptive
                     maxFractionDigits={3}
                     glyphSize={10}
                     className={cn(
@@ -186,6 +187,7 @@ export async function PoolHero({
                   <SuiAmount
                     mist={pool.totalSuiPaidOutMist}
                     compact
+                    adaptive
                     maxFractionDigits={3}
                     glyphSize={10}
                     className="text-[15px] text-ink"
