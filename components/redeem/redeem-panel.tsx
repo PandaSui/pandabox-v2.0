@@ -7,8 +7,10 @@ import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
   useSuiClient,
+  useSuiClientContext,
   useSuiClientQuery,
 } from "@mysten/dapp-kit";
+import { useQueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
 import { ArrowDiag, Modal } from "@pandasui/ui";
@@ -68,6 +70,8 @@ export function RedeemPanel({
   const symbol = metadata.symbol;
   const account = useCurrentAccount();
   const client = useSuiClient();
+  const { network } = useSuiClientContext();
+  const queryClient = useQueryClient();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
   const router = useRouter();
   const t = useTranslations("redeem.detail.redeemPanel");
@@ -226,6 +230,14 @@ export function RedeemPanel({
           // hero + activity feed render through).
           await bustRedeemPoolCache(pool.objectId).catch(() => {});
           router.refresh();
+          // Invalidate the wallet's `getCoins` cache so the balance row
+          // (and MAX clamp) reflect the post-redeem state. `useSuiClientQuery`
+          // keys as `[network, method, params, ...]` — a prefix match on
+          // `[network, "getCoins"]` covers this pool's coin type without
+          // hardcoding params.
+          queryClient.invalidateQueries({
+            queryKey: [network, "getCoins"],
+          });
         })
         .catch(() => {
           // Even if waitForTransaction errors, the tx was signed — show

@@ -422,6 +422,13 @@ function StepCoin() {
   const tOwner = useTranslations("redeem.create.metadataOwner");
   const [typed, setTyped] = useState(draft.coin.type);
 
+  // Sync local input ← store when the draft is wiped externally (wizard
+  // reset). Without this the local `typed` keeps the stale value because
+  // it's seeded only on mount.
+  useEffect(() => {
+    if (!draft.coin.type) setTyped("");
+  }, [draft.coin.type]);
+
   // Live metadata lookup. Re-runs whenever the typed coin type changes.
   const normalized = normalizeMaybeCoinType(typed);
   const {
