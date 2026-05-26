@@ -581,27 +581,125 @@ function FinalizeSuccess({
 }
 
 function ReceiptStack({ count }: { count: number }) {
-  // Three stacked diecut cards with slight rotation — visual cue that
-  // receipts are being burned in batch.
+  // One to three stacked paper-receipt SVGs with slight rotation — gives
+  // a visible cue that ContributionReceipts are being burned in batch.
+  // Each "card" is a SlipSVG: tiny receipt with header bar, line items,
+  // total row, and a perforated zigzag tear-edge at the bottom. Reads
+  // as a receipt at a glance instead of an empty bordered box.
   const cards = [0, 1, 2].slice(0, Math.min(3, count));
   return (
     <div className="relative h-14 w-14 shrink-0" aria-hidden>
       {cards.map((i) => (
         <div
           key={i}
-          className="absolute inset-0 border border-ink/30 bg-bone"
+          className="absolute inset-0"
           style={{
             transform: `rotate(${(i - 1) * 6}deg) translate(${i * 2}px, ${i * -2}px)`,
             zIndex: cards.length - i,
           }}
-        />
+        >
+          <ReceiptSlipSVG />
+        </div>
       ))}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="relative z-10 font-mono-label text-[10px] text-ink/60">
-          {count > 3 ? `×${count}` : ""}
-        </span>
-      </div>
+      {count > 3 && (
+        <div className="absolute -bottom-1 -right-1 z-10 border border-ink bg-bone px-1 font-mono text-[9px] tabular-nums text-ink">
+          ×{count}
+        </div>
+      )}
     </div>
+  );
+}
+
+/**
+ * Compact paper-receipt glyph — 56×56 SVG sized to match the round token
+ * icon in the "YOU RECEIVE" tile. Hand-tuned coords; tweaking the
+ * viewBox will throw off the perforation rhythm at the bottom edge.
+ */
+function ReceiptSlipSVG() {
+  return (
+    <svg
+      viewBox="0 0 56 56"
+      width="56"
+      height="56"
+      role="presentation"
+      className="text-ink"
+    >
+      {/* Paper body — flat top, perforated bottom via the zigzag path. */}
+      <path
+        d="M4 4 H52 V46 L49.5 49 L47 46 L44.5 49 L42 46 L39.5 49 L37 46 L34.5 49 L32 46 L29.5 49 L27 46 L24.5 49 L22 46 L19.5 49 L17 46 L14.5 49 L12 46 L9.5 49 L7 46 L4 49 Z"
+        fill="currentColor"
+        fillOpacity="0.03"
+        stroke="currentColor"
+        strokeOpacity="0.45"
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+      {/* Header bar — filled to read as the receipt's title strip. */}
+      <rect
+        x="7"
+        y="8"
+        width="42"
+        height="4"
+        fill="currentColor"
+        fillOpacity="0.65"
+      />
+      {/* Line items — three short hairlines, varied widths so they read
+          as wrapped lines of text rather than a barcode. */}
+      <line
+        x1="7"
+        y1="18"
+        x2="38"
+        y2="18"
+        stroke="currentColor"
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
+      <line
+        x1="7"
+        y1="22"
+        x2="44"
+        y2="22"
+        stroke="currentColor"
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
+      <line
+        x1="7"
+        y1="26"
+        x2="32"
+        y2="26"
+        stroke="currentColor"
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
+      {/* Total row — divider above, a wider value bar below to evoke
+          "TOTAL  $X.XX". */}
+      <line
+        x1="7"
+        y1="32"
+        x2="49"
+        y2="32"
+        stroke="currentColor"
+        strokeOpacity="0.45"
+        strokeWidth="0.75"
+      />
+      <rect
+        x="7"
+        y="36"
+        width="14"
+        height="3"
+        fill="currentColor"
+        fillOpacity="0.55"
+      />
+      <rect
+        x="32"
+        y="36"
+        width="17"
+        height="3"
+        fill="currentColor"
+        fillOpacity="0.7"
+      />
+    </svg>
   );
 }
 
