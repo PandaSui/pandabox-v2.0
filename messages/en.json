@@ -385,9 +385,9 @@
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
         "back": "Back to redeem",
         "deployerRun": "Deployer-run",
-        "deployerRunTitle": "Pool creator matches the coin's metadata owner — verified on chain.",
+        "deployerRunTitle": "Pool creator matches the coin's metadata owner, verified on chain.",
         "unofficial": "Unofficial",
-        "unofficialTitle": "Pool creator doesn't match the coin's known deployer — verify the rate and reserve before redeeming."
+        "unofficialTitle": "Pool creator doesn't match the coin's known deployer, verify the rate and reserve before redeeming."
       },
       "meta": {
         "title": "Pool details",

@@ -46,8 +46,9 @@ export async function PoolHero({
   // token (see lib/redeem/quote.ts), so SUI/token is just price / 1e9.
   // Coin decimals don't enter — the contract uses them internally to
   // scale `coin_in`, but they don't change the price-per-token unit.
-  const suiPerToken = new BigNumber(pool.priceMistPerToken.toString())
-    .dividedBy(MIST_PER_SUI.toString());
+  const suiPerToken = new BigNumber(
+    pool.priceMistPerToken.toString(),
+  ).dividedBy(MIST_PER_SUI.toString());
   // Auto-tier precision so the rate stays legible across five orders of
   // magnitude without losing the trailing zeros that make the unit
   // explicit:
@@ -121,11 +122,16 @@ export async function PoolHero({
                   <span className="font-semibold uppercase tracking-[0.08em] text-ink/80">
                     {symbol}
                   </span>
-                  <span aria-hidden className="text-ink/20">·</span>
+                  <span aria-hidden className="text-ink/20">
+                    ·
+                  </span>
                   <CoinType value={pool.coinType} className="text-ink/55" />
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                  <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
+                  <RecipientBadge
+                    mode={pool.recipientMode}
+                    address={pool.recipient}
+                  />
                   {/* Three trust states, two visible:
                         · deployer-run → jade pill (verified)
                         · unofficial   → poppy pill (creator differs from
@@ -143,10 +149,13 @@ export async function PoolHero({
                     if (signal === "deployer-run") {
                       return (
                         <span
-                          className="inline-flex items-center gap-1.5 border border-jade/45 bg-jade/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-jade"
+                          className="inline-flex items-center gap-1.5 border border-jade/45 bg-jade/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-jade hover:cursor-help"
                           title={t("deployerRunTitle")}
                         >
-                          <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
+                          <span
+                            aria-hidden
+                            className="block h-1.5 w-1.5 rounded-full bg-jade"
+                          />
                           {t("deployerRun")}
                         </span>
                       );
@@ -154,10 +163,13 @@ export async function PoolHero({
                     if (signal === "unofficial") {
                       return (
                         <span
-                          className="inline-flex items-center gap-1.5 border border-poppy/50 bg-poppy/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy"
+                          className="inline-flex items-center gap-1.5 border border-poppy/50 bg-poppy/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy hover:cursor-help"
                           title={t("unofficialTitle")}
                         >
-                          <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+                          <span
+                            aria-hidden
+                            className="block h-1.5 w-1.5 rounded-full bg-poppy"
+                          />
                           {t("unofficial")}
                         </span>
                       );
@@ -168,7 +180,9 @@ export async function PoolHero({
                     <span aria-hidden className="block h-1.5 w-1.5 bg-sun" />
                     {t("permanent")}
                   </span>
-                  <span aria-hidden className="text-ink/25">·</span>
+                  <span aria-hidden className="text-ink/25">
+                    ·
+                  </span>
                   <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/45">
                     {t("deployed")}{" "}
                     <RelativeTime
@@ -249,9 +263,14 @@ export async function PoolHero({
       {paused && (
         <div className="relative border-t border-poppy/35 bg-poppy/[0.08]">
           <Container className="flex flex-wrap items-center gap-3 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-poppy md:py-3.5">
-            <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+            <span
+              aria-hidden
+              className="block h-1.5 w-1.5 rounded-full bg-poppy"
+            />
             <span className="font-semibold">{t("pausedTitle")}</span>
-            <span aria-hidden className="text-poppy/40">·</span>
+            <span aria-hidden className="text-poppy/40">
+              ·
+            </span>
             <span className="normal-case tracking-normal text-poppy/85">
               {t("pausedBody")}
             </span>

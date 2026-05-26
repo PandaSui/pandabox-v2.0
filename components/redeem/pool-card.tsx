@@ -33,8 +33,9 @@ function formatRate(args: {
 }): { suiPerToken: string; tokensPerSui: string } {
   void args.decimals;
   void args.symbol;
-  const suiPerToken = new BigNumber(args.priceMistPerToken.toString())
-    .dividedBy(MIST_PER_SUI.toString());
+  const suiPerToken = new BigNumber(
+    args.priceMistPerToken.toString(),
+  ).dividedBy(MIST_PER_SUI.toString());
 
   // tokens-per-SUI is the natural inverse: how many whole tokens a single
   // SUI redeems for. Surfaced as a hint when the per-token SUI price is
@@ -128,7 +129,9 @@ export function PoolCard({
               <span className="font-medium uppercase tracking-[0.06em] text-ink/70">
                 {symbol}
               </span>
-              <span aria-hidden className="text-ink/25">·</span>
+              <span aria-hidden className="text-ink/25">
+                ·
+              </span>
               <span className="truncate">
                 {pool.coinType.split("::").pop() ?? ""}
               </span>
@@ -150,15 +153,21 @@ export function PoolCard({
             if (signal === "deployer-run") {
               return (
                 <span className="inline-flex items-center gap-1 border border-jade/45 bg-jade/[0.08] px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.16em] text-jade">
-                  <span aria-hidden className="block h-1 w-1 rounded-full bg-jade" />
+                  <span
+                    aria-hidden
+                    className="block h-1 w-1 rounded-full bg-jade"
+                  />
                   deployer-run
                 </span>
               );
             }
             if (signal === "unofficial") {
               return (
-                <span className="inline-flex items-center gap-1 border border-poppy/50 bg-poppy/[0.08] px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.16em] text-poppy">
-                  <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
+                <span className="inline-flex items-center gap-1 border border-poppy/50 bg-poppy/[0.08] px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.16em] text-poppy ">
+                  <span
+                    aria-hidden
+                    className="block h-1 w-1 rounded-full bg-poppy"
+                  />
                   unofficial
                 </span>
               );
@@ -235,8 +244,14 @@ export function PoolCard({
       <div className="relative mt-auto flex items-center justify-between gap-3 px-5 py-3.5">
         <div className="flex min-w-0 items-center gap-2 font-mono text-[10.5px] text-ink/55">
           <span className="uppercase tracking-[0.16em] text-ink/40">by</span>
-          <Address value={pool.creator} className="text-ink/70" copyable={false} />
-          <span aria-hidden className="text-ink/20">·</span>
+          <Address
+            value={pool.creator}
+            className="text-ink/70"
+            copyable={false}
+          />
+          <span aria-hidden className="text-ink/20">
+            ·
+          </span>
           <RelativeTime
             value={createdEvent?.timestampMs ?? pool.createdAtMs}
             className="text-ink/45"
@@ -254,7 +269,8 @@ export function PoolCard({
           shout but loud enough that a crypto-native sees it before
           clicking. */}
       <div className="relative border-t border-ink/10 px-5 py-2 font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink/35">
-        {(feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2)}% platform fee · taken from gross SUI
+        {(feeBps / 100).toFixed(feeBps % 100 === 0 ? 0 : 2)}% platform fee ·
+        taken from gross SUI
       </div>
     </Link>
   );
