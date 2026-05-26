@@ -10,6 +10,7 @@ import { SuiAmount } from "@/components/identity/sui-amount";
 import { MIST_PER_SUI } from "@/lib/sui";
 import { formatAmount } from "@/lib/amount";
 import type { HydratedPool } from "@/lib/redeem/discovery";
+import { getPoolTrustSignal } from "@/lib/redeem/discovery";
 import { RecipientBadge } from "./recipient-badge";
 
 const SUN_HEX = "#D9C57A";
@@ -134,7 +135,37 @@ export function PoolCard({
             </span>
           </div>
         </div>
-        <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
+          {/* Trust badge — jade DEPLOYER-RUN when verified, poppy
+              UNOFFICIAL when the pool's creator differs from the coin's
+              known deployer, nothing when we can't say either way
+              (frozen metadata + no Pandabox record). */}
+          {(() => {
+            const signal = getPoolTrustSignal({
+              poolCreator: pool.creator,
+              metadataOwner: metadata.owner,
+              pandaboxCreator: data.pandaboxCreator,
+            });
+            if (signal === "deployer-run") {
+              return (
+                <span className="inline-flex items-center gap-1 border border-jade/45 bg-jade/[0.08] px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.16em] text-jade">
+                  <span aria-hidden className="block h-1 w-1 rounded-full bg-jade" />
+                  deployer-run
+                </span>
+              );
+            }
+            if (signal === "unofficial") {
+              return (
+                <span className="inline-flex items-center gap-1 border border-poppy/50 bg-poppy/[0.08] px-1.5 py-[2px] font-mono text-[9px] uppercase tracking-[0.16em] text-poppy">
+                  <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
+                  unofficial
+                </span>
+              );
+            }
+            return null;
+          })()}
+        </div>
       </div>
 
       {/* ── Rate row ───────────────────────────────────────────────── */}

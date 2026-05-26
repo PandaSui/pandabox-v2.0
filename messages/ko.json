@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "리딤으로 돌아가기"
+        "back": "리딤으로 돌아가기",
+        "deployerRun": "배포자 운영",
+        "deployerRunTitle": "풀 생성자가 코인 메타데이터 소유자와 일치 — 온체인 확인됨.",
+        "unofficial": "비공식",
+        "unofficialTitle": "풀 생성자가 코인의 알려진 배포자와 일치하지 않음 — 리딤 전에 환율과 리저브를 확인하세요."
       },
       "meta": {
         "title": "Pool details",

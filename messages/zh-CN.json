@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "返回兑换页"
+        "back": "返回兑换页",
+        "deployerRun": "部署者运营",
+        "deployerRunTitle": "池创建者与代币元数据所有者一致 — 已在链上验证。",
+        "unofficial": "非官方",
+        "unofficialTitle": "池创建者与已知的代币部署者不一致 — 兑换前请核对汇率与储备。"
       },
       "meta": {
         "title": "Pool details",

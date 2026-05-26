@@ -13,6 +13,7 @@ import { RelativeTime } from "@/components/identity/relative-time";
 import { MIST_PER_SUI } from "@/lib/sui";
 import { formatAmount } from "@/lib/amount";
 import type { HydratedPool } from "@/lib/redeem/discovery";
+import { getPoolTrustSignal } from "@/lib/redeem/discovery";
 import { RecipientBadge } from "./recipient-badge";
 
 const SUN_HEX = "#D9C57A";
@@ -125,6 +126,44 @@ export async function PoolHero({
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
                   <RecipientBadge mode={pool.recipientMode} address={pool.recipient} />
+                  {/* Three trust states, two visible:
+                        · deployer-run → jade pill (verified)
+                        · unofficial   → poppy pill (creator differs from
+                                          the coin's known deployer — a
+                                          real warning, not just absence
+                                          of signal)
+                        · unverified   → nothing (frozen metadata + no
+                                          Pandabox record, can't say). */}
+                  {(() => {
+                    const signal = getPoolTrustSignal({
+                      poolCreator: pool.creator,
+                      metadataOwner: metadata.owner,
+                      pandaboxCreator: data.pandaboxCreator,
+                    });
+                    if (signal === "deployer-run") {
+                      return (
+                        <span
+                          className="inline-flex items-center gap-1.5 border border-jade/45 bg-jade/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-jade"
+                          title={t("deployerRunTitle")}
+                        >
+                          <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-jade" />
+                          {t("deployerRun")}
+                        </span>
+                      );
+                    }
+                    if (signal === "unofficial") {
+                      return (
+                        <span
+                          className="inline-flex items-center gap-1.5 border border-poppy/50 bg-poppy/[0.08] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-poppy"
+                          title={t("unofficialTitle")}
+                        >
+                          <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-poppy" />
+                          {t("unofficial")}
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
                   <span className="inline-flex items-center gap-1.5 border border-ink/20 bg-bone px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/65">
                     <span aria-hidden className="block h-1.5 w-1.5 bg-sun" />
                     {t("permanent")}

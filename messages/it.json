@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "Torna a redeem"
+        "back": "Torna a redeem",
+        "deployerRun": "Gestito dal deployer",
+        "deployerRunTitle": "Il creatore della pool coincide con il proprietario dei metadati del token — verificato on-chain.",
+        "unofficial": "Non ufficiale",
+        "unofficialTitle": "Il creatore della pool non coincide con il deployer noto del token — verifica il tasso e la riserva prima di riscattare."
       },
       "meta": {
         "title": "Pool details",

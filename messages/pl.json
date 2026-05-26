@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "Wróć do redeem"
+        "back": "Wróć do redeem",
+        "deployerRun": "Prowadzona przez wdrażającego",
+        "deployerRunTitle": "Twórca puli jest właścicielem metadanych monety — potwierdzone on-chain.",
+        "unofficial": "Nieoficjalna",
+        "unofficialTitle": "Twórca puli nie zgadza się ze znanym wdrażającym monetę — sprawdź kurs i rezerwę przed wykupem."
       },
       "meta": {
         "title": "Pool details",

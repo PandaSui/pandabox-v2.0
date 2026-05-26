@@ -10,6 +10,7 @@ import {
   getPoolActivity,
 } from "@/lib/redeem/server";
 import type { HydratedPool } from "@/lib/redeem/discovery";
+import { getPandaboxCreatorForCoin } from "@/lib/redeem/discovery";
 import { PoolHero } from "@/components/redeem/pool-hero";
 import { PoolMetaStrip } from "@/components/redeem/pool-meta-strip";
 import { AboutPool } from "@/components/redeem/about-pool";
@@ -50,15 +51,20 @@ export default async function RedeemPoolPage({ params }: PageProps) {
   const pool = await getRedeemPool(poolId, platform?.treasuryAddress);
   if (!pool) notFound();
 
-  const [metadata, activity] = await Promise.all([
+  const [metadata, activity, pandaboxCreator] = await Promise.all([
     getCoinMetadata(pool.coinType),
     getPoolActivity({ poolId, limit: 20 }),
+    // Resolve the Pandabox launchpad's record for this coin, if any.
+    // Used by the deployer-run badge as a fallback signal when the
+    // coin's CoinMetadata is frozen (which masks the on-chain owner).
+    getPandaboxCreatorForCoin(pool.coinType),
   ]);
 
   const hydrated: HydratedPool = {
     pool,
     metadata,
     createdEvent: null, // Not needed on the detail page — hero falls back to pool.createdAtMs.
+    pandaboxCreator,
   };
   const feeBps = platform?.feeBps ?? 500;
   const paused = platform?.paused ?? false;

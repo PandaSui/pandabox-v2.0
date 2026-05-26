@@ -117,12 +117,12 @@ export function DepositPanel({ data }: { data: HydratedPool }) {
         .waitForTransaction({ digest: result.digest })
         .then(async () => {
           setState({ kind: "success", digest: result.digest, amountMist });
-          // `router.refresh()` alone re-renders the RSC tree but the
-          // `unstable_cache`-wrapped `getRedeemPool` reader still returns
-          // its 30s-cached snapshot, so the hero would show pre-deposit
-          // reserve for up to half a minute. Bust the tag first so the
-          // next render fetches fresh chain state.
-          await bustRedeemPoolCache().catch(() => {});
+          // Bust both the `unstable_cache` data tag AND the route
+          // segment cache for this pool's detail page. Tag-only wasn't
+          // enough — Next's segment cache could still hand back the
+          // previously-rendered tree on `router.refresh()`, so the hero
+          // would show pre-deposit reserve for up to 30s.
+          await bustRedeemPoolCache(pool.objectId).catch(() => {});
           router.refresh();
         })
         .catch(() => {

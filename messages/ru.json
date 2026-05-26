@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "Назад к Redeem"
+        "back": "Назад к Redeem",
+        "deployerRun": "От разработчика",
+        "deployerRunTitle": "Создатель пула совпадает с владельцем метаданных монеты — проверено в блокчейне.",
+        "unofficial": "Неофициальный",
+        "unofficialTitle": "Создатель пула не совпадает с известным деплоером монеты — проверьте курс и резерв перед обменом."
       },
       "meta": {
         "title": "Pool details",

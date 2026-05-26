@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Platform paused",
         "pausedBody": "Redeem and deposit are temporarily disabled by the platform admin. Existing pool state is unchanged.",
-        "back": "Quay lại redeem"
+        "back": "Quay lại redeem",
+        "deployerRun": "Vận hành bởi deployer",
+        "deployerRunTitle": "Người tạo pool trùng với chủ sở hữu metadata của coin — đã xác minh on-chain.",
+        "unofficial": "Không chính thức",
+        "unofficialTitle": "Người tạo pool không trùng với deployer đã biết của coin — kiểm tra tỷ giá và kho dự trữ trước khi đổi."
       },
       "meta": {
         "title": "Pool details",

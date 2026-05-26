@@ -383,7 +383,11 @@
         "live": "Live · Sui mainnet",
         "pausedTitle": "Plattform pausiert",
         "pausedBody": "Redeem und Einzahlung sind durch den Plattform-Admin vorübergehend deaktiviert. Der Pool-Zustand bleibt unverändert.",
-        "back": "Zurück zu Redeem"
+        "back": "Zurück zu Redeem",
+        "deployerRun": "Vom Deployer",
+        "deployerRunTitle": "Pool-Ersteller ist Eigentümer der Coin-Metadaten — on-chain bestätigt.",
+        "unofficial": "Inoffiziell",
+        "unofficialTitle": "Pool-Ersteller stimmt nicht mit dem bekannten Deployer des Coins überein — Kurs und Reserve vor dem Einlösen prüfen."
       },
       "meta": {
         "title": "Pool-Details",

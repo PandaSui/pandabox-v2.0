@@ -17,6 +17,24 @@ import { getNetwork } from "@/lib/sui";
  * `/redeem` discovery surface to hydrate every pool card in one round trip.
  */
 
+/**
+ * Ownership classification for the on-chain `CoinMetadata<T>` object.
+ *
+ *   · `address`   — owned by a specific address (only that address can
+ *                   reference it as an `&CoinMetadata<T>` in a tx)
+ *   · `immutable` — frozen via `transfer::public_freeze_object`; anyone
+ *                   can reference it, anyone can deploy a redeem pool
+ *                   against it (this is where spam-pool risk lives)
+ *   · `shared`    — rare; treated like `immutable` for our purposes
+ *   · `unknown`   — RPC lookup failed; UI should not surface a trust
+ *                   signal in this case
+ */
+export type CoinMetadataOwner =
+  | { kind: "address"; address: string }
+  | { kind: "immutable" }
+  | { kind: "shared" }
+  | { kind: "unknown" };
+
 export type CoinMetadataResolved = {
   coinType: string;
   /** Display name from CoinMetadata, or the module name as a fallback. */
@@ -27,6 +45,18 @@ export type CoinMetadataResolved = {
   description: string;
   /** Resolved gateway URL or `null` if no icon was set. */
   iconUrl: string | null;
+  /**
+   * Ownership of the on-chain `CoinMetadata<T>` object — the signal we
+   * use to mark a pool as deployer-run. A frozen-metadata coin can be
+   * "pooled" by anyone, so the badge is only awarded when both:
+   *   1. The metadata is owned by a specific address (not frozen), AND
+   *   2. The pool's `creator` matches that address.
+   *
+   * Defaults to `{ kind: "unknown" }` when the metadata object can't
+   * be resolved (RPC error, destroyed, never published). UI treats
+   * `unknown` the same as "not deployer-run".
+   */
+  owner: CoinMetadataOwner;
 };
 
 let _client: SuiJsonRpcClient | null = null;
@@ -72,6 +102,38 @@ function resolveIconUrl(raw: string | null | undefined): string | null {
   return v;
 }
 
+async function fetchMetadataOwner(
+  metadataId: string,
+): Promise<CoinMetadataOwner> {
+  // `suix_getCoinMetadata` returns the metadata fields but not the
+  // object owner — we need a separate `sui_getObject` round-trip with
+  // `showOwner: true` to classify it. Returns "unknown" on RPC failure
+  // so the caller can fall back gracefully (no trust signal at all is
+  // better than a wrong one).
+  try {
+    const res = await client().getObject({
+      id: metadataId,
+      options: { showOwner: true },
+    });
+    const owner = res?.data?.owner;
+    if (!owner) return { kind: "unknown" };
+    if (owner === "Immutable") return { kind: "immutable" };
+    if (typeof owner === "object") {
+      if ("AddressOwner" in owner) {
+        return { kind: "address", address: owner.AddressOwner };
+      }
+      if ("ObjectOwner" in owner) {
+        return { kind: "address", address: owner.ObjectOwner };
+      }
+      if ("Shared" in owner) return { kind: "shared" };
+    }
+    return { kind: "unknown" };
+  } catch (err) {
+    console.error(`[redeem] fetchMetadataOwner(${metadataId}) failed:`, err);
+    return { kind: "unknown" };
+  }
+}
+
 async function fetchCoinMetadata(
   coinType: string,
 ): Promise<CoinMetadataResolved> {
@@ -86,8 +148,16 @@ async function fetchCoinMetadata(
         decimals: 9,
         description: "",
         iconUrl: null,
+        owner: { kind: "unknown" },
       };
     }
+    // Hydrate the owner in parallel with the rest of the metadata —
+    // single extra `sui_getObject` call per coin type, batched alongside
+    // the existing `suix_getCoinMetadata` so the discovery surface
+    // doesn't get noticeably slower.
+    const owner = res.id
+      ? await fetchMetadataOwner(res.id)
+      : ({ kind: "unknown" } as CoinMetadataOwner);
     return {
       coinType,
       name: res.name || fallback.name,
@@ -95,6 +165,7 @@ async function fetchCoinMetadata(
       decimals: typeof res.decimals === "number" ? res.decimals : 9,
       description: res.description ?? "",
       iconUrl: resolveIconUrl(res.iconUrl),
+      owner,
     };
   } catch (err) {
     console.error(`[redeem] getCoinMetadata(${coinType}) failed:`, err);
@@ -105,6 +176,7 @@ async function fetchCoinMetadata(
       decimals: 9,
       description: "",
       iconUrl: null,
+      owner: { kind: "unknown" },
     };
   }
 }

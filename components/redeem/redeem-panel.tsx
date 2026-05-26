@@ -218,11 +218,13 @@ export function RedeemPanel({
             suiOutMist: quote.suiOutMist,
             coinIn: amountBase,
           });
-          // Without this tag bust, `router.refresh()` re-renders the RSC
-          // tree but the cached `getRedeemPool` snapshot still has the
-          // pre-redeem reserve — so the hero stat strip would look
-          // unchanged for up to 30s after a successful redeem.
-          await bustRedeemPoolCache().catch(() => {});
+          // Bust both the `unstable_cache` data tag AND the route
+          // segment cache for this pool's detail page. The tag covers
+          // `getRedeemPool`; the path bust ensures `router.refresh()`
+          // actually re-runs the server components instead of replaying
+          // a cached render (the previous tag-only bust let stale
+          // hero + activity feed render through).
+          await bustRedeemPoolCache(pool.objectId).catch(() => {});
           router.refresh();
         })
         .catch(() => {
