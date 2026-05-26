@@ -737,9 +737,9 @@
         },
         "reserve": {
           "label": "04 / Reserve",
-          "p1": "Enter the initial SUI deposit. The wizard shows a capacity preview: at the current rate, how many whole tokens the pool can absorb before running dry. It also surfaces the explicit division (<term>reserve ÷ rate = capacity</term>) so the number isn't a black box."
+          "p1": "Enter the initial SUI deposit. The wizard shows a capacity preview: at the current rate, how many whole tokens the pool can absorb before running dry. It also surfaces the explicit division (<term>reserve ÷ rate = capacity</term>) so the number isn't a black box.",
+          "p2": "Anyone can top up the reserve later — including you, including any holder. Don't over-seed; you can always deposit more if demand exceeds your initial allocation."
         },
-        "p2": "Anyone can top up the reserve later — including you, including any holder. Don't over-seed; you can always deposit more if demand exceeds your initial allocation.",
         "deploy": {
           "label": "05 / Deploy",
           "p1": "Final read-only review. The wizard pre-flights the transaction via <term>devInspect</term> first to catch any contract aborts (e.g. zero recipient, sub-mist rate) with friendly error copy before the wallet popup. If pre-flight passes, you sign the real transaction, the contract shares the <code>RedeemPool&lt;T&gt;</code> object, and the wizard reads the new pool id out of the <code>PoolCreated</code> event to redirect you to its detail page.",
@@ -1683,7 +1683,7 @@
         "items": {
           "audited": {
             "q": "Is this audited?",
-            "a": "Not yet. Pandabox is in testnet. A formal audit will land before the mainnet ramp."
+            "a": "Yes. Pandabox is audited."
           },
           "editAfterDeploy": {
             "q": "Can I edit my project after deploy?",
