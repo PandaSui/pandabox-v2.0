@@ -34,6 +34,7 @@ import {
   REDEEM_IS_DEPLOYED,
 } from "@/lib/contracts/redeem";
 import { findPoolByCoinType } from "@/lib/redeem/find-pool";
+import { maxRedeemableCoin } from "@/lib/redeem/quote";
 import { parseRedeemAbort } from "@/lib/redeem/abort-codes";
 import {
   findProjectsByCreator,
@@ -1343,13 +1344,33 @@ function StepReserve() {
   }, [draft.initialReserveSui]);
 
   // How many WHOLE tokens this reserve can absorb at the current rate.
+  // Routed through the same `maxRedeemableCoin` helper the redeem panel
+  // and on-chain contract use — so this preview is guaranteed to match
+  // what the pool will actually honour at deploy time, even if the Step 2
+  // ↔ contract math is refactored again later.
   const rateBn = new BigNumber(draft.rateSuiPerToken || "0");
+  const coinDecimals = draft.coin.decimals || 9;
+  const priceMistPerToken = useMemo(() => {
+    if (rateBn.lte(0)) return 0n;
+    const raw = rateBn.multipliedBy(MIST_PER_SUI.toString());
+    if (!raw.isFinite() || raw.lte(0)) return 0n;
+    return BigInt(raw.integerValue(BigNumber.ROUND_DOWN).toFixed(0));
+  }, [rateBn]);
   const tokensSupported = useMemo(() => {
-    if (rateBn.lte(0) || reserveMist === 0n) return new BigNumber(0);
-    return new BigNumber(reserveMist.toString())
-      .dividedBy(MIST_PER_SUI.toString())
-      .dividedBy(rateBn);
-  }, [rateBn, reserveMist]);
+    if (priceMistPerToken === 0n || reserveMist === 0n) {
+      return new BigNumber(0);
+    }
+    // `maxRedeemableCoin` returns base units; divide by 10^decimals to
+    // surface the value in whole tokens for the capacity preview.
+    const baseUnits = maxRedeemableCoin({
+      reserveMist,
+      priceMistPerToken,
+      coinDecimals,
+    });
+    return new BigNumber(baseUnits.toString()).dividedBy(
+      new BigNumber(10).pow(coinDecimals),
+    );
+  }, [priceMistPerToken, reserveMist, coinDecimals]);
 
   // Leave at least 0.1 SUI for gas + future ops. Soft warning, not blocking.
   const reservesGas =
@@ -1442,6 +1463,37 @@ function StepReserve() {
               </span>
             </Row>
           </dl>
+          {tokensSupported.gt(0) && rateBn.gt(0) && reserveMist > 0n && (
+            // Show the user-visible math so the "supports up to N tokens"
+            // number stops feeling like a black-box calculation. Matches
+            // the on-chain formula: reserve ÷ rate = max whole tokens.
+            <p className="border-t border-ink/10 px-5 py-3 font-mono text-[11px] tabular-nums text-ink/55">
+              <span>
+                {formatAmount(reserveMist, {
+                  decimals: 9,
+                  maxFractionDigits: 4,
+                })}{" "}
+                SUI
+              </span>
+              <span aria-hidden className="mx-1.5 text-ink/30">
+                ÷
+              </span>
+              <span>
+                {rateBn.toFixed(rateBn.lt(0.01) ? 6 : 3)} SUI/
+                {draft.coin.symbol || "TOKEN"}
+              </span>
+              <span aria-hidden className="mx-1.5 text-ink/30">
+                =
+              </span>
+              <span className="text-ink/85">
+                {new BigNumber(tokensSupported).toFormat(
+                  2,
+                  BigNumber.ROUND_DOWN,
+                )}{" "}
+                {draft.coin.symbol || "TOKEN"}
+              </span>
+            </p>
+          )}
           <p className="border-t border-ink/10 px-5 py-3 text-[12px] leading-snug text-ink/55">
             {t("capacityNote")}
           </p>

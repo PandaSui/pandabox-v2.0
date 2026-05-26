@@ -488,7 +488,8 @@
         "traitPermanent": "Permanent terms",
         "traitFee": "{fee}% platform fee",
         "traitOneTx": "One tx · sub-cent gas",
-        "backToRedeem": "Torna a redeem"
+        "backToRedeem": "Torna a redeem",
+        "readDocs": "Leggi la documentazione"
       },
       "nav": {
         "aria": "Wizard steps",
@@ -634,6 +635,176 @@
         "hint": "Chiedi a chi ha distribuito la moneta di congelarne i metadati (`0x2::transfer::public_freeze_object`), oppure connettiti con il wallet che li possiede.",
         "connectEyebrow": "Collega un wallet per continuare",
         "connectBody": "Ci serve il tuo indirizzo per verificare se i metadati della moneta sono referenziabili dal tuo wallet."
+      }
+    },
+    "docs": {
+      "metadata": {
+        "title": "Redeem · Docs — Pandabox",
+        "description": "How permanent buyback pools work on Pandabox: rate, recipient, reserve, fee, and the create wizard."
+      },
+      "eyebrow": "Redeem docs",
+      "heading": "How redeem pools work",
+      "subhead": "A permanent, fixed-rate buyback pool for any Sui coin. Deploy once, anyone can redeem; the rate and recipient are locked at the bytecode level.",
+      "tabs": {
+        "ariaLabel": "Redeem documentation tabs",
+        "mechanics": {
+          "label": "Mechanics",
+          "sections": {
+            "what": "01 / What is a redeem pool?",
+            "recipient": "02 / Recipient",
+            "rate": "03 / Rate",
+            "reserve": "04 / Reserve",
+            "permanence": "05 / Permanence",
+            "fee": "06 / Platform fee"
+          }
+        },
+        "wizard": {
+          "label": "The wizard",
+          "sections": {
+            "intro": "Five steps · one tx",
+            "coin": "01 / Coin",
+            "rate": "02 / Rate",
+            "recipient": "03 / Recipient",
+            "reserve": "04 / Reserve",
+            "deploy": "05 / Deploy"
+          }
+        },
+        "reference": {
+          "label": "Reference",
+          "sections": {
+            "glossary": "Glossary",
+            "faq": "FAQ"
+          }
+        }
+      },
+      "mechanics": {
+        "what": {
+          "label": "01 / What is a redeem pool?",
+          "p1": "A <term>redeem pool</term> is a shared on-chain object that buys back a specific coin at a fixed SUI rate. Anyone holding that coin can call <term>redeem</term> at any time and receive SUI from the pool's reserve — minus a small platform fee. The pool's exchange rate and the address that receives the redeemed coins are locked when the pool is deployed and can never be changed.",
+          "p2": "The model is the same whether you're a project building a long-term floor for your token (BUYBACK) or destroying supply to anchor scarcity (BURN). The only thing that varies between those two modes is where the redeemed coins go — see the next section.",
+          "p3": "Pools live one-per-deployer per coin type, but the contract doesn't enforce a global uniqueness rule. Multiple teams can deploy independent pools for the same coin at different rates if they want to.",
+          "cta": "Deploy a pool →"
+        },
+        "recipient": {
+          "label": "02 / Recipient",
+          "p1": "The <term>recipient</term> is the address that receives the project coins on every redeem. Pick the canonical Sui dead address (<code>0x…dead</code>) for a <term>BURN</term> pool — the coins are effectively destroyed, since no one holds the private key. Pick your own treasury or a multisig for a <term>BUYBACK</term> pool — redeemed coins flow back to you.",
+          "p2": "The contract rejects the literal zero address (<term>0x0…0</term>) as a recipient to prevent accidentally locking coins in a way that looks like an unset value. Use the DeFi-standard <code>0x…dead</code> pattern instead.",
+          "p3": "Recipient is immutable. Once the pool is deployed, you cannot redirect the flow. Choose carefully."
+        },
+        "rate": {
+          "label": "03 / Rate",
+          "p1": "The pool stores its exchange rate in a single field — <code>price_mist_per_token</code> — which is the mist of SUI returned for one WHOLE displayed token. The wizard does the conversion for you: type a rate in SUI/token, and the wizard multiplies by <term>1e9</term> to get the on-chain value.",
+          "p2": "The minimum the contract can store is 1 mist (0.000000001 SUI) per whole token. Below that, the rate rounds to zero and the contract rejects the deploy. The maximum is bounded only by the u64 capacity, which is many orders of magnitude beyond any plausible price.",
+          "cta": "Open the wizard →"
+        },
+        "reserve": {
+          "label": "04 / Reserve",
+          "p1": "The pool needs SUI on hand to honour redeems. The <term>initial deposit</term> you provide at deploy time is split from your gas in the same transaction and seeded into the pool's <code>sui_reserve</code>. Anyone — including you, but also any holder — can top up the reserve later by calling <term>deposit_reserve</term>.",
+          "p2": "Reserve depth is the upper bound on what the pool can pay out. If a redeemer asks for more SUI than the reserve currently holds, the contract aborts. So the rule of thumb is to seed enough for expected near-term volume and top up as demand grows.",
+          "p3": "There is no withdrawal path. SUI deposited into the reserve can only leave the pool through a redeem. Treat every deposit as committed."
+        },
+        "permanence": {
+          "label": "05 / Permanence",
+          "p1": "Two things are immutable on every pool: <code>price_mist_per_token</code> and the <code>recipient</code> address. The Move module has no setters for either field — there is no admin, governance, or backdoor that can change them. What you sign at deploy is what holders see forever.",
+          "p2": "This is the trust property the pool surfaces to holders. They can verify the rate and recipient on chain once, link to the pool, and never have to re-check whether the terms still hold."
+        },
+        "fee": {
+          "label": "06 / Platform fee",
+          "p1": "Pandabox takes a <term>platform fee</term> from the SUI side of every redeem. The fee is set at deploy time of the platform (not the pool) and is currently 5%. You'll see this disclosed on every pool's detail page and accounted for in the wallet's transaction preview before signing.",
+          "p2": "The fee is taken from the gross SUI payout: <code>sui_out = sui_gross - sui_gross × fee_bps / 10_000</code>. Net SUI shown in the redeem panel already accounts for it — there's no surprise on settlement."
+        }
+      },
+      "wizard": {
+        "intro": {
+          "label": "Five steps · one tx",
+          "p1": "The create wizard walks you through five focused screens and ends in a single transaction. Your inputs persist to localStorage as you go, so navigating away mid-deploy doesn't lose your work.",
+          "cta": "Open the wizard →"
+        },
+        "coin": {
+          "label": "01 / Coin",
+          "p1": "Pick the coin type the pool buys back. You can paste a fully-qualified type like <code>0xabc…::module::TOKEN</code>, or pick from two suggestion sources: <term>tokens you've launched on Pandabox</term> (your own projects) and <term>tokens in your wallet</term> (anything you currently hold).",
+          "p2": "The wizard re-resolves the coin's metadata after every change, so you'll see the resolved name, ticker, and decimals before moving on. If the coin's CoinMetadata is owned by another address and not frozen, the wizard blocks the step — only the metadata owner can deploy pools that reference it."
+        },
+        "rate": {
+          "label": "02 / Rate",
+          "p1": "Type a rate in <term>SUI per whole token</term>. The wizard converts to the on-chain <term>price_mist_per_token</term> for you (multiplying by 1e9) and shows you the raw u64 value the contract will store, plus a sample redemption calculator.",
+          "p2": "The minimum is 1 mist per whole token. Sub-cent rates display with 6 decimal digits in the calculator so a memecoin at <code>0.000001 SUI/token</code> is still legible."
+        },
+        "recipient": {
+          "label": "03 / Recipient",
+          "p1": "Choose <term>BURN</term> (pre-filled with the canonical <code>0x…dead</code> address) or <term>BUYBACK</term> (you provide a treasury or multisig). The recipient field is also where redeemed coins land in subsequent <term>redeem</term> calls — anyone redeeming the coin is effectively donating it to this address.",
+          "p2": "If you pick BUYBACK, the wizard validates the address format and prevents the zero address (which the contract rejects with abort code 101)."
+        },
+        "reserve": {
+          "label": "04 / Reserve",
+          "p1": "Enter the initial SUI deposit. The wizard shows a capacity preview: at the current rate, how many whole tokens the pool can absorb before running dry. It also surfaces the explicit division (<term>reserve ÷ rate = capacity</term>) so the number isn't a black box."
+        },
+        "p2": "Anyone can top up the reserve later — including you, including any holder. Don't over-seed; you can always deposit more if demand exceeds your initial allocation.",
+        "deploy": {
+          "label": "05 / Deploy",
+          "p1": "Final read-only review. The wizard pre-flights the transaction via <term>devInspect</term> first to catch any contract aborts (e.g. zero recipient, sub-mist rate) with friendly error copy before the wallet popup. If pre-flight passes, you sign the real transaction, the contract shares the <code>RedeemPool&lt;T&gt;</code> object, and the wizard reads the new pool id out of the <code>PoolCreated</code> event to redirect you to its detail page.",
+          "p2": "Total: one transaction, ~0.01 SUI of gas, and your pool is live."
+        }
+      },
+      "reference": {
+        "glossary": {
+          "label": "Glossary",
+          "termLabels": {
+            "recipient": "Recipient",
+            "buyback": "BUYBACK",
+            "burn": "BURN",
+            "reserve": "Reserve",
+            "coinIn": "coin_in",
+            "coinDecimals": "coin_decimals",
+            "platformFee": "Platform fee"
+          },
+          "terms": {
+            "pool": "Shared on-chain object holding the reserve, rate, and recipient for a specific coin. Created via pool::create_pool.",
+            "recipient": "Address that receives the coin side of every redeem. Permanent.",
+            "buyback": "Recipient mode where redeemed coins flow back to a treasury you control.",
+            "burn": "Recipient mode where redeemed coins are sent to an unowned dead address (typically 0x…dead).",
+            "reserve": "SUI held by the pool, used to pay out redeems. Anyone can deposit, no one can withdraw.",
+            "priceMistPerToken": "u64 stored on the pool — mist of SUI returned per WHOLE displayed token. Permanent.",
+            "coinIn": "Base units (NOT decimal-formatted) of the project coin sent into a redeem call.",
+            "coinDecimals": "Decimal count of the project coin — used by the contract to convert coin_in into a SUI amount.",
+            "platformFee": "Cut taken from the gross SUI payout on every redeem. Currently 5% (500 bps). Set on the platform object, not the pool.",
+            "mist": "Smallest unit of SUI. 1 SUI = 1,000,000,000 (1e9) mist.",
+            "coinMetadata": "Sui's standard metadata object for a coin type. Must be referenceable (frozen or owned by you) when deploying a pool for that coin."
+          }
+        },
+        "faq": {
+          "label": "FAQ",
+          "items": {
+            "changeRate": {
+              "q": "Can I change the rate after deploying?",
+              "a": "No. The contract has no setter for <code>price_mist_per_token</code>. The only way to adjust pricing is to deploy a new pool for the same coin at a different rate."
+            },
+            "withdrawReserve": {
+              "q": "Can I withdraw the SUI reserve?",
+              "a": "No. Once SUI is deposited it can only leave the pool through a redeem. Don't over-seed — top up incrementally as demand requires."
+            },
+            "duplicatePools": {
+              "q": "Can multiple pools exist for the same coin?",
+              "a": "Yes. The contract permits multiple pools per coin type. The wizard will warn you if a pool already exists for the coin you're about to deploy."
+            },
+            "metadataOwner": {
+              "q": "What if I'm not the owner of the coin's metadata?",
+              "a": "Sui only lets the owner of an object reference it in a transaction. If the coin's <code>CoinMetadata</code> is owned by another address and isn't frozen, you can't deploy a pool for it. Ask the deployer to call <code>0x2::transfer::public_freeze_object</code> on the metadata, or connect with the wallet that owns it."
+            },
+            "whoCanDeposit": {
+              "q": "Who can top up the reserve?",
+              "a": "Anyone with SUI. The contract doesn't gate deposits — supporters can fund the pool, the creator can fund the pool, anyone can."
+            },
+            "fee": {
+              "q": "How is the fee calculated?",
+              "a": "5% (500 bps) of the gross SUI payout on every redeem, taken before the user receives their SUI. The fee accrues on the platform's fee treasury until a platform admin withdraws it."
+            },
+            "paused": {
+              "q": "What happens when the platform is paused?",
+              "a": "Pool create + redeem are blocked while paused; deposits can still happen. The pool's detail page surfaces the paused state with a poppy banner."
+            }
+          }
+        }
       }
     }
   },

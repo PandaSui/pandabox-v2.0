@@ -53,6 +53,18 @@ export default async function RedeemCreatePage() {
                   ),
                 })}
               </p>
+              <Link
+                href="/redeem/docs"
+                className="group mt-4 inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-saffron underline-offset-4 hover:underline"
+              >
+                <span>{t("readDocs")}</span>
+                <span
+                  aria-hidden
+                  className="inline-block transition-transform duration-300 ease-atelier group-hover:translate-x-0.5"
+                >
+                  ↗
+                </span>
+              </Link>
             </div>
             <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45 md:gap-x-5">
               <li className="inline-flex items-center gap-1.5">

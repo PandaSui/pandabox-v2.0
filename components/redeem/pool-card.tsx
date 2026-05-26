@@ -43,9 +43,11 @@ function formatRate(args: {
     : new BigNumber(1).dividedBy(suiPerToken);
 
   return {
-    suiPerToken: suiPerToken.toFixed(
-      Math.min(6, Math.max(2, suiPerToken.lt(0.01) ? 6 : 4)),
-    ),
+    // Mirror the hero's precision policy: 3 fraction digits minimum so
+    // whole-number rates read "1.000 SUI" (the unit stays explicit),
+    // expanding to 6 digits only for sub-cent rates where the leading
+    // zeros would otherwise hide the actual price.
+    suiPerToken: suiPerToken.toFixed(suiPerToken.lt(0.01) ? 6 : 3),
     tokensPerSui: formatAmount(
       BigInt(tokensPerSui.integerValue(BigNumber.ROUND_FLOOR).toFixed(0)),
       { decimals: 0, compact: true, maxFractionDigits: 1 },

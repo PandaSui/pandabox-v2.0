@@ -47,12 +47,22 @@ export async function PoolHero({
   // scale `coin_in`, but they don't change the price-per-token unit.
   const suiPerToken = new BigNumber(pool.priceMistPerToken.toString())
     .dividedBy(MIST_PER_SUI.toString());
-  // Strip trailing zeros so a whole-number rate reads "1" not "1.0000",
-  // while sub-cent rates still get up to 6 fraction digits of precision.
-  const rateDigits = suiPerToken.lt(0.01) ? 6 : 4;
-  const rateLabel = suiPerToken
-    .toFixed(rateDigits)
-    .replace(/\.?0+$/, "");
+  // Auto-tier precision so the rate stays legible across five orders of
+  // magnitude without losing the trailing zeros that make the unit
+  // explicit:
+  //   · ≥ 0.01 SUI/token  → 3 fraction digits  ("1.000", "0.500")
+  //   · ≥ 1e-6 SUI/token  → 6 fraction digits  ("0.001000")
+  //   · < 1e-6 SUI/token  → 9 fraction digits  ("0.000000001")
+  // The 9-digit floor reveals nano-SUI rates (e.g. mint-priced memecoins
+  // at `price_mist_per_token = 1`) that would otherwise round to
+  // "0.000000" and read as a broken display.
+  const rateLabel = suiPerToken.isZero()
+    ? "0"
+    : suiPerToken.gte(0.01)
+      ? suiPerToken.toFixed(3)
+      : suiPerToken.gte(1e-6)
+        ? suiPerToken.toFixed(6)
+        : suiPerToken.toFixed(9);
 
   const redeemedFormatted = formatAmount(pool.totalCoinRedeemed, {
     decimals: pool.coinDecimals,
@@ -137,12 +147,18 @@ export async function PoolHero({
               <Stat
                 label={tShared("rate")}
                 valueNode={
-                  <span className="font-mono tabular-nums">
-                    <span className="text-[15px] text-ink">{rateLabel}</span>
-                    <span className="ml-1 text-[10px] uppercase tracking-[0.12em] text-ink/55">
+                  // Stack the unit beneath the number so a 9-decimal
+                  // nano-SUI rate ("0.000000001") can't push past this
+                  // 25% column into the adjacent reserve cell. Cell
+                  // width stays predictable regardless of magnitude.
+                  <div className="font-mono tabular-nums leading-[1.1]">
+                    <div className="truncate text-[15px] text-ink">
+                      {rateLabel}
+                    </div>
+                    <div className="mt-0.5 truncate text-[9.5px] uppercase tracking-[0.12em] text-ink/55">
                       {t("rateUnit", { symbol })}
-                    </span>
-                  </span>
+                    </div>
+                  </div>
                 }
               />
               <Stat
