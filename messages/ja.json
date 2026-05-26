@@ -459,12 +459,16 @@
         "confirming": "Confirming…",
         "depositAction": "Deposit {amount} SUI",
         "enterAmount": "Enter an amount",
-        "successEyebrow": "Deposit signed",
-        "successBody": "<amount/> added to the reserve.",
+        "successEyebrow": "デポジット署名済み",
         "successAgain": "Deposit again →",
         "validation": {
           "exceedsBalance": "Amount exceeds your SUI balance"
-        }
+        },
+        "successHeadline": "チャージ完了",
+        "successAdded": "がプールのリザーブに追加されました。",
+        "modalTitle": "Top up reserve",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Suiscan で表示"
       },
       "notFound": {
         "eyebrow": "404 · Redeem pool",

@@ -459,12 +459,16 @@
         "confirming": "Confirming…",
         "depositAction": "Deposit {amount} SUI",
         "enterAmount": "Enter an amount",
-        "successEyebrow": "Deposit signed",
-        "successBody": "<amount/> added to the reserve.",
+        "successEyebrow": "Đã ký nạp tiền",
         "successAgain": "Deposit again →",
         "validation": {
           "exceedsBalance": "Amount exceeds your SUI balance"
-        }
+        },
+        "successHeadline": "Hoàn tất nạp lên",
+        "successAdded": "đã được thêm vào kho dự trữ của pool.",
+        "modalTitle": "Top up reserve",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Xem trên Suiscan"
       },
       "notFound": {
         "eyebrow": "404 · Redeem pool",

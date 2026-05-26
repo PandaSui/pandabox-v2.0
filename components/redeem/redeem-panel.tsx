@@ -18,6 +18,7 @@ import { Spinner } from "@/components/primitives/spinner";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { TxHash } from "@/components/identity/tx-hash";
 import { buildRedeemTx, REDEEM_IS_DEPLOYED } from "@/lib/contracts/redeem";
+import { bustRedeemPoolCache } from "@/lib/server-actions/redeem-cache";
 import { quoteRedeem, maxRedeemableCoin } from "@/lib/redeem/quote";
 import { formatAmount } from "@/lib/amount";
 import { MIST_PER_SUI, explorerUrl } from "@/lib/sui";
@@ -209,13 +210,18 @@ export function RedeemPanel({
 
       void client
         .waitForTransaction({ digest: result.digest })
-        .then(() => {
+        .then(async () => {
           setState({
             kind: "success",
             digest: result.digest,
             suiOutMist: quote.suiOutMist,
             coinIn: amountBase,
           });
+          // Without this tag bust, `router.refresh()` re-renders the RSC
+          // tree but the cached `getRedeemPool` snapshot still has the
+          // pre-redeem reserve — so the hero stat strip would look
+          // unchanged for up to 30s after a successful redeem.
+          await bustRedeemPoolCache().catch(() => {});
           router.refresh();
         })
         .catch(() => {

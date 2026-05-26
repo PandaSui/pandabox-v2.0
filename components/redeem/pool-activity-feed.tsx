@@ -215,6 +215,7 @@ function RedeemAmounts({
       <SuiAmount
         mist={ev.suiOutMist}
         compact
+        adaptive
         maxFractionDigits={4}
         glyphSize={10}
         className="text-ink"
@@ -238,6 +239,7 @@ function DepositAmounts({
       <SuiAmount
         mist={ev.amountMist}
         compact
+        adaptive
         maxFractionDigits={4}
         glyphSize={10}
         className="text-ink"
@@ -261,6 +263,7 @@ function CreatedAmounts({
       <SuiAmount
         mist={ev.initialDepositMist}
         compact
+        adaptive
         maxFractionDigits={4}
         glyphSize={10}
         className="text-ink"

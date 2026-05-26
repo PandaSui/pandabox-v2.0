@@ -99,11 +99,7 @@ export default async function RedeemPoolPage({ params }: PageProps) {
               </div>
 
               <div className="order-1 lg:order-2 lg:col-span-4">
-                <RedeemPanel
-                  data={hydrated}
-                  feeBps={feeBps}
-                  paused={paused}
-                />
+                <RedeemPanel data={hydrated} feeBps={feeBps} paused={paused} />
               </div>
 
               <div className="order-3 lg:col-span-4">

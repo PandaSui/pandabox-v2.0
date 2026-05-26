@@ -459,12 +459,16 @@
         "confirming": "Confirming…",
         "depositAction": "Deposit {amount} SUI",
         "enterAmount": "Enter an amount",
-        "successEyebrow": "Deposit signed",
-        "successBody": "<amount/> added to the reserve.",
+        "successEyebrow": "已簽署存款",
         "successAgain": "Deposit again →",
         "validation": {
           "exceedsBalance": "Amount exceeds your SUI balance"
-        }
+        },
+        "successHeadline": "充值完成",
+        "successAdded": "已新增至該池的儲備。",
+        "modalTitle": "Top up reserve",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "在 Suiscan 檢視"
       },
       "notFound": {
         "eyebrow": "404 · Redeem pool",

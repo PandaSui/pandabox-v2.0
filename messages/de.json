@@ -460,11 +460,15 @@
         "depositAction": "{amount} SUI einzahlen",
         "enterAmount": "Betrag eingeben",
         "successEyebrow": "Einzahlung signiert",
-        "successBody": "<amount/> zur Reserve hinzugefügt.",
         "successAgain": "Erneut einzahlen →",
         "validation": {
           "exceedsBalance": "Betrag übersteigt deinen SUI-Saldo"
-        }
+        },
+        "successHeadline": "Aufstockung abgeschlossen",
+        "successAdded": "wurde zur Pool-Reserve hinzugefügt.",
+        "modalTitle": "Reserve aufladen",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "Auf Suiscan ansehen"
       },
       "notFound": {
         "eyebrow": "404 · Redeem-Pool",

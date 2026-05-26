@@ -460,11 +460,15 @@
         "depositAction": "Deposit {amount} SUI",
         "enterAmount": "Enter an amount",
         "successEyebrow": "Deposit signed",
-        "successBody": "<amount/> added to the reserve.",
         "successAgain": "Deposit again →",
         "validation": {
           "exceedsBalance": "Amount exceeds your SUI balance"
-        }
+        },
+        "successHeadline": "Top up complete",
+        "successAdded": "added to the pool's reserve.",
+        "modalTitle": "Top up reserve",
+        "txLabel": "Tx",
+        "viewOnSuiscan": "View on Suiscan"
       },
       "notFound": {
         "eyebrow": "404 · Redeem pool",
