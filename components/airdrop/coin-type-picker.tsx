@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@pandasui/ui/lib";
 import { formatAmount } from "@/lib/amount";
 import { useOwnedCoinGroups } from "@/lib/airdrop/use-owned-coins";
@@ -93,29 +93,19 @@ export function CoinTypePicker({
 
       {/* Rail — horizontal scrollable strip of asset pills. */}
       {address ? (
-        <div className="relative">
-          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
-            {isLoading && groups.length === 0
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <SkeletonPill key={i} />
-                ))
-              : filtered.length === 0
-                ? null
-                : filtered.map((g) => (
-                    <AssetPill
-                      key={g.coinType}
-                      group={g}
-                      selected={g.coinType === selectedCoinType}
-                      onClick={() => onSelect(g.coinType)}
-                    />
-                  ))}
-          </div>
-          {!isLoading && filtered.length === 0 ? (
-            <p className="px-2 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
-              {filter ? "No matches in your wallet." : "No assets in this wallet."}
-            </p>
-          ) : null}
-        </div>
+        <AssetRail
+          items={filtered}
+          isLoading={isLoading}
+          selectedCoinType={selectedCoinType}
+          onSelect={onSelect}
+          emptyHint={
+            !isLoading && filtered.length === 0
+              ? filter
+                ? "No matches in your wallet."
+                : "No assets in this wallet."
+              : null
+          }
+        />
       ) : (
         <div className="border border-dashed border-ink/20 bg-ink/[0.015] px-4 py-5 text-center">
           <p className="font-sans text-[13.5px] text-ink/65">
@@ -127,6 +117,218 @@ export function CoinTypePicker({
       {/* Detail strip — only shown when a coin is selected. Reinforces that
           the picker has resolved a concrete asset, not just a symbol. */}
       {selected ? <SelectedAssetDetail group={selected} /> : null}
+    </div>
+  );
+}
+
+/* ─────────────────────────── rail ─────────────────────────── */
+
+/**
+ * Horizontal asset rail with a fully custom overflow affordance. The native
+ * scrollbar is hidden and replaced with:
+ *   • soft gradient fades on each edge that appear only when scroll is
+ *     possible in that direction,
+ *   • bone-on-ink chevron buttons that fade in/out on the same condition
+ *     and scroll the rail by ~70% of its visible width,
+ *   • a hairline progress thumb beneath the rail whose width reflects
+ *     `visible / total` and whose position reflects `scrollLeft / max`.
+ *
+ * Pills also opt into `scroll-snap` so flicking lands cleanly on a pill
+ * boundary instead of mid-tile.
+ */
+function AssetRail({
+  items,
+  isLoading,
+  selectedCoinType,
+  onSelect,
+  emptyHint,
+}: {
+  items: OwnedCoinGroup[];
+  isLoading: boolean;
+  selectedCoinType: string;
+  onSelect: (coinType: string) => void;
+  emptyHint: string | null;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+  const [progress, setProgress] = useState({ thumb: 0, visible: 1 });
+
+  const measure = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    const max = Math.max(0, scrollWidth - clientWidth);
+    setCanLeft(scrollLeft > 1);
+    setCanRight(scrollLeft < max - 1);
+    setProgress({
+      thumb: max > 0 ? scrollLeft / max : 0,
+      visible:
+        scrollWidth > 0 ? Math.min(1, clientWidth / scrollWidth) : 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    measure();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", measure, { passive: true });
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      ro.disconnect();
+    };
+  }, [measure]);
+
+  // Re-measure when the asset list mutates — filter typed, wallet
+  // reconnect, etc. — so the chevrons/progress reflect the new layout.
+  useEffect(() => {
+    measure();
+  }, [items.length, isLoading, measure]);
+
+  const scrollBy = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const delta = Math.max(200, el.clientWidth * 0.7);
+    el.scrollBy({
+      left: dir === "left" ? -delta : delta,
+      behavior: "smooth",
+    });
+  };
+
+  const overflows = canLeft || canRight;
+  // Floor the thumb at 12% so it remains a recognisable indicator even
+  // when the content is much wider than the viewport.
+  const thumbPct = Math.max(progress.visible * 100, 12);
+
+  return (
+    <div>
+      <div className="relative">
+        {/* Edge fades — bone-coloured gradients that visually trail off
+            the pills near each edge. */}
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-bone via-bone/70 to-transparent transition-opacity duration-200",
+            canLeft ? "opacity-100" : "opacity-0",
+          )}
+        />
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-bone via-bone/70 to-transparent transition-opacity duration-200",
+            canRight ? "opacity-100" : "opacity-0",
+          )}
+        />
+
+        <RailChevron
+          direction="left"
+          enabled={canLeft}
+          onClick={() => scrollBy("left")}
+        />
+        <RailChevron
+          direction="right"
+          enabled={canRight}
+          onClick={() => scrollBy("right")}
+        />
+
+        <div
+          ref={scrollRef}
+          className="scrollbar-none flex gap-2 overflow-x-auto py-1"
+          style={{
+            scrollSnapType: "x proximity",
+            scrollPaddingInline: "1rem",
+          }}
+        >
+          {isLoading && items.length === 0
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonPill key={i} />
+              ))
+            : items.map((g) => (
+                <AssetPill
+                  key={g.coinType}
+                  group={g}
+                  selected={g.coinType === selectedCoinType}
+                  onClick={() => onSelect(g.coinType)}
+                />
+              ))}
+        </div>
+      </div>
+
+      {/* Custom progress thumb — only renders when overflow exists so the
+          rail collapses cleanly on wide screens / few assets. */}
+      {overflows ? (
+        <div
+          className="relative mt-2 h-px w-full bg-ink/10"
+          aria-hidden
+        >
+          <div
+            className="absolute top-0 h-full bg-poppy transition-[width,left] duration-150 ease-out"
+            style={{
+              width: `${thumbPct}%`,
+              left: `${progress.thumb * (100 - thumbPct)}%`,
+            }}
+          />
+        </div>
+      ) : null}
+
+      {emptyHint ? (
+        <p className="mt-3 px-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+          {emptyHint}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function RailChevron({
+  direction,
+  enabled,
+  onClick,
+}: {
+  direction: "left" | "right";
+  enabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute top-1/2 z-20 -translate-y-1/2 transition-opacity duration-200",
+        direction === "left" ? "left-1" : "right-1",
+        enabled ? "opacity-100" : "opacity-0",
+      )}
+    >
+      <button
+        type="button"
+        aria-label={direction === "left" ? "Scroll assets left" : "Scroll assets right"}
+        onClick={onClick}
+        disabled={!enabled}
+        className={cn(
+          "pointer-events-auto inline-flex h-7 w-7 items-center justify-center border border-ink/25 bg-bone text-ink shadow-offset-sm transition-all duration-200 ease-atelier",
+          "hover:border-ink hover:bg-ink hover:text-bone",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-ink",
+          "disabled:cursor-not-allowed",
+        )}
+      >
+        <svg
+          viewBox="0 0 12 12"
+          width="10"
+          height="10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          {direction === "left" ? (
+            <path d="M7.5 2.5L3.5 6L7.5 9.5" />
+          ) : (
+            <path d="M4.5 2.5L8.5 6L4.5 9.5" />
+          )}
+        </svg>
+      </button>
     </div>
   );
 }
@@ -159,7 +361,7 @@ function AssetPill({
           ? "border-ink shadow-offset-sm"
           : "border-ink/15 hover:border-ink/45 hover:-translate-y-[1px]",
       )}
-      style={{ minWidth: "10rem" }}
+      style={{ minWidth: "10rem", scrollSnapAlign: "start" }}
     >
       {/* Active indicator — full-width poppy underline on the active pill. */}
       <span
@@ -186,7 +388,7 @@ function SkeletonPill() {
   return (
     <div
       className="relative inline-flex shrink-0 animate-pulse items-center gap-2 border border-ink/10 bg-ink/[0.03] px-3 py-2"
-      style={{ minWidth: "10rem", height: "44px" }}
+      style={{ minWidth: "10rem", height: "44px", scrollSnapAlign: "start" }}
       aria-hidden
     >
       <span className="block h-5 w-5 bg-ink/10" />

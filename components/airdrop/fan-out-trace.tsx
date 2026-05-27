@@ -59,6 +59,12 @@ export function FanOutTrace({
   const visibleCount = Math.min(recipientCount, VISIBLE_NODE_CAP);
   const nodes = useMemo(() => layoutNodes(visibleCount), [visibleCount]);
   const showRecipients = state !== "idle" && recipientCount > 0;
+  // The hero's identity moment — sonar rings + wallet-envelope packets —
+  // is meant to read as a continuously alive surface while the user is
+  // composing, not just at first paint. Render it in both `idle` and
+  // `preview`; `running` has its own particle animation and `settled`
+  // is the after-state, so suppress there to avoid visual competition.
+  const showAmbience = state === "idle" || state === "preview";
   const reducedMotion = usePrefersReducedMotion();
   // Suppress the kinetic moments when the user prefers reduced motion. The
   // CSS keyframes are already clamped by the global `* { animation-duration:
@@ -131,19 +137,18 @@ export function FanOutTrace({
           strokeDasharray="2 4"
         />
 
-        {/* Spokes + idle ambience — either 12 ghost spokes (idle) or
-            one spoke per visible recipient. In idle mode the dashes
-            flow, the endpoint dots breathe, and ambient packets ride
-            a handful of spokes so the surface reads as live well
-            before any recipient is placed. */}
-        {!showRecipients ? (
-          <>
-            {IDLE_GHOST_ANGLES.map((angle, i) => {
+        {/* Spokes — 12 ghost spokes in idle (placeholder shape), or
+            one spoke per visible recipient once the user starts
+            composing. Ghost spokes stay idle-only so they don't
+            collide with real recipient spokes. */}
+        {!showRecipients
+          ? IDLE_GHOST_ANGLES.map((angle, i) => {
               const ex = 200 + Math.cos(angle) * 220;
               const ey = 140 + Math.sin(angle) * 110;
               return (
                 <g key={`ghost-${i}`}>
                   <line
+                    className="airdrop-anim-spoke-flow"
                     x1="200"
                     y1="140"
                     x2={ex}
@@ -152,99 +157,94 @@ export function FanOutTrace({
                     strokeOpacity="0.18"
                     strokeWidth="0.8"
                     strokeDasharray="3 5"
-                    style={{
-                      animation: `airdrop-spoke-flow 5.5s linear ${(i * 0.21).toFixed(2)}s infinite`,
-                    }}
+                    style={{ animationDelay: `${(i * 0.21).toFixed(2)}s` }}
                   />
                   <circle
+                    className="airdrop-anim-endpoint-breath"
                     cx={ex}
                     cy={ey}
                     r="1.6"
                     fill={POPPY}
                     opacity="0.22"
-                    style={{
-                      animation: `airdrop-endpoint-breath 3.4s ease-in-out ${(i * 0.27).toFixed(2)}s infinite`,
-                    }}
+                    style={{ animationDelay: `${(i * 0.27).toFixed(2)}s` }}
                   />
                 </g>
               );
-            })}
-            {/* Ambient packets — tiny wallet-shaped envelopes ride a
-                handful of ghost spokes from source to endpoint, each
-                tagged with a truncated address so the metaphor reads
-                as "one signature, many wallets." SMIL animateTransform
-                so the rect + text move as a unit; suppressed under
-                reduced motion. */}
-            {!reducedMotion &&
-              AMBIENT_PACKET_SPOKES.map((spokeIdx, i) => {
-                const angle = IDLE_GHOST_ANGLES[spokeIdx];
-                const ex = 200 + Math.cos(angle) * 220;
-                const ey = 140 + Math.sin(angle) * 110;
-                const begin = (i * 1.05).toFixed(2);
-                const wallet = AMBIENT_WALLETS[i % AMBIENT_WALLETS.length];
-                return (
-                  <g
-                    key={`ambient-${i}`}
-                    opacity="0"
-                    transform="translate(200 140)"
-                  >
-                    <rect
-                      x="-14"
-                      y="-5"
-                      width="28"
-                      height="10"
-                      fill="#F7F1E3"
-                      stroke={POPPY}
-                      strokeWidth="0.7"
-                    />
-                    {/* Tiny dot — reads as the value being carried. */}
-                    <circle cx="-10.5" cy="0" r="1.1" fill={POPPY} />
-                    <text
-                      x="-7"
-                      y="2.4"
-                      textAnchor="start"
-                      fontFamily="var(--font-mono), monospace"
-                      fontSize="6.4"
-                      letterSpacing="0.04em"
-                      fill="#161310"
-                    >
-                      {wallet}
-                    </text>
-                    <animateTransform
-                      attributeName="transform"
-                      type="translate"
-                      from="200 140"
-                      to={`${ex} ${ey}`}
-                      dur="2.4s"
-                      begin={`${begin}s`}
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0;0.95;0.95;0"
-                      dur="2.4s"
-                      begin={`${begin}s`}
-                      repeatCount="indefinite"
-                    />
-                  </g>
-                );
-              })}
-          </>
-        ) : (
-          nodes.map((n, i) => (
-            <line
-              key={`spoke-${i}`}
-              x1="200"
-              y1="140"
-              x2={n.x}
-              y2={n.y}
-              stroke={POPPY}
-              strokeOpacity={isRunning ? 0.5 : 0.32}
-              strokeWidth="0.9"
-              strokeDasharray={isRunning ? "0" : "3 4"}
-            />
-          ))
-        )}
+            })
+          : nodes.map((n, i) => (
+              <line
+                key={`spoke-${i}`}
+                x1="200"
+                y1="140"
+                x2={n.x}
+                y2={n.y}
+                stroke={POPPY}
+                strokeOpacity={isRunning ? 0.5 : 0.32}
+                strokeWidth="0.9"
+                strokeDasharray={isRunning ? "0" : "3 4"}
+              />
+            ))}
+
+        {/* Ambient packets — tiny wallet-shaped envelopes ride a
+            handful of fixed spokes from the source on a slow loop.
+            Rendered in both idle and preview so the "one signature,
+            many wallets" identity moment stays alive while the user
+            is composing the recipient list. SMIL animateTransform
+            so rect + dot + text move as a unit; bypasses the
+            global reduced-motion clamp by design for this surface. */}
+        {showAmbience &&
+          AMBIENT_PACKET_SPOKES.map((spokeIdx, i) => {
+            const angle = IDLE_GHOST_ANGLES[spokeIdx];
+            const ex = 200 + Math.cos(angle) * 220;
+            const ey = 140 + Math.sin(angle) * 110;
+            const begin = (i * 1.05).toFixed(2);
+            const wallet = AMBIENT_WALLETS[i % AMBIENT_WALLETS.length];
+            return (
+              <g
+                key={`ambient-${i}`}
+                opacity="0"
+                transform="translate(200 140)"
+              >
+                <rect
+                  x="-14"
+                  y="-5"
+                  width="28"
+                  height="10"
+                  fill="#F7F1E3"
+                  stroke={POPPY}
+                  strokeWidth="0.7"
+                />
+                <circle cx="-10.5" cy="0" r="1.1" fill={POPPY} />
+                <text
+                  x="-7"
+                  y="2.4"
+                  textAnchor="start"
+                  fontFamily="var(--font-mono), monospace"
+                  fontSize="6.4"
+                  letterSpacing="0.04em"
+                  fill="#161310"
+                >
+                  {wallet}
+                </text>
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  from="200 140"
+                  to={`${ex} ${ey}`}
+                  dur="2.4s"
+                  begin={`${begin}s`}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0;0.95;0.95;0"
+                  dur="2.4s"
+                  begin={`${begin}s`}
+                  repeatCount="indefinite"
+                />
+              </g>
+            );
+          })}
 
         {/* Running-state particles — one per visible node. SMIL motion along
             the spoke. Reserved for Phase 6; rendered conditionally so the
@@ -284,13 +284,15 @@ export function FanOutTrace({
           ))}
 
         {/* Sonar rings — three concentric pulses radiate from the
-            source on a staggered loop. Only rendered in idle mode so
-            they don't compete with the recipient nodes once the user
-            starts composing. */}
-        {!showRecipients &&
+            source on a staggered loop. Rendered in idle + preview
+            so the heartbeat doesn't disappear the moment the user
+            types a recipient; suppressed in running/settled where
+            the real particle animation takes over. */}
+        {showAmbience &&
           SONAR_DELAYS.map((delay, i) => (
             <circle
               key={`sonar-${i}`}
+              className="airdrop-anim-sonar"
               cx="200"
               cy="140"
               r="32"
@@ -300,7 +302,7 @@ export function FanOutTrace({
               opacity="0"
               style={{
                 transformOrigin: "200px 140px",
-                animation: `airdrop-sonar 4.8s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s infinite`,
+                animationDelay: `${delay}s`,
               }}
             />
           ))}
@@ -308,14 +310,12 @@ export function FanOutTrace({
         {/* Source glow — gentle ambient pulse. Stays on across all states
             so the eye anchors on the origin. */}
         <circle
+          className="airdrop-anim-source-breath"
           cx="200"
           cy="140"
           r="56"
           fill="url(#airdrop-source-glow)"
-          style={{
-            transformOrigin: "200px 140px",
-            animation: "airdrop-source-breath 4.8s ease-in-out infinite",
-          }}
+          style={{ transformOrigin: "200px 140px" }}
         />
 
         {/* Source node — a hairline square with the lifetime counter
@@ -515,6 +515,24 @@ export function FanOutTrace({
           @keyframes airdrop-fill {
             0%   { transform: scaleX(0); opacity: 0.5 }
             100% { transform: scaleX(1); opacity: 1 }
+          }
+
+          /* The hero ambience is the page's signature kinetic moment.
+             Use !important to override the global prefers-reduced-motion
+             clamp in globals.css — without these overrides the rings
+             collapse to opacity 0 and the dashes stop flowing, making
+             the trace look static even though the markup is present. */
+          .airdrop-anim-source-breath {
+            animation: airdrop-source-breath 4.8s ease-in-out infinite !important;
+          }
+          .airdrop-anim-sonar {
+            animation: airdrop-sonar 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite !important;
+          }
+          .airdrop-anim-spoke-flow {
+            animation: airdrop-spoke-flow 5.5s linear infinite !important;
+          }
+          .airdrop-anim-endpoint-breath {
+            animation: airdrop-endpoint-breath 3.4s ease-in-out infinite !important;
           }
         `}</style>
       </svg>

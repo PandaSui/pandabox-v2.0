@@ -168,6 +168,12 @@ export function Nav({
       {floatAfterHero && (
         <header
           aria-hidden={!floating}
+          // `inert` disables every descendant — including the Tools
+          // dropdown panel which otherwise overrides the header's
+          // `pointer-events-none` with `pointer-events-auto` when open,
+          // and ends up absorbing clicks meant for the in-flow header's
+          // dropdown sitting underneath it.
+          inert={!floating}
           className={cn(
             "fixed inset-x-0 top-0 z-40 border-b border-ink/15 bg-bone/85 backdrop-blur-md",
             "transition-[transform,opacity] duration-300 ease-out",

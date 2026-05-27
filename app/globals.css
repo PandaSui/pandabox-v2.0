@@ -297,6 +297,16 @@
     background: transparent;
   }
 
+  /* Fully hide the native scrollbar — used by rails that ship a custom
+     overflow affordance (edge fades + chevrons + a hairline progress
+     thumb) so the OS scrollbar doesn't compete with the design system. */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .text-balance {
     text-wrap: balance;
   }
