@@ -23,6 +23,9 @@ export function AirdropSuccess({
   results,
   symbol,
   decimals,
+  coinName,
+  coinIconUrl,
+  coinType,
   onClose,
   onReset,
 }: {
@@ -30,6 +33,9 @@ export function AirdropSuccess({
   results: BatchResult[];
   symbol: string | null;
   decimals: number;
+  coinName?: string | null;
+  coinIconUrl?: string | null;
+  coinType?: string;
   onClose: () => void;
   onReset: () => void;
 }) {
@@ -48,96 +54,130 @@ export function AirdropSuccess({
     { recipients: 0, totalAmount: 0n, feeMist: 0n },
   );
 
+  const displaySymbol = symbol ?? synthSymbol(coinType ?? "");
   return (
-    <Modal open={open} onClose={onClose} title="Airdrop settled">
-      <div className="space-y-6 px-6 pb-6 pt-2">
-        {/* Big tally — the moment the user lands on after signing. */}
-        <div className="border border-jade/35 bg-jade/[0.06]">
-          <div className="grid grid-cols-1 divide-y divide-jade/25 md:grid-cols-3 md:divide-x md:divide-y-0">
-            <Tally
-              label="Recipients"
-              value={totals.recipients.toLocaleString()}
-              sub={`across ${results.length} ${
-                results.length === 1 ? "transaction" : "transactions"
-              }`}
-            />
-            <Tally
-              label="Total distributed"
-              value={`${formatAmount(totals.totalAmount, {
-                decimals,
-                maxFractionDigits: 4,
-              })}${symbol ? ` ${symbol}` : ""}`}
-              sub="parsed from event log"
-            />
-            <Tally
-              label="Fee paid"
-              valueNode={
-                <SuiAmount
-                  mist={totals.feeMist}
-                  adaptive
-                  maxFractionDigits={4}
-                  glyphSize={12}
-                  className="text-[20px] text-ink"
-                />
-              }
-              sub="to airdrop treasury"
-            />
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Airdrop settled"
+      className="max-w-2xl"
+    >
+      <div className="-m-6 flex max-h-[85vh] flex-col overflow-hidden">
+        <div className="min-w-0 flex-1 space-y-6 overflow-y-auto px-6 pb-6 pt-5">
+          {/* Subject ribbon — celebrate which asset just landed. */}
+          {coinType ? (
+            <div className="flex items-center gap-4 border-l-[3px] border-jade bg-jade/[0.04] px-4 py-3.5">
+              <SuccessAssetIcon
+                iconUrl={coinIconUrl ?? null}
+                coinType={coinType}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                  <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-ink">
+                    {displaySymbol}
+                  </span>
+                  {coinName ? (
+                    <span className="font-sans text-[13px] text-ink/65">
+                      {coinName}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-jade">
+                  Settled on Sui mainnet
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          {/* Big tally — the moment the user lands on after signing. */}
+          <div className="border border-jade/35 bg-jade/[0.06]">
+            <div className="grid grid-cols-1 divide-y divide-jade/25 md:grid-cols-3 md:divide-x md:divide-y-0">
+              <Tally
+                label="Recipients"
+                value={totals.recipients.toLocaleString()}
+                sub={`across ${results.length} ${
+                  results.length === 1 ? "transaction" : "transactions"
+                }`}
+              />
+              <Tally
+                label="Total distributed"
+                value={`${formatAmount(totals.totalAmount, {
+                  decimals,
+                  maxFractionDigits: 4,
+                })}${symbol ? ` ${symbol}` : ""}`}
+                sub="parsed from event log"
+              />
+              <Tally
+                label="Fee paid"
+                valueNode={
+                  <SuiAmount
+                    mist={totals.feeMist}
+                    adaptive
+                    maxFractionDigits={4}
+                    glyphSize={12}
+                    className="text-[20px] text-ink"
+                  />
+                }
+                sub="to airdrop treasury"
+              />
+            </div>
           </div>
+
+          {/* Per-batch ledger — one row per signed tx. Each links into
+              Suiscan via the existing TxHash primitive. */}
+          <section className="space-y-2">
+            <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">
+              Transactions
+            </h3>
+            <ol className="divide-y divide-ink/[0.06] border border-ink/15 bg-bone">
+              {results.map((r) => (
+                <li
+                  key={r.digest}
+                  className="flex flex-wrap items-center gap-3 px-3 py-2.5"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
+                    {String(r.index + 1).padStart(2, "0")} /{" "}
+                    {String(r.total).padStart(2, "0")}
+                  </span>
+                  <TxHash value={r.digest} />
+                  <span className="ml-auto inline-flex items-center gap-3 font-mono text-[11px] tabular-nums text-ink">
+                    {r.event ? (
+                      <>
+                        <span>
+                          {r.event.recipientCount} ·{" "}
+                          {formatAmount(r.event.totalAmountRaw, {
+                            decimals,
+                            maxFractionDigits: 4,
+                          })}{" "}
+                          {symbol ?? ""}
+                        </span>
+                        <a
+                          href={explorerUrl("tx", r.digest)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="group inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
+                        >
+                          Suiscan
+                          <span
+                            aria-hidden
+                            className="transition-transform duration-200 group-hover:translate-x-[2px]"
+                          >
+                            →
+                          </span>
+                        </a>
+                      </>
+                    ) : (
+                      <span className="text-ink/45">events not indexed yet</span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
 
-        {/* Per-batch ledger — one row per signed tx. Each links into
-            Suiscan via the existing TxHash primitive. */}
-        <section className="space-y-2">
-          <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">
-            Transactions
-          </h3>
-          <ol className="divide-y divide-ink/[0.06] border border-ink/15 bg-bone">
-            {results.map((r) => (
-              <li
-                key={r.digest}
-                className="flex flex-wrap items-center gap-3 px-3 py-2.5"
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
-                  {String(r.index + 1).padStart(2, "0")} /{" "}
-                  {String(r.total).padStart(2, "0")}
-                </span>
-                <TxHash value={r.digest} />
-                <span className="ml-auto inline-flex items-center gap-3 font-mono text-[11px] tabular-nums text-ink">
-                  {r.event ? (
-                    <>
-                      <span>
-                        {r.event.recipientCount} ·{" "}
-                        {formatAmount(r.event.totalAmountRaw, {
-                          decimals,
-                          maxFractionDigits: 4,
-                        })}{" "}
-                        {symbol ?? ""}
-                      </span>
-                      <a
-                        href={explorerUrl("tx", r.digest)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="group inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55 transition-colors hover:text-ink"
-                      >
-                        Suiscan
-                        <span
-                          aria-hidden
-                          className="transition-transform duration-200 group-hover:translate-x-[2px]"
-                        >
-                          →
-                        </span>
-                      </a>
-                    </>
-                  ) : (
-                    <span className="text-ink/45">events not indexed yet</span>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <div className="flex items-center justify-between border-t border-ink/10 pt-5">
+        {/* Sticky footer — same pattern as the inspector. */}
+        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-ink/15 bg-bone px-6 py-4">
           <button
             type="button"
             onClick={onClose}
@@ -165,6 +205,78 @@ export function AirdropSuccess({
       </div>
     </Modal>
   );
+}
+
+/* ─────────────────────────── subject icon ─────────────────────────── */
+
+function SuccessAssetIcon({
+  iconUrl,
+  coinType,
+}: {
+  iconUrl: string | null;
+  coinType: string;
+}) {
+  if (iconUrl) {
+    return (
+      <span
+        className="relative block h-12 w-12 shrink-0 overflow-hidden border border-ink/20 bg-bone"
+        aria-hidden
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={iconUrl}
+          alt=""
+          className="block h-full w-full object-cover"
+        />
+      </span>
+    );
+  }
+  // Deterministic monogram seeded from the coin type — same fallback as
+  // the inspector's hero icon, scaled to match the success ribbon.
+  let h = 0;
+  for (let i = 0; i < coinType.length; i += 1) {
+    h = (h * 31 + coinType.charCodeAt(i)) >>> 0;
+  }
+  const cells: boolean[] = [];
+  for (let i = 0; i < 8; i += 1) cells.push(((h >> i) & 1) === 1);
+  const accents = [
+    "#B8C45E",
+    "#C47557",
+    "#6E8E5D",
+    "#6D8796",
+    "#D9C57A",
+    "#7E685E",
+  ];
+  const fill = accents[h % accents.length];
+  return (
+    <span
+      aria-hidden
+      className="relative block h-12 w-12 shrink-0 border border-ink/20 bg-bone"
+    >
+      <svg
+        viewBox="0 0 5 4"
+        className="absolute inset-[3px] h-[calc(100%-6px)] w-[calc(100%-6px)]"
+        aria-hidden
+      >
+        {cells.map((on, i) => {
+          if (!on) return null;
+          const x = i % 4;
+          const y = Math.floor(i / 4);
+          return (
+            <g key={i}>
+              <rect x={x} y={y} width="1" height="1" fill={fill} />
+              <rect x={4 - x} y={y} width="1" height="1" fill={fill} />
+            </g>
+          );
+        })}
+      </svg>
+    </span>
+  );
+}
+
+function synthSymbol(coinType: string): string {
+  const tail = coinType.split("::").pop() ?? "";
+  return tail.toUpperCase().slice(0, 8) || "?";
 }
 
 /* ─────────────────────────── tally cell ─────────────────────────── */

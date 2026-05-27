@@ -60,6 +60,8 @@ export function AirdropPanel({
   );
   const decimals = selectedGroup?.decimals ?? 0;
   const symbol = selectedGroup?.symbol ?? null;
+  const coinName = selectedGroup?.name ?? null;
+  const coinIconUrl = selectedGroup?.iconUrl ?? null;
   const coinPicked = Boolean(selectedGroup);
 
   // Live parse + quote + batches. Pure, cheap, no chain reads.
@@ -234,6 +236,8 @@ export function AirdropPanel({
         coinType={draft.coinType}
         symbol={symbol}
         decimals={decimals}
+        coinName={coinName}
+        coinIconUrl={coinIconUrl}
         quote={quote}
         batches={batches}
         treasuryAddress={platform?.treasuryAddress ?? ""}
@@ -247,6 +251,9 @@ export function AirdropPanel({
         }
         symbol={symbol}
         decimals={decimals}
+        coinName={coinName}
+        coinIconUrl={coinIconUrl}
+        coinType={draft.coinType}
         onClose={submit.reset}
         onReset={() => {
           submit.reset();

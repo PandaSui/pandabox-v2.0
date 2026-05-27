@@ -9,7 +9,6 @@ import { Spinner } from "@/components/primitives/spinner";
 import {
   AIRDROP_PACKAGE_ID,
   AIRDROP_PLATFORM_ID,
-  AIRDROP_TARGET,
 } from "@/lib/contracts/airdrop";
 import type { AirdropBatch, AirdropQuote, SubmitState } from "@/lib/airdrop";
 
@@ -36,6 +35,8 @@ export function TransactionInspector({
   coinType,
   symbol,
   decimals,
+  coinName,
+  coinIconUrl,
   quote,
   batches,
   treasuryAddress,
@@ -50,6 +51,10 @@ export function TransactionInspector({
   coinType: string;
   symbol: string | null;
   decimals: number;
+  /** Display name resolved from CoinMetadata (e.g. "Energies"). */
+  coinName?: string | null;
+  /** Asset icon from CoinMetadata, when available. */
+  coinIconUrl?: string | null;
   quote: AirdropQuote;
   batches: AirdropBatch[];
   treasuryAddress: string;
@@ -70,50 +75,79 @@ export function TransactionInspector({
   const remainingBatches = batches.length - partialCount;
 
   return (
-    <Modal open={open} onClose={onClose} title="Transaction inspector">
-      <div className="space-y-6 px-6 pb-6 pt-2">
-        {/* ── Top summary ───────────────────────────────────────── */}
-        <SummaryGrid
-          quote={quote}
-          batchCount={batches.length}
-          decimals={decimals}
-          symbol={symbol}
-        />
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Transaction inspector"
+      className="max-w-2xl"
+    >
+      <div className="-m-6 flex max-h-[85vh] flex-col overflow-hidden">
+        <div className="min-w-0 flex-1 space-y-6 overflow-y-auto px-6 pb-6 pt-5">
+          {/* ── Subject hero — what you're sending ───────────────── */}
+          <SubjectHero
+            symbol={symbol}
+            coinName={coinName ?? null}
+            coinIconUrl={coinIconUrl ?? null}
+            coinType={coinType}
+            quote={quote}
+            decimals={decimals}
+          />
 
-        {/* ── Move call audit ───────────────────────────────────── */}
-        <Section title="Move call">
-          <ul className="space-y-2 font-mono text-[11.5px] text-ink">
-            <KV label="target" value={AIRDROP_TARGET} mono />
-            <KV
-              label="package"
-              value={truncMiddle(AIRDROP_PACKAGE_ID, 10)}
-              mono
-              hint="Sui mainnet"
-            />
-            <KV
-              label="platform"
-              value={truncMiddle(AIRDROP_PLATFORM_ID, 10)}
-              mono
-              hint="shared object · mutable ref"
-            />
-            <KV label="coin type" value={truncMiddle(coinType, 14)} mono />
-            <KV
-              label="memo"
-              value={memo ? `"${memo}"` : "—"}
-              hint={memo ? "stored on-chain in event log" : "optional"}
-            />
-          </ul>
-        </Section>
+          {/* ── Summary grid ─────────────────────────────────────── */}
+          <SummaryGrid
+            quote={quote}
+            batchCount={batches.length}
+            decimals={decimals}
+            symbol={symbol}
+          />
 
-        {/* ── Fee destination ───────────────────────────────────── */}
-        <Section title="Fee destination">
-          <div className="flex items-center justify-between border border-ink/15 bg-bone px-3 py-2.5">
-            <Address value={treasuryAddress} link />
-            <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
-              Airdrop treasury
-            </span>
-          </div>
-        </Section>
+          {/* ── Move call audit ──────────────────────────────────── */}
+          <Section title="Move call">
+            <KvBlock>
+              <KvRow
+                label="function"
+                value="airdrop::airdrop"
+                mono
+                hint="generic over coin type T"
+              />
+              <KvRow
+                label="package"
+                value={AIRDROP_PACKAGE_ID}
+                mono
+                truncate="middle"
+                hint="Sui mainnet"
+              />
+              <KvRow
+                label="platform"
+                value={AIRDROP_PLATFORM_ID}
+                mono
+                truncate="middle"
+                hint="shared · mutable ref"
+              />
+              <KvRow
+                label="coin"
+                value={coinType}
+                mono
+                truncate="middle"
+              />
+              <KvRow
+                label="memo"
+                value={memo ? `"${memo}"` : "—"}
+                hint={memo ? "recorded on-chain" : "optional"}
+                wrap
+              />
+            </KvBlock>
+          </Section>
+
+          {/* ── Fee destination ──────────────────────────────────── */}
+          <Section title="Fee destination">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1 border border-ink/15 bg-bone px-3 py-2.5">
+              <Address value={treasuryAddress} link />
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink/55">
+                Airdrop treasury
+              </span>
+            </div>
+          </Section>
 
         {/* ── Batch breakdown ───────────────────────────────────── */}
         <Section title={`Batches · ${batches.length}`}>
@@ -147,15 +181,16 @@ export function TransactionInspector({
           )}
         </Section>
 
-        {/* ── Error banner ──────────────────────────────────────── */}
-        {state.kind === "error" ? (
-          <div className="border border-poppy/45 bg-poppy/10 px-3 py-2.5 font-mono text-[11px] text-poppy">
-            {state.message}
-          </div>
-        ) : null}
+          {/* ── Error banner ───────────────────────────────────── */}
+          {state.kind === "error" ? (
+            <div className="break-words border border-poppy/45 bg-poppy/10 px-3 py-2.5 font-mono text-[11px] text-poppy">
+              {state.message}
+            </div>
+          ) : null}
+        </div>
 
-        {/* ── Footer CTA ────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-t border-ink/10 pt-5">
+        {/* ── Footer CTA (sticky outside the scroll container) ──── */}
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-ink/15 bg-bone px-6 py-4">
           <button
             type="button"
             onClick={onClose}
@@ -325,34 +360,208 @@ function Section({
   );
 }
 
-function KV({
+/**
+ * Subject hero — the modal's identity moment. Shows the airdropped asset
+ * (icon + symbol + name) alongside a one-line summary of what's about
+ * to be sent. Replaces the redundant "TOTAL TOKENS" cell in the summary
+ * grid as the user's first visual anchor.
+ */
+function SubjectHero({
+  symbol,
+  coinName,
+  coinIconUrl,
+  coinType,
+  quote,
+  decimals,
+}: {
+  symbol: string | null;
+  coinName: string | null;
+  coinIconUrl: string | null;
+  coinType: string;
+  quote: AirdropQuote;
+  decimals: number;
+}) {
+  const totalDisplay = formatAmount(quote.totalAmountRaw, {
+    decimals,
+    maxFractionDigits: 4,
+  });
+  const displaySymbol = symbol ?? synthSymbol(coinType);
+  const displayName = coinName ?? "Asset";
+  return (
+    <div className="flex items-start gap-4 border-l-[3px] border-poppy bg-ink/[0.02] px-4 py-4">
+      <AssetIcon iconUrl={coinIconUrl} coinType={coinType} />
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+          <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-ink">
+            {displaySymbol}
+          </span>
+          <span className="font-sans text-[13px] text-ink/65">
+            {displayName}
+          </span>
+        </div>
+        <p className="mt-1.5 font-mono text-[12.5px] tabular-nums text-ink/85">
+          Sending{" "}
+          <span className="text-ink">
+            {totalDisplay} {displaySymbol}
+          </span>{" "}
+          to{" "}
+          <span className="text-ink">
+            {quote.recipientCount.toLocaleString()}{" "}
+            {quote.recipientCount === 1 ? "wallet" : "wallets"}
+          </span>
+          {quote.batchCount > 1 ? (
+            <span className="text-ink/55">
+              {" · "}
+              {quote.batchCount} signed PTBs
+            </span>
+          ) : null}
+        </p>
+        <p
+          className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45"
+          title={coinType}
+        >
+          {coinType}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function AssetIcon({
+  iconUrl,
+  coinType,
+}: {
+  iconUrl: string | null;
+  coinType: string;
+}) {
+  if (iconUrl) {
+    return (
+      <span
+        className="relative block h-11 w-11 shrink-0 overflow-hidden border border-ink/20 bg-bone"
+        aria-hidden
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={iconUrl}
+          alt=""
+          className="block h-full w-full object-cover"
+        />
+      </span>
+    );
+  }
+  // Deterministic pixel monogram seeded from the coin type. Same fallback
+  // pattern as the picker, scaled up for the hero.
+  let h = 0;
+  for (let i = 0; i < coinType.length; i += 1) {
+    h = (h * 31 + coinType.charCodeAt(i)) >>> 0;
+  }
+  const cells: boolean[] = [];
+  for (let i = 0; i < 8; i += 1) cells.push(((h >> i) & 1) === 1);
+  const accents = [
+    "#B8C45E",
+    "#C47557",
+    "#6E8E5D",
+    "#6D8796",
+    "#D9C57A",
+    "#7E685E",
+  ];
+  const fill = accents[h % accents.length];
+  return (
+    <span
+      aria-hidden
+      className="relative block h-11 w-11 shrink-0 border border-ink/20 bg-bone"
+    >
+      <svg
+        viewBox="0 0 5 4"
+        className="absolute inset-[3px] h-[calc(100%-6px)] w-[calc(100%-6px)]"
+        aria-hidden
+      >
+        {cells.map((on, i) => {
+          if (!on) return null;
+          const x = i % 4;
+          const y = Math.floor(i / 4);
+          return (
+            <g key={i}>
+              <rect x={x} y={y} width="1" height="1" fill={fill} />
+              <rect x={4 - x} y={y} width="1" height="1" fill={fill} />
+            </g>
+          );
+        })}
+      </svg>
+    </span>
+  );
+}
+
+/**
+ * Key/value rows for the Move-call audit. Built to never overflow the
+ * modal:
+ *
+ *   · `label` is fixed-width on wide viewports, stacks above the value
+ *     on narrow ones (grid auto-flow handles the breakpoint).
+ *   · `value` uses `break-all` so long mono strings wrap inside the
+ *     allocated column instead of pushing the layout sideways.
+ *   · `truncate: "middle"` middle-truncates very long values (package
+ *     IDs, coin types) to a single line and exposes the full string via
+ *     a `title` attribute for hover/copy.
+ */
+function KvBlock({ children }: { children: React.ReactNode }) {
+  return (
+    <ul className="divide-y divide-ink/[0.06] border border-ink/15 bg-bone">
+      {children}
+    </ul>
+  );
+}
+
+function KvRow({
   label,
   value,
   hint,
   mono = false,
+  truncate,
+  wrap = false,
 }: {
   label: string;
   value: string;
   hint?: string;
   mono?: boolean;
+  truncate?: "middle";
+  wrap?: boolean;
 }) {
+  const displayValue =
+    truncate === "middle" ? truncMiddle(value, 14) : value;
   return (
-    <li className="grid grid-cols-[80px_1fr] items-baseline gap-3 border-b border-ink/[0.06] pb-1.5 last:border-0">
+    <li className="grid grid-cols-1 items-baseline gap-x-3 gap-y-1 px-3 py-2.5 sm:grid-cols-[88px_1fr]">
       <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/45">
         {label}
       </span>
-      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-        <span className={cn("text-ink", mono && "font-mono tabular-nums")}>
-          {value}
+      <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5">
+        <span
+          title={truncate ? value : undefined}
+          className={cn(
+            "min-w-0 text-ink",
+            mono && "font-mono text-[11.5px] tabular-nums",
+            // `break-all` is the right choice for hex addresses + Move
+            // type tags — they have no natural break opportunities, so
+            // `break-words` leaves them as one giant atom. `wrap` opts
+            // out for memo content where mid-word breaks would be ugly.
+            wrap ? "whitespace-pre-wrap break-words" : "break-all",
+          )}
+        >
+          {displayValue}
         </span>
         {hint ? (
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
             {hint}
           </span>
         ) : null}
       </span>
     </li>
   );
+}
+
+function synthSymbol(coinType: string): string {
+  const tail = coinType.split("::").pop() ?? "";
+  return tail.toUpperCase().slice(0, 8) || "?";
 }
 
 function BatchProgress({
