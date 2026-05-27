@@ -9,14 +9,38 @@ import { liveRows } from "./parse-recipients";
 import type { AirdropQuote, RecipientRow } from "./types";
 
 /**
- * Gas-budget buffer added on top of the strict fee total. The contract
- * doesn't charge the user for gas itself — that comes out of the same
- * SUI wallet — but the UI surfaces `totalSuiBudgetMist` so people can
- * preflight without "insufficient gas" surprises. 50_000_000 MIST
- * (≈ 0.05 SUI) is enough headroom for the heaviest 300-recipient PTB on
- * mainnet today; revisit when the live numbers prove otherwise.
+ * Per-batch base gas cost in MIST. Calibrated against a Phantom-signed
+ * 1-recipient airdrop on mainnet, which reported `network_fee = 4.72M
+ * MIST` (≈ 0.00472 SUI). That figure covers: PTB skeleton, two
+ * `splitCoins` calls, the `airdrop::airdrop` move call, and the
+ * `transferObjects` that drains the leftovers. Per-recipient marginal
+ * cost is small but non-zero — recipients add a BCS vector entry plus a
+ * transfer effect.
+ *
+ * Heuristic: `base + recipientCount × perRecipient`. Each batch is its
+ * own PTB so the base is paid once per batch.
  */
-export const GAS_BUDGET_BUFFER_MIST = 50_000_000n;
+const GAS_BASE_PER_PTB_MIST = 5_000_000n; // ≈ 0.005 SUI
+const GAS_PER_RECIPIENT_MIST = 100_000n; // ≈ 0.0001 SUI
+
+/**
+ * Estimate the network gas (mist) the wallet will spend across all
+ * batches. Used purely for UI pre-flight display — the wallet computes
+ * its own real budget at sign time, and the chain settles against
+ * `effects.gasUsed` afterwards. Both can drift from this estimate by
+ * tens of percent depending on PTB shape; the goal here is an
+ * order-of-magnitude-correct ceiling, not a perfect prediction.
+ */
+export function estimateGasMist(
+  recipientCount: number,
+  batchCount: number,
+): bigint {
+  if (recipientCount === 0 || batchCount === 0) return 0n;
+  return (
+    BigInt(batchCount) * GAS_BASE_PER_PTB_MIST +
+    BigInt(recipientCount) * GAS_PER_RECIPIENT_MIST
+  );
+}
 
 export type QuoteInputs = {
   rows: RecipientRow[];
@@ -44,15 +68,17 @@ export function quote(inputs: QuoteInputs): AirdropQuote {
     0n,
   );
   const feeMist = BigInt(recipientCount) * inputs.feePerRecipientMist;
-  const totalSuiBudgetMist = feeMist + GAS_BUDGET_BUFFER_MIST;
   const cap = Math.max(1, inputs.maxRecipients);
   const batchCount =
     recipientCount === 0 ? 0 : Math.ceil(recipientCount / cap);
+  const gasEstimateMist = estimateGasMist(recipientCount, batchCount);
+  const totalSuiBudgetMist = feeMist + gasEstimateMist;
   const overRecipientLimit = recipientCount > cap;
   return {
     recipientCount,
     totalAmountRaw,
     feeMist,
+    gasEstimateMist,
     totalSuiBudgetMist,
     overRecipientLimit,
     batchCount,

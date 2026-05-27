@@ -110,7 +110,13 @@ export function useSubmitAirdrop(
   }, [state.kind]);
 
   const closeInspector = useCallback(() => {
-    if (state.kind === "inspecting") setState({ kind: "idle" });
+    // Allow dismissal from any state where the user can sensibly cancel —
+    // before submit (`inspecting`) or after a terminal failure (`error`).
+    // Mid-flight states (`dry-running`, `signing`, `confirming`) are
+    // gated by `disabled={isInFlight}` on the Cancel button itself.
+    if (state.kind === "inspecting" || state.kind === "error") {
+      setState({ kind: "idle" });
+    }
   }, [state.kind]);
 
   const reset = useCallback(() => {

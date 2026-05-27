@@ -113,6 +113,7 @@ export function AirdropPanel({
   const inFlight = isSubmitInFlight(submit.state);
   const inspectorOpen =
     submit.state.kind === "inspecting" ||
+    submit.state.kind === "dry-running" ||
     submit.state.kind === "signing" ||
     submit.state.kind === "confirming" ||
     submit.state.kind === "error";

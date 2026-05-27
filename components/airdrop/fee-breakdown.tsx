@@ -94,7 +94,7 @@ export function FeeBreakdown({
               className="text-[16px] text-ink"
             />
           }
-          subtitle="Fee + gas headroom"
+          subtitle="Fee + est. network gas"
         />
       </div>
     </div>

@@ -86,9 +86,16 @@ export type AirdropQuote = {
   /** `recipientCount * feePerRecipientMist`. */
   feeMist: bigint;
   /**
-   * Total SUI required from the caller's gas: the fee plus a buffer for
-   * gas itself. The UI surfaces this so users can preflight without
-   * surprise. Buffer policy lives in the quote module.
+   * Estimated network gas across all batches, in MIST. Heuristic
+   * calibrated against mainnet observations; see `estimateGasMist` in
+   * `quote.ts` for the model. Display only — the wallet computes its
+   * own real budget at sign time.
+   */
+  gasEstimateMist: bigint;
+  /**
+   * Total SUI the wallet must hold spendable to safely sign every
+   * batch: `feeMist + gasEstimateMist`. Surfaces in the pre-flight
+   * strip so users can preflight without "insufficient gas" surprises.
    */
   totalSuiBudgetMist: bigint;
   /** Whether the row count exceeds the live `max_recipients`. */

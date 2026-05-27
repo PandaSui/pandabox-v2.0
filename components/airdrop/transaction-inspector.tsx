@@ -304,7 +304,7 @@ function SummaryGrid({
             className="text-[15px] text-ink"
           />
         }
-        sub="fee + gas"
+        sub="fee + est. gas"
         accent="bg-ink/45"
       />
     </div>
