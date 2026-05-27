@@ -27,8 +27,9 @@ export const TOOLS_META: readonly ToolMeta[] = [
   {
     slug: "airdrop",
     accent: "poppy",
-    status: "soon",
-    moveCall: "pandabox::airdrop::send_bulk",
+    status: "available",
+    href: "/airdrop",
+    moveCall: "airdrop::airdrop::airdrop",
     Glyph: GlyphAirdrop,
     Diagram: AirdropDiagram,
   },

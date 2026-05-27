@@ -303,12 +303,12 @@
     "suggestCta": "Открыть issue",
     "items": {
       "airdrop": {
-        "name": "Airdrop",
-        "tagline": "Распределите SUI или любой токен проекта на тысячи кошельков в одной подписанной транзакции.",
-        "description": "Загрузите CSV, подпишите один раз, смотрите, как заполняются получатели. Создано для запусков токенов, наград контрибьюторам и комьюнити-дропов, где подписывать по одному платежу — не вариант.",
-        "cap1": "Массовая отправка · до 10 000 адресов на tx",
-        "cap2": "Pre-flight проверяет каждый адрес on-chain",
-        "cap3": "Опция спонсируемого газа для получателей с пустыми кошельками"
+        "name": "Airdrop · Bulk send",
+        "tagline": "Fan a Sui coin out to up to 300 wallets in one signed transaction.",
+        "description": "Drop in a CSV, sign once, watch the recipients fill. Built for token launches, contributor rewards, and community drops where signing one payment at a time isn't an option.",
+        "cap1": "Bulk send · up to 300 recipients per signed PTB",
+        "cap2": "Every address validated locally before you sign",
+        "cap3": "Flat per-recipient SUI fee · no admin override, no holds"
       },
       "redeem": {
         "name": "Redeem · Выкуп и возвраты",
@@ -1736,5 +1736,42 @@
         }
       }
     }
+  },
+  "airdrop": {
+    "metaTitle": "Airdrop · Pandabox",
+    "eyebrow": "Onchain · Airdrop",
+    "headline": "One signature. Many wallets.",
+    "subtitle": "Fan a Sui coin out to a list of recipients in a single signed PTB. The contract enforces the cap, the fee, and the totals — no off-chain trust required.",
+    "ctaCompose": "Compose airdrop",
+    "ctaActivity": "Recent airdrops",
+    "statFee": "Fee / recipient",
+    "statMax": "Max / batch",
+    "statLifetime": "Lifetime sends",
+    "statStatus": "Status",
+    "statStatusLive": "Live",
+    "statStatusPaused": "Paused",
+    "statSource": "Live from Sui mainnet",
+    "statRevalidate": "Refreshes every 60s",
+    "traitOneSig": "One signature",
+    "traitAtomic": "Atomic — all or nothing",
+    "traitAnyCoin": "Any Sui coin type",
+    "traitFee": "{fee} SUI per recipient",
+    "traitLearn": "How airdrops work",
+    "panelEyebrow": "Compose",
+    "panelTitle": "Recipient list",
+    "panelEmpty": "Paste a CSV, drop a file, or import JSON to get started.",
+    "panelPlaceholder": "Drop your list here — one address and amount per line, or paste JSON.",
+    "howEyebrow": "How it works",
+    "howTitle": "Three steps from list to settled.",
+    "howStep1Title": "Pick a coin",
+    "howStep1Body": "Choose any Sui coin type you hold. The picker shows your spendable balance per asset, sorted by holdings size.",
+    "howStep2Title": "Drop a recipient list",
+    "howStep2Body": "Paste a CSV or drop a file. Every address is validated locally before you sign — invalid rows are surfaced inline, not after the fact.",
+    "howStep3Title": "Sign once, settle in one PTB",
+    "howStep3Body": "The contract fans the coin out to every recipient atomically. If any single transfer fails, the whole batch reverts — no partial drops, no stuck transactions.",
+    "activityEyebrow": "Across Pandabox",
+    "activityTitle": "Recent airdrops",
+    "activityEmpty": "No airdrops on this package yet — yours could be the first.",
+    "activityCount": "{count, plural, one {# airdrop} other {# airdrops}}"
   }
 }
