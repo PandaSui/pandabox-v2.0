@@ -102,6 +102,7 @@ export function useSubmitAirdrop(
   // sibling consumer can subscribe without prop drilling.
   const state = useAirdropSubmitStore((s) => s.state);
   const setState = useAirdropSubmitStore((s) => s.setState);
+  const appendSuccesses = useAirdropSubmitStore((s) => s.appendSuccesses);
 
   const openInspector = useCallback(() => {
     if (state.kind === "idle" || state.kind === "error") {
@@ -334,6 +335,20 @@ export function useSubmitAirdrop(
 
     setState({ kind: "success", results: completed });
 
+    // Optimistically prepend the just-settled events into the shared
+    // store so the activity feed below the panel shows them
+    // immediately. The Sui event indexer typically lags
+    // `waitForTransaction` by 2-3s on mainnet — without this, the
+    // feed's `router.refresh()` pull would briefly show stale data.
+    // Once the server fetch catches up, dedupe by `txDigest` hides
+    // the optimistic copy.
+    const successfulEvents = completed
+      .map((r) => r.event)
+      .filter((e): e is NonNullable<typeof e> => e !== null);
+    if (successfulEvents.length > 0) {
+      appendSuccesses(successfulEvents);
+    }
+
     // Cache busts — fire and forget. The masthead lifetime counter +
     // recent-activity feed will pick these up on the next render.
     void bustAirdropCache().catch(() => {});
@@ -355,6 +370,8 @@ export function useSubmitAirdrop(
     queryClient,
     network,
     state,
+    setState,
+    appendSuccesses,
   ]);
 
   const submit = useCallback(

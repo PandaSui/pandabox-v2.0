@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
@@ -11,6 +11,7 @@ import { Spinner } from "@/components/primitives/spinner";
 import { formatAmount } from "@/lib/amount";
 import { SuiAmount } from "@/components/identity/sui-amount";
 import { RevealOnView } from "@/components/motion/reveal-on-view";
+import { useAirdropSubmitStore } from "@/lib/store/airdrop-submit";
 import { fromWire, type AirdroppedEvent, type EventPageCursor } from "@/lib/airdrop";
 import { loadMoreAirdrops } from "@/lib/server-actions/airdrop-load-more";
 
@@ -53,20 +54,77 @@ export function AirdropActivityFeed({
   const account = useCurrentAccount();
   const [tab, setTab] = useState<"all" | "yours">("all");
 
-  // Pagination state. The page server-renders the first 30 events; from
-  // there, this component owns the growing list + cursor + has-next flag
-  // through React state. Each "Load more" hit appends to `items` and
-  // extends `metadata` so the rows mounted from the first page don't
-  // re-render.
-  const [items, setItems] = useState<AirdroppedEvent[]>(initialItems);
-  const [metadata, setMetadata] =
-    useState<Record<string, CoinMetaLite>>(initialMetadata);
+  // Three sources of items, merged + deduped by txDigest below:
+  //
+  //   1. `initialItems` — newest 30 from the server, refreshed on every
+  //      `router.refresh()` (e.g. after a successful airdrop).
+  //   2. `optimisticItems` — locally observed `Airdropped` events from
+  //      sends in this session, prepended so they show up before the
+  //      Sui event indexer catches up with the tx (typically a 2-3s
+  //      lag on mainnet). Sourced from the shared submit store.
+  //   3. `extraItems` — pages fetched via "Load more". Owned locally
+  //      so the rows mounted from the first page don't re-render on
+  //      each pagination step.
+  //
+  // When the server refetches (initialItems reference changes), the
+  // pagination state is reset — the user can re-load more pages from
+  // the new head if they want. Optimistic items naturally fall away
+  // once `initialItems` includes them (dedupe by `txDigest`).
+  const optimisticItems = useAirdropSubmitStore((s) => s.recentSuccesses);
+  const [extraItems, setExtraItems] = useState<AirdroppedEvent[]>([]);
+  const [extraMetadata, setExtraMetadata] = useState<
+    Record<string, CoinMetaLite>
+  >({});
   const [cursor, setCursor] = useState<EventPageCursor | null>(
     initialCursor,
   );
   const [hasNextPage, setHasNextPage] = useState(initialHasNextPage);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  // Reset client-side pagination state when the server payload changes
+  // — typically after `router.refresh()` lands a new initial page.
+  // Comparing by joined digest strings avoids spurious resets when the
+  // server hands us an array-identical (by value) snapshot.
+  const initialFingerprint = useMemo(
+    () => initialItems.map((e) => e.txDigest).join("|"),
+    [initialItems],
+  );
+  useEffect(() => {
+    setExtraItems([]);
+    setExtraMetadata({});
+    setCursor(initialCursor);
+    setHasNextPage(initialHasNextPage);
+    setLoadError(null);
+  }, [initialFingerprint, initialCursor, initialHasNextPage]);
+
+  // Merge → dedupe → sort. Optimistic items take priority on tie since
+  // they came straight from `waitForTransaction`'s receipt and we trust
+  // their timestamps just as much as the server's. The Set tracks
+  // already-included digests so each tx renders exactly once.
+  const items = useMemo<AirdroppedEvent[]>(() => {
+    const seen = new Set<string>();
+    const out: AirdroppedEvent[] = [];
+    const push = (list: AirdroppedEvent[]) => {
+      for (const e of list) {
+        if (seen.has(e.txDigest)) continue;
+        seen.add(e.txDigest);
+        out.push(e);
+      }
+    };
+    push(optimisticItems);
+    push(initialItems);
+    push(extraItems);
+    out.sort((a, b) => b.timestampMs - a.timestampMs);
+    return out;
+  }, [optimisticItems, initialItems, extraItems]);
+
+  // Same merge for metadata — initial + load-more pages cover any coin
+  // type referenced in the merged item list.
+  const metadata = useMemo<Record<string, CoinMetaLite>>(
+    () => ({ ...initialMetadata, ...extraMetadata }),
+    [initialMetadata, extraMetadata],
+  );
 
   const onLoadMore = () => {
     if (!hasNextPage || isPending) return;
@@ -75,8 +133,8 @@ export function AirdropActivityFeed({
       try {
         const next = await loadMoreAirdrops(cursor);
         const lifted = next.items.map(fromWire);
-        setItems((prev) => [...prev, ...lifted]);
-        setMetadata((prev) => ({ ...prev, ...next.metadata }));
+        setExtraItems((prev) => [...prev, ...lifted]);
+        setExtraMetadata((prev) => ({ ...prev, ...next.metadata }));
         setCursor(next.nextCursor);
         setHasNextPage(next.hasNextPage);
       } catch (err) {
