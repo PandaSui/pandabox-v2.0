@@ -131,38 +131,120 @@ export function FanOutTrace({
           strokeDasharray="2 4"
         />
 
-        {/* Spokes — drawn from source to each visible node. The reason for
-            drawing them even when no recipients are placed: the idle state
-            still hints at the fan-out shape. We render 12 "ghost" spokes
-            at low opacity in idle mode, and replace them with real
-            recipient-bound spokes in preview/running/settled. */}
-        {!showRecipients
-          ? IDLE_GHOST_ANGLES.map((angle, i) => (
-              <line
-                key={`ghost-${i}`}
-                x1="200"
-                y1="140"
-                x2={200 + Math.cos(angle) * 220}
-                y2={140 + Math.sin(angle) * 110}
-                stroke={POPPY}
-                strokeOpacity="0.12"
-                strokeWidth="0.8"
-                strokeDasharray="3 5"
-              />
-            ))
-          : nodes.map((n, i) => (
-              <line
-                key={`spoke-${i}`}
-                x1="200"
-                y1="140"
-                x2={n.x}
-                y2={n.y}
-                stroke={POPPY}
-                strokeOpacity={isRunning ? 0.5 : 0.32}
-                strokeWidth="0.9"
-                strokeDasharray={isRunning ? "0" : "3 4"}
-              />
-            ))}
+        {/* Spokes + idle ambience — either 12 ghost spokes (idle) or
+            one spoke per visible recipient. In idle mode the dashes
+            flow, the endpoint dots breathe, and ambient packets ride
+            a handful of spokes so the surface reads as live well
+            before any recipient is placed. */}
+        {!showRecipients ? (
+          <>
+            {IDLE_GHOST_ANGLES.map((angle, i) => {
+              const ex = 200 + Math.cos(angle) * 220;
+              const ey = 140 + Math.sin(angle) * 110;
+              return (
+                <g key={`ghost-${i}`}>
+                  <line
+                    x1="200"
+                    y1="140"
+                    x2={ex}
+                    y2={ey}
+                    stroke={POPPY}
+                    strokeOpacity="0.18"
+                    strokeWidth="0.8"
+                    strokeDasharray="3 5"
+                    style={{
+                      animation: `airdrop-spoke-flow 5.5s linear ${(i * 0.21).toFixed(2)}s infinite`,
+                    }}
+                  />
+                  <circle
+                    cx={ex}
+                    cy={ey}
+                    r="1.6"
+                    fill={POPPY}
+                    opacity="0.22"
+                    style={{
+                      animation: `airdrop-endpoint-breath 3.4s ease-in-out ${(i * 0.27).toFixed(2)}s infinite`,
+                    }}
+                  />
+                </g>
+              );
+            })}
+            {/* Ambient packets — tiny wallet-shaped envelopes ride a
+                handful of ghost spokes from source to endpoint, each
+                tagged with a truncated address so the metaphor reads
+                as "one signature, many wallets." SMIL animateTransform
+                so the rect + text move as a unit; suppressed under
+                reduced motion. */}
+            {!reducedMotion &&
+              AMBIENT_PACKET_SPOKES.map((spokeIdx, i) => {
+                const angle = IDLE_GHOST_ANGLES[spokeIdx];
+                const ex = 200 + Math.cos(angle) * 220;
+                const ey = 140 + Math.sin(angle) * 110;
+                const begin = (i * 1.05).toFixed(2);
+                const wallet = AMBIENT_WALLETS[i % AMBIENT_WALLETS.length];
+                return (
+                  <g
+                    key={`ambient-${i}`}
+                    opacity="0"
+                    transform="translate(200 140)"
+                  >
+                    <rect
+                      x="-14"
+                      y="-5"
+                      width="28"
+                      height="10"
+                      fill="#F7F1E3"
+                      stroke={POPPY}
+                      strokeWidth="0.7"
+                    />
+                    {/* Tiny dot — reads as the value being carried. */}
+                    <circle cx="-10.5" cy="0" r="1.1" fill={POPPY} />
+                    <text
+                      x="-7"
+                      y="2.4"
+                      textAnchor="start"
+                      fontFamily="var(--font-mono), monospace"
+                      fontSize="6.4"
+                      letterSpacing="0.04em"
+                      fill="#161310"
+                    >
+                      {wallet}
+                    </text>
+                    <animateTransform
+                      attributeName="transform"
+                      type="translate"
+                      from="200 140"
+                      to={`${ex} ${ey}`}
+                      dur="2.4s"
+                      begin={`${begin}s`}
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.95;0.95;0"
+                      dur="2.4s"
+                      begin={`${begin}s`}
+                      repeatCount="indefinite"
+                    />
+                  </g>
+                );
+              })}
+          </>
+        ) : (
+          nodes.map((n, i) => (
+            <line
+              key={`spoke-${i}`}
+              x1="200"
+              y1="140"
+              x2={n.x}
+              y2={n.y}
+              stroke={POPPY}
+              strokeOpacity={isRunning ? 0.5 : 0.32}
+              strokeWidth="0.9"
+              strokeDasharray={isRunning ? "0" : "3 4"}
+            />
+          ))
+        )}
 
         {/* Running-state particles — one per visible node. SMIL motion along
             the spoke. Reserved for Phase 6; rendered conditionally so the
@@ -199,6 +281,28 @@ export function FanOutTrace({
                 repeatCount="1"
               />
             </circle>
+          ))}
+
+        {/* Sonar rings — three concentric pulses radiate from the
+            source on a staggered loop. Only rendered in idle mode so
+            they don't compete with the recipient nodes once the user
+            starts composing. */}
+        {!showRecipients &&
+          SONAR_DELAYS.map((delay, i) => (
+            <circle
+              key={`sonar-${i}`}
+              cx="200"
+              cy="140"
+              r="32"
+              fill="none"
+              stroke={POPPY}
+              strokeWidth="0.9"
+              opacity="0"
+              style={{
+                transformOrigin: "200px 140px",
+                animation: `airdrop-sonar 4.8s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s infinite`,
+              }}
+            />
           ))}
 
         {/* Source glow — gentle ambient pulse. Stays on across all states
@@ -386,9 +490,22 @@ export function FanOutTrace({
 
         <style>{`
           @keyframes airdrop-source-breath {
-            0%   { transform: scale(0.96); opacity: 0.85 }
-            50%  { transform: scale(1.04); opacity: 1 }
-            100% { transform: scale(0.96); opacity: 0.85 }
+            0%   { transform: scale(0.94); opacity: 0.75 }
+            50%  { transform: scale(1.08); opacity: 1 }
+            100% { transform: scale(0.94); opacity: 0.75 }
+          }
+          @keyframes airdrop-sonar {
+            0%   { transform: scale(0.55); opacity: 0 }
+            12%  { opacity: 0.55 }
+            100% { transform: scale(4.0); opacity: 0 }
+          }
+          @keyframes airdrop-spoke-flow {
+            0%   { stroke-dashoffset: 0 }
+            100% { stroke-dashoffset: -32 }
+          }
+          @keyframes airdrop-endpoint-breath {
+            0%, 100% { opacity: 0.18 }
+            50%      { opacity: 0.7 }
           }
           @keyframes airdrop-preview-fill {
             0%   { transform: scaleX(0); opacity: 0.35 }
@@ -442,6 +559,18 @@ const IDLE_GHOST_ANGLES = Array.from({ length: 12 }, (_, i) => {
   const half = Math.PI / 1.6;
   return -half / 2 + (i / 11) * half;
 });
+
+// Idle ambience — three sonar rings expand from the source on a staggered
+// loop so the surface has a visible heartbeat even before recipients exist.
+const SONAR_DELAYS = [0, 1.6, 3.2] as const;
+
+// A handful of ghost spokes get ambient packets — small wallet-shaped
+// envelopes riding from source to endpoint. Picking 4 well-spaced indices
+// keeps the cadence visibly busy without crowding the arc. Each packet
+// carries a deterministic placeholder address so SSR stays stable; these
+// are visual stand-ins, not real on-chain data.
+const AMBIENT_PACKET_SPOKES = [1, 5, 8, 10] as const;
+const AMBIENT_WALLETS = ["0xa8…c1", "0x3d…f7", "0xb0…4e", "0x7c…29"] as const;
 
 function formatCounter(n: number): string {
   if (n < 1000) return n.toString().padStart(4, "0");
