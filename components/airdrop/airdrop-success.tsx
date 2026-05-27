@@ -176,13 +176,14 @@ export function AirdropSuccess({
           </section>
         </div>
 
-        {/* Sticky footer — same pattern as the inspector. */}
-        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-ink/15 bg-bone px-6 py-4">
+        {/* Sticky footer — same pattern as the inspector. Stacks
+            full-width buttons on phone widths, primary on top. */}
+        <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-ink/15 bg-bone px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-6">
           <button
             type="button"
             onClick={onClose}
             className={cn(
-              "inline-flex h-10 items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em]",
+              "inline-flex h-10 w-full items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em] sm:w-auto",
               "border border-ink/25 text-ink/75 transition-colors hover:border-ink/55 hover:text-ink",
             )}
           >
@@ -192,7 +193,7 @@ export function AirdropSuccess({
             type="button"
             onClick={onReset}
             className={cn(
-              "group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-bone",
+              "group inline-flex h-12 w-full items-center justify-center gap-2 border border-ink bg-ink px-6 text-bone sm:w-auto",
               "font-sans text-[0.8125rem] font-medium uppercase tracking-[0.12em]",
               "shadow-offset-sm transition-all duration-300 ease-atelier",
               "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",

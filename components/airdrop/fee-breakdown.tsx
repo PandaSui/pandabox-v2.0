@@ -34,7 +34,7 @@ export function FeeBreakdown({
 }) {
   return (
     <div className="border border-ink/15 bg-bone shadow-offset-sm">
-      <div className="grid grid-cols-2 divide-x divide-ink/10 md:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-y divide-ink/10 md:grid-cols-4 md:divide-y-0">
         <Cell
           label="Recipients"
           accentClass="bg-poppy"

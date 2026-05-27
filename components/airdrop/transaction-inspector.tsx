@@ -189,14 +189,18 @@ export function TransactionInspector({
           ) : null}
         </div>
 
-        {/* ── Footer CTA (sticky outside the scroll container) ──── */}
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-ink/15 bg-bone px-6 py-4">
+        {/* ── Footer CTA (sticky outside the scroll container) ────
+            Stacks vertically below sm — primary action on top, cancel
+            below — so the affordances stay full-width and tappable on
+            phones. On sm+ they sit on a single row with cancel left
+            and primary right. */}
+        <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-ink/15 bg-bone px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-6">
           <button
             type="button"
             onClick={onClose}
             disabled={isInFlight}
             className={cn(
-              "inline-flex h-10 items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em]",
+              "inline-flex h-10 w-full items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em] sm:w-auto",
               "border border-ink/25 text-ink/75 transition-colors hover:border-ink/55 hover:text-ink",
               isInFlight && "cursor-not-allowed opacity-40",
             )}
@@ -207,7 +211,7 @@ export function TransactionInspector({
           {isInFlight ? (
             <InFlightLabel state={state} />
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row sm:items-center">
               {/* Secondary "Start over" — only shown when there's partial
                   completion to discard. Mid-flight errors after one or
                   two settled batches are the common case; we want the
@@ -218,7 +222,7 @@ export function TransactionInspector({
                   type="button"
                   onClick={onRestart}
                   className={cn(
-                    "inline-flex h-10 items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em]",
+                    "inline-flex h-10 w-full items-center justify-center px-4 font-mono text-[11px] uppercase tracking-[0.18em] sm:w-auto",
                     "border border-ink/25 text-ink/75 transition-colors hover:border-ink/55 hover:text-ink",
                   )}
                   title="Discards partial completion and re-runs the whole list"
@@ -231,14 +235,16 @@ export function TransactionInspector({
                 onClick={onConfirm}
                 disabled={!isInspecting && state.kind !== "error"}
                 className={cn(
-                  "group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-bone",
+                  "group inline-flex h-12 w-full items-center justify-center gap-2 border border-ink bg-ink px-6 text-bone sm:w-auto",
                   "font-sans text-[0.8125rem] font-medium uppercase tracking-[0.12em]",
                   "shadow-offset-sm transition-all duration-300 ease-atelier",
                   "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset",
                   "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm",
                 )}
               >
-                <span>{primaryLabel(state, hasPartial, remainingBatches, batches.length)}</span>
+                <span className="truncate">
+                  {primaryLabel(state, hasPartial, remainingBatches, batches.length)}
+                </span>
                 <ArrowDiag size={12} />
               </button>
             </div>
@@ -263,7 +269,7 @@ function SummaryGrid({
   symbol: string | null;
 }) {
   return (
-    <div className="grid grid-cols-2 divide-x divide-ink/10 border border-ink/15 bg-bone md:grid-cols-4">
+    <div className="grid grid-cols-2 divide-x divide-y divide-ink/10 border border-ink/15 bg-bone md:grid-cols-4 md:divide-y-0">
       <Cell
         label="Recipients"
         value={`${quote.recipientCount.toLocaleString()}`}

@@ -53,9 +53,12 @@ export function CoinTypePicker({
 
   return (
     <div className="space-y-3">
-      {/* Header band: filter input on the left, status pill on the right. */}
-      <div className="flex items-center justify-between gap-3">
-        <label className="relative block w-full max-w-xs">
+      {/* Header band: filter input on the left, status pill on the right.
+          Stacks vertically below sm so the two don't fight for space on
+          narrow phone widths (the search input was hitting < 200px and
+          becoming hard to read). */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <label className="relative block w-full sm:max-w-xs">
           <span className="sr-only">Filter coin types</span>
           <input
             type="text"
@@ -283,7 +286,7 @@ function SelectedAssetDetail({ group }: { group: OwnedCoinGroup }) {
   });
   return (
     <div className="border-t border-ink/10 bg-ink/[0.015]">
-      <div className="grid grid-cols-2 divide-x divide-ink/10 md:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-y divide-ink/10 md:grid-cols-4 md:divide-y-0">
         <Cell label="Name" value={group.name ?? "—"} />
         <Cell label="Spendable" mono value={`${balanceWhole} ${group.symbol ?? ""}`.trim()} />
         <Cell label="Decimals" mono value={String(group.decimals)} />

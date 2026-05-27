@@ -120,7 +120,7 @@ export default async function AirdropPage() {
             the numbers before it touches the composer. */}
         <section className="relative border-b border-ink/15 bg-ink/[0.015]">
           <Container className="py-0">
-            <div className="grid grid-cols-2 divide-x divide-ink/15 md:grid-cols-4">
+            <div className="grid grid-cols-2 divide-x divide-y divide-ink/15 md:grid-cols-4 md:divide-y-0">
               <Stat
                 label={t("statFee")}
                 valueNode={

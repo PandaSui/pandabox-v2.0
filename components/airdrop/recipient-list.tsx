@@ -318,8 +318,12 @@ function RowTable({
   symbol: string | null;
 }) {
   return (
-    <div className="max-h-[360px] overflow-y-auto">
-      <table className="w-full table-fixed border-collapse font-mono text-[12px] tabular-nums">
+    <div className="max-h-[360px] overflow-auto">
+      {/* `table-fixed` + a per-column width budget means narrow viewports
+          can't squash the address column to ellipsis. The wrapper
+          horizontally scrolls when the layout exceeds 440px so phones
+          still see the full row without truncation. */}
+      <table className="w-full min-w-[440px] table-fixed border-collapse font-mono text-[12px] tabular-nums">
         <thead className="sticky top-0 z-[1] bg-bone">
           <tr className="border-b border-ink/15">
             <th className="w-10 px-3 py-2 text-left text-[10px] uppercase tracking-[0.16em] text-ink/45">
@@ -328,10 +332,10 @@ function RowTable({
             <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.16em] text-ink/45">
               Address
             </th>
-            <th className="w-44 px-3 py-2 text-right text-[10px] uppercase tracking-[0.16em] text-ink/45">
+            <th className="w-36 px-3 py-2 text-right text-[10px] uppercase tracking-[0.16em] text-ink/45">
               Amount
             </th>
-            <th className="w-44 px-3 py-2 text-left text-[10px] uppercase tracking-[0.16em] text-ink/45">
+            <th className="w-28 px-3 py-2 text-left text-[10px] uppercase tracking-[0.16em] text-ink/45">
               Status
             </th>
           </tr>

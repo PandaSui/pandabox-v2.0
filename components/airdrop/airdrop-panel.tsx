@@ -149,7 +149,7 @@ export function AirdropPanel({
       <CornerTick className="left-2 bottom-2 -rotate-90" />
       <CornerTick className="right-2 bottom-2 rotate-180" />
 
-      <header className="flex items-center justify-between gap-3 border-b border-ink/10 px-6 py-4">
+      <header className="flex items-center justify-between gap-3 border-b border-ink/10 px-4 py-4 sm:px-6">
         <div className="flex items-baseline gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-poppy">
             {t("panelEyebrow")}
@@ -282,7 +282,7 @@ function SectionBand({
   return (
     <section
       className={cn(
-        "grid grid-cols-1 gap-6 px-6 py-7 md:grid-cols-12 md:gap-8",
+        "grid grid-cols-1 gap-5 px-4 py-6 sm:gap-6 sm:px-6 sm:py-7 md:grid-cols-12 md:gap-8",
         !last && "border-b border-ink/10",
       )}
     >
