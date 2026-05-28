@@ -6,6 +6,7 @@ import { cn } from "@pandasui/ui/lib";
 import { ArrowDiag } from "@pandasui/ui";
 import {
   parseRecipients,
+  liveRows,
   quote as computeQuote,
   splitIntoBatches,
   isSubmitInFlight,
@@ -83,24 +84,17 @@ export function AirdropPanel({
     [parsed.rows, feePerRecipientMist, maxRecipients],
   );
   // `splitIntoBatches` operates on *live* rows only — the parser may have
-  // produced blocking / zeroed rows that should never reach the PTB.
-  const batches = useMemo(() => {
-    const live = parsed.rows.filter(
-      (r) =>
-        r.amountRaw > 0n &&
-        !r.issues.some(
-          (i) =>
-            i.kind === "invalid-address" ||
-            i.kind === "invalid-amount" ||
-            i.kind === "zero-amount",
-        ),
-    );
-    return splitIntoBatches({
-      rows: live,
-      maxRecipients,
-      feePerRecipientMist,
-    });
-  }, [parsed.rows, maxRecipients, feePerRecipientMist]);
+  // produced blocking / zeroed rows that should never reach the PTB. The
+  // `liveRows` predicate is the single source of truth for that filter.
+  const batches = useMemo(
+    () =>
+      splitIntoBatches({
+        rows: liveRows(parsed.rows),
+        maxRecipients,
+        feePerRecipientMist,
+      }),
+    [parsed.rows, maxRecipients, feePerRecipientMist],
+  );
 
   // Submit lifecycle — owns the inspector + signing loop + success view.
   const submit = useSubmitAirdrop({

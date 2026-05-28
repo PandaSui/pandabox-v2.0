@@ -62,9 +62,18 @@ export type RecipientRow = {
 };
 
 export type RecipientRowIssue =
-  | { kind: "invalid-address"; raw: string }
-  | { kind: "invalid-amount"; raw: string }
+  // Blocking — typos / impossible values; row must be fixed before send.
+  | { kind: "invalid-address-format"; raw: string }
+  | { kind: "invalid-address-length"; raw: string }
+  | { kind: "invalid-amount-format"; raw: string }
+  | { kind: "invalid-amount-decimals"; raw: string; decimals: number }
+  | { kind: "invalid-amount-overflow"; raw: string }
   | { kind: "zero-amount" }
+  // Warning — structurally valid but semantically suspicious. Row still
+  // sends; the chip just makes the user pause and confirm.
+  | { kind: "warn-zero-address" }
+  | { kind: "warn-system-address"; which: string }
+  // Policy-dependent — blocking under `reject`, informational under `sum`.
   | { kind: "duplicate"; mergedWith: string };
 
 /**

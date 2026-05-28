@@ -36,15 +36,28 @@
  */
 
 import BigNumber from "bignumber.js";
-import {
-  isValidSuiAddress,
-  normalizeSuiAddress,
-} from "@mysten/sui/utils";
+import { isValidSuiAddress } from "@mysten/sui/utils";
 import type {
   DuplicatePolicy,
   RecipientRow,
   RecipientRowIssue,
 } from "./types";
+
+// Burn destination. Structurally valid, but no one owns it — warn so the
+// user confirms they meant to burn rather than typo-ing to it.
+const ZERO_ADDRESS =
+  "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+// Sui framework / system objects. Sending coins here is almost always a
+// mistake (the framework itself, the clock, the random oracle, deepbook).
+const SYSTEM_ADDRESSES = new Set<string>([
+  "0x0000000000000000000000000000000000000000000000000000000000000001",
+  "0x0000000000000000000000000000000000000000000000000000000000000002",
+  "0x0000000000000000000000000000000000000000000000000000000000000003",
+  "0x0000000000000000000000000000000000000000000000000000000000000005",
+  "0x0000000000000000000000000000000000000000000000000000000000000006",
+  "0x000000000000000000000000000000000000000000000000000000000000dee9",
+]);
 
 export type ParseRecipientsOptions = {
   /** Base-10 exponent for shifting `amountInput` to raw u64 units. */
@@ -241,16 +254,44 @@ function buildRow(
 ): RecipientRow {
   const issues: RecipientRowIssue[] = [];
 
-  const normalisedAddress = normaliseAddress(pair.rawAddress);
-  if (!normalisedAddress) {
-    issues.push({ kind: "invalid-address", raw: pair.rawAddress });
+  const addressParse = normaliseAddress(pair.rawAddress);
+  let address: string;
+  if (addressParse.ok) {
+    address = addressParse.address;
+    if (addressParse.warning === "zero") {
+      issues.push({ kind: "warn-zero-address" });
+    } else if (addressParse.warning === "system") {
+      issues.push({ kind: "warn-system-address", which: address });
+    }
+  } else {
+    address = pair.rawAddress.trim().toLowerCase();
+    issues.push(
+      addressParse.error === "length"
+        ? { kind: "invalid-address-length", raw: pair.rawAddress }
+        : { kind: "invalid-address-format", raw: pair.rawAddress },
+    );
   }
 
-  const parsedAmount = parseAmount(pair.rawAmount, opts.decimals);
-  if (parsedAmount === null) {
-    issues.push({ kind: "invalid-amount", raw: pair.rawAmount });
-  } else if (parsedAmount === 0n) {
-    issues.push({ kind: "zero-amount" });
+  const amountParse = parseAmount(pair.rawAmount, opts.decimals);
+  let amountRaw: bigint;
+  if (amountParse.ok) {
+    amountRaw = amountParse.value;
+    if (amountRaw === 0n) {
+      issues.push({ kind: "zero-amount" });
+    }
+  } else {
+    amountRaw = 0n;
+    if (amountParse.error === "decimals") {
+      issues.push({
+        kind: "invalid-amount-decimals",
+        raw: pair.rawAmount,
+        decimals: opts.decimals,
+      });
+    } else if (amountParse.error === "overflow") {
+      issues.push({ kind: "invalid-amount-overflow", raw: pair.rawAmount });
+    } else {
+      issues.push({ kind: "invalid-amount-format", raw: pair.rawAmount });
+    }
   }
 
   return {
@@ -258,39 +299,57 @@ function buildRow(
     // stable across the redo button without leaning on crypto.randomUUID
     // (which would change on every re-parse).
     id: `r${pair.lineNumber}-${index}`,
-    address: normalisedAddress ?? pair.rawAddress.toLowerCase(),
-    amountRaw: parsedAmount ?? 0n,
+    address,
+    amountRaw,
     amountInput: pair.rawAmount,
     issues,
   };
 }
 
-function normaliseAddress(raw: string): string | null {
-  if (!raw) return null;
-  // `normalizeSuiAddress` pads to 32 bytes; `isValidSuiAddress` then
-  // confirms the shape. Reject anything that doesn't normalise cleanly.
-  let normalised: string;
-  try {
-    normalised = normalizeSuiAddress(raw);
-  } catch {
-    return null;
+type AddressParse =
+  | { ok: true; address: string; warning?: "zero" | "system" }
+  | { ok: false; error: "format" | "length" };
+
+// Strict 0x-prefixed, exactly-64-hex-char check. Refuses to auto-pad short
+// hex (the previous behaviour silently turned `0x123` into a valid
+// burn-adjacent address — disastrous for airdrops). Burn + system
+// addresses pass but carry a warning so the UI can prompt the user.
+function normaliseAddress(raw: string): AddressParse {
+  const trimmed = raw.trim();
+  if (!trimmed) return { ok: false, error: "format" };
+  if (!/^0x/i.test(trimmed)) return { ok: false, error: "format" };
+  const body = trimmed.slice(2);
+  if (body.length !== 64) return { ok: false, error: "length" };
+  if (!/^[0-9a-fA-F]{64}$/.test(body)) return { ok: false, error: "format" };
+  const address = `0x${body.toLowerCase()}`;
+  // Defence-in-depth — should be redundant given the regex above, but
+  // keeps us aligned with whatever the SDK considers canonical.
+  if (!isValidSuiAddress(address)) return { ok: false, error: "format" };
+  if (address === ZERO_ADDRESS) return { ok: true, address, warning: "zero" };
+  if (SYSTEM_ADDRESSES.has(address)) {
+    return { ok: true, address, warning: "system" };
   }
-  if (!isValidSuiAddress(normalised)) return null;
-  return normalised.toLowerCase();
+  return { ok: true, address };
 }
 
-function parseAmount(raw: string, decimals: number): bigint | null {
-  if (!raw) return null;
+type AmountParse =
+  | { ok: true; value: bigint }
+  | { ok: false; error: "format" | "decimals" | "overflow" };
+
+function parseAmount(raw: string, decimals: number): AmountParse {
+  if (!raw) return { ok: false, error: "format" };
   const cleaned = raw.replace(/,/g, "").replace(/_/g, "").trim();
-  if (!cleaned) return null;
+  if (!cleaned) return { ok: false, error: "format" };
   const bn = new BigNumber(cleaned);
-  if (!bn.isFinite() || bn.isNegative()) return null;
+  if (!bn.isFinite() || bn.isNegative()) {
+    return { ok: false, error: "format" };
+  }
   const shifted = bn.shiftedBy(decimals);
-  if (!shifted.isInteger()) return null;
+  if (!shifted.isInteger()) return { ok: false, error: "decimals" };
   // Move u64 max — anything beyond this overflows the on-chain type.
   const u64Max = new BigNumber("18446744073709551615");
-  if (shifted.isGreaterThan(u64Max)) return null;
-  return BigInt(shifted.toFixed(0));
+  if (shifted.isGreaterThan(u64Max)) return { ok: false, error: "overflow" };
+  return { ok: true, value: BigInt(shifted.toFixed(0)) };
 }
 
 /* ─────────────────────────── Duplicate policy ─────────────────────────── */
@@ -305,7 +364,9 @@ function applyDuplicatePolicy(
 
   for (const row of rows) {
     const hasFatalIssue = row.issues.some(
-      (i) => i.kind === "invalid-address",
+      (i) =>
+        i.kind === "invalid-address-format" ||
+        i.kind === "invalid-address-length",
     );
     if (hasFatalIssue) {
       out.push(row);
@@ -356,16 +417,28 @@ function applyDuplicatePolicy(
  * with).
  */
 export function liveRows(rows: RecipientRow[]): RecipientRow[] {
-  return rows.filter(
-    (r) =>
-      r.amountRaw > 0n &&
-      !r.issues.some(
-        (i) =>
-          i.kind === "invalid-address" ||
-          i.kind === "invalid-amount" ||
-          i.kind === "zero-amount",
-      ),
-  );
+  return rows.filter((r) => r.amountRaw > 0n && !r.issues.some(isBlockingIssue));
+}
+
+/**
+ * True for issues that prevent a row from being sent on-chain. Warnings
+ * (zero address, system address) explicitly do NOT block — the user
+ * opted in by leaving the row in the list.
+ */
+export function isBlockingIssue(issue: RecipientRowIssue): boolean {
+  switch (issue.kind) {
+    case "invalid-address-format":
+    case "invalid-address-length":
+    case "invalid-amount-format":
+    case "invalid-amount-decimals":
+    case "invalid-amount-overflow":
+    case "zero-amount":
+      return true;
+    case "warn-zero-address":
+    case "warn-system-address":
+    case "duplicate":
+      return false;
+  }
 }
 
 /**
@@ -378,8 +451,7 @@ export function blockingRows(rows: RecipientRow[]): RecipientRow[] {
   return rows.filter((r) =>
     r.issues.some(
       (i) =>
-        i.kind === "invalid-address" ||
-        i.kind === "invalid-amount" ||
+        isBlockingIssue(i) ||
         (i.kind === "duplicate" && r.amountRaw > 0n),
     ),
   );

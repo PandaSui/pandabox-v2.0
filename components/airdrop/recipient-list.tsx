@@ -15,6 +15,7 @@ import {
   parseRecipients,
   liveRows,
   blockingRows,
+  isBlockingIssue,
   type DuplicatePolicy,
   type RecipientRow,
   type RecipientRowIssue,
@@ -66,6 +67,22 @@ export function RecipientList({
 
   const live = useMemo(() => liveRows(parsed.rows), [parsed.rows]);
   const blocking = useMemo(() => blockingRows(parsed.rows), [parsed.rows]);
+  // Rows that will send (no blocking issue) but carry a warning. These are
+  // the rows we want to put in front of the user with a banner — they're
+  // structurally valid so the chip alone is too quiet.
+  const warnings = useMemo(
+    () =>
+      parsed.rows.filter(
+        (r) =>
+          !r.issues.some(isBlockingIssue) &&
+          r.issues.some(
+            (i) =>
+              i.kind === "warn-zero-address" ||
+              i.kind === "warn-system-address",
+          ),
+      ),
+    [parsed.rows],
+  );
   const totalAmountRaw = useMemo(
     () => live.reduce<bigint>((acc, r) => acc + r.amountRaw, 0n),
     [live],
@@ -207,6 +224,9 @@ export function RecipientList({
               {blocking.length > 0
                 ? ` · ${blocking.length} blocking`
                 : ""}
+              {warnings.length > 0
+                ? ` · ${warnings.length} warning${warnings.length === 1 ? "" : "s"}`
+                : ""}
               {parsed.skippedLineCount > 0
                 ? ` · ${parsed.skippedLineCount} skipped`
                 : ""}
@@ -227,6 +247,8 @@ export function RecipientList({
         {parsed.errors.length > 0 ? (
           <ErrorBanner messages={parsed.errors} />
         ) : null}
+
+        {warnings.length > 0 ? <WarningBanner rows={warnings} /> : null}
 
         {parsed.rows.length === 0 ? (
           <EmptyState coinPicked={coinPicked} />
@@ -380,14 +402,20 @@ function Row({
           ? "bg-poppy/[0.06]"
           : status.kind === "merged"
             ? "bg-sky/[0.05]"
-            : "hover:bg-ink/[0.025]",
+            : status.kind === "warning"
+              ? "bg-sun/[0.08]"
+              : "hover:bg-ink/[0.025]",
       )}
     >
       <td className="px-3 py-2 text-ink/45">
         {index.toString().padStart(2, "0")}
       </td>
       <td className="px-3 py-2 text-ink">
-        {row.issues.some((i) => i.kind === "invalid-address") ? (
+        {row.issues.some(
+          (i) =>
+            i.kind === "invalid-address-format" ||
+            i.kind === "invalid-address-length",
+        ) ? (
           <span className="text-poppy">{row.amountInput || row.address}</span>
         ) : (
           truncMiddle(row.address, 8)
@@ -412,16 +440,12 @@ function Row({
 
 type RowStatus =
   | { kind: "live" }
+  | { kind: "warning"; issue: RecipientRowIssue }
   | { kind: "merged"; into: string }
   | { kind: "blocking"; issue: RecipientRowIssue };
 
 function rowStatus(row: RecipientRow): RowStatus {
-  const fatal = row.issues.find(
-    (i) =>
-      i.kind === "invalid-address" ||
-      i.kind === "invalid-amount" ||
-      i.kind === "zero-amount",
-  );
+  const fatal = row.issues.find(isBlockingIssue);
   if (fatal) return { kind: "blocking", issue: fatal };
   const merged = row.issues.find((i) => i.kind === "duplicate");
   if (merged) {
@@ -430,6 +454,10 @@ function rowStatus(row: RecipientRow): RowStatus {
       into: merged.kind === "duplicate" ? merged.mergedWith : "",
     };
   }
+  const warning = row.issues.find(
+    (i) => i.kind === "warn-zero-address" || i.kind === "warn-system-address",
+  );
+  if (warning) return { kind: "warning", issue: warning };
   return { kind: "live" };
 }
 
@@ -450,6 +478,14 @@ function StatusChip({ status }: { status: RowStatus }) {
       </span>
     );
   }
+  if (status.kind === "warning") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-sun">
+        <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-sun" />
+        {labelForIssue(status.issue)}
+      </span>
+    );
+  }
   // blocking — render the specific issue label.
   return (
     <span className="inline-flex items-center gap-1.5 text-poppy">
@@ -461,12 +497,22 @@ function StatusChip({ status }: { status: RowStatus }) {
 
 function labelForIssue(issue: RecipientRowIssue): string {
   switch (issue.kind) {
-    case "invalid-address":
+    case "invalid-address-format":
       return "bad address";
-    case "invalid-amount":
+    case "invalid-address-length":
+      return "wrong length";
+    case "invalid-amount-format":
       return "bad amount";
+    case "invalid-amount-decimals":
+      return `>${issue.decimals} decimals`;
+    case "invalid-amount-overflow":
+      return "amount too large";
     case "zero-amount":
       return "zero";
+    case "warn-zero-address":
+      return "zero address";
+    case "warn-system-address":
+      return "system address";
     case "duplicate":
       return "duplicate";
   }
@@ -490,6 +536,46 @@ function ErrorBanner({ messages }: { messages: string[] }) {
   return (
     <div className="border-b border-poppy/40 bg-poppy/10 px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-poppy">
       {messages.join(" · ")}
+    </div>
+  );
+}
+
+function WarningBanner({ rows }: { rows: RecipientRow[] }) {
+  const zero = rows.filter((r) =>
+    r.issues.some((i) => i.kind === "warn-zero-address"),
+  ).length;
+  const system = rows.filter((r) =>
+    r.issues.some((i) => i.kind === "warn-system-address"),
+  ).length;
+
+  const parts: string[] = [];
+  if (zero > 0) {
+    parts.push(
+      `${zero} row${zero === 1 ? "" : "s"} send${zero === 1 ? "s" : ""} to the zero address — tokens will be unrecoverable.`,
+    );
+  }
+  if (system > 0) {
+    parts.push(
+      `${system} row${system === 1 ? "" : "s"} send${system === 1 ? "s" : ""} to a Sui system address — likely a typo.`,
+    );
+  }
+
+  return (
+    <div
+      role="alert"
+      className="flex items-start gap-3 border-b border-sun/60 bg-sun/15 px-4 py-3"
+    >
+      <span
+        aria-hidden
+        className="mt-[3px] inline-block h-2 w-2 shrink-0 rotate-45 bg-sun"
+      />
+      <div className="font-mono text-[11px] leading-relaxed tracking-[0.06em] text-ink/85">
+        <span className="font-semibold uppercase tracking-[0.16em] text-ink">
+          Review before sending —
+        </span>{" "}
+        {parts.join(" ")} These rows are still queued; remove or fix them
+        above if that wasn't your intent.
+      </div>
     </div>
   );
 }
