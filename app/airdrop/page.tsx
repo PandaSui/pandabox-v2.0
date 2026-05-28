@@ -94,9 +94,7 @@ export default async function AirdropPage() {
                     paused ? "bg-poppy" : "bg-jade",
                   )}
                 />
-                {paused
-                  ? t("statStatusPaused")
-                  : t("statStatusLive")}
+                {paused ? t("statStatusPaused") : t("statStatusLive")}
               </div>
             </div>
 
@@ -151,9 +149,7 @@ export default async function AirdropPage() {
                       aria-hidden
                       className="block h-1.5 w-1.5 rounded-full bg-current"
                     />
-                    {paused
-                      ? t("statStatusPaused")
-                      : t("statStatusLive")}
+                    {paused ? t("statStatusPaused") : t("statStatusLive")}
                   </span>
                 }
               />

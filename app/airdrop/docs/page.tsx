@@ -80,8 +80,8 @@ export default function AirdropDocsPage() {
           <MonoLabel>Onchain · Airdrop · Docs</MonoLabel>
           <h1 className="mt-2 text-3xl md:text-4xl">How airdrops work</h1>
           <p className="mt-2 max-w-prose text-sm text-ink/60">
-            Everything the contract enforces, everything the composer
-            checks before you sign, and the CSV shape the parser expects.
+            Everything the contract enforces, everything the composer checks
+            before you sign, and the CSV shape the parser expects.
           </p>
         </Container>
 
@@ -112,9 +112,9 @@ function MechanicsPanel() {
         <P>
           The Airdrop tool fans a single Sui coin out to a list of recipient
           addresses in one signed transaction. You pick an asset, paste a list
-          of <Term>address, amount</Term> rows, and the contract distributes
-          the coin atomically — every recipient receives their share inside
-          the same Programmable Transaction Block.
+          of <Term>address, amount</Term> rows, and the contract distributes the
+          coin atomically — every recipient receives their share inside the same
+          Programmable Transaction Block.
         </P>
         <P>
           The contract is one generic Move function:{" "}
@@ -129,15 +129,15 @@ function MechanicsPanel() {
       <Section id="atomicity" label="02 / Atomicity">
         <P>
           A PTB is all-or-nothing. If any single transfer inside a batch fails
-          — invalid address, integer overflow, gas exhaustion — the entire
-          batch reverts. There are no partial drops, no recipients left
-          half-paid, no stuck transactions to clean up.
+          invalid address, integer overflow, gas exhaustion the entire batch
+          reverts. There are no partial drops, no recipients left half-paid, no
+          stuck transactions to clean up.
         </P>
         <P>
-          The composer mirrors this guarantee at the UI layer: every address
-          is validated locally before you sign, every amount is checked
-          against your spendable balance, every batch is sized to fit inside
-          the on-chain cap.
+          The composer mirrors this guarantee at the UI layer: every address is
+          validated locally before you sign, every amount is checked against
+          your spendable balance, every batch is sized to fit inside the
+          on-chain cap.
         </P>
       </Section>
 
@@ -145,9 +145,8 @@ function MechanicsPanel() {
         <P>
           The platform charges a flat fee in SUI per recipient. The fee is
           stored on-chain in <code>AirdropPlatform.fee_per_recipient_mist</code>{" "}
-          (MIST units; 1 SUI = 10⁹ MIST) — the composer reads the live value
-          on every page load and recomputes your pre-flight strip
-          accordingly.
+          (MIST units; 1 SUI = 10⁹ MIST) — the composer reads the live value on
+          every page load and recomputes your pre-flight strip accordingly.
         </P>
         <P>
           Fee math:{" "}
@@ -167,8 +166,8 @@ function MechanicsPanel() {
         <P>
           The contract enforces a per-PTB ceiling via{" "}
           <code>AirdropPlatform.max_recipients</code>. Today that limit is{" "}
-          <Term>300</Term>. Passing more rows would abort the transaction
-          before the first transfer fires.
+          <Term>300</Term>. Passing more rows would abort the transaction before
+          the first transfer fires.
         </P>
         <P>
           Lists larger than the cap aren&apos;t rejected by the composer —
@@ -181,15 +180,15 @@ function MechanicsPanel() {
         <P>
           When your recipient count exceeds the cap, the composer slices the
           list into <code>⌈count / cap⌉</code> equal-sized batches and walks
-          them sequentially. Each batch is its own signed PTB — your wallet
-          will prompt once per batch.
+          them sequentially. Each batch is its own signed PTB — your wallet will
+          prompt once per batch.
         </P>
         <P>
           Between batches the composer refetches your wallet&apos;s coin
-          objects, so the next batch picks its input coins from the
-          post-tx state. If you start with one large <code>Coin&lt;T&gt;</code>{" "}
-          object, the PTB merges it once, splits the exact amount, and
-          returns a leftover that the wallet keeps.
+          objects, so the next batch picks its input coins from the post-tx
+          state. If you start with one large <code>Coin&lt;T&gt;</code> object,
+          the PTB merges it once, splits the exact amount, and returns a
+          leftover that the wallet keeps.
         </P>
         <P>
           If a mid-flight batch fails, completed batches are retained. The
@@ -201,17 +200,16 @@ function MechanicsPanel() {
 
       <Section id="memo" label="06 / Memo">
         <P>
-          The optional memo is recorded on-chain in the{" "}
-          <code>Airdropped</code> event log as a{" "}
-          <code>memo: Option&lt;String&gt;</code> field, capped at 256 chars.
-          Useful for tagging distributions (&quot;May contributor rewards&quot;,
-          &quot;Q2 LP rebate&quot;) so the activity feed reads as a self-
-          documenting ledger.
+          The optional memo is recorded on-chain in the <code>Airdropped</code>{" "}
+          event log as a <code>memo: Option&lt;String&gt;</code> field, capped
+          at 256 chars. Useful for tagging distributions (&quot;May contributor
+          rewards&quot;, &quot;Q2 LP rebate&quot;) so the activity feed reads as
+          a self- documenting ledger.
         </P>
         <P>
           The memo is public. It&apos;s indexed by the chain and visible to
-          anyone querying the event stream — treat it like a commit message,
-          not like a private note.
+          anyone querying the event stream — treat it like a commit message, not
+          like a private note.
         </P>
       </Section>
     </>
@@ -226,9 +224,9 @@ function CsvFormatPanel() {
       <Section id="supported-formats" label="01 / Supported formats">
         <P>
           The parser is deliberately lenient about delimiters. Each line is
-          split on the most-likely separator in this priority order: tab
-          &gt; comma &gt; semicolon &gt; whitespace. Whatever your
-          spreadsheet exports, the parser handles it.
+          split on the most-likely separator in this priority order: tab &gt;
+          comma &gt; semicolon &gt; whitespace. Whatever your spreadsheet
+          exports, the parser handles it.
         </P>
         <Code>{`# CSV (comma)
 0x1111…1111,1.5
@@ -243,8 +241,8 @@ function CsvFormatPanel() {
 # Whitespace
 0x1111…1111  1.5`}</Code>
         <P>
-          JSON is also supported — paste an array of objects or tuples and
-          the parser detects the shape from the leading <code>[</code> or{" "}
+          JSON is also supported — paste an array of objects or tuples and the
+          parser detects the shape from the leading <code>[</code> or{" "}
           <code>{`{`}</code>:
         </P>
         <Code>{`[
@@ -258,17 +256,18 @@ function CsvFormatPanel() {
   ["0x2222…2222", 12]
 ]`}</Code>
         <P>
-          Object keys are aliased: <code>address / recipient / to / wallet</code>{" "}
-          and <code>amount / value / qty / tokens / balance</code> are all
-          accepted, so most third-party export shapes work without massaging.
+          Object keys are aliased:{" "}
+          <code>address / recipient / to / wallet</code> and{" "}
+          <code>amount / value / qty / tokens / balance</code> are all accepted,
+          so most third-party export shapes work without massaging.
         </P>
       </Section>
 
       <Section id="addresses" label="02 / Addresses">
         <P>
-          Addresses are normalised to lowercase, 32-byte / 64-hex-char Sui
-          form via <code>normalizeSuiAddress</code>. Shorter inputs are padded
-          on the left; longer inputs are rejected.
+          Addresses are normalised to lowercase, 32-byte / 64-hex-char Sui form
+          via <code>normalizeSuiAddress</code>. Shorter inputs are padded on the
+          left; longer inputs are rejected.
         </P>
         <P>
           Invalid addresses don&apos;t abort the parse — the row is kept and
@@ -279,15 +278,12 @@ function CsvFormatPanel() {
 
       <Section id="amounts" label="03 / Amounts">
         <P>
-          Amounts are decimal strings in whole-token units. The parser shifts
-          by the picked coin&apos;s <code>decimals</code> to produce a base-unit{" "}
+          Amounts are decimal strings in whole-token units. The parser shifts by
+          the picked coin&apos;s <code>decimals</code> to produce a base-unit{" "}
           <code>u64</code> for the Move call. Underscores and commas are
-          stripped so <code>1_000.5</code> and <code>1,000.5</code> both
-          work.
+          stripped so <code>1_000.5</code> and <code>1,000.5</code> both work.
         </P>
-        <P>
-          Rejected:
-        </P>
+        <P>Rejected:</P>
         <Ul>
           <Li>
             negative amounts (<code>-1.5</code> → <Term>bad amount</Term>)
@@ -296,8 +292,7 @@ function CsvFormatPanel() {
             zero (<code>0</code> → <Term>zero</Term>)
           </Li>
           <Li>
-            amounts that overflow Move <code>u64</code> after the decimals
-            shift
+            amounts that overflow Move <code>u64</code> after the decimals shift
           </Li>
           <Li>
             amounts with more decimal places than the coin supports (e.g.{" "}
@@ -308,8 +303,8 @@ function CsvFormatPanel() {
 
       <Section id="duplicates" label="04 / Duplicates">
         <P>
-          Two rows sharing the same address are handled per the active
-          dedupe policy in the composer toolbar:
+          Two rows sharing the same address are handled per the active dedupe
+          policy in the composer toolbar:
         </P>
         <Ul>
           <Li>
@@ -318,35 +313,34 @@ function CsvFormatPanel() {
             status column.
           </Li>
           <Li>
-            <Term>First</Term> — keep the first occurrence, drop subsequent
-            rows silently.
+            <Term>First</Term> — keep the first occurrence, drop subsequent rows
+            silently.
           </Li>
           <Li>
-            <Term>Reject</Term> — flag every duplicate as a blocking issue.
-            The submit button stays disabled until you remove them.
+            <Term>Reject</Term> — flag every duplicate as a blocking issue. The
+            submit button stays disabled until you remove them.
           </Li>
         </Ul>
         <P>
           The signed PTB always sees one row per address — the on-chain Move
-          function asserts <code>recipients.length == amounts.length</code>{" "}
-          and would reject duplicate keys at the array level.
+          function asserts <code>recipients.length == amounts.length</code> and
+          would reject duplicate keys at the array level.
         </P>
       </Section>
 
       <Section id="comments" label="05 / Comments">
         <P>
           Lines starting with <code>#</code> or <code>//</code> are dropped
-          before parsing — handy for inline notes when you&apos;re iterating
-          on a list:
+          before parsing — handy for inline notes when you&apos;re iterating on
+          a list:
         </P>
         <Code>{`# Q2 contributor rewards — finalized 2026-05-26
 0x1111…1111,1.5  // alice (eng)
 0x2222…2222,1.5  // bob (design)
 # 0x3333…3333,1.5  // carol — paused pending KYC`}</Code>
         <P>
-          Skipped lines are reported in the parsed-strip count
-          (&quot;3 skipped&quot;) so you can confirm the parser saw what
-          you expected.
+          Skipped lines are reported in the parsed-strip count (&quot;3
+          skipped&quot;) so you can confirm the parser saw what you expected.
         </P>
       </Section>
     </>
@@ -406,58 +400,56 @@ function ReferencePanel() {
           The Move function returns{" "}
           <code>(Coin&lt;T&gt;, Coin&lt;SUI&gt;)</code> — the unused portion of
           your input coin and any extra SUI you sent for the fee. The PTB
-          transfers both back to your wallet in the same transaction, so you
-          end the tx with the same balance minus exactly what you intended to
+          transfers both back to your wallet in the same transaction, so you end
+          the tx with the same balance minus exactly what you intended to
           distribute.
         </P>
 
         <H3>Can recipients reject incoming coins?</H3>
         <P>
-          No. Sui&apos;s coin model lets any signed transaction transfer
-          objects to any valid address. Recipients always receive what you
-          send — if the address is owned by no one (e.g. <code>0x…0</code>),
-          the coins remain there permanently.
+          No. Sui&apos;s coin model lets any signed transaction transfer objects
+          to any valid address. Recipients always receive what you send — if the
+          address is owned by no one (e.g. <code>0x…0</code>), the coins remain
+          there permanently.
         </P>
 
         <H3>Why does my wallet prompt twice for a 500-recipient list?</H3>
         <P>
-          The contract caps recipients per PTB at 300. A 500-row list is
-          split into two batches; each batch is its own signed PTB. The
+          The contract caps recipients per PTB at 300. A 500-row list is split
+          into two batches; each batch is its own signed PTB. The
           inspector&apos;s batch ledger shows which one is in flight at any
           moment.
         </P>
 
         <H3>Is the memo private?</H3>
         <P>
-          No. It&apos;s recorded on-chain in the event log and indexed by
-          public nodes. Treat it like a commit message.
+          No. It&apos;s recorded on-chain in the event log and indexed by public
+          nodes. Treat it like a commit message.
         </P>
 
         <H3>What if my wallet doesn&apos;t have enough SUI for the fee?</H3>
         <P>
-          The composer&apos;s pre-flight strip surfaces a <Term>SUI budget</Term>{" "}
-          (fee + gas headroom) and the submit button stays disabled if your
-          spendable balance is below it. The fee and gas come from the same
-          SUI wallet — you don&apos;t need a separate account.
+          The composer&apos;s pre-flight strip surfaces a{" "}
+          <Term>SUI budget</Term> (fee + gas headroom) and the submit button
+          stays disabled if your spendable balance is below it. The fee and gas
+          come from the same SUI wallet — you don&apos;t need a separate
+          account.
         </P>
       </Section>
 
       <Section id="aborts" label="03 / Abort codes">
         <P>
-          The contract may abort signing with a numeric{" "}
-          <code>MoveAbort</code> code. The composer&apos;s error banner
-          translates known codes to plain English; novel codes display the
-          raw <code>module::function: code N</code> string so you can report
-          them.
+          The contract may abort signing with a numeric <code>MoveAbort</code>{" "}
+          code. The composer&apos;s error banner translates known codes to plain
+          English; novel codes display the raw{" "}
+          <code>module::function: code N</code> string so you can report them.
         </P>
-        <P>
-          Most likely sources of an abort:
-        </P>
+        <P>Most likely sources of an abort:</P>
         <Ul>
           <Li>
-            <Term>recipients.length != amounts.length</Term> — only reachable
-            if the composer were to miscount, which it doesn&apos;t. If you
-            see this, file an issue.
+            <Term>recipients.length != amounts.length</Term> — only reachable if
+            the composer were to miscount, which it doesn&apos;t. If you see
+            this, file an issue.
           </Li>
           <Li>
             <Term>recipients.length &gt; max_recipients</Term> — the composer
@@ -465,8 +457,8 @@ function ReferencePanel() {
           </Li>
           <Li>
             <Term>coin.value &lt; sum(amounts)</Term> — the composer guards
-            against this with its spendable-balance check, but a wallet
-            balance change between preview and sign could trigger it.
+            against this with its spendable-balance check, but a wallet balance
+            change between preview and sign could trigger it.
           </Li>
           <Li>
             <Term>fee.value &lt; recipients × fee_per_recipient</Term> — same
@@ -580,9 +572,7 @@ function Dd({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <dd className={className ?? "text-ink/75"}>{children}</dd>
-  );
+  return <dd className={className ?? "text-ink/75"}>{children}</dd>;
 }
 
 function TryIt({ href, label }: { href: string; label: string }) {

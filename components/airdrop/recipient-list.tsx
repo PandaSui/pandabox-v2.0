@@ -624,33 +624,77 @@ function DedupeSwitch({
     { id: "reject", label: "Reject", title: "Flag duplicates as errors" },
   ];
   return (
-    <div
-      role="radiogroup"
-      aria-label="Duplicate policy"
-      className="inline-flex border border-ink/20 bg-bone"
-    >
-      {options.map((opt) => {
-        const active = opt.id === value;
-        return (
-          <button
-            key={opt.id}
-            role="radio"
-            aria-checked={active}
-            title={opt.title}
-            onClick={() => onChange(opt.id)}
-            type="button"
-            className={cn(
-              "relative px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors",
-              active
-                ? "bg-ink text-bone"
-                : "text-ink/65 hover:text-ink",
-            )}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
+    <div className="inline-flex items-center gap-1.5">
+      <div
+        role="radiogroup"
+        aria-label="Duplicate policy"
+        className="inline-flex border border-ink/20 bg-bone"
+      >
+        {options.map((opt) => {
+          const active = opt.id === value;
+          return (
+            <button
+              key={opt.id}
+              role="radio"
+              aria-checked={active}
+              title={opt.title}
+              onClick={() => onChange(opt.id)}
+              type="button"
+              className={cn(
+                "relative px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors",
+                active
+                  ? "bg-ink text-bone"
+                  : "text-ink/65 hover:text-ink",
+              )}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+      <DedupeHelp options={options} />
     </div>
+  );
+}
+
+// CSS-only help affordance: a `?` glyph that reveals a tooltip explaining
+// each duplicate policy on hover or keyboard focus. No JS state, no portal
+// — the tooltip is a sibling toggled via group-hover / group-focus-within.
+function DedupeHelp({
+  options,
+}: {
+  options: { id: DuplicatePolicy; label: string; title: string }[];
+}) {
+  return (
+    <span className="group relative inline-flex">
+      <button
+        type="button"
+        aria-label="How duplicate handling works"
+        className="flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-ink/30 font-mono text-[9px] leading-none text-ink/55 transition-colors hover:border-ink/60 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-1 focus-visible:ring-offset-bone"
+      >
+        ?
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute right-0 top-[calc(100%+8px)] z-20 w-64 border border-ink/20 bg-bone p-3 opacity-0 shadow-offset-sm transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.18em] text-ink/45">
+          On duplicate addresses
+        </span>
+        <dl className="space-y-1.5">
+          {options.map((opt) => (
+            <div key={opt.id} className="flex gap-2">
+              <dt className="w-12 shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-ink">
+                {opt.label}
+              </dt>
+              <dd className="font-sans text-[11.5px] leading-snug text-ink/70">
+                {opt.title}.
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </span>
+    </span>
   );
 }
 

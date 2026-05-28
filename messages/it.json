@@ -314,7 +314,7 @@
         "name": "Redeem · Buyback & Rimborsi",
         "tagline": "I dev configurano buyback o rimborsi dei coin del loro progetto. Il deploy è permanente — nessuna inversione, nessun admin override.",
         "description": "Due modalità, un contratto. I project manager possono gestire un pool di buyback che acquista token a un floor definito dal progetto, o un pool di rimborso che restituisce SUI ai supporter al tasso che hanno pagato. Quello che scegli è permanente — una volta che il pool è live, i termini sono bloccati on-chain. Nessun override admin. Questa è la garanzia di fiducia che gli holder vedono.",
-        "cap1": "Due modalità — buyback al floor o rimborso al tasso originale",
+        "cap1": "Due modalità buyback al floor o rimborso al tasso originale",
         "cap2": "Permanente · dopo il deploy, i termini non possono essere cambiati",
         "cap3": "Burn-and-receive in una singola Move call — nessun intermediario"
       }
@@ -329,7 +329,7 @@
     }
   },
   "redeem": {
-    "metaTitle": "Redeem · Buyback & Rimborsi — Pandabox",
+    "metaTitle": "Redeem · Buyback & Rimborsi Pandabox",
     "eyebrow": "Strumenti onchain · Redeem",
     "headline": "Riscatta coin per SUI, con regole che nessuno potrà invertire.",
     "subtitle": "I dev distribuiscono un pool permanente — buyback o rimborso — al tasso che fissano al deploy. Gli holder incassano contro la riserva di SUI del pool in una transazione firmata. Una volta live, i termini sono bloccati on-chain. Nessun admin override.",
