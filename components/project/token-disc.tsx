@@ -44,12 +44,15 @@ export function TokenDisc({
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-full">
-      {/* Skeleton — shown until the image fires onLoad */}
+      {/* Skeleton — shown until the image fires onLoad. A moving shimmer
+          sweep (design-system `.skeleton-block`) over a visible ink base
+          reads clearly as "loading"; a low-opacity opacity-pulse alone was
+          too subtle to perceive as motion and looked like a static circle.
+          The sweep is infinite and self-disables under reduced-motion. */}
       {showImage && !loaded && (
-        <div
-          aria-hidden
-          className="absolute inset-0 animate-pulse bg-ink/10"
-        />
+        <div aria-hidden className="absolute inset-0 bg-ink/[0.12]">
+          <div className="skeleton-block h-full w-full" />
+        </div>
       )}
 
       {showImage ? (
