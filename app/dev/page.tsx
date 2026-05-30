@@ -31,7 +31,7 @@ const SAMPLE_ADDRS = [
   "0xa5fd521610eaba7a65601f79fe5b898a7eef83f94cf2019900df6c512df5e5c1",
   "0x12b843d5322953a53c689975664a22e9ba5db52876a7d89c4b79dfc51babe774",
   "0xd0e9f86a01fe71e0db8e6b6c4abf72153a14b6f9c8e1e6cf91b1234567890abcd",
-  "0x000000000000000000000000000000000000000000000000000000000000dead",
+  "0x0000000000000000000000000000000000000000000000000000000000000000",
   "0x1111111111111111111111111111111111111111111111111111111111111111",
 ];
 
@@ -56,8 +56,8 @@ export default async function DevPage() {
           <MonoLabel>Pandabox / dev sandbox</MonoLabel>
           <h1 className="mt-3 text-4xl">Primitives</h1>
           <p className="mt-2 max-w-prose text-ink/60">
-            Visual register for the building blocks. Anything new in the
-            product is built from these.
+            Visual register for the building blocks. Anything new in the product
+            is built from these.
           </p>
           {/* Modal previews — full-page routes that mount real modals with
               fixture data, so we can iterate on them without going through a
@@ -88,7 +88,9 @@ export default async function DevPage() {
           <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {accents.map((c, i) => (
               <AccentRule key={c} color={c}>
-                <MonoLabel accent={c}>{String(i + 1).padStart(2, "0")} · {c}</MonoLabel>
+                <MonoLabel accent={c}>
+                  {String(i + 1).padStart(2, "0")} · {c}
+                </MonoLabel>
                 <h2 className="mt-2 text-2xl">A heading with accent</h2>
                 <p className="mt-2 text-sm text-ink/60">
                   Each accent earns one semantic role. Read CLAUDE.md §5.5.
@@ -109,7 +111,9 @@ export default async function DevPage() {
           <div className="grid grid-cols-3 py-6">
             <div className="px-4">
               <MonoLabel>Cell</MonoLabel>
-              <div className="mt-1 font-mono tabular-nums text-2xl">142,584</div>
+              <div className="mt-1 font-mono tabular-nums text-2xl">
+                142,584
+              </div>
             </div>
             <div className="px-4 border-l border-ink/15">
               <MonoLabel>Cell</MonoLabel>
@@ -277,10 +281,25 @@ export default async function DevPage() {
 
         <Section label="12 / Indexer · global stats">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            <Stat label="TVL" value={<SuiAmount mist={stats.tvlMist} compact />} delta={stats.delta7d.tvlPct} />
-            <Stat label="Projects" value={<TokenAmount raw={stats.projectCount} />} delta={stats.delta7d.projectsPct} />
-            <Stat label="Supporters" value={<TokenAmount raw={stats.supporterCount} compact />} delta={stats.delta7d.supportersPct} />
-            <Stat label="Median sale" value={<TokenAmount raw={stats.medianSaleDays} ticker="DAYS" />} />
+            <Stat
+              label="TVL"
+              value={<SuiAmount mist={stats.tvlMist} compact />}
+              delta={stats.delta7d.tvlPct}
+            />
+            <Stat
+              label="Projects"
+              value={<TokenAmount raw={stats.projectCount} />}
+              delta={stats.delta7d.projectsPct}
+            />
+            <Stat
+              label="Supporters"
+              value={<TokenAmount raw={stats.supporterCount} compact />}
+              delta={stats.delta7d.supportersPct}
+            />
+            <Stat
+              label="Median sale"
+              value={<TokenAmount raw={stats.medianSaleDays} ticker="DAYS" />}
+            />
           </div>
         </Section>
 
@@ -291,10 +310,16 @@ export default async function DevPage() {
                 <div className="col-span-3 flex items-center gap-2">
                   <Identicon value={p.id} size={20} />
                   <span className="text-sm">{p.name}</span>
-                  <span className={`font-mono-label text-${p.accent}`}>· {p.category}</span>
+                  <span className={`font-mono-label text-${p.accent}`}>
+                    · {p.category}
+                  </span>
                 </div>
-                <div className="col-span-3 font-mono text-xs text-ink/60">{p.ticker}</div>
-                <div className="col-span-3"><SuiAmount mist={p.raisedMist} compact /></div>
+                <div className="col-span-3 font-mono text-xs text-ink/60">
+                  {p.ticker}
+                </div>
+                <div className="col-span-3">
+                  <SuiAmount mist={p.raisedMist} compact />
+                </div>
                 <div className="col-span-3 font-mono text-xs text-ink/60">
                   {p.supporters.toLocaleString()} supporters
                 </div>
@@ -306,13 +331,23 @@ export default async function DevPage() {
         <Section label="14 / Indexer · recent payments (global, 6)">
           <div className="space-y-1.5 font-mono text-xs">
             {globalPayments.map((pay) => (
-              <div key={pay.txHash} className="grid grid-cols-12 items-center gap-3 text-ink/80">
-                <div className="col-span-3"><RelativeTime value={pay.timestamp} /></div>
-                <div className="col-span-3 truncate">
-                  <span className={`text-${pay.projectAccent}`}>●</span> {pay.projectName}
+              <div
+                key={pay.txHash}
+                className="grid grid-cols-12 items-center gap-3 text-ink/80"
+              >
+                <div className="col-span-3">
+                  <RelativeTime value={pay.timestamp} />
                 </div>
-                <div className="col-span-3"><Address value={pay.payer} /></div>
-                <div className="col-span-3"><SuiAmount mist={pay.amountMist} maxFractionDigits={2} /></div>
+                <div className="col-span-3 truncate">
+                  <span className={`text-${pay.projectAccent}`}>●</span>{" "}
+                  {pay.projectName}
+                </div>
+                <div className="col-span-3">
+                  <Address value={pay.payer} />
+                </div>
+                <div className="col-span-3">
+                  <SuiAmount mist={pay.amountMist} maxFractionDigits={2} />
+                </div>
               </div>
             ))}
           </div>
@@ -322,11 +357,26 @@ export default async function DevPage() {
           <Section label={`16 / Indexer · top holders for "${first.name}"`}>
             <div className="space-y-1.5 font-mono text-xs">
               {holders.slice(0, 10).map((h) => (
-                <div key={h.address} className="grid grid-cols-12 items-center gap-3 text-ink/80">
-                  <div className="col-span-1"><Identicon value={h.address} size={18} /></div>
-                  <div className="col-span-6"><Address value={h.address} /></div>
-                  <div className="col-span-3"><TokenAmount raw={h.balanceRaw} ticker={first.ticker} compact /></div>
-                  <div className="col-span-2 text-right">{h.pctSupply.toFixed(2)}%</div>
+                <div
+                  key={h.address}
+                  className="grid grid-cols-12 items-center gap-3 text-ink/80"
+                >
+                  <div className="col-span-1">
+                    <Identicon value={h.address} size={18} />
+                  </div>
+                  <div className="col-span-6">
+                    <Address value={h.address} />
+                  </div>
+                  <div className="col-span-3">
+                    <TokenAmount
+                      raw={h.balanceRaw}
+                      ticker={first.ticker}
+                      compact
+                    />
+                  </div>
+                  <div className="col-span-2 text-right">
+                    {h.pctSupply.toFixed(2)}%
+                  </div>
                 </div>
               ))}
             </div>

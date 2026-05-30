@@ -582,8 +582,8 @@
         "burn": {
           "title": "Burn",
           "tag": "supply-shrinking",
-          "body": "Redeemed coins go to a known dead address (<code>0x…dead</code>). No private key holds it, so the coins are effectively destroyed — circulating supply decreases by exactly the redeemed amount.",
-          "footer": "recipient → <code>0x00…dead</code>"
+          "body": "Redeemed coins go to the Sui zero address (<code>0x0…0</code>). No private key holds it, so the coins are effectively destroyed — circulating supply decreases by exactly the redeemed amount.",
+          "footer": "recipient → <code>0x0…0</code>"
         },
         "buyback": {
           "title": "Rückkauf",
@@ -705,8 +705,8 @@
         },
         "recipient": {
           "label": "02 / Recipient",
-          "p1": "The <term>recipient</term> is the address that receives the project coins on every redeem. Pick the canonical Sui dead address (<code>0x…dead</code>) for a <term>BURN</term> pool — the coins are effectively destroyed, since no one holds the private key. Pick your own treasury or a multisig for a <term>BUYBACK</term> pool — redeemed coins flow back to you.",
-          "p2": "The contract rejects the literal zero address (<term>0x0…0</term>) as a recipient to prevent accidentally locking coins in a way that looks like an unset value. Use the DeFi-standard <code>0x…dead</code> pattern instead.",
+          "p1": "The <term>recipient</term> is the address that receives the project coins on every redeem. Pick the Sui zero address (<code>0x0…0</code>) for a <term>BURN</term> pool — the coins are effectively destroyed, since no one holds the private key. Pick your own treasury or a multisig for a <term>BUYBACK</term> pool — redeemed coins flow back to you.",
+          "p2": "Heads up: the on-chain <code>pool::create_pool</code> still asserts <term>recipient != @0x0</term> (abort code 101). BURN-mode deploys using the prefilled zero address will fail against the current contract until that assertion is lifted.",
           "p3": "Recipient is immutable. Once the pool is deployed, you cannot redirect the flow. Choose carefully."
         },
         "rate": {
@@ -750,7 +750,7 @@
         },
         "recipient": {
           "label": "03 / Recipient",
-          "p1": "Choose <term>BURN</term> (pre-filled with the canonical <code>0x…dead</code> address) or <term>BUYBACK</term> (you provide a treasury or multisig). The recipient field is also where redeemed coins land in subsequent <term>redeem</term> calls — anyone redeeming the coin is effectively donating it to this address.",
+          "p1": "Choose <term>BURN</term> (pre-filled with the Sui zero address <code>0x0…0</code>) or <term>BUYBACK</term> (you provide a treasury or multisig). The recipient field is also where redeemed coins land in subsequent <term>redeem</term> calls — anyone redeeming the coin is effectively donating it to this address.",
           "p2": "If you pick BUYBACK, the wizard validates the address format and prevents the zero address (which the contract rejects with abort code 101)."
         },
         "reserve": {
@@ -780,7 +780,7 @@
             "pool": "Shared on-chain object holding the reserve, rate, and recipient for a specific coin. Created via pool::create_pool.",
             "recipient": "Address that receives the coin side of every redeem. Permanent.",
             "buyback": "Recipient mode where redeemed coins flow back to a treasury you control.",
-            "burn": "Recipient mode where redeemed coins are sent to an unowned dead address (typically 0x…dead).",
+            "burn": "Recipient mode where redeemed coins are sent to the Sui zero address (0x0…0) — an unowned address with no private key.",
             "reserve": "SUI held by the pool, used to pay out redeems. Anyone can deposit, no one can withdraw.",
             "priceMistPerToken": "u64 stored on the pool — mist of SUI returned per WHOLE displayed token. Permanent.",
             "coinIn": "Base units (NOT decimal-formatted) of the project coin sent into a redeem call.",

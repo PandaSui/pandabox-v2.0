@@ -27,7 +27,7 @@ const ABORTS: Record<string, Record<number, AbortInfo>> = {
     },
     101: {
       message:
-        "Recipient cannot be the Sui zero address. Pick a non-zero burn address (e.g. `0x…dead`) or a real treasury / multisig.",
+        "Recipient cannot be the Sui zero address. Pick a non-zero burn address or a real treasury / multisig.",
     },
   },
   platform: {

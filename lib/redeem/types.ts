@@ -13,7 +13,6 @@ export type PoolRecipientMode = "burn" | "buyback" | "unknown";
 /** Set of addresses we treat as "burn" for the purposes of UI labelling. */
 export const KNOWN_BURN_ADDRESSES = new Set<string>([
   "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "0x000000000000000000000000000000000000000000000000000000000000dead",
 ]);
 
 export function classifyRecipient(
