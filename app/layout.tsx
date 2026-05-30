@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 import { PageTransition } from "@/components/motion";
 import "./globals.css";
 
-const SITE_URL = "https://test.pandabox.money";
+const SITE_URL = "https://pandabox.money";
 const SITE_NAME = "Pandabox";
 const OG_IMAGE_URL = "/og-image.png";
 
