@@ -93,14 +93,28 @@ export type UnsoldActionKey = (typeof UNSOLD_ACTIONS)[number];
  *   - `unsoldAction` 0|1 maps to UnsoldAction constants
  */
 export const StepSale = z.object({
-  /** Whole tokens issued per 1 SUI of contribution. Stored as string. */
+  /**
+   * Tokens issued per 1 SUI of contribution. Stored as string.
+   * Maps to the on-chain `base_rate` (u64) — SUI mist and the project coin
+   * share 9 decimals, so no scaling is applied and the value is floored to
+   * an integer at submit time. The contract requires `base_rate > 0`
+   * (abort 101 / E_INVALID_BASE_RATE), and `floor(x) >= 1 ⟺ x >= 1`, so the
+   * value must be at least 1. Decimals are allowed (the target-raise helper
+   * derives fractional rates) but are floored on deploy.
+   */
   tokensPerSui: z
     .string()
-    .regex(/^\d+(\.\d+)?$/, "Use a positive number"),
-  /** Total tokens to sell over the sale window. Stored as string. */
+    .regex(/^\d+(\.\d+)?$/, "Use a positive number")
+    .refine((s) => Number(s) >= 1, "Must be at least 1"),
+  /**
+   * Total tokens to sell over the sale window. Stored as string, scaled by
+   * the coin decimals at submit time. The contract requires
+   * `funding_allocation > 0` (abort 103 / E_INVALID_FUNDING_ALLOCATION).
+   */
   allocationTokens: z
     .string()
-    .regex(/^\d+(\.\d+)?$/, "Use a positive number"),
+    .regex(/^\d+(\.\d+)?$/, "Use a positive number")
+    .refine((s) => Number(s) > 0, "Must be greater than 0"),
   /** Sale end time in unix ms. null/undefined = no time cap (admin-closed only). */
   endTimeMs: z.number().int().nullish(),
   unsoldAction: z.enum(UNSOLD_ACTIONS),
