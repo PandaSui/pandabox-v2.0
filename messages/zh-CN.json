@@ -874,6 +874,7 @@
     "byCreator": "由 {addr} 发布",
     "endsNow": "结束于 ",
     "endedAt": "结束于 ",
+    "noEnd": "无限期",
     "unnamed": "未命名项目",
     "viewProject": "查看 {name}",
     "categories": {

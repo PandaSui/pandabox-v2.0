@@ -874,6 +874,7 @@
     "byCreator": "bởi {addr}",
     "endsNow": "kết thúc ",
     "endedAt": "đã kết thúc ",
+    "noEnd": "không giới hạn",
     "unnamed": "Dự án không tên",
     "viewProject": "Xem {name}",
     "categories": {

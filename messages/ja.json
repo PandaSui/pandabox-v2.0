@@ -874,6 +874,7 @@
     "byCreator": "by {addr}",
     "endsNow": "終了 ",
     "endedAt": "終了 ",
+    "noEnd": "無期限",
     "unnamed": "無題のプロジェクト",
     "viewProject": "{name} を表示",
     "categories": {

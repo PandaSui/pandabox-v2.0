@@ -874,6 +874,7 @@
     "byCreator": "von {addr}",
     "endsNow": "endet ",
     "endedAt": "beendet ",
+    "noEnd": "unbefristet",
     "unnamed": "Unbenanntes Projekt",
     "viewProject": "{name} ansehen",
     "categories": {

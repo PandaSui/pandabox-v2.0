@@ -874,6 +874,7 @@
     "byCreator": "由 {addr} 建立",
     "endsNow": "結束於 ",
     "endedAt": "已結束 ",
+    "noEnd": "無限期",
     "unnamed": "未命名專案",
     "viewProject": "檢視 {name}",
     "categories": {

@@ -24,6 +24,49 @@ export const alt = "Pandabox project — programmable funding on Sui.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/**
+ * Fetch a remote cover and inline it as a base64 data URL.
+ *
+ * Satori (next/og) can fetch remote `<img src>` itself, but that path is
+ * fragile here: the default public IPFS gateway is aggressively rate-limited
+ * for server-side requests, and a slow/404/non-raster response yields a
+ * silently-blank box rather than a thrown error. Pulling the bytes ourselves
+ * lets us (a) cap the wait, (b) verify it's actually a raster image Satori can
+ * decode (PNG/JPEG/GIF — not SVG/WebP/AVIF), and (c) fall back cleanly to the
+ * "NO COVER" placeholder when any of that fails.
+ */
+async function loadCoverDataUrl(url: string): Promise<string | null> {
+  if (!url) return null;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4500);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { accept: "image/png,image/jpeg,image/gif,image/*" },
+    });
+    if (!res.ok) return null;
+
+    const type = (res.headers.get("content-type") ?? "")
+      .split(";")[0]
+      .trim()
+      .toLowerCase();
+    // Satori only decodes these raster formats; SVG/WebP/AVIF render blank.
+    if (!["image/png", "image/jpeg", "image/jpg", "image/gif"].includes(type)) {
+      return null;
+    }
+
+    const buf = Buffer.from(await res.arrayBuffer());
+    // Guard against an oversized payload bloating the OG response.
+    if (buf.byteLength === 0 || buf.byteLength > 5_000_000) return null;
+
+    return `data:${type};base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 // Bone-on-ink palette, mirroring globals.css.
 const BONE = "#F5F1E8";
 const INK = "#1A1A1A";
@@ -138,6 +181,7 @@ export default async function Image({
 
   const tagline = (project.details?.tagline ?? "").trim();
   const coverUrl = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
+  const coverDataUrl = await loadCoverDataUrl(coverUrl);
 
   return new ImageResponse(
     (
@@ -365,10 +409,10 @@ export default async function Image({
               overflow: "hidden",
             }}
           >
-            {coverUrl ? (
+            {coverDataUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={coverUrl}
+                src={coverDataUrl}
                 alt=""
                 width={380}
                 height={380}

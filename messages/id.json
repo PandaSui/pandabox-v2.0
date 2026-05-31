@@ -874,6 +874,7 @@
     "byCreator": "oleh {addr}",
     "endsNow": "berakhir ",
     "endedAt": "berakhir ",
+    "noEnd": "tanpa batas waktu",
     "unnamed": "Proyek tanpa nama",
     "viewProject": "Lihat {name}",
     "categories": {

@@ -874,6 +874,7 @@
     "byCreator": "{addr} 제작",
     "endsNow": "마감 ",
     "endedAt": "종료됨 ",
+    "noEnd": "기간 제한 없음",
     "unnamed": "이름 없는 프로젝트",
     "viewProject": "{name} 보기",
     "categories": {

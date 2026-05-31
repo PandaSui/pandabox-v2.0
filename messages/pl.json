@@ -874,6 +874,7 @@
     "byCreator": "od {addr}",
     "endsNow": "kończy się ",
     "endedAt": "zakończono ",
+    "noEnd": "bezterminowo",
     "unnamed": "Projekt bez nazwy",
     "viewProject": "Zobacz {name}",
     "categories": {

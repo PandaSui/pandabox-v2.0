@@ -874,6 +874,7 @@
     "byCreator": "by {addr}",
     "endsNow": "ends ",
     "endedAt": "ended ",
+    "noEnd": "open-ended",
     "unnamed": "Unnamed project",
     "viewProject": "View {name}",
     "categories": {

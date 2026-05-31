@@ -874,6 +874,7 @@
     "byCreator": "от {addr}",
     "endsNow": "завершается ",
     "endedAt": "завершилось ",
+    "noEnd": "без срока",
     "unnamed": "Проект без названия",
     "viewProject": "Открыть {name}",
     "categories": {
