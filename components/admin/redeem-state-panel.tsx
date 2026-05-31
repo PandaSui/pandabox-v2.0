@@ -9,39 +9,34 @@ import { Address } from "@/components/identity/address";
 import {
   buildPlatformPauseTx,
   buildPlatformUnpauseTx,
-  buildSetTreasuryAddressTx,
-  buildUpdateFeeBpsTx,
-  buildWithdrawPlatformFeesTx,
-  IS_DEPLOYED,
-} from "@/lib/contracts/pandabox";
-import type { PlatformStats } from "@/lib/platform";
+  buildPlatformSetTreasuryAddressTx,
+  buildPlatformUpdateFeeBpsTx,
+  buildPlatformWithdrawFeesTx,
+  REDEEM_IS_DEPLOYED,
+} from "@/lib/contracts/redeem";
+import type { RedeemPlatformState } from "@/lib/redeem/types";
 import { formatBps, formatRelative, formatSui } from "@/lib/admin/format";
 import { useProtocolAdmin } from "./admin-context";
 import { useAdminTx } from "./use-admin-tx";
 import { ADMIN_CTA } from "./shared";
-import {
-  FeeModal,
-  TreasuryModal,
-  WithdrawModal,
-  ConfirmModal,
-} from "./modals";
+import { FeeModal, TreasuryModal, WithdrawModal, ConfirmModal } from "./modals";
 
-const ACCENT = "saffron" as const;
+const ACCENT = "sun" as const;
 
 type Action = "pause" | "fee" | "treasury" | "withdraw";
 
 /**
- * Platform-wide controls — pause/unpause, fee bps, treasury address, and the
- * fee withdrawal flow. Consumes `PlatformStats` from the server-side reader
- * so the UI always reflects on-chain state at first paint; after a successful
- * tx we call `router.refresh()` so Next re-renders the server component
- * against the latest chain state.
+ * Redeem platform controls — pause/unpause, fee bps, treasury, and fee
+ * withdrawal. Mirrors the Pandabox panel structure on the `sun` accent
+ * (surplus / cash-out value), driven by the shared `useAdminTx` machine and
+ * the protocol-agnostic action modals. Cap-transfer / renounce live in the
+ * separate <AdminCapCard>.
  */
-export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
+export function RedeemStatePanel({ stats }: { stats: RedeemPlatformState }) {
   const router = useRouter();
-  const { capId } = useProtocolAdmin("pandabox");
+  const { capId } = useProtocolAdmin("redeem");
   const { state: tx, busy, run, reset } = useAdminTx<Action>({
-    deployed: IS_DEPLOYED,
+    deployed: REDEEM_IS_DEPLOYED,
   });
   const [open, setOpen] = useState<Action | null>(null);
 
@@ -53,7 +48,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             aria-hidden
             className={cn(
               "block h-1.5 w-1.5 rounded-full",
-              stats.paused ? "bg-poppy" : "bg-jade",
+              stats.paused ? "bg-poppy" : "bg-sun",
             )}
             style={
               !stats.paused
@@ -64,7 +59,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           <MonoLabel className="text-[10px]">Platform state</MonoLabel>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-          {stats.paused ? "paused" : "live"} · {stats.network}
+          {stats.paused ? "paused" : "live"}
         </span>
       </header>
 
@@ -76,12 +71,12 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
         />
         <Stat
           label="Accumulated fees"
-          value={`${formatSui(BigInt(stats.feeTreasuryMist))} SUI`}
+          value={`${formatSui(stats.feeTreasuryMist)} SUI`}
           border
         />
         <Stat
-          label="Total projects"
-          value={stats.totalProjects.toLocaleString()}
+          label="Total pools"
+          value={stats.totalPools.toLocaleString()}
           border
         />
       </dl>
@@ -118,11 +113,11 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             <span>Signing…</span>
           ) : stats.paused ? (
             <>
-              <span>Unpause launchpad</span>
+              <span>Unpause redemptions</span>
               <ArrowDiag size={12} />
             </>
           ) : (
-            <span>Pause launchpad</span>
+            <span>Pause redemptions</span>
           )}
         </button>
         <button
@@ -153,8 +148,8 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             reset();
             setOpen("withdraw");
           }}
-          disabled={busy || BigInt(stats.feeTreasuryMist) === 0n}
-          className={cn(ADMIN_CTA, "bg-saffron text-ink")}
+          disabled={busy || stats.feeTreasuryMist === 0n}
+          className={cn(ADMIN_CTA, "bg-sun text-ink")}
         >
           <span>Withdraw fees</span>
           <ArrowDiag size={12} />
@@ -175,12 +170,11 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
       {open === "pause" && (
         <ConfirmModal
           accent={ACCENT}
-          title="Pause launchpad"
+          title="Pause redemptions"
           body={
             <p>
-              Pauses all new contributions across <em>every</em> project on
-              Pandabox until you unpause. Existing receipts can still be
-              claimed once their projects finalize.
+              Pauses redemptions across <em>every</em> Redeem pool until you
+              unpause. Reserve deposits and pool reads are unaffected.
             </p>
           }
           confirm="Pause"
@@ -205,7 +199,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           onClose={() => setOpen(null)}
           onSubmit={(newBps) =>
             run("fee", () =>
-              buildUpdateFeeBpsTx({ platformAdminCapId: capId, newBps }),
+              buildPlatformUpdateFeeBpsTx({ platformAdminCapId: capId, newBps }),
             )
           }
         />
@@ -220,7 +214,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           onClose={() => setOpen(null)}
           onSubmit={(addr) =>
             run("treasury", () =>
-              buildSetTreasuryAddressTx({
+              buildPlatformSetTreasuryAddressTx({
                 platformAdminCapId: capId,
                 newAddress: addr,
               }),
@@ -233,13 +227,13 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
         <WithdrawModal
           accent={ACCENT}
           treasuryAddress={stats.treasuryAddress}
-          maxMist={BigInt(stats.feeTreasuryMist)}
+          maxMist={stats.feeTreasuryMist}
           state={tx}
           busy={busy}
           onClose={() => setOpen(null)}
           onSubmit={(amountMist) =>
             run("withdraw", () =>
-              buildWithdrawPlatformFeesTx({
+              buildPlatformWithdrawFeesTx({
                 platformAdminCapId: capId,
                 amountMist,
               }),
@@ -250,8 +244,6 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
     </section>
   );
 }
-
-/* ─────────────────────── Small UI helpers ─────────────────────── */
 
 function Stat({
   label,
@@ -268,10 +260,7 @@ function Stat({
     <div className={cn("p-4 md:p-5", border && "md:border-l md:border-ink/15")}>
       <MonoLabel className="block text-[10px]">{label}</MonoLabel>
       <div className="mt-1 font-mono tabular-nums text-xl">{value}</div>
-      {hint && (
-        <div className="mt-1 font-mono text-[10px] text-ink/45">{hint}</div>
-      )}
+      {hint && <div className="mt-1 font-mono text-[10px] text-ink/45">{hint}</div>}
     </div>
   );
 }
-

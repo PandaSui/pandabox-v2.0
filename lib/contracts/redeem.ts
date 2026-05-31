@@ -329,3 +329,23 @@ export function buildPlatformTransferAdminTx(args: {
   });
   return tx;
 }
+
+/**
+ * `platform::renounce_admin(cap, &platform, &clock, &ctx)` — cap consumed
+ * by-value and destroyed. Reads the platform via an immutable shared ref.
+ * Irreversible: Redeem becomes permanently un-administrable.
+ */
+export function buildPlatformRenounceAdminTx(args: {
+  platformAdminCapId: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${REDEEM_PACKAGE_ID}::${REDEEM_PLATFORM_MODULE}::renounce_admin`,
+    arguments: [
+      tx.object(args.platformAdminCapId),
+      tx.object(REDEEM_PLATFORM_ID),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}

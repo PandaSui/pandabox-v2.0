@@ -7,43 +7,47 @@ import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import {
-  buildPlatformPauseTx,
-  buildPlatformUnpauseTx,
-  buildSetTreasuryAddressTx,
-  buildUpdateFeeBpsTx,
-  buildWithdrawPlatformFeesTx,
-  IS_DEPLOYED,
-} from "@/lib/contracts/pandabox";
-import type { PlatformStats } from "@/lib/platform";
-import { formatBps, formatRelative, formatSui } from "@/lib/admin/format";
+  buildAirdropPauseTx,
+  buildAirdropUnpauseTx,
+  buildAirdropUpdateFeeTx,
+  buildAirdropUpdateMaxRecipientsTx,
+  buildAirdropSetTreasuryTx,
+  buildAirdropWithdrawFeesTx,
+  AIRDROP_IS_DEPLOYED,
+} from "@/lib/contracts/airdrop";
+import type { AirdropPlatformState } from "@/lib/airdrop/types";
+import { formatRelative, formatSui } from "@/lib/admin/format";
 import { useProtocolAdmin } from "./admin-context";
 import { useAdminTx } from "./use-admin-tx";
 import { ADMIN_CTA } from "./shared";
 import {
-  FeeModal,
+  FlatFeeModal,
+  MaxRecipientsModal,
   TreasuryModal,
   WithdrawModal,
   ConfirmModal,
 } from "./modals";
 
-const ACCENT = "saffron" as const;
+const ACCENT = "jade" as const;
 
-type Action = "pause" | "fee" | "treasury" | "withdraw";
+type Action = "pause" | "fee" | "max" | "treasury" | "withdraw";
 
 /**
- * Platform-wide controls — pause/unpause, fee bps, treasury address, and the
- * fee withdrawal flow. Consumes `PlatformStats` from the server-side reader
- * so the UI always reflects on-chain state at first paint; after a successful
- * tx we call `router.refresh()` so Next re-renders the server component
- * against the latest chain state.
+ * Airdrop platform controls — pause/unpause, the flat per-recipient SUI fee,
+ * the max-recipients ceiling, treasury, and fee withdrawal. On the `jade`
+ * accent (community / distribution). Every platform-touching builder needs the
+ * shared object's `initial_shared_version`, which the reader surfaces on
+ * `stats.initialSharedVersion`.
  */
-export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
+export function AirdropStatePanel({ stats }: { stats: AirdropPlatformState }) {
   const router = useRouter();
-  const { capId } = useProtocolAdmin("pandabox");
+  const { capId } = useProtocolAdmin("airdrop");
   const { state: tx, busy, run, reset } = useAdminTx<Action>({
-    deployed: IS_DEPLOYED,
+    deployed: AIRDROP_IS_DEPLOYED,
   });
   const [open, setOpen] = useState<Action | null>(null);
+
+  const isv = stats.initialSharedVersion;
 
   return (
     <section className="border border-ink bg-bone shadow-offset-sm">
@@ -64,24 +68,28 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           <MonoLabel className="text-[10px]">Platform state</MonoLabel>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-          {stats.paused ? "paused" : "live"} · {stats.network}
+          {stats.paused ? "paused" : "live"}
         </span>
       </header>
 
-      <dl className="grid grid-cols-1 border-b border-ink/15 md:grid-cols-3">
+      <dl className="grid grid-cols-2 border-b border-ink/15 md:grid-cols-4">
         <Stat
-          label="Fee"
-          value={`${formatBps(stats.feeBps)}%`}
-          hint={`${stats.feeBps} bps`}
+          label="Fee / recipient"
+          value={`${formatSui(stats.feePerRecipientMist)} SUI`}
         />
         <Stat
           label="Accumulated fees"
-          value={`${formatSui(BigInt(stats.feeTreasuryMist))} SUI`}
+          value={`${formatSui(stats.feeTreasuryMist)} SUI`}
           border
         />
         <Stat
-          label="Total projects"
-          value={stats.totalProjects.toLocaleString()}
+          label="Max recipients"
+          value={stats.maxRecipients.toLocaleString()}
+          border
+        />
+        <Stat
+          label="Total airdrops"
+          value={stats.totalAirdrops.toLocaleString()}
           border
         />
       </dl>
@@ -100,7 +108,10 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             reset();
             if (stats.paused) {
               void run("pause", () =>
-                buildPlatformUnpauseTx({ platformAdminCapId: capId }),
+                buildAirdropUnpauseTx({
+                  airdropAdminCapId: capId,
+                  platformInitialSharedVersion: isv,
+                }),
               );
             } else {
               setOpen("pause");
@@ -118,11 +129,11 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             <span>Signing…</span>
           ) : stats.paused ? (
             <>
-              <span>Unpause launchpad</span>
+              <span>Unpause airdrops</span>
               <ArrowDiag size={12} />
             </>
           ) : (
-            <span>Pause launchpad</span>
+            <span>Pause airdrops</span>
           )}
         </button>
         <button
@@ -134,7 +145,18 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           disabled={busy}
           className={cn(ADMIN_CTA, "bg-bone text-ink")}
         >
-          <span>Update fee bps</span>
+          <span>Update fee</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+            setOpen("max");
+          }}
+          disabled={busy}
+          className={cn(ADMIN_CTA, "bg-bone text-ink")}
+        >
+          <span>Update max recipients</span>
         </button>
         <button
           type="button"
@@ -153,8 +175,8 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
             reset();
             setOpen("withdraw");
           }}
-          disabled={busy || BigInt(stats.feeTreasuryMist) === 0n}
-          className={cn(ADMIN_CTA, "bg-saffron text-ink")}
+          disabled={busy || stats.feeTreasuryMist === 0n}
+          className={cn(ADMIN_CTA, "bg-jade text-bone border-jade")}
         >
           <span>Withdraw fees</span>
           <ArrowDiag size={12} />
@@ -175,12 +197,11 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
       {open === "pause" && (
         <ConfirmModal
           accent={ACCENT}
-          title="Pause launchpad"
+          title="Pause airdrops"
           body={
             <p>
-              Pauses all new contributions across <em>every</em> project on
-              Pandabox until you unpause. Existing receipts can still be
-              claimed once their projects finalize.
+              Pauses <em>all</em> airdrop distributions platform-wide until you
+              unpause. In-flight transactions already signed are unaffected.
             </p>
           }
           confirm="Pause"
@@ -190,22 +211,49 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           onClose={() => setOpen(null)}
           onSubmit={() =>
             run("pause", () =>
-              buildPlatformPauseTx({ platformAdminCapId: capId }),
+              buildAirdropPauseTx({
+                airdropAdminCapId: capId,
+                platformInitialSharedVersion: isv,
+              }),
             )
           }
         />
       )}
 
       {open === "fee" && (
-        <FeeModal
+        <FlatFeeModal
           accent={ACCENT}
-          currentBps={stats.feeBps}
+          currentMist={stats.feePerRecipientMist}
+          unitLabel="per recipient"
           state={tx}
           busy={busy}
           onClose={() => setOpen(null)}
-          onSubmit={(newBps) =>
+          onSubmit={(newFeeMist) =>
             run("fee", () =>
-              buildUpdateFeeBpsTx({ platformAdminCapId: capId, newBps }),
+              buildAirdropUpdateFeeTx({
+                airdropAdminCapId: capId,
+                platformInitialSharedVersion: isv,
+                newFeeMist,
+              }),
+            )
+          }
+        />
+      )}
+
+      {open === "max" && (
+        <MaxRecipientsModal
+          accent={ACCENT}
+          currentMax={stats.maxRecipients}
+          state={tx}
+          busy={busy}
+          onClose={() => setOpen(null)}
+          onSubmit={(newMax) =>
+            run("max", () =>
+              buildAirdropUpdateMaxRecipientsTx({
+                airdropAdminCapId: capId,
+                platformInitialSharedVersion: isv,
+                newMax,
+              }),
             )
           }
         />
@@ -220,8 +268,9 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           onClose={() => setOpen(null)}
           onSubmit={(addr) =>
             run("treasury", () =>
-              buildSetTreasuryAddressTx({
-                platformAdminCapId: capId,
+              buildAirdropSetTreasuryTx({
+                airdropAdminCapId: capId,
+                platformInitialSharedVersion: isv,
                 newAddress: addr,
               }),
             )
@@ -233,14 +282,15 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
         <WithdrawModal
           accent={ACCENT}
           treasuryAddress={stats.treasuryAddress}
-          maxMist={BigInt(stats.feeTreasuryMist)}
+          maxMist={stats.feeTreasuryMist}
           state={tx}
           busy={busy}
           onClose={() => setOpen(null)}
           onSubmit={(amountMist) =>
             run("withdraw", () =>
-              buildWithdrawPlatformFeesTx({
-                platformAdminCapId: capId,
+              buildAirdropWithdrawFeesTx({
+                airdropAdminCapId: capId,
+                platformInitialSharedVersion: isv,
                 amountMist,
               }),
             )
@@ -251,27 +301,19 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
   );
 }
 
-/* ─────────────────────── Small UI helpers ─────────────────────── */
-
 function Stat({
   label,
   value,
-  hint,
   border = false,
 }: {
   label: string;
   value: string;
-  hint?: string;
   border?: boolean;
 }) {
   return (
     <div className={cn("p-4 md:p-5", border && "md:border-l md:border-ink/15")}>
       <MonoLabel className="block text-[10px]">{label}</MonoLabel>
-      <div className="mt-1 font-mono tabular-nums text-xl">{value}</div>
-      {hint && (
-        <div className="mt-1 font-mono text-[10px] text-ink/45">{hint}</div>
-      )}
+      <div className="mt-1 font-mono tabular-nums text-lg">{value}</div>
     </div>
   );
 }
-

@@ -226,3 +226,176 @@ export function buildAirdropTx(args: BuildAirdropArgs): Transaction {
 
   return tx;
 }
+
+/* ─────────────────────────── Platform admin (operator-side) ─────────────────────────── *
+ *
+ * Require the `AirdropAdminCap`. The `AirdropPlatform` is a shared object, so
+ * every builder that mutates or reads it constructs an explicit
+ * `sharedObjectRef` from the `initial_shared_version` the reader surfaces —
+ * matching the convention `buildAirdropTx` uses rather than the lossy
+ * `tx.object()` shorthand. `transfer_admin` is the one exception: it doesn't
+ * touch the platform object at all.
+ */
+
+/** Mutable/immutable shared ref to the `AirdropPlatform` singleton. */
+function airdropPlatformRef(initialSharedVersion: string, mutable: boolean) {
+  return {
+    objectId: AIRDROP_PLATFORM_ID,
+    initialSharedVersion,
+    mutable,
+  };
+}
+
+/** `platform::pause(&cap, &mut platform, &clock, &ctx)` */
+export function buildAirdropPauseTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::pause`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::unpause(&cap, &mut platform, &clock, &ctx)` */
+export function buildAirdropUnpauseTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::unpause`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::update_fee_per_recipient(&cap, &mut platform, new_fee_mist, &clock, &ctx)` */
+export function buildAirdropUpdateFeeTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+  newFeeMist: bigint;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::update_fee_per_recipient`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.pure.u64(args.newFeeMist),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::update_max_recipients(&cap, &mut platform, new_max, &clock, &ctx)` */
+export function buildAirdropUpdateMaxRecipientsTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+  newMax: number;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::update_max_recipients`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.pure.u64(BigInt(args.newMax)),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/** `platform::set_treasury_address(&cap, &mut platform, addr, &clock, &ctx)` */
+export function buildAirdropSetTreasuryTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+  newAddress: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::set_treasury_address`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.pure.address(args.newAddress),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `platform::withdraw_fees(&cap, &mut platform, amount, &clock, &mut ctx)`.
+ * No recipient parameter — fees route to `platform.treasury_address`.
+ */
+export function buildAirdropWithdrawFeesTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+  amountMist: bigint;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::withdraw_fees`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, true)),
+      tx.pure.u64(args.amountMist),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `platform::transfer_admin(cap, recipient, &clock, &ctx)` — cap consumed
+ * by-value, does not touch the platform object.
+ */
+export function buildAirdropTransferAdminTx(args: {
+  airdropAdminCapId: string;
+  recipient: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::transfer_admin`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.pure.address(args.recipient),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+/**
+ * `platform::renounce_admin(cap, &platform, &clock, &ctx)` — cap consumed
+ * by-value and permanently destroyed; reads the platform via an *immutable*
+ * shared ref. After this lands, no one can ever administer Airdrop again.
+ */
+export function buildAirdropRenounceAdminTx(args: {
+  airdropAdminCapId: string;
+  platformInitialSharedVersion: string;
+}): Transaction {
+  const tx = new Transaction();
+  tx.moveCall({
+    target: `${AIRDROP_PACKAGE_ID}::${AIRDROP_PLATFORM_MODULE}::renounce_admin`,
+    arguments: [
+      tx.object(args.airdropAdminCapId),
+      tx.sharedObjectRef(airdropPlatformRef(args.platformInitialSharedVersion, false)),
+      tx.object(CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}

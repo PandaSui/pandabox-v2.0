@@ -1,40 +1,38 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { AdminProvider } from "@/components/admin/admin-context";
-import { AdminGate } from "@/components/admin/admin-gate";
-import { PlatformStatePanel } from "@/components/admin/platform-state-panel";
-import { ProjectModerationTable } from "@/components/admin/project-moderation-table";
-import { TransferAdminCard } from "@/components/admin/transfer-admin-card";
-import { getPlatformStats } from "@/lib/platform";
+import { AdminConsole } from "@/components/admin/admin-console";
+import { getAdminOverview, buildDeckCards } from "@/lib/admin/overview";
 import { getOnchainProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Operator console — Pandabox",
   description:
-    "Platform-admin controls for Pandabox. Pause, set fees, moderate projects, transfer admin.",
+    "Platform-admin controls for Pandabox, Redeem, and Airdrop. Pause, set fees, moderate, withdraw, transfer admin.",
   // Don't index — operator-only surface.
   robots: { index: false, follow: false },
 };
 
-// Re-render on every request so action buttons reflect freshly-mutated state.
-// Each individual reader is still server-cached (`unstable_cache`) and we
-// call `revalidateTag`-style refreshes through `router.refresh()` in the
-// client panels after a successful sign — so this is mostly a no-op for
-// performance and a correctness win for accuracy.
+// Re-render on every request so the deck + panels reflect freshly-mutated
+// state. Each reader stays server-cached (`unstable_cache`, 60s); the dynamic
+// route just bypasses Next's own static cache so we pick up revalidations.
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  // Pull platform state + all on-chain projects in parallel. Both are cached
-  // server-side; the dynamic route just bypasses Next's own static cache so
-  // we always pick up the latest revalidation.
-  const [platform, projects] = await Promise.all([
-    getPlatformStats(),
+  // Live platform state for all three protocols + Pandabox's project list, in
+  // parallel. Everything is server-cached; failures degrade per-protocol.
+  const [overview, projects] = await Promise.all([
+    getAdminOverview(),
     getOnchainProjects(),
   ]);
+  const cards = buildDeckCards(overview);
+  const liveCount = cards.filter((c) => c.available && !c.paused).length;
+  const pausedCount = cards.filter((c) => c.available && c.paused).length;
 
   return (
     <>
@@ -47,69 +45,48 @@ export default async function AdminPage() {
                 <MonoLabel accent="sky">Operator</MonoLabel>
               </AccentRule>
               <h1 className="mt-3 font-display text-3xl leading-[1.05] md:text-5xl">
-                Platform operator console.
+                Operator console.
               </h1>
               <p className="mt-4 max-w-prose text-[15px] text-ink/65">
-                Pandabox-wide controls and per-project moderation, gated by
-                ownership of the on-chain{" "}
-                <code className="font-mono text-[13px]">PlatformAdminCap</code>.
+                One console for the three protocols you operate — Pandabox,
+                Redeem, and Airdrop. Each panel is gated by ownership of its
+                on-chain admin cap.
               </p>
             </div>
             <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+              <li>{cards.length} protocols</li>
+              <li className="text-ink/20">·</li>
               <li className="inline-flex items-center gap-1.5">
-                <span
-                  className={
-                    platform?.paused
-                      ? "block h-1 w-1 rounded-full bg-poppy"
-                      : "block h-1 w-1 rounded-full bg-jade"
-                  }
-                />
-                {platform?.paused ? "paused" : "live"}
+                <span className="block h-1 w-1 rounded-full bg-jade" />
+                {liveCount} live
               </li>
-              <li className="text-ink/20">·</li>
-              <li>{projects.length} projects</li>
-              <li className="text-ink/20">·</li>
-              <li>
-                {platform ? `${(platform.feeBps / 100).toFixed(2)}% fee` : "—"}
-              </li>
+              {pausedCount > 0 && (
+                <>
+                  <li className="text-ink/20">·</li>
+                  <li className="inline-flex items-center gap-1.5">
+                    <span className="block h-1 w-1 rounded-full bg-poppy" />
+                    {pausedCount} paused
+                  </li>
+                </>
+              )}
             </ul>
           </Container>
         </section>
 
         <AdminProvider>
-          <AdminGate protocol="pandabox">
-            <Container className="space-y-8 py-10">
-              {platform ? (
-                <PlatformStatePanel stats={platform} />
-              ) : (
-                <PlatformReadFailure />
-              )}
-
-              <ProjectModerationTable projects={projects} />
-
-              <TransferAdminCard />
-            </Container>
-          </AdminGate>
+          <Suspense fallback={null}>
+            <AdminConsole
+              cards={cards}
+              platform={overview.pandabox}
+              redeem={overview.redeem}
+              airdrop={overview.airdrop}
+              projects={projects}
+            />
+          </Suspense>
         </AdminProvider>
 
         <Footer />
       </main>
     </>
-  );
-}
-
-function PlatformReadFailure() {
-  return (
-    <div className="border border-poppy/40 bg-poppy/[0.06] p-6 shadow-offset-sm">
-      <MonoLabel accent="poppy">Platform read failed</MonoLabel>
-      <p className="mt-2 text-sm text-ink/70">
-        Couldn't read the Platform shared object. Either{" "}
-        <code className="font-mono text-[12px]">
-          NEXT_PUBLIC_PLATFORM_OBJECT_ID
-        </code>{" "}
-        isn't set, or the fullnode call failed. The moderation table below
-        still works — it reads each project independently.
-      </p>
-    </div>
   );
 }

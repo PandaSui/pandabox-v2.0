@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@pandasui/ui/lib";
+import { ACCENT } from "@/lib/admin/accent";
+import type { ProtocolAccent } from "@/lib/admin/protocols";
 
 /**
  * Shared chrome for operator-console action panels — one button style, one
@@ -57,6 +59,7 @@ export function ModalFooter({
   onConfirm,
   danger = false,
   disabled = false,
+  accent = "saffron",
 }: {
   busy: boolean;
   primary: string;
@@ -64,7 +67,10 @@ export function ModalFooter({
   onConfirm: () => void;
   danger?: boolean;
   disabled?: boolean;
+  /** Confirm-button fill for non-danger actions; matches the active panel. */
+  accent?: ProtocolAccent;
 }) {
+  const a = ACCENT[accent];
   return (
     <div className="flex justify-end gap-2 border-t border-ink/10 pt-3">
       <button
@@ -81,7 +87,9 @@ export function ModalFooter({
         disabled={busy || disabled}
         className={cn(
           ADMIN_CTA,
-          danger ? "bg-poppy text-bone border-poppy" : "bg-saffron text-ink",
+          danger
+            ? "bg-poppy text-bone border-poppy"
+            : cn(a.solid, a.onAccentText),
         )}
       >
         {primary}
