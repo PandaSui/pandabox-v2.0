@@ -20,10 +20,6 @@ import {
  * the env `*_ADMIN_CAP_ID` values are only hints; we trust what the connected
  * wallet actually owns on chain. One provider wraps the whole console so the
  * deck, switcher, and every panel share a single cap-detection pass.
- *
- * `preview` is an explicit read-only mode: it lets anyone view the full
- * console UI (with live on-chain reads) without holding any cap. Signing is
- * always blocked while previewing — see `useAdminTx`.
  */
 
 type CapState = {
@@ -37,12 +33,16 @@ type CapMap = Record<ProtocolId, CapState>;
 type AdminContextValue = {
   /** Connected wallet address, or null. */
   account: string | null;
-  /** Read-only preview override. */
-  preview: boolean;
-  setPreview: (on: boolean) => void;
   caps: CapMap;
   /** Re-run cap detection (e.g. after a transfer_admin). */
   refresh: () => void;
+  /**
+   * False until the provider has mounted on the client. Wallet state comes
+   * from a client-only store (`useSyncExternalStore`), so the server and the
+   * first client render can disagree — consumers read this to render a
+   * stable, server-matching state until mount, avoiding hydration mismatches.
+   */
+  mounted: boolean;
 };
 
 const AdminContext = createContext<AdminContextValue | null>(null);
@@ -60,9 +60,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const client = useSuiClient();
   const address = account?.address ?? null;
 
-  const [preview, setPreview] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [caps, setCaps] = useState<CapMap>(() => freshCaps(false));
+  const [mounted, setMounted] = useState(false);
+
+  // Flip after the first client commit so wallet-dependent UI only renders
+  // once the server/client trees have safely reconciled.
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!address) {
@@ -110,8 +114,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   const value = useMemo<AdminContextValue>(
-    () => ({ account: address, preview, setPreview, caps, refresh }),
-    [address, preview, caps, refresh],
+    () => ({ account: address, caps, refresh, mounted }),
+    [address, caps, refresh, mounted],
   );
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
@@ -126,32 +130,44 @@ export function useAdminContext(): AdminContextValue {
 }
 
 export type ProtocolAdmin = {
-  /** Cap object id, or "" when not held (never used while previewing). */
+  /** Cap object id, or "" when not held. */
   capId: string;
   /** True when this wallet owns the protocol's cap. */
   holdsCap: boolean;
   /** Cap detection still in flight. */
   loading: boolean;
-  /** Global read-only preview is active. */
-  preview: boolean;
   /** Connected wallet address, or null. */
   account: string | null;
-  /** Whether real signing is permitted: holds the cap and not previewing. */
+  /** Whether real signing is permitted: holds the cap. */
   canSign: boolean;
   refresh: () => void;
 };
 
 /** Per-protocol view of admin access, derived from the shared context. */
 export function useProtocolAdmin(id: ProtocolId): ProtocolAdmin {
-  const { caps, preview, account, refresh } = useAdminContext();
+  const { caps, account, refresh, mounted } = useAdminContext();
+
+  // Until mounted, mirror the server snapshot exactly (no wallet, nothing
+  // held) so SSR and the first client render agree. Real wallet-derived state
+  // takes over after the mount effect fires.
+  if (!mounted) {
+    return {
+      capId: "",
+      holdsCap: false,
+      loading: false,
+      account: null,
+      canSign: false,
+      refresh,
+    };
+  }
+
   const cap = caps[id];
   return {
     capId: cap.capId ?? "",
     holdsCap: cap.capId != null,
     loading: cap.loading,
-    preview,
     account,
-    canSign: !preview && cap.capId != null,
+    canSign: cap.capId != null,
     refresh,
   };
 }

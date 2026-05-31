@@ -7,19 +7,15 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 import type { Transaction } from "@mysten/sui/transactions";
-import { useAdminContext } from "./admin-context";
 
 /**
  * The submit → sign → wait → refresh state machine shared by every protocol
  * panel. Keyed by an action string so a panel with several controls can track
  * which one is in flight.
  *
- * Two guard rails are baked in:
- *  - **preview**: while the console is in read-only preview, `run` never signs.
- *    It surfaces a friendly notice instead, so the operator sees the exact
- *    flow without a wallet prompt.
- *  - **simulation**: when `deployed` is false (env not wired), `run` fakes a
- *    successful digest after a short delay — keeps the UI demoable off-chain.
+ * One guard rail is baked in — **simulation**: when `deployed` is false (env
+ * not wired), `run` fakes a successful digest after a short delay, keeping the
+ * UI demoable off-chain.
  */
 
 export type TxState<A extends string = string> =
@@ -28,16 +24,12 @@ export type TxState<A extends string = string> =
   | { kind: "success"; action: A; digest: string }
   | { kind: "error"; action: A; message: string };
 
-const PREVIEW_NOTICE =
-  "Read-only preview — connect the wallet that holds this admin cap to sign.";
-
 export function useAdminTx<A extends string = string>(opts: {
   /** Pass the protocol's `IS_DEPLOYED` flag; false → simulate. */
   deployed: boolean;
 }) {
   const router = useRouter();
   const client = useSuiClient();
-  const { preview } = useAdminContext();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
   const [state, setState] = useState<TxState<A>>({ kind: "idle" });
 
@@ -56,10 +48,6 @@ export function useAdminTx<A extends string = string>(opts: {
       afterSuccess?: () => void;
     },
   ): Promise<void> => {
-    if (preview) {
-      setState({ kind: "error", action, message: PREVIEW_NOTICE });
-      return;
-    }
     setState({ kind: "submitting", action });
     try {
       if (!opts.deployed) {
@@ -85,5 +73,5 @@ export function useAdminTx<A extends string = string>(opts: {
     }
   };
 
-  return { state, busy, run, reset, preview };
+  return { state, busy, run, reset };
 }

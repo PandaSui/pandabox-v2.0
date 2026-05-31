@@ -52,7 +52,7 @@ function DeckCardView({
 }) {
   const accent = PROTOCOLS[card.id].accent;
   const a = ACCENT[accent];
-  const { holdsCap, loading, preview } = useProtocolAdmin(card.id);
+  const { holdsCap, loading } = useProtocolAdmin(card.id);
 
   return (
     <button
@@ -97,7 +97,7 @@ function DeckCardView({
             {card.tagline}
           </p>
         </div>
-        <CapBadge holdsCap={holdsCap} loading={loading} preview={preview} accent={a} />
+        <CapBadge holdsCap={holdsCap} loading={loading} accent={a} />
       </div>
 
       {card.available ? (
@@ -137,12 +137,10 @@ function DeckCardView({
 function CapBadge({
   holdsCap,
   loading,
-  preview,
   accent,
 }: {
   holdsCap: boolean;
   loading: boolean;
-  preview: boolean;
   accent: { text: string; dot: string };
 }) {
   if (loading) {
@@ -162,7 +160,7 @@ function CapBadge({
   }
   return (
     <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink/35">
-      {preview ? "preview" : "not your cap"}
+      not your cap
     </span>
   );
 }

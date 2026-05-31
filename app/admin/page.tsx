@@ -11,7 +11,7 @@ import { getAdminOverview, buildDeckCards } from "@/lib/admin/overview";
 import { getOnchainProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
-  title: "Operator console — Pandabox",
+  title: "Admin console — Pandabox",
   description:
     "Platform-admin controls for Pandabox, Redeem, and Airdrop. Pause, set fees, moderate, withdraw, transfer admin.",
   // Don't index — operator-only surface.
@@ -45,7 +45,7 @@ export default async function AdminPage() {
                 <MonoLabel accent="sky">Operator</MonoLabel>
               </AccentRule>
               <h1 className="mt-3 font-display text-3xl leading-[1.05] md:text-5xl">
-                Operator console.
+                Admin console.
               </h1>
               <p className="mt-4 max-w-prose text-[15px] text-ink/65">
                 One console for the three protocols you operate — Pandabox,
