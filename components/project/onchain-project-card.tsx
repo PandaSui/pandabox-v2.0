@@ -89,7 +89,11 @@ export function OnchainProjectCard({
   const pct = Math.min(100, Math.max(0, pctBp / 100));
 
   const now = Date.now();
-  const ended = now > project.endTimeMs;
+  // A project with no time cap hydrates to endTimeMs === 0 (Option::none on
+  // chain). It can only end via on-chain status, never by the clock — so the
+  // `> 0` guard is required, or every open-ended sale reads as already ended.
+  const hasDeadline = project.endTimeMs > 0;
+  const ended = hasDeadline && now > project.endTimeMs;
   const live = project.status === "live" && !ended;
   const msLeft = project.endTimeMs - now;
   const urgent = live && msLeft > 0 && msLeft < URGENCY_MS;
@@ -359,25 +363,28 @@ export function OnchainProjectCard({
           </div>
         </div>
 
-        {/* Time-pressure cue — poppy when <24h to nudge urgency */}
-        <div
-          className={cn(
-            "mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] lowercase",
-            urgent ? "text-poppy" : "text-ink/55",
-          )}
-        >
-          {urgent && (
-            <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
-          )}
-          {ended ? t("endedAt") : t("endsNow")}
-          <RelativeTime
-            value={project.endTimeMs}
+        {/* Time-pressure cue — poppy when <24h to nudge urgency. Only shown
+            when the sale has a time cap; open-ended sales have no countdown. */}
+        {hasDeadline && (
+          <div
             className={cn(
-              "text-[11px]",
-              urgent ? "text-poppy" : "text-ink/70",
+              "mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] lowercase",
+              urgent ? "text-poppy" : "text-ink/55",
             )}
-          />
-        </div>
+          >
+            {urgent && (
+              <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
+            )}
+            {ended ? t("endedAt") : t("endsNow")}
+            <RelativeTime
+              value={project.endTimeMs}
+              className={cn(
+                "text-[11px]",
+                urgent ? "text-poppy" : "text-ink/70",
+              )}
+            />
+          </div>
+        )}
       </Link>
     </article>
   );
