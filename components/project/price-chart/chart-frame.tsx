@@ -57,8 +57,8 @@ export function ChartFrame({
     <section className="border-t border-b border-ink/15 bg-bone">
       <div className="mx-auto max-w-[1200px] px-5 py-6 md:px-8 md:py-8">
         {/* ── Header row ─────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <div className="flex items-baseline gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-3">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
             <MonoLabel className="text-[10px]">
               Price · {ticker}/SUI
             </MonoLabel>
@@ -70,7 +70,7 @@ export function ChartFrame({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {/* View-style toggle */}
             <div className="flex items-center gap-1 border border-ink/15 bg-bone p-[3px]">
               {VIEW_STYLES.map((v) => {

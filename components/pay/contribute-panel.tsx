@@ -364,6 +364,7 @@ export function ContributePanel({ project }: { project: HydratedProject }) {
             refundedSui={
               refundedMist > 0n ? `${formatSui(refundedMist)} SUI` : null
             }
+            projectId={project.id}
             txDigest={state.digest}
             onContinue={closeInspector}
             continueLabel="Back to project"

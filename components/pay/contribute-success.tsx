@@ -16,10 +16,16 @@ type ContributeSuccessProps = {
   usdAmount: BigNumber | null;
   tokensFormatted: string; // pre-formatted, e.g. "10.00 PAND"
   refundedSui?: string | null; // pre-formatted, e.g. "0.50 SUI" — null if no refund
+  /** Project<T> shared object ID. When present, the tweet deep-links to /projects/[id]. */
+  projectId?: string;
   txDigest: string;
   onContinue?: () => void;
   continueLabel?: string;
 };
+
+const SITE_URL =
+  (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SITE_URL) ||
+  "https://pandabox.money";
 
 /**
  * Post-contribution celebration modal — sister to <DeploySuccess>. Same
@@ -35,6 +41,7 @@ export function ContributeSuccess({
   usdAmount,
   tokensFormatted,
   refundedSui,
+  projectId,
   txDigest,
   onContinue,
   continueLabel = "Back to project",
@@ -47,7 +54,13 @@ export function ContributeSuccess({
     BigNumber.ROUND_DOWN,
   );
 
-  const tweet = `Just backed ${projectName} on Pandabox — programmable on-chain funding on Sui.`;
+  // X fetches og:image from the project page when we hand over a URL — that's
+  // the cover-image OG card. Deep-link to the project so the tweet doubles as
+  // an ad; fall back to /explore when no id is wired through.
+  const shareUrl = projectId
+    ? `${SITE_URL}/projects/${projectId}`
+    : `${SITE_URL}/explore`;
+  const tweet = `Just backed ${projectName} on @0xPandaSui — programmable on-chain funding on Sui.\n\n${shareUrl}`;
   const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
 
   useGSAP(
@@ -243,7 +256,10 @@ export function ContributeSuccess({
         <TxHash value={txDigest} head={6} tail={4} />
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+      {/* Vertical stack — primary CTA on top, "Share on X" full-width below
+          as a secondary outlined action. Matches the Deploy and Claim
+          success modals so every success surface reads consistently. */}
+      <div className="mt-5 space-y-2">
         {onContinue && (
           <button
             data-cta
@@ -251,7 +267,7 @@ export function ContributeSuccess({
             type="button"
             onClick={onContinue}
             className={cn(
-              "diecut inline-flex h-10 items-center justify-center gap-2 border border-ink bg-ink px-5",
+              "diecut flex h-10 w-full items-center justify-center gap-2 border border-ink bg-ink px-5",
               "font-mono-label text-[11px] text-bone shadow-offset-sm",
               "transition-all duration-200 ease-out hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-offset",
               "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm",
@@ -268,7 +284,7 @@ export function ContributeSuccess({
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex h-10 items-center gap-2 border border-ink/30 px-4",
+            "flex h-10 w-full items-center justify-center gap-2 border border-ink/30 px-4",
             "font-mono-label text-[10px] text-ink/75 transition-colors",
             "hover:border-ink hover:text-ink",
           )}
