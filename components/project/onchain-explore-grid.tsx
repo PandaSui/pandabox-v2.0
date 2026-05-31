@@ -285,8 +285,9 @@ export function OnchainExploreGrid({
 
           {/* On mobile: search takes the full row; sort + count share a
               second row, justified between so the count sits flush right.
-              On lg+: everything collapses back to a single wrap row. */}
-          <div className="flex w-full flex-col gap-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:gap-3">
+              On lg+: the cluster is pinned right on a single no-wrap line
+              (shrink-0) so it never collapses into the category row. */}
+          <div className="flex w-full flex-col gap-2 lg:w-auto lg:shrink-0 lg:flex-row lg:flex-nowrap lg:items-center lg:gap-3">
             <label className="flex items-center gap-2">
               <MonoLabel className="shrink-0 text-[10px]">{t("searchLabel")}</MonoLabel>
               <input
@@ -297,27 +298,44 @@ export function OnchainExploreGrid({
                 }}
                 placeholder={t("searchPlaceholder")}
                 aria-label={t("searchAria")}
-                className="h-9 w-full min-w-0 border border-ink/25 bg-bone px-3 font-mono text-[12px] placeholder:text-ink/30 focus:border-ink focus:outline-none focus:shadow-offset-sm lg:w-56"
+                className="h-9 w-full min-w-0 border border-ink/25 bg-bone px-3 font-mono text-[12px] placeholder:text-ink/30 focus:border-ink focus:outline-none focus:shadow-offset-sm lg:w-52"
               />
             </label>
             <div className="flex items-center justify-between gap-3 lg:justify-start">
               <label className="flex min-w-0 items-center gap-2">
                 <MonoLabel className="shrink-0 text-[10px]">{t("sortLabel")}</MonoLabel>
-                <select
-                  value={sort}
-                  onChange={(e) => {
-                    setSort(e.target.value as Sort);
-                    setShown(PAGE);
-                  }}
-                  aria-label={t("sortAria")}
-                  className="h-9 min-w-0 border border-ink/25 bg-bone px-2 font-mono-label text-[11px] focus:border-ink focus:outline-none focus:shadow-offset-sm"
-                >
-                  {SORTS.map((s) => (
-                    <option key={s.key} value={s.key}>
-                      {tSort(s.labelKey)}
-                    </option>
-                  ))}
-                </select>
+                {/* Native chrome stripped (appearance-none) and replaced with
+                    a custom chevron so the control matches the diecut/mono
+                    inputs around it instead of the OS dropdown. */}
+                <div className="relative inline-flex">
+                  <select
+                    value={sort}
+                    onChange={(e) => {
+                      setSort(e.target.value as Sort);
+                      setShown(PAGE);
+                    }}
+                    aria-label={t("sortAria")}
+                    className="h-9 w-full min-w-0 cursor-pointer appearance-none border border-ink/25 bg-bone pl-2.5 pr-7 font-mono-label text-[11px] focus:border-ink focus:outline-none focus:shadow-offset-sm"
+                  >
+                    {SORTS.map((s) => (
+                      <option key={s.key} value={s.key}>
+                        {tSort(s.labelKey)}
+                      </option>
+                    ))}
+                  </select>
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 24 24"
+                    className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-ink/55"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
               </label>
               <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
                 {filtered.length}/{projects.length}
