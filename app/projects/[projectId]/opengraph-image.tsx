@@ -24,21 +24,39 @@ export const alt = "Pandabox project — programmable funding on Sui.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+// Revalidate on the same cadence as the project page. Without this the OG
+// route is cached as a static asset and freezes at first-render data — so the
+// card keeps showing a stale raised amount / percentage long after the page
+// itself has moved on (e.g. "20 SUI · 1%" while the project is really at
+// "220 SUI · 11%"). 30s matches `page.tsx` and the `cachedHydrated` reader.
+export const revalidate = 30;
+
+// Public IPFS gateways tried, in order, when the configured gateway can't
+// serve the cover. The default public Pinata gateway aggressively rate-limits
+// server-side requests (returns HTTP 429 under OG-crawler load), which is the
+// usual reason a cover box renders blank. Because IPFS is content-addressed,
+// every gateway returns byte-identical content for a given CID, so retrying
+// the same CID elsewhere is safe.
+const FALLBACK_IPFS_GATEWAYS = [
+  "https://ipfs.io/ipfs",
+  "https://dweb.link/ipfs",
+  "https://nftstorage.link/ipfs",
+];
+
 /**
- * Fetch a remote cover and inline it as a base64 data URL.
+ * Fetch one URL and, if it's a Satori-decodable raster image, return it as a
+ * base64 data URL. Returns null on any failure (non-OK, wrong format, timeout)
+ * so the caller can try the next candidate.
  *
- * Satori (next/og) can fetch remote `<img src>` itself, but that path is
- * fragile here: the default public IPFS gateway is aggressively rate-limited
- * for server-side requests, and a slow/404/non-raster response yields a
- * silently-blank box rather than a thrown error. Pulling the bytes ourselves
- * lets us (a) cap the wait, (b) verify it's actually a raster image Satori can
- * decode (PNG/JPEG/GIF — not SVG/WebP/AVIF), and (c) fall back cleanly to the
- * "NO COVER" placeholder when any of that fails.
+ * Satori (next/og) only decodes PNG/JPEG/GIF — SVG/WebP/AVIF render blank — so
+ * we gate on content-type. We also pull the bytes ourselves (rather than let
+ * Satori fetch the remote `<img src>`) to cap the wait and avoid its
+ * silently-blank-on-failure behavior.
  */
-async function loadCoverDataUrl(url: string): Promise<string | null> {
+async function fetchRasterDataUrl(url: string): Promise<string | null> {
   if (!url) return null;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 4500);
+  const timeout = setTimeout(() => controller.abort(), 4000);
   try {
     const res = await fetch(url, {
       signal: controller.signal,
@@ -50,7 +68,6 @@ async function loadCoverDataUrl(url: string): Promise<string | null> {
       .split(";")[0]
       .trim()
       .toLowerCase();
-    // Satori only decodes these raster formats; SVG/WebP/AVIF render blank.
     if (!["image/png", "image/jpeg", "image/jpg", "image/gif"].includes(type)) {
       return null;
     }
@@ -65,6 +82,32 @@ async function loadCoverDataUrl(url: string): Promise<string | null> {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+/**
+ * Resolve a project cover to an inline data URL, resilient to a throttled
+ * primary gateway. Tries the configured gateway URL first, then — when we have
+ * a CID — the same CID on public fallback gateways before giving up to the
+ * "NO COVER" placeholder.
+ */
+async function loadCoverDataUrl(
+  ref: { blobId: string; url: string } | null,
+  rawUrl: string,
+): Promise<string | null> {
+  const candidates: string[] = [];
+  if (ref?.url) candidates.push(ref.url);
+  if (ref?.blobId) {
+    for (const gw of FALLBACK_IPFS_GATEWAYS) {
+      candidates.push(`${gw}/${ref.blobId}`);
+    }
+  }
+  if (rawUrl && !candidates.includes(rawUrl)) candidates.push(rawUrl);
+
+  for (const candidate of candidates) {
+    const dataUrl = await fetchRasterDataUrl(candidate);
+    if (dataUrl) return dataUrl;
+  }
+  return null;
 }
 
 // Bone-on-ink palette, mirroring globals.css.
@@ -180,8 +223,8 @@ export default async function Image({
   const categoryAccent: AccentKey = CATEGORY_ACCENT[rawCategory] ?? "saffron";
 
   const tagline = (project.details?.tagline ?? "").trim();
-  const coverUrl = resolveBlobRef(project.iconUrl)?.url ?? project.iconUrl ?? "";
-  const coverDataUrl = await loadCoverDataUrl(coverUrl);
+  const coverRef = resolveBlobRef(project.iconUrl);
+  const coverDataUrl = await loadCoverDataUrl(coverRef, project.iconUrl ?? "");
 
   return new ImageResponse(
     (
