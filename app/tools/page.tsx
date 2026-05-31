@@ -97,7 +97,9 @@ export default async function ToolsPage() {
           <Container className="py-10 md:py-14">
             {/* Sub-eyebrow — the same pattern as /explore's filter band */}
             <div className="mb-8 flex flex-wrap items-center gap-3 md:mb-10">
-              <MonoLabel className="text-ink/55">{t("sectionAvailable")}</MonoLabel>
+              <MonoLabel className="text-ink/55">
+                {t("sectionAvailable")}
+              </MonoLabel>
               <span aria-hidden className="h-px flex-1 bg-ink/10" />
               <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/40">
                 {t("sectionAvailableSpec")}
@@ -162,13 +164,16 @@ export default async function ToolsPage() {
               </p>
             </div>
             <a
-              href="https://github.com/pandabox-sui/pandabox/issues/new?labels=tool-suggestion"
+              href="https://discord.gg/P6J99uXnnp"
               target="_blank"
               rel="noreferrer"
               className="group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-saffron px-6 font-sans text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink shadow-offset-sm transition-all duration-300 ease-atelier hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset"
             >
               <span>{t("suggestCta")}</span>
-              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[2px]">
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-[2px]"
+              >
                 ↗
               </span>
             </a>
