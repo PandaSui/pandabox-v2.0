@@ -37,7 +37,7 @@ export const StepIdentity = z.object({
   coverImage: z.string().trim().min(1, "Add a cover image"),
   /** CID of the pinned cover image. */
   coverImageCid: z.string().trim().optional().or(z.literal("")),
-  twitter: z.string().trim().max(40).optional().or(z.literal("")),
+  twitter: z.string().trim().max(120).optional().or(z.literal("")),
   website: z.string().trim().max(120).optional().or(z.literal("")),
   discord: z.string().trim().max(120).optional().or(z.literal("")),
 });
@@ -101,8 +101,8 @@ export const StepSale = z.object({
   allocationTokens: z
     .string()
     .regex(/^\d+(\.\d+)?$/, "Use a positive number"),
-  /** Sale end time in unix ms. null = no time cap (admin-closed only). */
-  endTimeMs: z.number().int().nullable(),
+  /** Sale end time in unix ms. null/undefined = no time cap (admin-closed only). */
+  endTimeMs: z.number().int().nullish(),
   unsoldAction: z.enum(UNSOLD_ACTIONS),
 });
 
