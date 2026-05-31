@@ -4,6 +4,7 @@ import { Footer } from "@/components/blocks";
 import { Container } from "@/components/primitives/container";
 import { AccentRule } from "@/components/primitives/accent-rule";
 import { MonoLabel } from "@/components/primitives/mono-label";
+import { AdminProvider } from "@/components/admin/admin-context";
 import { AdminGate } from "@/components/admin/admin-gate";
 import { PlatformStatePanel } from "@/components/admin/platform-state-panel";
 import { ProjectModerationTable } from "@/components/admin/project-moderation-table";
@@ -75,19 +76,21 @@ export default async function AdminPage() {
           </Container>
         </section>
 
-        <AdminGate>
-          <Container className="space-y-8 py-10">
-            {platform ? (
-              <PlatformStatePanel stats={platform} />
-            ) : (
-              <PlatformReadFailure />
-            )}
+        <AdminProvider>
+          <AdminGate protocol="pandabox">
+            <Container className="space-y-8 py-10">
+              {platform ? (
+                <PlatformStatePanel stats={platform} />
+              ) : (
+                <PlatformReadFailure />
+              )}
 
-            <ProjectModerationTable projects={projects} />
+              <ProjectModerationTable projects={projects} />
 
-            <TransferAdminCard />
-          </Container>
-        </AdminGate>
+              <TransferAdminCard />
+            </Container>
+          </AdminGate>
+        </AdminProvider>
 
         <Footer />
       </main>

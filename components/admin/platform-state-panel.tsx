@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  useSignAndExecuteTransaction,
-  useSuiClient,
-} from "@mysten/dapp-kit";
 import { ArrowDiag, Modal } from "@pandasui/ui";
 import BigNumber from "bignumber.js";
 import { cn } from "@pandasui/ui/lib";
@@ -20,18 +16,17 @@ import {
   IS_DEPLOYED,
 } from "@/lib/contracts/pandabox";
 import type { PlatformStats } from "@/lib/platform";
-import { useAdmin } from "./admin-gate";
-
-const ACTION_CTA =
-  "group relative inline-flex items-center justify-center gap-2 h-10 px-4 font-medium uppercase tracking-[0.12em] text-[0.72rem] " +
-  "border border-ink shadow-offset-sm transition-all duration-300 ease-atelier " +
-  "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset " +
-  "active:translate-x-0 active:translate-y-0 active:shadow-offset-sm " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bone focus-visible:ring-ink " +
-  "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-offset-sm";
-
-const MIST = 1_000_000_000n;
-const MAX_FEE_BPS = 10_000;
+import {
+  formatBps,
+  formatRelative,
+  formatSui,
+  shortMid,
+  clampBig,
+  MAX_FEE_BPS,
+} from "@/lib/admin/format";
+import { useProtocolAdmin } from "./admin-context";
+import { useAdminTx } from "./use-admin-tx";
+import { ADMIN_CTA, Success, ErrorBanner, ModalFooter } from "./shared";
 
 type Action = "pause" | "fee" | "treasury" | "withdraw";
 
@@ -50,44 +45,11 @@ type TxState =
  */
 export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
   const router = useRouter();
-  const client = useSuiClient();
-  const { capId } = useAdmin();
-  const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const { capId } = useProtocolAdmin("pandabox");
+  const { state: tx, busy, run, reset } = useAdminTx<Action>({
+    deployed: IS_DEPLOYED,
+  });
   const [open, setOpen] = useState<Action | null>(null);
-  const [tx, setTx] = useState<TxState>({ kind: "idle" });
-
-  const busy = tx.kind === "submitting";
-
-  const execute = async <T,>(
-    action: Action,
-    build: () => Parameters<typeof signAndExecute>[0]["transaction"],
-  ): Promise<T | undefined> => {
-    setTx({ kind: "submitting", action });
-    try {
-      if (!IS_DEPLOYED) {
-        await new Promise((r) => setTimeout(r, 500));
-        setTx({
-          kind: "success",
-          action,
-          digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
-        });
-        return;
-      }
-      const result = await signAndExecute({ transaction: build() });
-      setTx({ kind: "success", action, digest: result.digest });
-      // Re-fetch the server-rendered Platform stats once the tx is indexed.
-      await client.waitForTransaction({ digest: result.digest });
-      router.refresh();
-      return undefined;
-    } catch (err) {
-      setTx({
-        kind: "error",
-        action,
-        message: err instanceof Error ? err.message : "Transaction failed.",
-      });
-      return undefined;
-    }
-  };
 
   return (
     <section className="border border-ink bg-bone shadow-offset-sm">
@@ -141,9 +103,9 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
         <button
           type="button"
           onClick={() => {
-            setTx({ kind: "idle" });
+            reset();
             if (stats.paused) {
-              void execute("pause", () =>
+              void run("pause", () =>
                 buildPlatformUnpauseTx({ platformAdminCapId: capId }),
               );
             } else {
@@ -152,7 +114,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           }}
           disabled={busy}
           className={cn(
-            ACTION_CTA,
+            ADMIN_CTA,
             stats.paused
               ? "bg-jade text-bone border-jade"
               : "bg-bone text-poppy border-poppy",
@@ -172,33 +134,33 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
         <button
           type="button"
           onClick={() => {
-            setTx({ kind: "idle" });
+            reset();
             setOpen("fee");
           }}
           disabled={busy}
-          className={cn(ACTION_CTA, "bg-bone text-ink")}
+          className={cn(ADMIN_CTA, "bg-bone text-ink")}
         >
           <span>Update fee bps</span>
         </button>
         <button
           type="button"
           onClick={() => {
-            setTx({ kind: "idle" });
+            reset();
             setOpen("treasury");
           }}
           disabled={busy}
-          className={cn(ACTION_CTA, "bg-bone text-ink")}
+          className={cn(ADMIN_CTA, "bg-bone text-ink")}
         >
           <span>Set treasury address</span>
         </button>
         <button
           type="button"
           onClick={() => {
-            setTx({ kind: "idle" });
+            reset();
             setOpen("withdraw");
           }}
           disabled={busy || BigInt(stats.feeTreasuryMist) === 0n}
-          className={cn(ACTION_CTA, "bg-saffron text-ink")}
+          className={cn(ADMIN_CTA, "bg-saffron text-ink")}
         >
           <span>Withdraw fees</span>
           <ArrowDiag size={12} />
@@ -232,7 +194,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           danger
           onClose={() => setOpen(null)}
           onSubmit={() =>
-            execute("pause", () =>
+            run("pause", () =>
               buildPlatformPauseTx({ platformAdminCapId: capId }),
             )
           }
@@ -246,7 +208,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           busy={busy}
           onClose={() => setOpen(null)}
           onSubmit={(newBps) =>
-            execute("fee", () =>
+            run("fee", () =>
               buildUpdateFeeBpsTx({ platformAdminCapId: capId, newBps }),
             )
           }
@@ -260,7 +222,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           busy={busy}
           onClose={() => setOpen(null)}
           onSubmit={(addr) =>
-            execute("treasury", () =>
+            run("treasury", () =>
               buildSetTreasuryAddressTx({
                 platformAdminCapId: capId,
                 newAddress: addr,
@@ -278,7 +240,7 @@ export function PlatformStatePanel({ stats }: { stats: PlatformStats }) {
           busy={busy}
           onClose={() => setOpen(null)}
           onSubmit={(amountMist) =>
-            execute("withdraw", () =>
+            run("withdraw", () =>
               buildWithdrawPlatformFeesTx({
                 platformAdminCapId: capId,
                 amountMist,
@@ -452,7 +414,7 @@ function WithdrawModal({
   const [input, setInput] = useState(maxSui.toFixed(4));
   const bn = new BigNumber(input || "0");
   const amountMist = bn.isFinite() && bn.gt(0)
-    ? clamp(
+    ? clampBig(
         BigInt(bn.multipliedBy(1e9).integerValue(BigNumber.ROUND_DOWN).toFixed(0)),
         maxMist,
       )
@@ -562,79 +524,6 @@ function ConfirmModal({
 
 /* ─────────────────────── Small UI helpers ─────────────────────── */
 
-function Success({
-  digest,
-  label,
-  body,
-}: {
-  digest: string;
-  label: string;
-  body: string;
-}) {
-  return (
-    <div className="space-y-3 text-xs">
-      <div className="border border-jade/40 bg-jade/[0.06] px-3 py-3 text-jade">
-        <span className="font-mono-label text-[11px]">{label}</span>
-        <p className="mt-1 text-ink/75">{body}</p>
-      </div>
-      <p className="break-all font-mono text-[11px] text-ink/55">
-        digest · {digest}
-      </p>
-    </div>
-  );
-}
-
-function ErrorBanner({ message }: { message: string }) {
-  return (
-    <p
-      role="alert"
-      className="border border-poppy/40 bg-poppy/[0.06] px-3 py-2 font-mono text-[11px] text-poppy"
-    >
-      {message}
-    </p>
-  );
-}
-
-function ModalFooter({
-  busy,
-  primary,
-  onCancel,
-  onConfirm,
-  danger = false,
-  disabled = false,
-}: {
-  busy: boolean;
-  primary: string;
-  onCancel: () => void;
-  onConfirm: () => void;
-  danger?: boolean;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="flex justify-end gap-2 border-t border-ink/10 pt-3">
-      <button
-        type="button"
-        onClick={onCancel}
-        disabled={busy}
-        className={cn(ACTION_CTA, "bg-bone text-ink")}
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        onClick={onConfirm}
-        disabled={busy || disabled}
-        className={cn(
-          ACTION_CTA,
-          danger ? "bg-poppy text-bone border-poppy" : "bg-saffron text-ink",
-        )}
-      >
-        {primary}
-      </button>
-    </div>
-  );
-}
-
 function Stat({
   label,
   value,
@@ -657,33 +546,3 @@ function Stat({
   );
 }
 
-function clamp(v: bigint, max: bigint): bigint {
-  return v > max ? max : v;
-}
-
-function formatBps(bps: number): string {
-  return (bps / 100).toFixed(2);
-}
-
-function formatSui(mist: bigint): string {
-  const n = Number(mist) / 1e9;
-  if (!isFinite(n)) return "—";
-  if (n >= 1_000_000) return (n / 1e6).toFixed(2) + "M";
-  if (n >= 1_000) return (n / 1e3).toFixed(2) + "K";
-  if (n >= 1) return n.toFixed(4);
-  if (n === 0) return "0";
-  return n.toFixed(6);
-}
-
-function formatRelative(ms: number): string {
-  const diff = Date.now() - ms;
-  if (diff < 60_000) return "just now";
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
-  return `${Math.floor(diff / 3_600_000)}h ago`;
-}
-
-function shortMid(s: string): string {
-  if (!s) return "—";
-  if (s.length <= 22) return s;
-  return `${s.slice(0, 12)}…${s.slice(-6)}`;
-}

@@ -1,11 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  useSignAndExecuteTransaction,
-  useSuiClient,
-} from "@mysten/dapp-kit";
 import { Modal } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
@@ -13,19 +8,14 @@ import {
   buildTransferPlatformAdminTx,
   IS_DEPLOYED,
 } from "@/lib/contracts/pandabox";
-import { useAdmin } from "./admin-gate";
+import { useProtocolAdmin } from "./admin-context";
+import { useAdminTx } from "./use-admin-tx";
 
 const ACTION_CTA =
   "inline-flex h-10 items-center justify-center gap-2 border px-4 font-mono-label text-[10px] " +
   "shadow-offset-sm transition-all duration-300 ease-atelier " +
   "hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-offset " +
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0";
-
-type TxState =
-  | { kind: "idle" }
-  | { kind: "submitting" }
-  | { kind: "success"; digest: string }
-  | { kind: "error"; message: string };
 
 /**
  * Hand the PlatformAdminCap to another address. Cap is consumed by-value on
@@ -34,51 +24,33 @@ type TxState =
  * confirmation and a recipient prefix-mismatch warning.
  */
 export function TransferAdminCard() {
-  const { capId, refresh } = useAdmin();
-  const router = useRouter();
-  const client = useSuiClient();
-  const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
+  const { capId, refresh } = useProtocolAdmin("pandabox");
+  const { state, busy, run, reset } = useAdminTx<"transfer">({
+    deployed: IS_DEPLOYED,
+  });
 
   const [open, setOpen] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [state, setState] = useState<TxState>({ kind: "idle" });
 
   const trimmed = recipient.trim();
   const validAddr = /^0x[0-9a-fA-F]{1,64}$/.test(trimmed);
   const phrase = "transfer admin";
   const phraseOk = confirm.trim().toLowerCase() === phrase;
-  const busy = state.kind === "submitting";
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     if (!validAddr || !phraseOk) return;
-    setState({ kind: "submitting" });
-    try {
-      if (!IS_DEPLOYED) {
-        await new Promise((r) => setTimeout(r, 500));
-        setState({
-          kind: "success",
-          digest: "SIMULATED" + Date.now().toString(36).toUpperCase(),
-        });
-        return;
-      }
-      const tx = buildTransferPlatformAdminTx({
-        platformAdminCapId: capId,
-        recipient: trimmed,
-      });
-      const result = await signAndExecute({ transaction: tx });
-      setState({ kind: "success", digest: result.digest });
-      await client.waitForTransaction({ digest: result.digest });
-      // The current wallet no longer holds the cap — push the gate to re-eval
-      // and bounce the page so the post-transfer state renders correctly.
-      refresh();
-      router.refresh();
-    } catch (err) {
-      setState({
-        kind: "error",
-        message: err instanceof Error ? err.message : "Transaction failed.",
-      });
-    }
+    // The current wallet loses the cap on success — re-run cap detection so
+    // the gate flips to its post-transfer (not-authorized) state.
+    void run(
+      "transfer",
+      () =>
+        buildTransferPlatformAdminTx({
+          platformAdminCapId: capId,
+          recipient: trimmed,
+        }),
+      { afterSuccess: refresh },
+    );
   };
 
   return (
@@ -113,7 +85,7 @@ export function TransferAdminCard() {
           <button
             type="button"
             onClick={() => {
-              setState({ kind: "idle" });
+              reset();
               setRecipient("");
               setConfirm("");
               setOpen(true);

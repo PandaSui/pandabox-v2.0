@@ -62,7 +62,7 @@ export function ProjectModerationTable({
 }) {
   const router = useRouter();
   const client = useSuiClient();
-  const { capId } = useAdmin();
+  const { capId, preview } = useAdmin();
   const { mutateAsync: signAndExecute } = useSignAndExecuteTransaction();
 
   const [filter, setFilter] = useState<Filter>("all");
@@ -87,6 +87,15 @@ export function ProjectModerationTable({
   const execute = async (pending: Pending) => {
     const p = projects.find((x) => x.id === pending.projectId);
     if (!p) return;
+    if (preview) {
+      setTx({
+        kind: "error",
+        pending,
+        message:
+          "Read-only preview — connect the wallet that holds the PlatformAdminCap to sign.",
+      });
+      return;
+    }
     setTx({ kind: "submitting", pending });
     try {
       const build = () => {

@@ -110,9 +110,11 @@ export type CreateProjectArgs = {
    */
   projectDetailsBlobId: string;
   /**
-   * Tokens issued per 1 SUI of contribution, scaled to coin's 9 decimals.
-   * Example: 100 tokens-per-SUI → base_rate = 100 × 10^9 = 100_000_000_000n.
-   * Caller supplies the already-scaled u64.
+   * Issuance rate. The Move contract computes `tokens_raw = mist * base_rate`
+   * with no decimal divisor, so `base_rate` is "raw token units per mist of
+   * SUI" — which numerically equals "display tokens per 1 SUI" because SUI
+   * and the project coin are both 9-decimal. Caller passes the unscaled
+   * integer: 100 tokens-per-SUI → `base_rate = 100n`.
    */
   baseRate: bigint;
   /**
