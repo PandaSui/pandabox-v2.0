@@ -15,6 +15,17 @@ type Sort = "trending" | "newest" | "most-funded" | "ending-soonest";
 type Status = "all" | "live" | "ended";
 type CategoryFilter = Category | "all";
 
+// A project deployed with no time cap has `end_time_ms = Option::none`, which
+// hydrates to `endTimeMs === 0`. Such a project can ONLY end via its on-chain
+// status (closed/compromised), never by the clock — so guard every clock
+// comparison with `endTimeMs > 0`, matching contribute-panel / admin table.
+function endedByTime(p: { endTimeMs: number }, now: number) {
+  return p.endTimeMs > 0 && now >= p.endTimeMs;
+}
+function liveNow(p: { status: string; endTimeMs: number }, now: number) {
+  return p.status === "live" && !endedByTime(p, now);
+}
+
 const SORTS: { key: Sort; labelKey: "trending" | "newest" | "mostFunded" | "endingSoonest" }[] = [
   { key: "trending", labelKey: "trending" },
   { key: "newest", labelKey: "newest" },
@@ -82,8 +93,8 @@ export function OnchainExploreGrid({
     const now = Date.now();
     const q = deferredQuery.trim().toLowerCase();
     let list = projects.slice();
-    if (status === "live") list = list.filter((p) => p.status === "live" && now < p.endTimeMs);
-    else if (status === "ended") list = list.filter((p) => p.status !== "live" || now >= p.endTimeMs);
+    if (status === "live") list = list.filter((p) => liveNow(p, now));
+    else if (status === "ended") list = list.filter((p) => !liveNow(p, now));
     if (category !== "all") {
       list = list.filter((p) => p.details?.category === category);
     }
@@ -97,8 +108,7 @@ export function OnchainExploreGrid({
         );
       });
     }
-    const isLive = (p: HydratedProject) =>
-      p.status === "live" && now < p.endTimeMs;
+    const isLive = (p: HydratedProject) => liveNow(p, now);
     list.sort((a, b) => {
       // Live always ranks above ended/closed, regardless of the chosen sort —
       // when the status filter is "all" (the default), live work should still
@@ -146,9 +156,9 @@ export function OnchainExploreGrid({
     const q = deferredQuery.trim().toLowerCase();
     let base = projects.slice();
     if (status === "live")
-      base = base.filter((p) => p.status === "live" && now < p.endTimeMs);
+      base = base.filter((p) => liveNow(p, now));
     else if (status === "ended")
-      base = base.filter((p) => p.status !== "live" || now >= p.endTimeMs);
+      base = base.filter((p) => !liveNow(p, now));
     if (q.length > 0) {
       base = base.filter((p) => {
         const slug = lastSegment(p.tokenType).toLowerCase();

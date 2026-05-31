@@ -89,20 +89,22 @@ export function OnchainProjectCard({
   const pct = Math.min(100, Math.max(0, pctBp / 100));
 
   const now = Date.now();
-  // `endTimeMs === 0` means the sale is open-ended (no time cap). Guard for it
-  // so an open-ended live sale isn't read as "ended" the way `now > 0` would —
-  // this matches the detail page's status logic exactly.
-  const hasEnd = project.endTimeMs > 0;
-  const ended = hasEnd && now > project.endTimeMs;
+  // A project with no time cap hydrates to endTimeMs === 0 (Option::none on
+  // chain). It can only end via on-chain status, never by the clock — so the
+  // `> 0` guard is required, or every open-ended sale reads as already ended.
+  const hasDeadline = project.endTimeMs > 0;
+  const ended = hasDeadline && now > project.endTimeMs;
   const live = project.status === "live" && !ended;
   const msLeft = project.endTimeMs - now;
-  const urgent = live && hasEnd && msLeft > 0 && msLeft < URGENCY_MS;
+  const urgent = live && hasDeadline && msLeft > 0 && msLeft < URGENCY_MS;
   const tokenSlug = shortTokenSlug(project.tokenType);
 
   useGSAP(
     () => {
       if (!scope.current) return;
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
       // Continuous live-dot pulse — slower + softer than a CSS keyframe so
       // it doesn't compete with the Treasury Pulse on the page.
@@ -124,13 +126,18 @@ export function OnchainProjectCard({
 
       // Reversible hover choreography — one timeline, paused at 0.
       const disc = scope.current.querySelector<HTMLElement>("[data-disc]");
-      const cover = scope.current.querySelector<HTMLElement>("[data-cover-tint]");
-      const coverImg = scope.current.querySelector<HTMLElement>("[data-cover-img]");
+      const cover =
+        scope.current.querySelector<HTMLElement>("[data-cover-tint]");
+      const coverImg =
+        scope.current.querySelector<HTMLElement>("[data-cover-img]");
       const arrow = scope.current.querySelector<HTMLElement>("[data-arrow]");
       const ring = scope.current.querySelector<HTMLElement>("[data-disc-ring]");
 
       const hover = gsap
-        .timeline({ paused: true, defaults: { ease: "power3.out", duration: 0.4 } })
+        .timeline({
+          paused: true,
+          defaults: { ease: "power3.out", duration: 0.4 },
+        })
         .to(disc, { scale: 1.05 }, 0)
         .to(cover, { opacity: 1 }, 0)
         .to(coverImg, { scale: 1.35, opacity: 0.8 }, 0)
@@ -231,8 +238,13 @@ export function OnchainProjectCard({
               className="inline-flex items-center gap-1 border border-poppy/60 bg-poppy/15 px-2 py-1 backdrop-blur-[2px]"
               title={t("legacyHint")}
             >
-              <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
-              <MonoLabel className="text-[9px] text-poppy">{t("legacy")}</MonoLabel>
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full bg-poppy"
+              />
+              <MonoLabel className="text-[9px] text-poppy">
+                {t("legacy")}
+              </MonoLabel>
             </span>
           )}
 
@@ -318,7 +330,10 @@ export function OnchainProjectCard({
           <h3 className="truncate text-base font-medium leading-tight tracking-tight text-ink group-hover:underline group-hover:underline-offset-4">
             {project.name || t("unnamed")}
           </h3>
-          <span data-arrow className="inline-block shrink-0 text-ink/30 group-hover:text-ink">
+          <span
+            data-arrow
+            className="inline-block shrink-0 text-ink/30 group-hover:text-ink"
+          >
             <ArrowGlyph />
           </span>
         </div>
@@ -363,10 +378,9 @@ export function OnchainProjectCard({
           </div>
         </div>
 
-        {/* Time-pressure cue — poppy when <24h to nudge urgency. Open-ended
-            sales have no end timestamp, so show the "no cap" label rather than
-            feeding 0 into RelativeTime (which would read as a 1970 date). */}
-        {hasEnd ? (
+        {/* Time-pressure cue — poppy when <24h to nudge urgency. Only shown
+            when the sale has a time cap; open-ended sales have no countdown. */}
+        {hasDeadline && (
           <div
             className={cn(
               "mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] lowercase",
@@ -374,7 +388,10 @@ export function OnchainProjectCard({
             )}
           >
             {urgent && (
-              <span aria-hidden className="block h-1 w-1 rounded-full bg-poppy" />
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full bg-poppy"
+              />
             )}
             {ended ? t("endedAt") : t("endsNow")}
             <RelativeTime
@@ -384,10 +401,6 @@ export function OnchainProjectCard({
                 urgent ? "text-poppy" : "text-ink/70",
               )}
             />
-          </div>
-        ) : (
-          <div className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] lowercase text-ink/55">
-            {t("noEnd")}
           </div>
         )}
       </Link>

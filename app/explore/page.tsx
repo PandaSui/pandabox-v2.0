@@ -22,10 +22,12 @@ export const revalidate = 60;
 
 export default async function ExplorePage() {
   const projects = await getHydratedOnchainProjects();
-  // Open-ended sales have `endTimeMs === 0`; they're live until closed, so
-  // only apply the time check when an end timestamp is actually set.
+  // endTimeMs === 0 means no time cap (Option::none on chain) — such a sale is
+  // live purely by status, so guard the clock check with `> 0` or open-ended
+  // projects are wrongly dropped from the live count.
+  const now = Date.now();
   const liveNow = projects.filter(
-    (p) => p.status === "live" && (p.endTimeMs === 0 || Date.now() < p.endTimeMs),
+    (p) => p.status === "live" && (p.endTimeMs === 0 || now < p.endTimeMs),
   ).length;
   const t = await getTranslations("explore");
 
