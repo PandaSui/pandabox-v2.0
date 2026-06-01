@@ -17,7 +17,11 @@ import { PriceChart } from "@/components/project/price-chart";
 import { SharePill } from "@/components/project/share-pill";
 import { DetailFundingMeter } from "@/components/project/detail-funding-meter";
 import { getOnchainProject, type HydratedProject } from "@/lib/projects";
-import { getProjectActivity, type ActivityItem } from "@/lib/activity";
+import {
+  getProjectActivity,
+  getProjectSupporterCount,
+  type ActivityItem,
+} from "@/lib/activity";
 import { PROJECT_COIN_DECIMALS, UnsoldAction } from "@/lib/contracts/pandabox";
 import { hasValidParams } from "@/lib/project-health";
 import type { Accent } from "@/types/pandabox";
@@ -94,9 +98,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { projectId } = await params;
-  const [project, activity, t, tExplore] = await Promise.all([
+  const [project, activity, supporterCount, t, tExplore] = await Promise.all([
     getOnchainProject(projectId),
     getProjectActivity(projectId, 25),
+    getProjectSupporterCount(projectId),
     getTranslations("project.detail"),
     getTranslations("explore"),
   ]);
@@ -252,7 +257,12 @@ export default async function ProjectPage({ params }: Props) {
               </div>
 
               {/* Supporter strip — social proof, even when empty */}
-              <SupporterStrip activity={activity} t={t} />
+              <SupporterStrip
+                count={supporterCount}
+                activity={activity}
+                live={live}
+                t={t}
+              />
 
               {/* 3-cell stat strip — the three items that change the click decision */}
               <div className="mt-6 grid grid-cols-3 border border-ink/15">
@@ -443,18 +453,33 @@ type ProjectDetailT = (
   values?: Record<string, string | number>,
 ) => string;
 
+/**
+ * Supporter social-proof strip.
+ *
+ * `count` is the authoritative total of unique supporters, read from the
+ * project's full `Contributed` history — not the recent-activity window, which
+ * caps at ~300 module-wide events and reports zero for a finalized sale whose
+ * contributions have aged out. We show that total whenever there are
+ * supporters. The "last by … · 2h ago" recency tail is only appended for a
+ * *live* sale (and only when recent activity actually surfaced a contribution);
+ * a closed sale shows the stable total alone, which is what matters once the
+ * sale is over.
+ */
 function SupporterStrip({
+  count,
   activity,
+  live,
   t,
 }: {
+  count: number;
   activity: ActivityItem[];
+  live: boolean;
   t: ProjectDetailT;
 }) {
-  const contributions = activity.filter((a) => a.kind === "contribute");
-  const count = contributions.length;
-  const last = contributions[0];
-
   if (count === 0) {
+    // Only invite a first backer while the sale can still take one. A closed
+    // sale with no supporters shows nothing rather than "be the first".
+    if (!live) return null;
     return (
       <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-ink/55">
         <span
@@ -468,41 +493,55 @@ function SupporterStrip({
     );
   }
 
-  const sinceMs = Date.now() - last.timestampMs;
-  const rel =
-    sinceMs < 60_000
-      ? t("justNow")
-      : sinceMs < 3_600_000
-        ? t("agoMinutes", { n: Math.floor(sinceMs / 60_000) })
-        : sinceMs < 86_400_000
-          ? t("agoHours", { n: Math.floor(sinceMs / 3_600_000) })
-          : t("agoDays", { n: Math.floor(sinceMs / 86_400_000) });
+  const label =
+    count === 1
+      ? t("supporterOne", { count })
+      : t("supporterOther", { count });
+
+  // Recency tail — live sales only.
+  const last = live
+    ? activity.find((a) => a.kind === "contribute")
+    : undefined;
 
   return (
     <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-ink/55">
       <span
         aria-hidden
-        className="block h-1.5 w-1.5 rounded-full bg-jade"
-        style={{ animation: "stat-live-dot 1.4s ease-in-out infinite" }}
+        className={cn("block h-1.5 w-1.5 rounded-full bg-jade")}
+        style={
+          live
+            ? { animation: "stat-live-dot 1.4s ease-in-out infinite" }
+            : undefined
+        }
       />
-      <span className="lowercase">
-        {count === 1
-          ? t("supporterOne", { count })
-          : t("supporterOther", { count })}
-      </span>
-      <span aria-hidden className="text-ink/20">
-        ·
-      </span>
-      <span className="lowercase">{t("lastBy")}</span>
-      <span className="font-mono tabular-nums text-ink/70">
-        {shortAddr(last.actor)}
-      </span>
-      <span aria-hidden className="text-ink/20">
-        ·
-      </span>
-      <span className="lowercase">{rel}</span>
+      <span className="lowercase">{label}</span>
+      {last && (
+        <>
+          <span aria-hidden className="text-ink/20">
+            ·
+          </span>
+          <span className="lowercase">{t("lastBy")}</span>
+          <span className="font-mono tabular-nums text-ink/70">
+            {shortAddr(last.actor)}
+          </span>
+          <span aria-hidden className="text-ink/20">
+            ·
+          </span>
+          <span className="lowercase">{relativeTime(last.timestampMs, t)}</span>
+        </>
+      )}
     </div>
   );
+}
+
+function relativeTime(timestampMs: number, t: ProjectDetailT): string {
+  const sinceMs = Date.now() - timestampMs;
+  if (sinceMs < 60_000) return t("justNow");
+  if (sinceMs < 3_600_000)
+    return t("agoMinutes", { n: Math.floor(sinceMs / 60_000) });
+  if (sinceMs < 86_400_000)
+    return t("agoHours", { n: Math.floor(sinceMs / 3_600_000) });
+  return t("agoDays", { n: Math.floor(sinceMs / 86_400_000) });
 }
 
 function shortAddr(addr: string): string {

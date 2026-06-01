@@ -176,3 +176,71 @@ export async function getProjectActivity(
 ): Promise<ActivityItem[]> {
   return deserialize(await cached(projectId, limit));
 }
+
+/* ─────────────────────────── Supporter count ─────────────────────────── */
+
+/**
+ * Count a project's total unique supporters across its *full* `Contributed`
+ * history, deduped by contributor address.
+ *
+ * Why this exists separately from `getProjectActivity`: the activity reader
+ * caps at ~300 module-wide events to keep a page render fast, so an older or
+ * finalized sale surfaces zero recent contributions even though it raised
+ * 100%. That made the project page show "be the first to back this project" on
+ * a sold-out sale. This pages the `Contributed` event type directly and counts
+ * distinct contributors so the page can show a real supporter total once a
+ * sale is closed.
+ *
+ * v1 indexer limitation: JSON-RPC can't filter events on payload fields, so we
+ * page platform-wide `Contributed` events descending and match on
+ * `project_id`. Bounded to `maxPages` — fine for a recently-closed sale (its
+ * events are near the top) and for testnet volume; a real indexer (CLAUDE.md
+ * §8) replaces this for large histories.
+ */
+async function readSupporterCountOnchain(projectId: string): Promise<number> {
+  if (!IS_DEPLOYED) return 0;
+
+  const seen = new Set<string>();
+  let cursor: { txDigest: string; eventSeq: string } | null = null;
+  const maxPages = 20;
+
+  for (let page = 0; page < maxPages; page++) {
+    const res = await client().queryEvents({
+      query: { MoveEventType: CONTRIBUTED },
+      cursor,
+      limit: 50,
+      order: "descending",
+    });
+
+    for (const ev of res.data) {
+      const json = ev.parsedJson as Record<string, unknown>;
+      if (String(json.project_id ?? "") !== projectId) continue;
+      const contributor = String(json.contributor ?? "");
+      if (contributor) seen.add(contributor);
+    }
+
+    if (!res.hasNextPage || !res.nextCursor) break;
+    cursor = res.nextCursor;
+  }
+
+  return seen.size;
+}
+
+const cachedSupporterCount = unstable_cache(
+  async (projectId: string): Promise<number> => {
+    try {
+      return await readSupporterCountOnchain(projectId);
+    } catch (err) {
+      console.error(`[activity] readSupporterCountOnchain failed:`, err);
+      return 0;
+    }
+  },
+  ["pandabox:supporter-count"],
+  { revalidate: 60, tags: ["activity"] },
+);
+
+export async function getProjectSupporterCount(
+  projectId: string,
+): Promise<number> {
+  return cachedSupporterCount(projectId);
+}
