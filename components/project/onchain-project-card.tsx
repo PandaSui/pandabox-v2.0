@@ -12,6 +12,7 @@ import { RelativeTime } from "@/components/identity/relative-time";
 import { SuiGlyph } from "@/components/identity/sui-glyph";
 import type { OnChainProject } from "@/lib/projects";
 import { hasValidParams } from "@/lib/project-health";
+import { useIpfsImage } from "@/lib/hooks/use-ipfs-image";
 import { TokenDisc } from "./token-disc";
 import { FundingBar } from "./funding-bar";
 
@@ -466,8 +467,8 @@ function CoverBackdrop({
   accent: Accent;
 }) {
   const [loaded, setLoaded] = useState(false);
-  const [errored, setErrored] = useState(false);
-  const showImage = !!src && !errored;
+  const { src: imgSrc, onError, exhausted } = useIpfsImage(src);
+  const showImage = !!imgSrc && !exhausted;
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
       {/* Always-painted tint base. Visible during load, on error, on
@@ -475,14 +476,15 @@ function CoverBackdrop({
       <div className={cn("absolute inset-0", ACCENT_BG_SOFT[accent])} />
       {showImage && (
         <Image
-          src={src as string}
+          key={imgSrc}
+          src={imgSrc as string}
           alt=""
           fill
           unoptimized
           sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
           data-cover-img
           onLoad={() => setLoaded(true)}
-          onError={() => setErrored(true)}
+          onError={onError}
           className={cn(
             "scale-125 object-cover blur-2xl saturate-125 transition-opacity duration-500",
             loaded ? "opacity-65" : "opacity-0",

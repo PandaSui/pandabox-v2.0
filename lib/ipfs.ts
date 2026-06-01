@@ -24,6 +24,29 @@ export const IPFS_GATEWAY = (
   RAW_GATEWAY.length > 0 ? RAW_GATEWAY : FALLBACK_GATEWAY
 ).replace(/\/+$/, "");
 
+// When the configured gateway can't serve a CID — rate-limited (HTTP 429), a
+// TLS hiccup, a timeout — reads transparently retry the SAME CID on these
+// public gateways. IPFS is content-addressed, so every gateway returns
+// byte-identical content. These hosts must also be allowlisted in
+// next.config `images.remotePatterns` for the client `<Image>` fallback.
+export const FALLBACK_READ_GATEWAYS = [
+  "https://ipfs.io",
+  "https://nftstorage.link",
+  "https://dweb.link",
+];
+
+/**
+ * Ordered, de-duplicated gateway bases to try for a read: the configured
+ * gateway first, then the public fallbacks. The configured gateway may itself
+ * be one of the fallbacks, hence the de-dupe.
+ */
+function readGatewayBases(): string[] {
+  const bases = [IPFS_GATEWAY, ...FALLBACK_READ_GATEWAYS].map((b) =>
+    b.replace(/\/+$/, ""),
+  );
+  return [...new Set(bases)];
+}
+
 // Kept for backwards compatibility with components written for the Walrus
 // version of this module. Pinata pins don't have a per-upload epoch concept.
 export const DEFAULT_EPOCHS = 0;
@@ -164,18 +187,60 @@ export function gatewayUrl(cid: string): string {
 // Backwards-compat alias for code that still calls aggregatorUrl().
 export const aggregatorUrl = gatewayUrl;
 
-/** GET the blob and return its body as text (UTF-8). */
+/**
+ * Ordered list of gateway URLs to try for an on-chain icon/blob reference.
+ * Configured gateway first, then public fallbacks (same CID). Used by the
+ * client `<Image>` fallback so a throttled primary gateway doesn't blank
+ * covers. Returns `[]` for an empty/placeholder ref, or a single-element list
+ * for a non-IPFS URL we can't decompose into a CID.
+ */
+export function ipfsGatewayCandidates(
+  ref: string | null | undefined,
+): string[] {
+  const resolved = resolveBlobRef(ref);
+  if (!resolved) {
+    const trimmed = (ref ?? "").trim();
+    return trimmed ? [trimmed] : [];
+  }
+  return readGatewayBases().map(
+    (base) => `${base}/ipfs/${encodeURIComponent(resolved.blobId)}`,
+  );
+}
+
+/**
+ * GET the blob and return its body as text (UTF-8), retrying across gateways.
+ * The configured gateway is tried first; on a non-OK response (e.g. a 429 from
+ * a throttled public gateway) or a network/TLS error, the same CID is retried
+ * on the next fallback gateway. A caller-driven abort stops the retries.
+ */
 export async function fetchBlobText(
   cid: string,
   opts?: { signal?: AbortSignal },
 ): Promise<string> {
-  const res = await fetch(gatewayUrl(cid), { signal: opts?.signal });
-  if (!res.ok) {
-    throw new Error(
-      `IPFS gateway fetch failed (${res.status}): ${res.statusText}`,
-    );
+  const bases = readGatewayBases();
+  let lastError: unknown;
+  for (const base of bases) {
+    if (opts?.signal?.aborted) break;
+    try {
+      const res = await fetch(`${base}/ipfs/${encodeURIComponent(cid)}`, {
+        signal: opts?.signal,
+      });
+      if (!res.ok) {
+        lastError = new Error(
+          `IPFS gateway fetch failed (${res.status}): ${res.statusText}`,
+        );
+        continue;
+      }
+      return await res.text();
+    } catch (err) {
+      // A caller-driven abort is intentional — don't fall through to retries.
+      if (opts?.signal?.aborted) throw err;
+      lastError = err;
+    }
   }
-  return await res.text();
+  throw (
+    lastError ?? new Error("IPFS gateway fetch failed: no gateways configured")
+  );
 }
 
 /**

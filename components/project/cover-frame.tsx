@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
+import { useIpfsImage } from "@/lib/hooks/use-ipfs-image";
 
 type Accent = "saffron" | "poppy" | "jade" | "sky" | "sun" | "plum";
 type Status = "live" | "ended" | "closed";
@@ -63,7 +64,7 @@ export function CoverFrame({
 }) {
   const scope = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const [errored, setErrored] = useState(false);
+  const { src: imgSrc, onError, exhausted } = useIpfsImage(src);
   const t = useTranslations("project.detail.cover");
   const tStatus = useTranslations("project.status");
   const tDetailStatus = useTranslations("project.detail.status");
@@ -71,7 +72,7 @@ export function CoverFrame({
   const accent: Accent = forcedAccent ?? STATUS_ACCENT[status];
   const accentHex = ACCENT_HEX[accent];
 
-  const showImage = !!src && !errored;
+  const showImage = !!imgSrc && !exhausted;
   const initial = (name?.[0] ?? "P").toUpperCase();
   const tickerLabel = (ticker ?? t("defaultTickerFallback")).toUpperCase();
   const statusLabel =
@@ -315,15 +316,16 @@ export function CoverFrame({
 
           {showImage ? (
             <Image
+              key={imgSrc}
               data-cover-img
-              src={src as string}
+              src={imgSrc as string}
               alt={t("imgAlt", { name })}
               fill
               sizes="(min-width:1024px) 50vw, 100vw"
               priority={priority}
               unoptimized
               onLoad={() => setLoaded(true)}
-              onError={() => setErrored(true)}
+              onError={onError}
               className={cn(
                 "object-cover transition-opacity duration-500",
                 loaded ? "opacity-100" : "opacity-0",
