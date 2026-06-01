@@ -961,7 +961,9 @@
         "revalidates": "neu validiert 30s",
         "colTime": "Zeit",
         "colEvent": "Ereignis",
-        "colActor": "Akteur",
+        "colActor": "Unterzeichner",
+        "prevPage": "Vorherige Seite",
+        "nextPage": "Nächste Seite",
         "colTx": "Tx",
         "kind": {
           "contribute": "Beigetragen",

@@ -961,7 +961,9 @@
         "revalidates": "30 秒重新驗證",
         "colTime": "時間",
         "colEvent": "事件",
-        "colActor": "操作者",
+        "colActor": "簽署者",
+        "prevPage": "上一頁",
+        "nextPage": "下一頁",
         "colTx": "Tx",
         "kind": {
           "contribute": "已貢獻",

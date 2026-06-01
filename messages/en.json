@@ -961,7 +961,9 @@
         "revalidates": "revalidates 30s",
         "colTime": "Time",
         "colEvent": "Event",
-        "colActor": "Actor",
+        "colActor": "Signer",
+        "prevPage": "Previous page",
+        "nextPage": "Next page",
         "colTx": "Tx",
         "kind": {
           "contribute": "Contributed",

@@ -961,7 +961,9 @@
         "revalidates": "validasi ulang 30s",
         "colTime": "Waktu",
         "colEvent": "Event",
-        "colActor": "Aktor",
+        "colActor": "Penanda tangan",
+        "prevPage": "Halaman sebelumnya",
+        "nextPage": "Halaman berikutnya",
         "colTx": "Tx",
         "kind": {
           "contribute": "Berkontribusi",

@@ -961,7 +961,9 @@
         "revalidates": "30초마다 갱신",
         "colTime": "시간",
         "colEvent": "이벤트",
-        "colActor": "행위자",
+        "colActor": "서명자",
+        "prevPage": "이전 페이지",
+        "nextPage": "다음 페이지",
         "colTx": "트랜잭션",
         "kind": {
           "contribute": "기여됨",

@@ -961,7 +961,9 @@
         "revalidates": "30秒ごとに再検証",
         "colTime": "時刻",
         "colEvent": "イベント",
-        "colActor": "アクター",
+        "colActor": "署名者",
+        "prevPage": "前のページ",
+        "nextPage": "次のページ",
         "colTx": "Tx",
         "kind": {
           "contribute": "貢献",

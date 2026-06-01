@@ -961,7 +961,9 @@
         "revalidates": "每 30 秒刷新",
         "colTime": "时间",
         "colEvent": "事件",
-        "colActor": "操作者",
+        "colActor": "签名者",
+        "prevPage": "上一页",
+        "nextPage": "下一页",
         "colTx": "Tx",
         "kind": {
           "contribute": "已贡献",

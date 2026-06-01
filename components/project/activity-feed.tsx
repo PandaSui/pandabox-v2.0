@@ -1,33 +1,47 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@pandasui/ui/lib";
 import { MonoLabel } from "@/components/primitives/mono-label";
 import { Address } from "@/components/identity/address";
 import { explorerUrl } from "@/lib/sui";
 import type { ActivityItem } from "@/lib/activity";
 
+/** Rows per page in the activity table. */
+const PAGE_SIZE = 6;
+
 /**
  * Read-only feed of recent on-chain events for a project. Renders a dense
- * mono-numeric table — time · kind · actor · figures · tx — modelled after
- * the activity strip on the landing's Treasury Pulse section.
+ * mono-numeric table — time · kind · signer · figures · tx — modelled after
+ * the activity strip on the landing's Treasury Pulse section. Paginated
+ * client-side at PAGE_SIZE rows so a busy project doesn't render an unbounded
+ * column running down the page.
  */
-export async function ActivityFeed({
+export function ActivityFeed({
   items,
   ticker,
 }: {
   items: ActivityItem[];
   ticker: string;
 }) {
-  const t = await getTranslations("project.detail.activity");
+  const t = useTranslations("project.detail.activity");
+  const [page, setPage] = useState(0);
+
   if (items.length === 0) {
     return (
       <div className="border border-ink/15 bg-bone p-6 shadow-offset-sm">
         <MonoLabel>{t("title")}</MonoLabel>
-        <p className="mt-2 text-sm text-ink/55">
-          {t("empty")}
-        </p>
+        <p className="mt-2 text-sm text-ink/55">{t("empty")}</p>
       </div>
     );
   }
+
+  const pageCount = Math.ceil(items.length / PAGE_SIZE);
+  // Clamp in case the page index ever outruns a shrunken list.
+  const safePage = Math.min(page, pageCount - 1);
+  const start = safePage * PAGE_SIZE;
+  const visible = items.slice(start, start + PAGE_SIZE);
 
   return (
     <div className="border border-ink/15 bg-bone shadow-offset-sm">
@@ -50,7 +64,7 @@ export async function ActivityFeed({
             </tr>
           </thead>
           <tbody>
-            {items.map((it) => (
+            {visible.map((it) => (
               <tr
                 key={it.digest + it.kind + it.timestampMs}
                 className="border-b border-ink/[0.07] last:border-b-0"
@@ -98,7 +112,60 @@ export async function ActivityFeed({
           </tbody>
         </table>
       </div>
+
+      {pageCount > 1 && (
+        <div className="flex items-center justify-between border-t border-ink/15 px-5 py-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] tabular-nums text-ink/45">
+            {safePage + 1} / {pageCount}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <PagerButton
+              ariaLabel={t("prevPage")}
+              disabled={safePage === 0}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+            >
+              ←
+            </PagerButton>
+            <PagerButton
+              ariaLabel={t("nextPage")}
+              disabled={safePage >= pageCount - 1}
+              onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+            >
+              →
+            </PagerButton>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function PagerButton({
+  children,
+  onClick,
+  disabled,
+  ariaLabel,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled: boolean;
+  ariaLabel: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={cn(
+        "inline-flex h-7 w-7 items-center justify-center border font-mono text-[12px] transition-all duration-200 ease-atelier",
+        disabled
+          ? "cursor-not-allowed border-ink/15 text-ink/25"
+          : "border-ink/25 text-ink/70 hover:-translate-y-[1px] hover:border-ink hover:text-ink hover:shadow-offset-sm",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -142,9 +209,7 @@ function KindBadge({
       <span aria-hidden className={cn("block h-1.5 w-1.5 rounded-full", m.dot)} />
       <span className="font-mono-label text-[10px] uppercase tracking-[0.14em]">
         {m.label}
-        {extra && (
-          <span className="ml-1 text-ink/45">· {extra}</span>
-        )}
+        {extra && <span className="ml-1 text-ink/45">· {extra}</span>}
       </span>
     </span>
   );

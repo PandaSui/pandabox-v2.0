@@ -961,7 +961,9 @@
         "revalidates": "rivalida 30s",
         "colTime": "Tempo",
         "colEvent": "Evento",
-        "colActor": "Attore",
+        "colActor": "Firmatario",
+        "prevPage": "Pagina precedente",
+        "nextPage": "Pagina successiva",
         "colTx": "Tx",
         "kind": {
           "contribute": "Contribuito",

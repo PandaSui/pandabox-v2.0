@@ -961,7 +961,9 @@
         "revalidates": "se revalida cada 30s",
         "colTime": "Hora",
         "colEvent": "Evento",
-        "colActor": "Actor",
+        "colActor": "Firmante",
+        "prevPage": "Página anterior",
+        "nextPage": "Página siguiente",
         "colTx": "Tx",
         "kind": {
           "contribute": "Contribuido",

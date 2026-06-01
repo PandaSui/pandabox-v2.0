@@ -184,7 +184,10 @@ export function OnchainExploreGrid({
           Mobile prefers a tighter band: each group goes full-width, the
           category row scrolls horizontally with edge fades, and search +
           sort share a single justified row at the bottom. */}
-      <div className="sticky top-0 z-30 border-b border-ink/15 bg-bone/85 backdrop-blur">
+      {/* Sticks below the global nav (h-16, sticky top-0 z-40) rather than at
+          top-0 — otherwise the higher-z nav overlaps this band's category row
+          on mobile. Lower z-index than the nav so any scroll overlap is clean. */}
+      <div className="sticky top-16 z-30 border-b border-ink/15 bg-bone/85 backdrop-blur">
         <Container className="flex flex-col gap-3 py-3 lg:flex-row lg:items-start lg:justify-between lg:py-4">
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex flex-wrap items-center gap-1.5">

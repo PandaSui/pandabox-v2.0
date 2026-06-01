@@ -961,7 +961,9 @@
         "revalidates": "обновление 30 с",
         "colTime": "Время",
         "colEvent": "Событие",
-        "colActor": "Участник",
+        "colActor": "Подписант",
+        "prevPage": "Предыдущая страница",
+        "nextPage": "Следующая страница",
         "colTx": "Tx",
         "kind": {
           "contribute": "Внёс",

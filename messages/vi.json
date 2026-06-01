@@ -961,7 +961,9 @@
         "revalidates": "làm mới sau 30 giây",
         "colTime": "Thời gian",
         "colEvent": "Sự kiện",
-        "colActor": "Tác nhân",
+        "colActor": "Người ký",
+        "prevPage": "Trang trước",
+        "nextPage": "Trang sau",
         "colTx": "Tx",
         "kind": {
           "contribute": "Đã đóng góp",

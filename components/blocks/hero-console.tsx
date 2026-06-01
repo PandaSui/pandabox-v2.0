@@ -80,6 +80,10 @@ export function HeroConsole({
     capacity: PULSE_CAP,
     enabled: visible,
     intervalMs: 5000,
+    // Hero feed shows only fresh activity — events stay in the strip/stream
+    // while their relative time reads "just now" or "N min ago", then drop
+    // out rather than ever surfacing a stale "1y ago".
+    maxAgeMs: 60 * 60 * 1000,
   });
 
   useEffect(() => {
