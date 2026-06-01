@@ -9,7 +9,9 @@ import { PandaMark } from "@pandasui/ui";
 
 const PACKAGE_ID =
   "0x3013ccea6e16aff504ec7f651ec291d048fe28c8046a75e1cd829885aae81333";
-const COMMIT_HASH = process.env.NEXT_PUBLIC_COMMIT_HASH || "dev";
+// Only surfaced when a real commit is injected at build time — no "dev"
+// placeholder, so the footer never advertises a dev build on mainnet.
+const COMMIT_HASH = process.env.NEXT_PUBLIC_COMMIT_HASH?.trim();
 
 export function Footer({ className }: { className?: string }) {
   const t = useTranslations("footer");
@@ -26,9 +28,7 @@ export function Footer({ className }: { className?: string }) {
             <PandaMark className="h-6 w-6" />
             <span className="font-mono-label">Pandabox</span>
           </Link>
-          <p className="mt-3 max-w-xs text-sm text-ink/60">
-            {t("blurb")}
-          </p>
+          <p className="mt-3 max-w-xs text-sm text-ink/60">{t("blurb")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-10">
@@ -61,9 +61,11 @@ export function Footer({ className }: { className?: string }) {
                 {process.env.NEXT_PUBLIC_SUI_NETWORK || "mainnet"}
               </span>
             </Row>
-            <Row label={t("commit")}>
-              <span className="font-mono text-xs">{COMMIT_HASH}</span>
-            </Row>
+            {COMMIT_HASH && (
+              <Row label={t("commit")}>
+                <span className="font-mono text-xs">{COMMIT_HASH}</span>
+              </Row>
+            )}
           </div>
         </Column>
       </div>
