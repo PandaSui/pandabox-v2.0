@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Pandabox — 가치 있는 것에 펀딩하세요. Sui 위에서.",
+    "title": "Pandabox — 지원할 가치가 있는 프로젝트에 펀딩하세요. Sui 위에서.",
     "description": "Sui의 프로그래머블 펀딩 런치패드. 프로젝트를 출시하고, 비율을 설정하고, 온체인 세일을 운영하세요 — 모든 파라미터, 모든 트랜잭션이 온체인에서.",
     "ogImageAlt": "Pandabox — Sui를 위한 프로그래머블 펀딩 런치패드.",
     "notFound": {
@@ -73,9 +73,9 @@
   "home": {
     "hero": {
       "live": "Sui {network}에서 라이브",
-      "titleFund": "가치 있는 것에",
-      "titleWorth": "",
-      "titleFunding": "펀딩하세요.",
+      "titleFund": "지원할",
+      "titleWorth": "가치가 있는",
+      "titleFunding": "프로젝트에 펀딩하세요.",
       "titleOnSui": "Sui 위에서",
       "tagline": "Pandabox는 Sui를 위한 프로그래머블 펀딩 플랫폼입니다. 몇 분 만에 프로젝트를 런칭하세요. SUI를 받고, 토큰을 발행하고, 지급을 정의하세요 — 모두 온체인, 모두 투명, 모두 당신의 것.",
       "ctaLaunch": "프로젝트 런칭",
