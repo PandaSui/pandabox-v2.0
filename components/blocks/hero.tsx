@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowDiag } from "@pandasui/ui";
 import { cn } from "@pandasui/ui/lib";
 import { Marker } from "@/components/primitives/marker";
@@ -39,17 +39,23 @@ export type HeroProps = {
 
 export function Hero({ stats, packageId, network }: HeroProps) {
   const scope = useRef<HTMLDivElement>(null);
+  const locale = useLocale();
   const t = useTranslations("home.hero");
 
   useGSAP(
     () => {
+      const words =
+        scope.current?.querySelectorAll<HTMLElement>("[data-hero-word]");
+      const fades =
+        scope.current?.querySelectorAll<HTMLElement>("[data-hero-fade]") ?? [];
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
-      if (reduce) return;
+      if (reduce) {
+        gsap.set([...(words ?? []), ...fades], { opacity: 1, y: 0 });
+        return;
+      }
 
-      const words =
-        scope.current?.querySelectorAll<HTMLElement>("[data-hero-word]");
       if (words && words.length) {
         gsap.fromTo(
           words,
@@ -64,7 +70,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
         );
       }
       gsap.fromTo(
-        scope.current?.querySelectorAll<HTMLElement>("[data-hero-fade]") ?? [],
+        fades,
         { opacity: 0, y: 8 },
         {
           opacity: 1,
@@ -76,7 +82,7 @@ export function Hero({ stats, packageId, network }: HeroProps) {
         },
       );
     },
-    { scope },
+    { dependencies: [locale], revertOnUpdate: true, scope },
   );
 
   return (
